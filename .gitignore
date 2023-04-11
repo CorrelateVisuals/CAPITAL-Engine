@@ -1,0 +1,80 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Windows Object files
+*.vsidx
+*.lock
+*.suo
+*.db
+*.ipch
+*.lastbuildstate
+*.tlog
+*.unsuccessfullbuild
+*.log
+*.db
+*.pdb
+*.idb
+*.ilk
+*.recipe
+*.db-shm
+*.db-wal
+*.opendb
+*.user
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# Shaders
+*.spv
+
+.vs/Capital_VK_Engine/v17/fileList.bin
+x64/Debug/Capital_VK_Engine.vcxproj.FileListAbsolute.txt
+x64/Debug/Capital_VK_Engine.vcxproj.FileListAbsolute.txt
+*.txt
+x64/Release/shaders/shader.vert
+x64/Release/shaders/shader.frag
+x64/Release/shaders/compile_shaders.bat
+x64/Release/output.text
+x64/Release/Capital_VK_Engine.ipdb
+x64/Release/Capital_VK_Engine.iobj
+x64/Debug/output.text
