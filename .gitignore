@@ -1,6 +1,6 @@
 # Folders
-src/x64
-src/
+x64/
+
 
 # Prerequisites
 *.d
