@@ -50,10 +50,23 @@ class ValidationLayers {
                 VkDebugUtilsMessageTypeFlagsEXT messageType,
                 const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
                 void* pUserData) {
-    std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+    const std::string constMessage = pCallbackData->pMessage;
 
+    switch (surpressError(constMessage, "Epic Games")) {
+      case 1:
+        std::cerr << "validation layer: " << pCallbackData->pMessage
+                  << std::endl;
+        break;
+      case 2:
+        break;
+    }
+
+    // std::cerr << "validation layer: " << pCallbackData->pMessage <<
+    // std::endl;
     return VK_FALSE;
   }
+
+  static int surpressError(const std::string data, std::string checkFor);
 
   VkResult CreateDebugUtilsMessengerEXT(
       VkInstance instance,

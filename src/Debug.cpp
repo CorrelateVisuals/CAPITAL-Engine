@@ -14,6 +14,16 @@ ValidationLayers::~ValidationLayers() {
   LOG(".. Validation Layers destructed");
 }
 
+int ValidationLayers::surpressError(const std::string string,
+                                    std::string checkFor) {
+  int switchIndex = 1;
+
+  if (string.find(checkFor) != std::string::npos) {
+    switchIndex = 2;
+  }
+  return switchIndex;
+}
+
 VkResult ValidationLayers::CreateDebugUtilsMessengerEXT(
     VkInstance instance,
     const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
