@@ -23,8 +23,7 @@ void Window::initWindow() {
 
   glfwSetWindowUserPointer(window, this);
   glfwSetFramebufferSizeCallback(window, windowResize);
-  LOG("... window initialized with", float(displayConfig.width),
-      float(displayConfig.height));
+  LOG("... window initialized with", displayConfig.width, displayConfig.height);
 }
 
 void Window::windowResize(GLFWwindow* window, int width, int height) {
@@ -32,7 +31,7 @@ void Window::windowResize(GLFWwindow* window, int width, int height) {
   app->framebufferResized = true;
   displayConfig.width = width;
   displayConfig.height = height;
-  LOG("... window resized to", float(width), float(height));
+  LOG("... window resized to", width, height);
 }
 
 void Window::mouseClick(GLFWwindow* window, int button) {
@@ -44,7 +43,7 @@ void Window::mouseClick(GLFWwindow* window, int button) {
     glfwGetCursorPos(window, &xpos, &ypos);
     xpos /= displayConfig.width;
     ypos /= displayConfig.height;
-    LOG("> > mouse input at", float(xpos), float(ypos));
+    LOG("> > mouse input at", xpos, ypos);
   }
   oldState = newState;
 }

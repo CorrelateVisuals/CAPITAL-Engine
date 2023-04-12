@@ -11,8 +11,17 @@ class Logging {
   // - Add date and time before logging message
 
  public:
-  void console(std::string log_in);
-  void console(std::string log_in, float val1, float val2);
+  template <class... Ts>
+  void console(Ts&&... inputs) {
+    int i = 0;
+    (
+        [&] {
+          ++i;
+          std::cerr << " " << inputs;
+        }(),
+        ...);
+    std::cerr << std::endl;
+  }
 };
 
 inline Logging logging;

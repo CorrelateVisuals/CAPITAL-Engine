@@ -158,7 +158,6 @@
     <ClCompile Include="Capital_Engine.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Vulkan_Debug.cpp" />
     <ClCompile Include="Vulkan_Mechanics.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -166,7 +165,6 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Capital_Engine.h" />
     <ClInclude Include="Settings.h" />
-    <ClInclude Include="Vulkan_Debug.h" />
     <ClInclude Include="Vulkan_Mechanics.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
