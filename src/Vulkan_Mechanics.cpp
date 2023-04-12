@@ -10,7 +10,7 @@
 #include "Window.h"
 
 void VulkanMechanics::createInstance() {
-  LOG("... creating Vulkan Instance");
+  LOG(".... creating Vulkan Instance");
 
   if (debug.enableValidationLayers && !debug.checkValidationLayerSupport()) {
     throw std::runtime_error("validation layers requested, but not available!");
@@ -51,21 +51,21 @@ void VulkanMechanics::createInstance() {
   if (vkCreateInstance(&instanceCreateInfo, nullptr, &instance) != VK_SUCCESS) {
     throw std::runtime_error("failed to create instance!");
   }
-  LOG("... Vulkan Instance created");
+  LOG(".... Vulkan Instance created");
 }
 
 void VulkanMechanics::createSurface() {
-  LOG("... creating Surface");
+  LOG(".... creating Surface");
 
   if (glfwCreateWindowSurface(instance, mainWindow.window, nullptr, &surface) !=
       VK_SUCCESS) {
     throw std::runtime_error("failed to create window surface!");
   }
-  LOG("... Surface created");
+  LOG(".... Surface created");
 }
 
 std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
-  LOG("... acquiring Required Extensions");
+  LOG(".... acquiring Required Extensions");
 
   uint32_t glfwExtensionCount = 0;
   const char** glfwExtensions;
@@ -79,5 +79,5 @@ std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
   }
 
   return extensions;
-  LOG("... Required Extensions acquired");
+  LOG(".... Required Extensions acquired");
 }
