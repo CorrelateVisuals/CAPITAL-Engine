@@ -31,6 +31,7 @@ x64/
 *.opendb
 *.user
 
+
 # Precompiled Headers
 *.gch
 *.pch
@@ -71,8 +72,10 @@ _deps
 # Shaders
 *.spv
 
-# src/Debug
+# Visual Studio
+.vcxproj.user
 
+# src/Debug
 *.ilk
 *.log
 *.tlog/link.read.1.tlog
