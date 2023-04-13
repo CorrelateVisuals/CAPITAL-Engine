@@ -165,6 +165,7 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Capital_Engine.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="Tools.h" />
     <ClInclude Include="Vulkan_Mechanics.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

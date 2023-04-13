@@ -5,7 +5,8 @@
 #include "Debug.h"
 
 int main() {
-  LOG("\n    [ Starting CAPITAL engine ]\n");
+  // logging.startLogging();
+  LOG("[ Starting CAPITAL engine ]");
 
   try {
     CapitalEngine CAPITAL;
@@ -18,6 +19,7 @@ int main() {
     LOG("!!! unknown error caught in main() !!!");
   }
 
-  LOG("\n    [ CAPITAL engine terminated ]\n");
   return EXIT_SUCCESS;
+  LOG("[ CAPITAL engine terminated ]");
+  // logging.stopLogging();
 }

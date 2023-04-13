@@ -100,3 +100,12 @@ bool ValidationLayers::checkValidationLayerSupport() {
 
   return true;
 }
+
+std::string Logging::returnDateAndTime() {
+  auto now = std::chrono::system_clock::now();
+  std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+  char now_str[26];
+  ctime_s(now_str, sizeof(now_str), &now_c);
+  std::string result(now_str, 19);  // remove year and null character
+  return result;
+}

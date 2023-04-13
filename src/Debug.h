@@ -1,6 +1,9 @@
 #pragma once
 #include <vulkan/vulkan.h>
 
+#include <chrono>
+#include <ctime>
+#include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <vector>
@@ -8,25 +11,35 @@
 #define LOG logging.console
 
 class Logging {
-  // TODO:
-  // - Log complete objects and varius types: int, float, glm::vec3..
-  // - Write to a log file
-  // - Add date and time before logging message
-
  public:
+  Logging() : logFile("log.txt", std::ofstream::out | std::ofstream::trunc){};
+  ~Logging(){};
+
+  std::ofstream logFile;
+
   template <class... Ts>
   void console(Ts&&... inputs) {
     int i = 0;
+    if (!logFile.is_open()) {
+      std::cerr << "Error: Could not open log file for writing." << std::endl;
+      return;
+    }
+    std::cout << returnDateAndTime();
+    logFile << returnDateAndTime();
     (
         [&] {
           ++i;
           std::cerr << " " << inputs;
+          logFile << " " << inputs;
         }(),
         ...);
     std::cerr << std::endl;
+    logFile << std::endl;
   }
-};
 
+ private:
+  std::string returnDateAndTime();
+};
 inline Logging logging;
 
 class ValidationLayers {
@@ -58,11 +71,9 @@ class ValidationLayers {
                   << std::endl;
         break;
       case 2:
+        // surpressError
         break;
     }
-
-    // std::cerr << "validation layer: " << pCallbackData->pMessage <<
-    // std::endl;
     return VK_FALSE;
   }
 
