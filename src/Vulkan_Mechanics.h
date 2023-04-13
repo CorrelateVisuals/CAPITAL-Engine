@@ -11,12 +11,22 @@ class VulkanMechanics {
   VkSurfaceKHR surface;
   VkInstance instance;
 
+  using MainDevice = struct {
+    VkPhysicalDevice physicalDevice;
+    VkDevice logicalDevice;
+  };
+  MainDevice mainDevice{};
+
   void createInstance();
   void createSurface();
+
+  //void pickPhysicalDevice();
+  //void createLogicalDevice();
 
   std::vector<const char*> getRequiredExtensions();
 
  private:
+  // bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
 };
 
 inline VulkanMechanics vulkanMechanics{};
