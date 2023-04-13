@@ -20,9 +20,8 @@ VulkanMechanics::~VulkanMechanics() {
 void VulkanMechanics::createInstance() {
   LOG(".... creating Vulkan Instance");
 
-  if (debug.enableValidationLayers && !debug.checkValidationLayerSupport()) {
-    throw std::runtime_error("validation layers requested, but not available!");
-  }
+  static const std::vector<const char*> requiredExtensions =
+      getRequiredExtensions();
 
   VkApplicationInfo appInfo{};
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -36,13 +35,16 @@ void VulkanMechanics::createInstance() {
   instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   instanceCreateInfo.pApplicationInfo = &appInfo;
 
-  auto extensions = getRequiredExtensions();
   instanceCreateInfo.enabledExtensionCount =
-      static_cast<uint32_t>(extensions.size());
-  instanceCreateInfo.ppEnabledExtensionNames = extensions.data();
+      static_cast<uint32_t>(requiredExtensions.size());
+  instanceCreateInfo.ppEnabledExtensionNames = requiredExtensions.data();
 
   VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
   if (debug.enableValidationLayers) {
+    if (!debug.checkValidationLayerSupport()) {
+      throw std::runtime_error(
+          "validation layers requested, but not available!");
+    }
     instanceCreateInfo.enabledLayerCount =
         static_cast<uint32_t>(debug.validationLayers.size());
     instanceCreateInfo.ppEnabledLayerNames = debug.validationLayers.data();
@@ -52,7 +54,6 @@ void VulkanMechanics::createInstance() {
         (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
   } else {
     instanceCreateInfo.enabledLayerCount = 0;
-
     instanceCreateInfo.pNext = nullptr;
   }
 
@@ -71,45 +72,44 @@ void VulkanMechanics::createSurface() {
 }
 
 // void VulkanMechanics::pickPhysicalDevice() {
-//   uint32_t deviceCount = 0;
-//   vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+//     uint32_t deviceCount = 0;
+//     vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 //
-//   if (deviceCount == 0) {
-//     throw std::runtime_error("failed to find GPUs with Vulkan support!");
-//   }
-//
-//   std::vector<VkPhysicalDevice> devices(deviceCount);
-//   vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
-//
-//   for (const auto& device : devices) {
-//     if (isDeviceSuitable(device)) {
-//       mainDevice.physicalDevice = device;
-//       break;
+//     if (deviceCount == 0) {
+//         throw std::runtime_error("failed to find GPUs with Vulkan support!");
 //     }
-//   }
 //
-//   if (mainDevice.physicalDevice == VK_NULL_HANDLE) {
-//     throw std::runtime_error("failed to find a suitable GPU!");
-//   }
+//     std::vector<VkPhysicalDevice> devices(deviceCount);
+//     vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+//
+//     for (VkPhysicalDevice device : devices) {
+//         if (isDeviceSuitable(device)) {
+//             mainDevice.physicalDevice = device;
+//             break;
+//         }
+//     }
+//
+//     if (mainDevice.physicalDevice == VK_NULL_HANDLE) {
+//         throw std::runtime_error("failed to find a suitable GPU!");
+//     }
 // }
 //
 // void VulkanMechanics::createLogicalDevice() {}
 //
 // bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physicalDevice) {
-//   VulkanMechanics::QueueFamilyIndices indices =
-//       findQueueFamilies(physicalDevice);
+//     QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 //
-//   bool extensionsSupported = checkDeviceExtensionSupport(physicalDevice);
+//     bool extensionsSupported = checkDeviceExtensionSupport(physicalDevice);
 //
-//   bool swapChainAdequate = false;
-//   if (extensionsSupported) {
-//     VulkanMechanics::SwapChainSupportDetails swapChainSupport =
-//         querySwapChainSupport(physicalDevice);
-//     swapChainAdequate = !swapChainSupport.formats.empty() &&
-//                         !swapChainSupport.presentModes.empty();
-//   }
+//     bool swapChainAdequate = false;
+//     if (extensionsSupported) {
+//         SwapChainSupportDetails swapChainSupport =
+//         querySwapChainSupport(physicalDevice); swapChainAdequate =
+//         !swapChainSupport.formats.empty() &&
+//             !swapChainSupport.presentModes.empty();
+//     }
 //
-//   return indices.isComplete() && extensionsSupported && swapChainAdequate;
+//     return indices.isComplete() && extensionsSupported && swapChainAdequate;
 // }
 
 std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
@@ -124,6 +124,7 @@ std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
 
   if (debug.enableValidationLayers) {
     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    LOG(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
   }
 
   return extensions;

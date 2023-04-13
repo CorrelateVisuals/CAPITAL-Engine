@@ -70,7 +70,8 @@ class ValidationLayers {
   bool checkValidationLayerSupport();
 
  private:
-  void static surpressError(const std::string data, std::string checkFor);
+  void static surpressError(const std::string& string,
+                            const std::string& checkFor);
   VkResult CreateDebugUtilsMessengerEXT(
       VkInstance instance,
       const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,

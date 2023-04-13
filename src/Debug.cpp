@@ -1,6 +1,7 @@
 #include <chrono>
 #include <ctime>
 #include <iostream>
+#include <set>
 #include <string>
 
 #include "Debug.h"
@@ -23,22 +24,13 @@ ValidationLayers::~ValidationLayers() {
   LOG(".. destructing Validation Layers");
 }
 
-void ValidationLayers::surpressError(const std::string string,
-                                     std::string checkFor) {
-  int switchIndex = 1;
+void ValidationLayers::surpressError(const std::string& string,
+                                     const std::string& checkFor) {
   if (string.find(checkFor) != std::string::npos) {
-    switchIndex = 2;
+    return;  // Suppress error
   }
-
-  switch (switchIndex) {
-    case 1:
-      std::cerr << "> > Validation Layer: " << string << std::endl;
-      logging.logFile << "> > Validation Layer: " << string << std::endl;
-      break;
-    case 2:
-      // surpressError
-      break;
-  }
+  std::cerr << "> > Validation Layer: " << string << std::endl;
+  logging.logFile << "> > Validation Layer: " << string << std::endl;
 }
 
 VkResult ValidationLayers::CreateDebugUtilsMessengerEXT(
@@ -68,14 +60,15 @@ void ValidationLayers::DestroyDebugUtilsMessengerEXT(
 
 void ValidationLayers::populateDebugMessengerCreateInfo(
     VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
-  createInfo = {};
-  createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-  createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-                               VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-  createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-                           VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
-                           VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-  createInfo.pfnUserCallback = debugCallback;
+  createInfo = {
+      .sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
+      .messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+                         VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
+      .messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+                     VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+                     VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT,
+      .pfnUserCallback = debugCallback,
+  };
 }
 
 void ValidationLayers::setupDebugMessenger(VkInstance instance) {
@@ -98,29 +91,25 @@ bool ValidationLayers::checkValidationLayerSupport() {
   std::vector<VkLayerProperties> availableLayers(layerCount);
   vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
-  for (const char* layerName : validationLayers) {
-    bool layerFound = false;
+  std::set<std::string> availableLayerNames;
+  for (const auto& layer : availableLayers) {
+    availableLayerNames.insert(layer.layerName);
+  }
 
-    for (const auto& layerProperties : availableLayers) {
-      if (strcmp(layerName, layerProperties.layerName) == 0) {
-        layerFound = true;
-        break;
-      }
-    }
-
-    if (!layerFound) {
+  for (const auto& layerName : validationLayers) {
+    if (availableLayerNames.find(layerName) == availableLayerNames.end()) {
       return false;
     }
   }
-
   return true;
 }
 
 std::string Logging::returnDateAndTime() {
   auto now = std::chrono::system_clock::now();
   std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-  char now_str[26];
-  ctime_s(now_str, sizeof(now_str), &now_c);
-  std::string result(now_str, 19);  // remove year and null character
-  return result;
+  struct tm timeinfo;
+  localtime_s(&timeinfo, &now_c);
+  char now_str[20];
+  strftime(now_str, sizeof(now_str), "%Y-%m-%d %H:%M:%S", &timeinfo);
+  return std::string(now_str);
 }
