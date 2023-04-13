@@ -92,8 +92,8 @@ void VulkanMechanics::pickPhysicalDevice() {
 
       VkPhysicalDeviceProperties deviceProperties;
       vkGetPhysicalDeviceProperties(device, &deviceProperties);
-      LOG("---- GPU:", deviceProperties.deviceName);
 
+      LOG("---- GPU:", deviceProperties.deviceName);
       break;
     }
   }
@@ -206,4 +206,9 @@ VulkanMechanics::SwapChainSupportDetails VulkanMechanics::querySwapChainSupport(
       physicalDevice, surface, &presentModeCount, details.presentModes.data());
 
   return details;
+}
+
+std::ostream& operator<<(std::ostream& os, VkPhysicalDeviceProperties& device) {
+  // os << device.limits.maxUniformBufferRange;
+  return os;
 }

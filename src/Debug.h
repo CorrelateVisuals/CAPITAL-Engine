@@ -38,7 +38,7 @@ class Logging {
  private:
   std::string returnDateAndTime();
 };
-inline Logging logging{};
+inline Logging logging;
 
 class ValidationLayers {
  public:
@@ -81,4 +81,4 @@ class ValidationLayers {
                                      VkDebugUtilsMessengerEXT debugMessenger,
                                      const VkAllocationCallbacks* pAllocator);
 };
-inline ValidationLayers debug{};
+inline ValidationLayers debug;

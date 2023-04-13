@@ -10,9 +10,9 @@ Window::Window() : window{nullptr}, framebufferResized{false} {
 }
 
 Window::~Window() {
+  LOG("... terminating Window");
   glfwDestroyWindow(window);
   glfwTerminate();
-  LOG("... Window terminated");
 }
 
 void Window::initWindow() {

@@ -1,8 +1,11 @@
 #pragma once
 
+#include <iostream>
 #include <optional>
 #include <string>
 #include <vector>
+
+std::ostream& operator<<(std::ostream& os, VkPhysicalDeviceProperties& device);
 
 class VulkanMechanics {
  public:
@@ -16,7 +19,7 @@ class VulkanMechanics {
     VkPhysicalDevice physicalDevice;
     VkDevice logicalDevice;
   };
-  MainDevice mainDevice{};
+  MainDevice mainDevice;
 
   const std::vector<const char*> deviceExtensions;
 
@@ -26,7 +29,7 @@ class VulkanMechanics {
     bool isComplete() const {
       return graphicsFamily.has_value() && presentFamily.has_value();
     }
-  };
+  } queueFamilyIndices;
 
   struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -48,4 +51,4 @@ class VulkanMechanics {
       VkPhysicalDevice physicalDevice);
 };
 
-inline VulkanMechanics vulkanMechanics{};
+inline VulkanMechanics vulkanMechanics;

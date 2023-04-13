@@ -28,5 +28,4 @@ void CapitalEngine::initVulkan() {
   vulkanMechanics.createSurface();
 
   vulkanMechanics.pickPhysicalDevice();
-  // vulkanMechanics.createLogicalDevice();
 }

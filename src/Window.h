@@ -18,5 +18,4 @@ class Window {
   void initWindow();
   static void windowResize(GLFWwindow* window, int width, int height);
 };
-
-inline Window mainWindow{};
+inline Window mainWindow;
