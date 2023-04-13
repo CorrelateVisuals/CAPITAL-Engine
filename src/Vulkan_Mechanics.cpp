@@ -194,23 +194,16 @@ VulkanMechanics::SwapChainSupportDetails VulkanMechanics::querySwapChainSupport(
   uint32_t formatCount;
   vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount,
                                        nullptr);
-
-  if (formatCount != 0) {
-    details.formats.resize(formatCount);
-    vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount,
-                                         details.formats.data());
-  }
+  details.formats.resize(formatCount);
+  vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount,
+                                       details.formats.data());
 
   uint32_t presentModeCount;
   vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface,
                                             &presentModeCount, nullptr);
-
-  if (presentModeCount != 0) {
-    details.presentModes.resize(presentModeCount);
-    vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface,
-                                              &presentModeCount,
-                                              details.presentModes.data());
-  }
+  details.presentModes.resize(presentModeCount);
+  vkGetPhysicalDeviceSurfacePresentModesKHR(
+      physicalDevice, surface, &presentModeCount, details.presentModes.data());
 
   return details;
 }

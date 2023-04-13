@@ -26,9 +26,8 @@ ValidationLayers::~ValidationLayers() {
 
 void ValidationLayers::surpressError(const std::string& string,
                                      const std::string& checkFor) {
-  if (string.find(checkFor) != std::string::npos) {
-    return;  // Suppress error
-  }
+  if (string.find(checkFor) != std::string::npos)
+    return;
   std::cerr << "> > Validation Layer: " << string << std::endl;
   logging.logFile << "> > Validation Layer: " << string << std::endl;
 }
@@ -67,8 +66,7 @@ void ValidationLayers::populateDebugMessengerCreateInfo(
       .messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
                      VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                      VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT,
-      .pfnUserCallback = debugCallback,
-  };
+      .pfnUserCallback = debugCallback};
 }
 
 void ValidationLayers::setupDebugMessenger(VkInstance instance) {
@@ -79,9 +77,8 @@ void ValidationLayers::setupDebugMessenger(VkInstance instance) {
   populateDebugMessengerCreateInfo(createInfo);
 
   if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr,
-                                   &debugMessenger) != VK_SUCCESS) {
+                                   &debugMessenger) != VK_SUCCESS)
     throw std::runtime_error("Failed to set up debug messenger!");
-  }
 }
 
 bool ValidationLayers::checkValidationLayerSupport() {
@@ -110,6 +107,6 @@ std::string Logging::returnDateAndTime() {
   struct tm timeinfo;
   localtime_s(&timeinfo, &now_c);
   char now_str[20];
-  strftime(now_str, sizeof(now_str), "%Y-%m-%d %H:%M:%S", &timeinfo);
+  strftime(now_str, 20, "%Y-%m-%d %H:%M:%S", &timeinfo);
   return std::string(now_str);
 }
