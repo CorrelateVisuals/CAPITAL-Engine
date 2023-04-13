@@ -27,7 +27,6 @@ void CapitalEngine::initVulkan() {
   debug.setupDebugMessenger(vulkanMechanics.instance);
   vulkanMechanics.createSurface();
 
-  // Hardware interfaces
   // vulkanMechanics.pickPhysicalDevice();
   // vulkanMechanics.createLogicalDevice();
 }

@@ -32,7 +32,7 @@ void Window::windowResize(GLFWwindow* window, int width, int height) {
   app->framebufferResized = true;
   displayConfig.width = width;
   displayConfig.height = height;
-  LOG("... Window resized to", width, "*", height);
+  LOG("> > Window resized to", width, "*", height);
 }
 
 void Window::mouseClick(GLFWwindow* window, int button) {

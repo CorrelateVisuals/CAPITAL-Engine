@@ -64,8 +64,13 @@ class ValidationLayers {
     return VK_FALSE;
   }
 
-  void static surpressError(const std::string data, std::string checkFor);
+  void setupDebugMessenger(VkInstance instance);
+  void populateDebugMessengerCreateInfo(
+      VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+  bool checkValidationLayerSupport();
 
+ private:
+  void static surpressError(const std::string data, std::string checkFor);
   VkResult CreateDebugUtilsMessengerEXT(
       VkInstance instance,
       const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
@@ -74,11 +79,5 @@ class ValidationLayers {
   void DestroyDebugUtilsMessengerEXT(VkInstance instance,
                                      VkDebugUtilsMessengerEXT debugMessenger,
                                      const VkAllocationCallbacks* pAllocator);
-
-  void populateDebugMessengerCreateInfo(
-      VkDebugUtilsMessengerCreateInfoEXT& createInfo);
-  void setupDebugMessenger(VkInstance instance);
-  bool checkValidationLayerSupport();
 };
-
 inline ValidationLayers debug{};

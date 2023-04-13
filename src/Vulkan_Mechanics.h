@@ -20,12 +20,11 @@ class VulkanMechanics {
   void createInstance();
   void createSurface();
 
-  //void pickPhysicalDevice();
-  //void createLogicalDevice();
-
-  std::vector<const char*> getRequiredExtensions();
+  // void pickPhysicalDevice();
+  // void createLogicalDevice();
 
  private:
+  std::vector<const char*> getRequiredExtensions();
   // bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
 };
 
