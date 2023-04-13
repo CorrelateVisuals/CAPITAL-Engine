@@ -1,22 +1,20 @@
-2023-04-13 05:15:01 . constructing Logging
-2023-04-13 05:15:01 .. constructing Validation Layers
-2023-04-13 05:15:01 ... constructing Vulkan Mechanics
-2023-04-13 05:15:01 ... constructing Window
-2023-04-13 05:15:02 ... Window initialized with 1920 * 1080
-2023-04-13 05:15:02 [ Starting CAPITAL engine ]
-2023-04-13 05:15:02 ... constructing Capital Engine
-2023-04-13 05:15:02 ... initializing Capital Engine
-2023-04-13 05:15:02 .... creating Vulkan Instance
-2023-04-13 05:15:02 .... acquiring Required Extensions
-2023-04-13 05:15:02 VK_EXT_debug_utils
-2023-04-13 05:15:02 .... creating Surface
-2023-04-13 05:15:02 > > Mouse Click at 0.511979 : 0.436111
-2023-04-13 05:15:02 > > Mouse Click at 0.632292 : 0.462963
-2023-04-13 05:15:02 > > Mouse Click at 0.805208 : 0.387037
-2023-04-13 05:15:03 > > Mouse Click at 0.971875 : 0.00462963
-2023-04-13 05:15:03 ... destructing Capital Engine
-2023-04-13 05:15:03 [ CAPITAL engine terminated ]
-2023-04-13 05:15:03 ... Window terminated
-2023-04-13 05:15:03 ... destructing Vulkan Mechanics
-2023-04-13 05:15:03 .. destructing Validation Layers
-2023-04-13 05:15:03 . destructing Logging
+2023-04-13 14:12:39 . constructing Logging
+2023-04-13 14:12:39 .. constructing Validation Layers
+2023-04-13 14:12:39 ... constructing Vulkan Mechanics
+2023-04-13 14:12:39 ... constructing Window
+2023-04-13 14:12:39 ... Window initialized with 1920 * 1080
+2023-04-13 14:12:39 [ Starting CAPITAL engine ]
+2023-04-13 14:12:39 ... constructing Capital Engine
+2023-04-13 14:12:39 ... initializing Capital Engine
+2023-04-13 14:12:39 .... creating Vulkan Instance
+2023-04-13 14:12:39 .... acquiring Required Extensions
+2023-04-13 14:12:39 .... creating Surface
+2023-04-13 14:12:39 ---- GPU: NVIDIA GeForce GTX 1070
+2023-04-13 14:12:39 > > Mouse Click at 0.844271 : 0.116667
+2023-04-13 14:12:39 > > Mouse Click at 0.844271 : 0.116667
+2023-04-13 14:12:40 ... destructing Capital Engine
+2023-04-13 14:12:40 [ CAPITAL engine terminated ]
+2023-04-13 14:12:40 ... Window terminated
+2023-04-13 14:12:40 ... destructing Vulkan Mechanics
+2023-04-13 14:12:40 .. destructing Validation Layers
+2023-04-13 14:12:40 . destructing Logging
