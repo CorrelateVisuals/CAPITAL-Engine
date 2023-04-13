@@ -15,7 +15,7 @@ int main() {
     LOG(e.what());
     return EXIT_FAILURE;
   } catch (...) {
-    LOG("!!! unknown error caught in main() !!!");
+    LOG("!!! Unknown error caught in main() !!!");
   }
 
   LOG("[ CAPITAL engine terminated ]");

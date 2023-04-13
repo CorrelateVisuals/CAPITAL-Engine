@@ -1,3 +1,5 @@
+#include <chrono>
+#include <ctime>
 #include <iostream>
 #include <string>
 
@@ -28,8 +30,8 @@ void ValidationLayers::surpressError(const std::string string,
 
   switch (switchIndex) {
     case 1:
-      std::cerr << "=>=> validation layer: " << string << std::endl;
-      logging.logFile << "=>=> validation layer: " << string << std::endl;
+      std::cerr << "> > Validation Layer: " << string << std::endl;
+      logging.logFile << "> > Validation Layer: " << string << std::endl;
       break;
     case 2:
       // surpressError
@@ -83,7 +85,7 @@ void ValidationLayers::setupDebugMessenger(VkInstance instance) {
 
   if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr,
                                    &debugMessenger) != VK_SUCCESS) {
-    throw std::runtime_error("failed to set up debug messenger!");
+    throw std::runtime_error("Failed to set up debug messenger!");
   }
 }
 

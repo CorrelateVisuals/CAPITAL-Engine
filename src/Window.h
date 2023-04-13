@@ -9,7 +9,7 @@ class Window {
   ~Window();
 
   GLFWwindow* window;
-  bool framebufferResized = false;
+  bool framebufferResized;
 
   void initWindow();
   static void windowResize(GLFWwindow* window, int width, int height);

@@ -1,8 +1,6 @@
 #pragma once
 #include <vulkan/vulkan.h>
 
-#include <chrono>
-#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
