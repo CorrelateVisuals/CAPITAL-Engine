@@ -9,6 +9,14 @@
 #include "Vulkan_Mechanics.h"
 #include "Window.h"
 
+VulkanMechanics::VulkanMechanics() : surface{}, instance{} {
+  LOG("... constructing Vulkan Mechanics");
+}
+
+VulkanMechanics::~VulkanMechanics() {
+  LOG("... destructing Vulkan Mechanics");
+}
+
 void VulkanMechanics::createInstance() {
   LOG(".... creating Vulkan Instance");
 

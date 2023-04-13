@@ -16,4 +16,4 @@ class Window {
   void mouseClick(GLFWwindow* window, int button);
 };
 
-inline Window mainWindow;
+inline Window mainWindow{};

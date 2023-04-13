@@ -19,14 +19,22 @@ ValidationLayers::~ValidationLayers() {
   LOG(".. destructing Validation Layers");
 }
 
-int ValidationLayers::surpressError(const std::string string,
-                                    std::string checkFor) {
+void ValidationLayers::surpressError(const std::string string,
+                                     std::string checkFor) {
   int switchIndex = 1;
-
   if (string.find(checkFor) != std::string::npos) {
     switchIndex = 2;
   }
-  return switchIndex;
+
+  switch (switchIndex) {
+    case 1:
+      std::cerr << "=>=> validation layer: " << string << std::endl;
+      logging.logFile << "=>=> validation layer: " << string << std::endl;
+      break;
+    case 2:
+      // surpressError
+      break;
+  }
 }
 
 VkResult ValidationLayers::CreateDebugUtilsMessengerEXT(

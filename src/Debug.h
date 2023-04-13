@@ -40,7 +40,7 @@ class Logging {
  private:
   std::string returnDateAndTime();
 };
-inline Logging logging;
+inline Logging logging{};
 
 class ValidationLayers {
  public:
@@ -48,9 +48,7 @@ class ValidationLayers {
   ~ValidationLayers();
 
   VkDebugUtilsMessengerEXT debugMessenger;
-
-  const std::vector<const char*> validationLayers = {
-      "VK_LAYER_KHRONOS_validation"};
+  const std::vector<const char*> validationLayers;
 
 #ifdef NDEBUG
   const bool enableValidationLayers = false;
@@ -63,21 +61,12 @@ class ValidationLayers {
                 VkDebugUtilsMessageTypeFlagsEXT messageType,
                 const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
                 void* pUserData) {
-    const std::string constMessage = pCallbackData->pMessage;
-
-    switch (surpressError(constMessage, "Epic Games")) {
-      case 1:
-        std::cerr << "=>=> validation layer: " << pCallbackData->pMessage
-                  << std::endl;
-        break;
-      case 2:
-        // surpressError
-        break;
-    }
+    const std::string debugMessage = pCallbackData->pMessage;
+    surpressError(debugMessage, "Epic Games");
     return VK_FALSE;
   }
 
-  static int surpressError(const std::string data, std::string checkFor);
+  void static surpressError(const std::string data, std::string checkFor);
 
   VkResult CreateDebugUtilsMessengerEXT(
       VkInstance instance,
@@ -94,4 +83,4 @@ class ValidationLayers {
   bool checkValidationLayerSupport();
 };
 
-inline ValidationLayers debug;
+inline ValidationLayers debug{};

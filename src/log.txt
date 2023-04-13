@@ -1,14 +1,18 @@
-Thu Apr 13 03:54:10 .. constructing Logging
-Thu Apr 13 03:54:10 .. constructing Validation Layers
-Thu Apr 13 03:54:10 ... constructing Window
-Thu Apr 13 03:54:10 ... Window initialized with 1920 * 1080
-Thu Apr 13 03:54:10 [ Starting CAPITAL engine ]
-Thu Apr 13 03:54:10 ... constructing Capital Engine
-Thu Apr 13 03:54:10 ... initializing Capital Engine
-Thu Apr 13 03:54:10 .... creating Vulkan Instance
-Thu Apr 13 03:54:10 .... acquiring Required Extensions
-Thu Apr 13 03:54:10 .... creating Surface
-Thu Apr 13 03:54:12 ,,, destructing Capital Engine
-Thu Apr 13 03:54:12 [ CAPITAL engine terminated ]
-Thu Apr 13 03:54:12 ... Window terminated
-Thu Apr 13 03:54:12 .. destructing Validation Layers
+Thu Apr 13 04:10:44 .. constructing Logging
+Thu Apr 13 04:10:44 .. constructing Validation Layers
+Thu Apr 13 04:10:44 ... constructing Vulkan Mechanics
+Thu Apr 13 04:10:44 ... constructing Window
+Thu Apr 13 04:10:45 ... Window initialized with 1920 * 1080
+Thu Apr 13 04:10:45 [ Starting CAPITAL engine ]
+Thu Apr 13 04:10:45 ... constructing Capital Engine
+Thu Apr 13 04:10:45 ... initializing Capital Engine
+Thu Apr 13 04:10:45 .... creating Vulkan Instance
+Thu Apr 13 04:10:45 .... acquiring Required Extensions
+Thu Apr 13 04:10:45 .... creating Surface
+Thu Apr 13 04:10:46 > > Mouse Click at 0.514583 : 0.603704
+Thu Apr 13 04:10:46 > > Mouse Click at 0.885938 : 0.299074
+Thu Apr 13 04:10:47 ... destructing Capital Engine
+Thu Apr 13 04:10:47 [ CAPITAL engine terminated ]
+Thu Apr 13 04:10:47 ... Window terminated
+Thu Apr 13 04:10:47 ... destructing Vulkan Mechanics
+Thu Apr 13 04:10:47 .. destructing Validation Layers
