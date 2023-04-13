@@ -12,8 +12,8 @@
 
 class Logging {
  public:
-  Logging() : logFile("log.txt", std::ofstream::out | std::ofstream::trunc){};
-  ~Logging(){};
+  Logging();
+  ~Logging();
 
   std::ofstream logFile;
 
@@ -21,7 +21,7 @@ class Logging {
   void console(Ts&&... inputs) {
     int i = 0;
     if (!logFile.is_open()) {
-      std::cerr << "Error: Could not open log file for writing." << std::endl;
+      std::cerr << "!!! Could not open logFile for writing !!!" << std::endl;
       return;
     }
     std::cout << returnDateAndTime();
@@ -67,7 +67,7 @@ class ValidationLayers {
 
     switch (surpressError(constMessage, "Epic Games")) {
       case 1:
-        std::cerr << "validation layer: " << pCallbackData->pMessage
+        std::cerr << "=>=> validation layer: " << pCallbackData->pMessage
                   << std::endl;
         break;
       case 2:

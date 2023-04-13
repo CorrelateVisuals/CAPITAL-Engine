@@ -51,7 +51,6 @@ void VulkanMechanics::createInstance() {
   if (vkCreateInstance(&instanceCreateInfo, nullptr, &instance) != VK_SUCCESS) {
     throw std::runtime_error("failed to create instance!");
   }
-  LOG(".... Vulkan Instance created");
 }
 
 void VulkanMechanics::createSurface() {
@@ -61,7 +60,6 @@ void VulkanMechanics::createSurface() {
       VK_SUCCESS) {
     throw std::runtime_error("failed to create window surface!");
   }
-  LOG(".... Surface created");
 }
 
 std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
@@ -79,5 +77,4 @@ std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
   }
 
   return extensions;
-  LOG(".... Required Extensions acquired");
 }

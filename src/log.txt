@@ -1,24 +1,16 @@
-Thu Apr 13 03:28:33 .. constructing Validation Layers
-Thu Apr 13 03:28:33 .. Validation Layers constructed
-Thu Apr 13 03:28:33 ... constructing Window
-Thu Apr 13 03:28:33 ... Window initialized with 1920 * 1080
-Thu Apr 13 03:28:33 ... Window constructed
-Thu Apr 13 03:28:33 [ Starting CAPITAL engine ]
-Thu Apr 13 03:28:33 ... constructing Capital Engine
-Thu Apr 13 03:28:33 ... initializing Capital Engine
-Thu Apr 13 03:28:33 .... creating Vulkan Instance
-Thu Apr 13 03:28:33 .... acquiring Required Extensions
-Thu Apr 13 03:28:33 .... Vulkan Instance created
-Thu Apr 13 03:28:33 .... setting up Debug Messenger
-Thu Apr 13 03:28:33 .... Debug Messenger set up
-Thu Apr 13 03:28:33 .... creating Surface
-Thu Apr 13 03:28:33 .... Surface created
-Thu Apr 13 03:28:33 ... Capital Engine initialized
-Thu Apr 13 03:28:33 ... Capital Engine constructed
-Thu Apr 13 03:28:34 > > Mouse Click at 0.728125 : 0.606481
-Thu Apr 13 03:28:34 > > Mouse Click at 0.753646 : 0.542593
-Thu Apr 13 03:28:35 ... destructing Capital Engine
-Thu Apr 13 03:28:35 ... Capital Engine destructed
-Thu Apr 13 03:28:35 ... Window terminated
-Thu Apr 13 03:28:35 .. destructing Validation Layers
-Thu Apr 13 03:28:35 .. Validation Layers destructed
+Thu Apr 13 03:46:57 .. constructing Logging
+Thu Apr 13 03:46:57 .. constructing Validation Layers
+Thu Apr 13 03:46:57 ... constructing Window
+Thu Apr 13 03:46:58 ... Window initialized with 1920 * 1080
+Thu Apr 13 03:46:58 [ Starting CAPITAL engine ]
+Thu Apr 13 03:46:58 ... constructing Capital Engine
+Thu Apr 13 03:46:58 ... initializing Capital Engine
+Thu Apr 13 03:46:58 .... creating Vulkan Instance
+Thu Apr 13 03:46:58 .... acquiring Required Extensions
+Thu Apr 13 03:46:58 .... creating Surface
+Thu Apr 13 03:46:58 ... Capital Engine initialized
+Thu Apr 13 03:46:59 > > Mouse Click at 0.58125 : 0.0990741
+Thu Apr 13 03:47:00 ... destructing Capital Engine
+Thu Apr 13 03:47:00 [ CAPITAL engine terminated ]
+Thu Apr 13 03:47:00 ... Window terminated
+Thu Apr 13 03:47:00 .. destructing Validation Layers

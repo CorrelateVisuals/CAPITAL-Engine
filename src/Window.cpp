@@ -7,7 +7,6 @@
 Window::Window() : window{nullptr}, framebufferResized{false} {
   LOG("... constructing Window");
   initWindow();
-  LOG("... Window constructed");
 }
 
 Window::~Window() {

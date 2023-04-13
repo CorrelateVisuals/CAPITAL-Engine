@@ -3,15 +3,20 @@
 
 #include "Debug.h"
 
+Logging::Logging()
+    : logFile("log.txt", std::ofstream::out | std::ofstream::trunc) {
+  LOG(".. constructing Logging");
+}
+
+Logging::~Logging() {}
+
 ValidationLayers::ValidationLayers()
     : debugMessenger{}, validationLayers{"VK_LAYER_KHRONOS_validation"} {
   LOG(".. constructing Validation Layers");
-  LOG(".. Validation Layers constructed");
 }
 
 ValidationLayers::~ValidationLayers() {
   LOG(".. destructing Validation Layers");
-  LOG(".. Validation Layers destructed");
 }
 
 int ValidationLayers::surpressError(const std::string string,
@@ -62,7 +67,6 @@ void ValidationLayers::populateDebugMessengerCreateInfo(
 }
 
 void ValidationLayers::setupDebugMessenger(VkInstance instance) {
-  LOG(".... setting up Debug Messenger");
   if (!enableValidationLayers)
     return;
 
@@ -73,7 +77,6 @@ void ValidationLayers::setupDebugMessenger(VkInstance instance) {
                                    &debugMessenger) != VK_SUCCESS) {
     throw std::runtime_error("failed to set up debug messenger!");
   }
-  LOG(".... Debug Messenger set up");
 }
 
 bool ValidationLayers::checkValidationLayerSupport() {

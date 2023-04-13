@@ -5,6 +5,9 @@
 
 class VulkanMechanics {
  public:
+  VulkanMechanics(){};
+  ~VulkanMechanics(){};
+
   VkSurfaceKHR surface;
   VkInstance instance;
 

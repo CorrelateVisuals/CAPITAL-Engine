@@ -8,13 +8,10 @@
 CapitalEngine::CapitalEngine() {
   LOG("... constructing Capital Engine");
   initVulkan();
-  LOG("... Capital Engine constructed");
 }
 
 CapitalEngine::~CapitalEngine() {
   LOG("... destructing Capital Engine");
-
-  LOG("... Capital Engine destructed");
 }
 
 void CapitalEngine::mainLoop() {
