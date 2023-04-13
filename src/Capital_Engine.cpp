@@ -26,6 +26,4 @@ void CapitalEngine::initVulkan() {
   vulkanMechanics.createInstance();
   debug.setupDebugMessenger(vulkanMechanics.instance);
   vulkanMechanics.createSurface();
-
-  LOG("... Capital Engine initialized");
 }
