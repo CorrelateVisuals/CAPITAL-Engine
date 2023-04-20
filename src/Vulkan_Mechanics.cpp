@@ -76,6 +76,8 @@ void VulkanMechanics::createSurface() {
 }
 
 void VulkanMechanics::pickPhysicalDevice() {
+  LOG(".... picking Physical Device");
+
   uint32_t deviceCount = 0;
   vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
@@ -92,7 +94,6 @@ void VulkanMechanics::pickPhysicalDevice() {
 
       VkPhysicalDeviceProperties deviceProperties;
       vkGetPhysicalDeviceProperties(device, &deviceProperties);
-
       LOG("---- GPU:", deviceProperties.deviceName);
       break;
     }
@@ -105,6 +106,8 @@ void VulkanMechanics::pickPhysicalDevice() {
 
 VulkanMechanics::QueueFamilyIndices VulkanMechanics::findQueueFamilies(
     VkPhysicalDevice physicalDevice) {
+  LOG(".... finding Queue Families");
+
   VulkanMechanics::QueueFamilyIndices indices;
 
   uint32_t queueFamilyCount = 0;
@@ -135,6 +138,8 @@ VulkanMechanics::QueueFamilyIndices VulkanMechanics::findQueueFamilies(
 
 bool VulkanMechanics::checkDeviceExtensionSupport(
     VkPhysicalDevice physicalDevice) {
+  LOG(".... checking Device Extension Support");
+
   uint32_t extensionCount;
   vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount,
                                        nullptr);
@@ -151,7 +156,63 @@ bool VulkanMechanics::checkDeviceExtensionSupport(
   return requiredExtensions.empty();
 }
 
+void VulkanMechanics::createLogicalDevice() {
+  LOG(".... creating Logical Device");
+
+  VulkanMechanics::QueueFamilyIndices indices =
+      findQueueFamilies(mainDevice.physicalDevice);
+
+  std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+  std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(),
+                                            indices.presentFamily.value()};
+
+  float queuePriority = 1.0f;
+  for (uint32_t queueFamily : uniqueQueueFamilies) {
+    VkDeviceQueueCreateInfo queueCreateInfo{};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = queueFamily;
+    queueCreateInfo.queueCount = 1;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+    queueCreateInfos.push_back(queueCreateInfo);
+  }
+
+  VkPhysicalDeviceFeatures deviceFeatures{};
+
+  VkDeviceCreateInfo createInfo{};
+  createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
+  createInfo.queueCreateInfoCount =
+      static_cast<uint32_t>(queueCreateInfos.size());
+  createInfo.pQueueCreateInfos = queueCreateInfos.data();
+
+  createInfo.pEnabledFeatures = &deviceFeatures;
+
+  createInfo.enabledExtensionCount =
+      static_cast<uint32_t>(deviceExtensions.size());
+  createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+
+  if (debug.enableValidationLayers) {
+    createInfo.enabledLayerCount =
+        static_cast<uint32_t>(debug.validationLayers.size());
+    createInfo.ppEnabledLayerNames = debug.validationLayers.data();
+  } else {
+    createInfo.enabledLayerCount = 0;
+  }
+
+  if (vkCreateDevice(mainDevice.physicalDevice, &createInfo, nullptr,
+                     &mainDevice.logicalDevice) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create logical device!");
+  }
+
+  vkGetDeviceQueue(mainDevice.logicalDevice, indices.graphicsFamily.value(), 0,
+                   &graphicsQueue);
+  vkGetDeviceQueue(mainDevice.logicalDevice, indices.presentFamily.value(), 0,
+                   &presentQueue);
+}
+
 bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physicalDevice) {
+  LOG(".... checking if Physical Device is suitable");
+
   QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 
   bool extensionsSupported = checkDeviceExtensionSupport(physicalDevice);
@@ -186,6 +247,8 @@ std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
 
 VulkanMechanics::SwapChainSupportDetails VulkanMechanics::querySwapChainSupport(
     VkPhysicalDevice physicalDevice) {
+  LOG(".... querying Swap Chain Support");
+
   VulkanMechanics::SwapChainSupportDetails details;
 
   vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface,

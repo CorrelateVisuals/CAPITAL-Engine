@@ -37,10 +37,14 @@ class VulkanMechanics {
     std::vector<VkPresentModeKHR> presentModes;
   } swapChainSupport;
 
+  VkQueue graphicsQueue;
+  VkQueue presentQueue;
+
   void createInstance();
   void createSurface();
 
   void pickPhysicalDevice();
+  void createLogicalDevice();
 
  private:
   std::vector<const char*> getRequiredExtensions();
