@@ -205,9 +205,9 @@ void VulkanMechanics::createLogicalDevice() {
   }
 
   vkGetDeviceQueue(mainDevice.logicalDevice, indices.graphicsFamily.value(), 0,
-                   &graphicsQueue);
+                   &queues.graphicsQueue);
   vkGetDeviceQueue(mainDevice.logicalDevice, indices.presentFamily.value(), 0,
-                   &presentQueue);
+                   &queues.presentQueue);
 }
 
 bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physicalDevice) {

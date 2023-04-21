@@ -21,6 +21,13 @@ class VulkanMechanics {
   };
   MainDevice mainDevice;
 
+  void createInstance();
+  void createSurface();
+
+  void pickPhysicalDevice();
+  void createLogicalDevice();
+
+ private:
   const std::vector<const char*> deviceExtensions;
 
   struct QueueFamilyIndices {
@@ -29,24 +36,22 @@ class VulkanMechanics {
     bool isComplete() const {
       return graphicsFamily.has_value() && presentFamily.has_value();
     }
-  } queueFamilyIndices;
+  };
+  QueueFamilyIndices queueFamilyIndices;
 
   struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
     std::vector<VkPresentModeKHR> presentModes;
-  } swapChainSupport;
+  };
+  SwapChainSupportDetails swapChainSupport;
 
-  VkQueue graphicsQueue;
-  VkQueue presentQueue;
+  struct Queues {
+    VkQueue graphicsQueue;
+    VkQueue presentQueue;
+  };
+  Queues queues;
 
-  void createInstance();
-  void createSurface();
-
-  void pickPhysicalDevice();
-  void createLogicalDevice();
-
- private:
   std::vector<const char*> getRequiredExtensions();
   bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
   QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice);
