@@ -258,6 +258,34 @@ VkExtent2D VulkanMechanics::chooseSwapExtent(
   }
 }
 
+void VulkanMechanics::createSyncObjects() {
+  LOG(" .... creating Sync Objects");
+  int maxFrames = MAX_FRAMES_IN_FLIGHT;
+
+  imageAvailableSemaphores.resize(maxFrames);
+  renderFinishedSemaphores.resize(maxFrames);
+  inFlightFences.resize(maxFrames);
+
+  VkSemaphoreCreateInfo semaphoreInfo{};
+  semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+  VkFenceCreateInfo fenceInfo{};
+  fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+  fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+  for (size_t i = 0; i < maxFrames; i++) {
+    if (vkCreateSemaphore(mainDevice.logicalDevice, &semaphoreInfo, nullptr,
+                          &imageAvailableSemaphores[i]) != VK_SUCCESS ||
+        vkCreateSemaphore(mainDevice.logicalDevice, &semaphoreInfo, nullptr,
+                          &renderFinishedSemaphores[i]) != VK_SUCCESS ||
+        vkCreateFence(mainDevice.logicalDevice, &fenceInfo, nullptr,
+                      &inFlightFences[i]) != VK_SUCCESS) {
+      throw std::runtime_error(
+          "failed to create synchronization objects for a frame!");
+    }
+  }
+}
+
 bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physicalDevice) {
   LOG(".... checking if Physical Device is suitable");
 

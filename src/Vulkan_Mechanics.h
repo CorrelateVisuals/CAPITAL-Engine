@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#define MAX_FRAMES_IN_FLIGHT 2
+
 std::ostream& operator<<(std::ostream& os, VkPhysicalDeviceProperties& device);
 
 class VulkanMechanics {
@@ -28,6 +30,7 @@ class VulkanMechanics {
   void createLogicalDevice();
 
   void createSwapChain();
+  void createSyncObjects();
 
  private:
   const std::vector<const char*> deviceExtensions;
@@ -58,6 +61,10 @@ class VulkanMechanics {
   std::vector<VkImage> swapChainImages;
   VkFormat swapChainImageFormat;
   VkExtent2D swapChainExtent;
+
+  std::vector<VkSemaphore> imageAvailableSemaphores;
+  std::vector<VkSemaphore> renderFinishedSemaphores;
+  std::vector<VkFence> inFlightFences;
 
   std::vector<const char*> getRequiredExtensions();
   bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
