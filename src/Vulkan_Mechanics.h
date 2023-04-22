@@ -23,6 +23,9 @@ class VulkanMechanics {
   };
   MainDevice mainDevice;
 
+  VkCommandPool commandPool;
+  std::vector<VkCommandBuffer> commandBuffers;
+
   void createInstance();
   void createSurface();
 
@@ -31,6 +34,9 @@ class VulkanMechanics {
 
   void createSwapChain();
   void createSyncObjects();
+
+  void createCommandPool();
+  void createCommandBuffers();
 
  private:
   const std::vector<const char*> deviceExtensions;

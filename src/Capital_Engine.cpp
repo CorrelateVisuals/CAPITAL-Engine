@@ -36,4 +36,7 @@ void CapitalEngine::initVulkan() {
   // Engine mechanics
   vulkanMechanics.createSwapChain();
   vulkanMechanics.createSyncObjects();
+
+  vulkanMechanics.createCommandPool();
+  vulkanMechanics.createCommandBuffers();
 }
