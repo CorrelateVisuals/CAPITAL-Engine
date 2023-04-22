@@ -27,6 +27,8 @@ class VulkanMechanics {
   void pickPhysicalDevice();
   void createLogicalDevice();
 
+  void createSwapChain();
+
  private:
   const std::vector<const char*> deviceExtensions;
 
@@ -52,12 +54,23 @@ class VulkanMechanics {
   };
   Queues queues;
 
+  VkSwapchainKHR swapChain;
+  std::vector<VkImage> swapChainImages;
+  VkFormat swapChainImageFormat;
+  VkExtent2D swapChainExtent;
+
   std::vector<const char*> getRequiredExtensions();
   bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
   QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice);
   bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
   SwapChainSupportDetails querySwapChainSupport(
       VkPhysicalDevice physicalDevice);
+
+  VkSurfaceFormatKHR chooseSwapSurfaceFormat(
+      const std::vector<VkSurfaceFormatKHR>& availableFormats);
+  VkPresentModeKHR chooseSwapPresentMode(
+      const std::vector<VkPresentModeKHR>& availablePresentModes);
+  VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 };
 
 inline VulkanMechanics vulkanMechanics;

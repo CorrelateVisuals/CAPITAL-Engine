@@ -23,10 +23,16 @@ void CapitalEngine::mainLoop() {
 
 void CapitalEngine::initVulkan() {
   LOG("... initializing Capital Engine");
+
+  // Vulkan Config
   vulkanMechanics.createInstance();
   debug.setupDebugMessenger(vulkanMechanics.instance);
   vulkanMechanics.createSurface();
 
+  // GPU handling
   vulkanMechanics.pickPhysicalDevice();
   vulkanMechanics.createLogicalDevice();
+
+  // Engine mechanics
+  vulkanMechanics.createSwapChain();
 }
