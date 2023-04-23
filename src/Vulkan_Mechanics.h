@@ -17,11 +17,10 @@ class VulkanMechanics {
   VkSurfaceKHR surface;
   VkInstance instance;
 
-  using MainDevice = struct {
+  struct Device {
     VkPhysicalDevice physical;
     VkDevice logical;
-  };
-  MainDevice mainDevice;
+  } mainDevice;
 
   std::vector<VkImage> swapChainImages;
   VkFormat swapChainImageFormat;
@@ -50,8 +49,7 @@ class VulkanMechanics {
     VkQueue graphics;
     VkQueue compute;
     VkQueue present;
-  };
-  Queues queues;
+  } queues;
 
   struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
@@ -59,15 +57,13 @@ class VulkanMechanics {
     bool isComplete() const {
       return graphicsFamily.has_value() && presentFamily.has_value();
     }
-  };
-  QueueFamilyIndices queueFamilyIndices;
+  } queueFamilyIndices;
 
   struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
     std::vector<VkPresentModeKHR> presentModes;
-  };
-  SwapChainSupportDetails swapChainSupport;
+  } swapChainSupport;
 
   VkSwapchainKHR swapChain;
 
@@ -75,7 +71,7 @@ class VulkanMechanics {
   std::vector<VkSemaphore> renderFinishedSemaphores;
   std::vector<VkFence> inFlightFences;
 
-  // VkFormat depthFormat;
+  VkFormat depthFormat;
 
   std::vector<const char*> getRequiredExtensions();
   bool isDeviceSuitable(VkPhysicalDevice physical);
