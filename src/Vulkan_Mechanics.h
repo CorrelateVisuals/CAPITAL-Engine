@@ -23,10 +23,14 @@ class VulkanMechanics {
   };
   MainDevice mainDevice;
 
+  std::vector<VkImage> swapChainImages;
+  VkFormat swapChainImageFormat;
+  std::vector<VkImageView> swapChainImageViews;
   VkExtent2D swapChainExtent;
 
   VkCommandPool commandPool;
   std::vector<VkCommandBuffer> commandBuffers;
+
 
   void createInstance();
   void createSurface();
@@ -66,8 +70,6 @@ class VulkanMechanics {
   SwapChainSupportDetails swapChainSupport;
 
   VkSwapchainKHR swapChain;
-  std::vector<VkImage> swapChainImages;
-  VkFormat swapChainImageFormat;
 
   std::vector<VkSemaphore> imageAvailableSemaphores;
   std::vector<VkSemaphore> renderFinishedSemaphores;
@@ -96,12 +98,22 @@ class RendererConfig {
   ~RendererConfig();
 
   void createDepthResources();
+  void createImageViews();
+
+  void setupRenderPass();
+  void createPipelineCache();
+
+  void setupFrameBuffer();
 
   VkImage depthImage;
   VkDeviceMemory depthImageMemory;
   VkImageView depthImageView;
 
  private:
+  VkRenderPass renderPass;
+  VkPipelineCache pipelineCache;
+  std::vector<VkFramebuffer> frameBuffers;
+
   VkFormat findDepthFormat();
   VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
                                VkImageTiling tiling,
