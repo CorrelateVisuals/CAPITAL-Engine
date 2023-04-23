@@ -98,7 +98,7 @@ void VulkanMechanics::createCommandBuffers() {
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
   allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
 
-  if (vkAllocateCommandBuffers(mainDevice.logicalDevice, &allocInfo,
+  if (vkAllocateCommandBuffers(mainDevice.logical, &allocInfo,
                                commandBuffers.data()) != VK_SUCCESS) {
     throw std::runtime_error("failed to allocate command buffers!");
   }
@@ -119,7 +119,7 @@ void VulkanMechanics::pickPhysicalDevice() {
 
   for (VkPhysicalDevice device : devices) {
     if (isDeviceSuitable(device)) {
-      mainDevice.physicalDevice = device;
+      mainDevice.physical = device;
 
       VkPhysicalDeviceProperties deviceProperties;
       vkGetPhysicalDeviceProperties(device, &deviceProperties);
@@ -128,23 +128,23 @@ void VulkanMechanics::pickPhysicalDevice() {
     }
   }
 
-  if (mainDevice.physicalDevice == VK_NULL_HANDLE) {
+  if (mainDevice.physical == VK_NULL_HANDLE) {
     throw std::runtime_error("failed to find a suitable GPU!");
   }
 }
 
 VulkanMechanics::QueueFamilyIndices VulkanMechanics::findQueueFamilies(
-    VkPhysicalDevice physicalDevice) {
+    VkPhysicalDevice physical) {
   LOG(".... finding Queue Families");
 
   VulkanMechanics::QueueFamilyIndices indices;
 
   uint32_t queueFamilyCount = 0;
-  vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount,
+  vkGetPhysicalDeviceQueueFamilyProperties(physical, &queueFamilyCount,
                                            nullptr);
 
   std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-  vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount,
+  vkGetPhysicalDeviceQueueFamilyProperties(physical, &queueFamilyCount,
                                            queueFamilies.data());
   int i = 0;
   for (const auto& queueFamily : queueFamilies) {
@@ -152,8 +152,7 @@ VulkanMechanics::QueueFamilyIndices VulkanMechanics::findQueueFamilies(
       indices.graphicsFamily = i;
     }
     VkBool32 presentSupport = false;
-    vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface,
-                                         &presentSupport);
+    vkGetPhysicalDeviceSurfaceSupportKHR(physical, i, surface, &presentSupport);
     if (presentSupport) {
       indices.presentFamily = i;
     }
@@ -165,16 +164,15 @@ VulkanMechanics::QueueFamilyIndices VulkanMechanics::findQueueFamilies(
   return indices;
 }
 
-bool VulkanMechanics::checkDeviceExtensionSupport(
-    VkPhysicalDevice physicalDevice) {
+bool VulkanMechanics::checkDeviceExtensionSupport(VkPhysicalDevice physical) {
   LOG(".... checking Device Extension Support");
 
   uint32_t extensionCount;
-  vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount,
+  vkEnumerateDeviceExtensionProperties(physical, nullptr, &extensionCount,
                                        nullptr);
 
   std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-  vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount,
+  vkEnumerateDeviceExtensionProperties(physical, nullptr, &extensionCount,
                                        availableExtensions.data());
   std::set<std::string> requiredExtensions(deviceExtensions.begin(),
                                            deviceExtensions.end());
@@ -189,7 +187,7 @@ void VulkanMechanics::createLogicalDevice() {
   LOG(".... creating Logical Device");
 
   VulkanMechanics::QueueFamilyIndices indices =
-      findQueueFamilies(mainDevice.physicalDevice);
+      findQueueFamilies(mainDevice.physical);
 
   std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
   std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(),
@@ -228,16 +226,16 @@ void VulkanMechanics::createLogicalDevice() {
     createInfo.enabledLayerCount = 0;
   }
 
-  if (vkCreateDevice(mainDevice.physicalDevice, &createInfo, nullptr,
-                     &mainDevice.logicalDevice) != VK_SUCCESS) {
+  if (vkCreateDevice(mainDevice.physical, &createInfo, nullptr,
+                     &mainDevice.logical) != VK_SUCCESS) {
     throw std::runtime_error("failed to create logical device!");
   }
 
-  vkGetDeviceQueue(mainDevice.logicalDevice, indices.graphicsFamily.value(), 0,
+  vkGetDeviceQueue(mainDevice.logical, indices.graphicsFamily.value(), 0,
                    &queues.graphics);
-  vkGetDeviceQueue(mainDevice.logicalDevice, indices.graphicsFamily.value(), 0,
+  vkGetDeviceQueue(mainDevice.logical, indices.graphicsFamily.value(), 0,
                    &queues.compute);
-  vkGetDeviceQueue(mainDevice.logicalDevice, indices.presentFamily.value(), 0,
+  vkGetDeviceQueue(mainDevice.logical, indices.presentFamily.value(), 0,
                    &queues.present);
 }
 
@@ -304,11 +302,11 @@ VkExtent2D VulkanMechanics::chooseSwapExtent(
 //   fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 //
 //   for (size_t i = 0; i < maxFrames; i++) {
-//     if (vkCreateSemaphore(mainDevice.logicalDevice, &semaphoreInfo, nullptr,
+//     if (vkCreateSemaphore(mainDevice.logical, &semaphoreInfo, nullptr,
 //                           &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-//         vkCreateSemaphore(mainDevice.logicalDevice, &semaphoreInfo, nullptr,
+//         vkCreateSemaphore(mainDevice.logical, &semaphoreInfo, nullptr,
 //                           &renderFinishedSemaphores[i]) != VK_SUCCESS ||
-//         vkCreateFence(mainDevice.logicalDevice, &fenceInfo, nullptr,
+//         vkCreateFence(mainDevice.logical, &fenceInfo, nullptr,
 //                       &inFlightFences[i]) != VK_SUCCESS) {
 //       throw std::runtime_error(
 //           "failed to create synchronization objects for a frame!");
@@ -319,30 +317,29 @@ VkExtent2D VulkanMechanics::chooseSwapExtent(
 void VulkanMechanics::createCommandPool() {
   LOG(".... creating Command Pool");
   VulkanMechanics::QueueFamilyIndices queueFamilyIndices =
-      findQueueFamilies(mainDevice.physicalDevice);
+      findQueueFamilies(mainDevice.physical);
 
   VkCommandPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
   poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
   poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
-  if (vkCreateCommandPool(mainDevice.logicalDevice, &poolInfo, nullptr,
+  if (vkCreateCommandPool(mainDevice.logical, &poolInfo, nullptr,
                           &commandPool) != VK_SUCCESS) {
     throw std::runtime_error("failed to create command pool!");
   }
 }
 
-bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physicalDevice) {
+bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physical) {
   LOG(".... checking if Physical Device is suitable");
 
-  QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+  QueueFamilyIndices indices = findQueueFamilies(physical);
 
-  bool extensionsSupported = checkDeviceExtensionSupport(physicalDevice);
+  bool extensionsSupported = checkDeviceExtensionSupport(physical);
 
   bool swapChainAdequate = false;
   if (extensionsSupported) {
-    SwapChainSupportDetails swapChainSupport =
-        querySwapChainSupport(physicalDevice);
+    SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physical);
     swapChainAdequate = !swapChainSupport.formats.empty() &&
                         !swapChainSupport.presentModes.empty();
   }
@@ -353,7 +350,7 @@ bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physicalDevice) {
 void VulkanMechanics::createSwapChain() {
   LOG(" .... creating Swap Chain");
   VulkanMechanics::SwapChainSupportDetails swapChainSupport =
-      querySwapChainSupport(mainDevice.physicalDevice);
+      querySwapChainSupport(mainDevice.physical);
 
   VkSurfaceFormatKHR surfaceFormat =
       chooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -379,7 +376,7 @@ void VulkanMechanics::createSwapChain() {
   createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
   VulkanMechanics::QueueFamilyIndices indices =
-      findQueueFamilies(mainDevice.physicalDevice);
+      findQueueFamilies(mainDevice.physical);
   uint32_t queueFamilyIndices[] = {indices.graphicsFamily.value(),
                                    indices.presentFamily.value()};
 
@@ -398,15 +395,14 @@ void VulkanMechanics::createSwapChain() {
 
   createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-  if (vkCreateSwapchainKHR(mainDevice.logicalDevice, &createInfo, nullptr,
+  if (vkCreateSwapchainKHR(mainDevice.logical, &createInfo, nullptr,
                            &swapChain) != VK_SUCCESS) {
     throw std::runtime_error("failed to create swap chain!");
   }
 
-  vkGetSwapchainImagesKHR(mainDevice.logicalDevice, swapChain, &imageCount,
-                          nullptr);
+  vkGetSwapchainImagesKHR(mainDevice.logical, swapChain, &imageCount, nullptr);
   swapChainImages.resize(imageCount);
-  vkGetSwapchainImagesKHR(mainDevice.logicalDevice, swapChain, &imageCount,
+  vkGetSwapchainImagesKHR(mainDevice.logical, swapChain, &imageCount,
                           swapChainImages.data());
 
   swapChainImageFormat = surfaceFormat.format;
@@ -431,27 +427,27 @@ std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
 }
 
 VulkanMechanics::SwapChainSupportDetails VulkanMechanics::querySwapChainSupport(
-    VkPhysicalDevice physicalDevice) {
+    VkPhysicalDevice physical) {
   LOG(" .... querying Swap Chain Support");
 
   VulkanMechanics::SwapChainSupportDetails details;
 
-  vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface,
+  vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical, surface,
                                             &details.capabilities);
 
   uint32_t formatCount;
-  vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount,
+  vkGetPhysicalDeviceSurfaceFormatsKHR(physical, surface, &formatCount,
                                        nullptr);
   details.formats.resize(formatCount);
-  vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount,
+  vkGetPhysicalDeviceSurfaceFormatsKHR(physical, surface, &formatCount,
                                        details.formats.data());
 
   uint32_t presentModeCount;
-  vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface,
+  vkGetPhysicalDeviceSurfacePresentModesKHR(physical, surface,
                                             &presentModeCount, nullptr);
   details.presentModes.resize(presentModeCount);
   vkGetPhysicalDeviceSurfacePresentModesKHR(
-      physicalDevice, surface, &presentModeCount, details.presentModes.data());
+      physical, surface, &presentModeCount, details.presentModes.data());
 
   return details;
 }
@@ -507,7 +503,7 @@ void RenderConfiguration::createImageViews() {
     createInfo.subresourceRange.baseArrayLayer = 0;
     createInfo.subresourceRange.layerCount = 1;
 
-    if (vkCreateImageView(vulkanMechanics.mainDevice.logicalDevice, &createInfo,
+    if (vkCreateImageView(vulkanMechanics.mainDevice.logical, &createInfo,
                           nullptr, &vulkanMechanics.swapChainImageViews[i]) !=
         VK_SUCCESS) {
       throw std::runtime_error("failed to create image views!");
@@ -532,8 +528,8 @@ VkFormat RenderConfiguration::findSupportedFormat(
 
   for (VkFormat format : candidates) {
     VkFormatProperties props;
-    vkGetPhysicalDeviceFormatProperties(
-        vulkanMechanics.mainDevice.physicalDevice, format, &props);
+    vkGetPhysicalDeviceFormatProperties(vulkanMechanics.mainDevice.physical,
+                                        format, &props);
 
     if (tiling == VK_IMAGE_TILING_LINEAR &&
         (props.linearTilingFeatures & features) == features) {
@@ -604,8 +600,8 @@ void RenderConfiguration::setupRenderPass() {
   renderPassInfo.dependencyCount = 1;
   renderPassInfo.pDependencies = &dependency;
 
-  if (vkCreateRenderPass(vulkanMechanics.mainDevice.logicalDevice,
-                         &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
+  if (vkCreateRenderPass(vulkanMechanics.mainDevice.logical, &renderPassInfo,
+                         nullptr, &renderPass) != VK_SUCCESS) {
     throw std::runtime_error("failed to create render pass!");
   }
 }
@@ -635,13 +631,13 @@ void RenderConfiguration::createImage(uint32_t width,
   imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
   imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-  if (vkCreateImage(vulkanMechanics.mainDevice.logicalDevice, &imageInfo,
-                    nullptr, &image) != VK_SUCCESS) {
+  if (vkCreateImage(vulkanMechanics.mainDevice.logical, &imageInfo, nullptr,
+                    &image) != VK_SUCCESS) {
     throw std::runtime_error("failed to create image!");
   }
 
   VkMemoryRequirements memRequirements;
-  vkGetImageMemoryRequirements(vulkanMechanics.mainDevice.logicalDevice, image,
+  vkGetImageMemoryRequirements(vulkanMechanics.mainDevice.logical, image,
                                &memRequirements);
 
   VkMemoryAllocateInfo allocInfo{};
@@ -650,12 +646,11 @@ void RenderConfiguration::createImage(uint32_t width,
   allocInfo.memoryTypeIndex =
       findMemoryType(memRequirements.memoryTypeBits, properties);
 
-  if (vkAllocateMemory(vulkanMechanics.mainDevice.logicalDevice, &allocInfo,
-                       nullptr, &imageMemory) != VK_SUCCESS) {
+  if (vkAllocateMemory(vulkanMechanics.mainDevice.logical, &allocInfo, nullptr,
+                       &imageMemory) != VK_SUCCESS) {
     throw std::runtime_error("failed to allocate image memory!");
   }
-  vkBindImageMemory(vulkanMechanics.mainDevice.logicalDevice, image,
-                    imageMemory, 0);
+  vkBindImageMemory(vulkanMechanics.mainDevice.logical, image, imageMemory, 0);
 }
 
 void RenderConfiguration::setupFrameBuffer() {
@@ -680,7 +675,7 @@ void RenderConfiguration::setupFrameBuffer() {
   for (uint32_t i = 0; i < frameBuffers.size(); i++) {
     attachments[0] = vulkanMechanics.swapChainImageViews[i];
 
-    if (vkCreateFramebuffer(vulkanMechanics.mainDevice.logicalDevice,
+    if (vkCreateFramebuffer(vulkanMechanics.mainDevice.logical,
                             &frameBufferCreateInfo, nullptr,
                             &frameBuffers[i]) != VK_SUCCESS) {
       throw std::runtime_error(
@@ -693,7 +688,7 @@ void RenderConfiguration::createPipelineCache() {
   VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
   pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
 
-  if (vkCreatePipelineCache(vulkanMechanics.mainDevice.logicalDevice,
+  if (vkCreatePipelineCache(vulkanMechanics.mainDevice.logical,
                             &pipelineCacheCreateInfo, nullptr,
                             &pipelineCache) != VK_SUCCESS) {
     throw std::runtime_error("failed to create Pipeline Cache!");
@@ -717,8 +712,8 @@ VkImageView RenderConfiguration::createImageView(
   viewInfo.subresourceRange.layerCount = 1;
 
   VkImageView imageView;
-  if (vkCreateImageView(vulkanMechanics.mainDevice.logicalDevice, &viewInfo,
-                        nullptr, &imageView) != VK_SUCCESS) {
+  if (vkCreateImageView(vulkanMechanics.mainDevice.logical, &viewInfo, nullptr,
+                        &imageView) != VK_SUCCESS) {
     throw std::runtime_error("failed to create texture image view!");
   }
 
@@ -730,7 +725,7 @@ uint32_t RenderConfiguration::findMemoryType(uint32_t typeFilter,
   LOG(" . . . . finding Memory Type");
 
   VkPhysicalDeviceMemoryProperties memProperties;
-  vkGetPhysicalDeviceMemoryProperties(vulkanMechanics.mainDevice.physicalDevice,
+  vkGetPhysicalDeviceMemoryProperties(vulkanMechanics.mainDevice.physical,
                                       &memProperties);
 
   for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {

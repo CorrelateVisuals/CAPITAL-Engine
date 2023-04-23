@@ -18,8 +18,8 @@ class VulkanMechanics {
   VkInstance instance;
 
   using MainDevice = struct {
-    VkPhysicalDevice physicalDevice;
-    VkDevice logicalDevice;
+    VkPhysicalDevice physical;
+    VkDevice logical;
   };
   MainDevice mainDevice;
 
@@ -78,11 +78,10 @@ class VulkanMechanics {
   // VkFormat depthFormat;
 
   std::vector<const char*> getRequiredExtensions();
-  bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
-  QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice);
-  bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
-  SwapChainSupportDetails querySwapChainSupport(
-      VkPhysicalDevice physicalDevice);
+  bool isDeviceSuitable(VkPhysicalDevice physical);
+  QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physical);
+  bool checkDeviceExtensionSupport(VkPhysicalDevice physical);
+  SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physical);
 
   VkSurfaceFormatKHR chooseSwapSurfaceFormat(
       const std::vector<VkSurfaceFormatKHR>& availableFormats);
