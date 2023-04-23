@@ -38,7 +38,7 @@ class VulkanMechanics {
   void createLogicalDevice();
 
   void createSwapChain();
-  void createSyncObjects();
+  // void createSyncObjects();
 
   void createCommandPool();
   void createCommandBuffers();
@@ -48,6 +48,7 @@ class VulkanMechanics {
 
   struct Queues {
     VkQueue graphicsQueue;
+    VkQueue computeQueue;
     VkQueue presentQueue;
   };
   Queues queues;
