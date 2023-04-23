@@ -31,7 +31,6 @@ class VulkanMechanics {
   VkCommandPool commandPool;
   std::vector<VkCommandBuffer> commandBuffers;
 
-
   void createInstance();
   void createSurface();
 
@@ -92,10 +91,10 @@ class VulkanMechanics {
 };
 inline VulkanMechanics vulkanMechanics;
 
-class RendererConfig {
+class RenderConfiguration {
  public:
-  RendererConfig();
-  ~RendererConfig();
+  RenderConfiguration();
+  ~RenderConfiguration();
 
   void createDepthResources();
   void createImageViews();
@@ -130,15 +129,7 @@ class RendererConfig {
   VkImageView createImageView(VkImage image,
                               VkFormat format,
                               VkImageAspectFlags aspectFlags);
-};
-inline RendererConfig rendererConfig;
-
-class MemoryManagement {
- public:
-  MemoryManagement();
-  ~MemoryManagement();
-
   uint32_t findMemoryType(uint32_t typeFilter,
                           VkMemoryPropertyFlags properties);
 };
-inline MemoryManagement memManagement;
+inline RenderConfiguration renderConfig;

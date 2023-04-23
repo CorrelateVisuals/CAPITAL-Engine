@@ -459,7 +459,7 @@ std::ostream& operator<<(std::ostream& os, VkPhysicalDeviceProperties& device) {
   return os;
 }
 
-RendererConfig::RendererConfig()
+RenderConfiguration::RenderConfiguration()
     : depthImage{},
       depthImageMemory{},
       depthImageView{},
@@ -467,11 +467,11 @@ RendererConfig::RendererConfig()
   LOG(". . . . constructing Renderer Configuration");
 }
 
-RendererConfig::~RendererConfig() {
+RenderConfiguration::~RenderConfiguration() {
   LOG(". . . . destructing Renderer Configuration");
 }
 
-void RendererConfig::createDepthResources() {
+void RenderConfiguration::createDepthResources() {
   LOG(" . . . . creating Depth Resources");
 
   VkFormat depthFormat = findDepthFormat();
@@ -484,7 +484,7 @@ void RendererConfig::createDepthResources() {
       createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
 }
 
-void RendererConfig::createImageViews() {
+void RenderConfiguration::createImageViews() {
   LOG(" . . . . creating Image Views");
   vulkanMechanics.swapChainImageViews.resize(
       vulkanMechanics.swapChainImages.size());
@@ -513,7 +513,7 @@ void RendererConfig::createImageViews() {
   }
 }
 
-VkFormat RendererConfig::findDepthFormat() {
+VkFormat RenderConfiguration::findDepthFormat() {
   LOG(" . . . . finding Depth Format");
 
   return findSupportedFormat(
@@ -522,7 +522,7 @@ VkFormat RendererConfig::findDepthFormat() {
       VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 }
 
-VkFormat RendererConfig::findSupportedFormat(
+VkFormat RenderConfiguration::findSupportedFormat(
     const std::vector<VkFormat>& candidates,
     VkImageTiling tiling,
     VkFormatFeatureFlags features) {
@@ -544,7 +544,7 @@ VkFormat RendererConfig::findSupportedFormat(
   throw std::runtime_error("failed to find supported format!");
 }
 
-void RendererConfig::setupRenderPass() {
+void RenderConfiguration::setupRenderPass() {
   LOG(" , , , , setting up Render Pass");
   std::array<VkAttachmentDescription, 2> attachments = {};
   // Color attachment
@@ -623,14 +623,14 @@ void RendererConfig::setupRenderPass() {
   }
 }
 
-void RendererConfig::createImage(uint32_t width,
-                                 uint32_t height,
-                                 VkFormat format,
-                                 VkImageTiling tiling,
-                                 VkImageUsageFlags usage,
-                                 VkMemoryPropertyFlags properties,
-                                 VkImage& image,
-                                 VkDeviceMemory& imageMemory) {
+void RenderConfiguration::createImage(uint32_t width,
+                                      uint32_t height,
+                                      VkFormat format,
+                                      VkImageTiling tiling,
+                                      VkImageUsageFlags usage,
+                                      VkMemoryPropertyFlags properties,
+                                      VkImage& image,
+                                      VkDeviceMemory& imageMemory) {
   LOG(" . . . . creating Image");
 
   VkImageCreateInfo imageInfo{};
@@ -661,7 +661,7 @@ void RendererConfig::createImage(uint32_t width,
   allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
   allocInfo.allocationSize = memRequirements.size;
   allocInfo.memoryTypeIndex =
-      memManagement.findMemoryType(memRequirements.memoryTypeBits, properties);
+      findMemoryType(memRequirements.memoryTypeBits, properties);
 
   if (vkAllocateMemory(vulkanMechanics.mainDevice.logicalDevice, &allocInfo,
                        nullptr, &imageMemory) != VK_SUCCESS) {
@@ -671,7 +671,7 @@ void RendererConfig::createImage(uint32_t width,
                     imageMemory, 0);
 }
 
-void RendererConfig::setupFrameBuffer() {
+void RenderConfiguration::setupFrameBuffer() {
   LOG(" . . . . setting up Frame Buffer");
   VkImageView attachments[2];
 
@@ -702,7 +702,7 @@ void RendererConfig::setupFrameBuffer() {
   }
 }
 
-void RendererConfig::createPipelineCache() {
+void RenderConfiguration::createPipelineCache() {
   VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
   pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
 
@@ -712,9 +712,10 @@ void RendererConfig::createPipelineCache() {
     throw std::runtime_error("failed to create Pipeline Cache!");
   }
 }
-VkImageView RendererConfig::createImageView(VkImage image,
-                                            VkFormat format,
-                                            VkImageAspectFlags aspectFlags) {
+VkImageView RenderConfiguration::createImageView(
+    VkImage image,
+    VkFormat format,
+    VkImageAspectFlags aspectFlags) {
   LOG(" . . . . creating Image View");
 
   VkImageViewCreateInfo viewInfo{};
@@ -737,16 +738,8 @@ VkImageView RendererConfig::createImageView(VkImage image,
   return imageView;
 }
 
-MemoryManagement::MemoryManagement() {
-  LOG(" . . . . constructing Memory Management");
-};
-
-MemoryManagement::~MemoryManagement() {
-  LOG(" . . . . destructing Memory Management");
-};
-
-uint32_t MemoryManagement::findMemoryType(uint32_t typeFilter,
-                                          VkMemoryPropertyFlags properties) {
+uint32_t RenderConfiguration::findMemoryType(uint32_t typeFilter,
+                                             VkMemoryPropertyFlags properties) {
   LOG(" . . . . finding Memory Type");
 
   VkPhysicalDeviceMemoryProperties memProperties;

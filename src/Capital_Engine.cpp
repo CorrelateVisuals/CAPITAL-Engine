@@ -40,9 +40,9 @@ void CapitalEngine::initVulkan() {
   vulkanMechanics.createCommandBuffers();
 
   // Renderer Config
-  rendererConfig.createDepthResources();
-  rendererConfig.createImageViews();
-  rendererConfig.setupRenderPass();
-  rendererConfig.createPipelineCache();
-  rendererConfig.setupFrameBuffer();
+  renderConfig.createDepthResources();
+  renderConfig.createImageViews();
+  renderConfig.setupRenderPass();
+  renderConfig.createPipelineCache();
+  renderConfig.setupFrameBuffer();
 }
