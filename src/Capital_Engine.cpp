@@ -24,7 +24,7 @@ void CapitalEngine::mainLoop() {
 void CapitalEngine::initVulkan() {
   LOG("... initializing Capital Engine");
 
-  // Vulkan Config
+  // Init Vulkan
   vulkanMechanics.createInstance();
   debug.setupDebugMessenger(vulkanMechanics.instance);
   vulkanMechanics.createSurface();
@@ -39,4 +39,6 @@ void CapitalEngine::initVulkan() {
 
   vulkanMechanics.createCommandPool();
   vulkanMechanics.createCommandBuffers();
+
+  rendererConfig.createDepthResources();
 }

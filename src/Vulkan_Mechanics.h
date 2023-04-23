@@ -23,6 +23,8 @@ class VulkanMechanics {
   };
   MainDevice mainDevice;
 
+  VkExtent2D swapChainExtent;
+
   VkCommandPool commandPool;
   std::vector<VkCommandBuffer> commandBuffers;
 
@@ -66,11 +68,12 @@ class VulkanMechanics {
   VkSwapchainKHR swapChain;
   std::vector<VkImage> swapChainImages;
   VkFormat swapChainImageFormat;
-  VkExtent2D swapChainExtent;
 
   std::vector<VkSemaphore> imageAvailableSemaphores;
   std::vector<VkSemaphore> renderFinishedSemaphores;
   std::vector<VkFence> inFlightFences;
+
+  // VkFormat depthFormat;
 
   std::vector<const char*> getRequiredExtensions();
   bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
@@ -85,5 +88,45 @@ class VulkanMechanics {
       const std::vector<VkPresentModeKHR>& availablePresentModes);
   VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 };
-
 inline VulkanMechanics vulkanMechanics;
+
+class RendererConfig {
+ public:
+  RendererConfig();
+  ~RendererConfig();
+
+  void createDepthResources();
+
+  VkImage depthImage;
+  VkDeviceMemory depthImageMemory;
+  VkImageView depthImageView;
+
+ private:
+  VkFormat findDepthFormat();
+  VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
+                               VkImageTiling tiling,
+                               VkFormatFeatureFlags features);
+  void createImage(uint32_t width,
+                   uint32_t height,
+                   VkFormat format,
+                   VkImageTiling tiling,
+                   VkImageUsageFlags usage,
+                   VkMemoryPropertyFlags properties,
+                   VkImage& image,
+                   VkDeviceMemory& imageMemory);
+
+  VkImageView createImageView(VkImage image,
+                              VkFormat format,
+                              VkImageAspectFlags aspectFlags);
+};
+inline RendererConfig rendererConfig;
+
+class MemoryManagement {
+ public:
+  MemoryManagement();
+  ~MemoryManagement();
+
+  uint32_t findMemoryType(uint32_t typeFilter,
+                          VkMemoryPropertyFlags properties);
+};
+inline MemoryManagement memManagement;
