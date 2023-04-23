@@ -234,11 +234,11 @@ void VulkanMechanics::createLogicalDevice() {
   }
 
   vkGetDeviceQueue(mainDevice.logicalDevice, indices.graphicsFamily.value(), 0,
-                   &queues.graphicsQueue);
+                   &queues.graphics);
   vkGetDeviceQueue(mainDevice.logicalDevice, indices.graphicsFamily.value(), 0,
-                   &queues.computeQueue);
+                   &queues.compute);
   vkGetDeviceQueue(mainDevice.logicalDevice, indices.presentFamily.value(), 0,
-                   &queues.presentQueue);
+                   &queues.present);
 }
 
 VkSurfaceFormatKHR VulkanMechanics::chooseSwapSurfaceFormat(
