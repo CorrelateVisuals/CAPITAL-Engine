@@ -14,8 +14,20 @@
 VulkanMechanics::VulkanMechanics()
     : surface{},
       instance{},
+      commandPool{},
+      commandBuffers{},
       mainDevice{VK_NULL_HANDLE, VK_NULL_HANDLE},
-      deviceExtensions{VK_KHR_SWAPCHAIN_EXTENSION_NAME} {
+      deviceExtensions{VK_KHR_SWAPCHAIN_EXTENSION_NAME},
+      queues{},
+      queueFamilyIndices{},
+      swapChainSupport{},
+      swapChain{},
+      swapChainImages{},
+      swapChainImageFormat{},
+      swapChainExtent{},
+      imageAvailableSemaphores{},
+      renderFinishedSemaphores{},
+      inFlightFences{} {
   LOG("... constructing Vulkan Mechanics");
 }
 
@@ -77,6 +89,7 @@ void VulkanMechanics::createSurface() {
 }
 
 void VulkanMechanics::createCommandBuffers() {
+  LOG(".... creating Command Buffers");
   commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
   VkCommandBufferAllocateInfo allocInfo{};
@@ -302,6 +315,7 @@ void VulkanMechanics::createSyncObjects() {
 }
 
 void VulkanMechanics::createCommandPool() {
+  LOG(".... creating Command Pool");
   VulkanMechanics::QueueFamilyIndices queueFamilyIndices =
       findQueueFamilies(mainDevice.physicalDevice);
 

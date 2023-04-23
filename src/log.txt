@@ -1,36 +1,35 @@
-2023-04-22 23:59:12 . constructing Logging
-2023-04-22 23:59:12 .. constructing Validation Layers
-2023-04-22 23:59:12 ... constructing Vulkan Mechanics
-2023-04-22 23:59:12 ... constructing Window
-2023-04-22 23:59:12 ... Window initialized with 1920 * 1080
-2023-04-22 23:59:12 [ Starting CAPITAL engine ]
-2023-04-22 23:59:12 ... constructing Capital Engine
-2023-04-22 23:59:12 ... initializing Capital Engine
-2023-04-22 23:59:12 .... creating Vulkan Instance
-2023-04-22 23:59:12 .... acquiring Required Extensions
-2023-04-22 23:59:12 .... creating Surface
-2023-04-22 23:59:12 .... picking Physical Device
-2023-04-22 23:59:12 .... checking if Physical Device is suitable
-2023-04-22 23:59:12 .... finding Queue Families
-2023-04-22 23:59:12 .... checking Device Extension Support
-2023-04-22 23:59:12  .... querying Swap Chain Support
-2023-04-22 23:59:12 ---- GPU: NVIDIA GeForce GTX 1070
-2023-04-22 23:59:12 .... creating Logical Device
-2023-04-22 23:59:12 .... finding Queue Families
-2023-04-22 23:59:12  .... creating Swap Chain
-2023-04-22 23:59:12  .... querying Swap Chain Support
-2023-04-22 23:59:12  .... choosing Swap Surface Format
-2023-04-22 23:59:12  .... choosing Swap Present Mode
-2023-04-22 23:59:12  .... choosing Swap Extent
-2023-04-22 23:59:12 .... finding Queue Families
-2023-04-22 23:59:12  .... creating Sync Objects
-2023-04-22 23:59:13 > > Mouse Click at 0.465104 : 0.321296
-2023-04-22 23:59:13 > > Mouse Click at 0.740625 : 0.412037
-2023-04-22 23:59:13 > > Mouse Click at 0.740625 : 0.412037
-2023-04-22 23:59:13 > > Mouse Click at 0.8 : 0.415741
-2023-04-22 23:59:14 ... destructing Capital Engine
-2023-04-22 23:59:14 [ CAPITAL engine terminated ]
-2023-04-22 23:59:14 ... terminating Window
-2023-04-22 23:59:14 ... destructing Vulkan Mechanics
-2023-04-22 23:59:14 .. destructing Validation Layers
-2023-04-22 23:59:14 . destructing Logging
+2023-04-23 02:07:50 . constructing Logging
+2023-04-23 02:07:50 .. constructing Validation Layers
+2023-04-23 02:07:50 ... constructing Vulkan Mechanics
+2023-04-23 02:07:50 ... constructing Window
+2023-04-23 02:07:51 ... Window initialized with 1920 * 1080
+2023-04-23 02:07:51 [ Starting CAPITAL engine ]
+2023-04-23 02:07:51 ... constructing Capital Engine
+2023-04-23 02:07:51 ... initializing Capital Engine
+2023-04-23 02:07:51 .... creating Vulkan Instance
+2023-04-23 02:07:51 .... acquiring Required Extensions
+2023-04-23 02:07:51 .... creating Surface
+2023-04-23 02:07:51 .... picking Physical Device
+2023-04-23 02:07:51 .... checking if Physical Device is suitable
+2023-04-23 02:07:51 .... finding Queue Families
+2023-04-23 02:07:51 .... checking Device Extension Support
+2023-04-23 02:07:51  .... querying Swap Chain Support
+2023-04-23 02:07:51 ---- GPU: NVIDIA GeForce GTX 1070
+2023-04-23 02:07:51 .... creating Logical Device
+2023-04-23 02:07:51 .... finding Queue Families
+2023-04-23 02:07:51  .... creating Swap Chain
+2023-04-23 02:07:51  .... querying Swap Chain Support
+2023-04-23 02:07:51  .... choosing Swap Surface Format
+2023-04-23 02:07:51  .... choosing Swap Present Mode
+2023-04-23 02:07:51  .... choosing Swap Extent
+2023-04-23 02:07:51 .... finding Queue Families
+2023-04-23 02:07:51  .... creating Sync Objects
+2023-04-23 02:07:51 .... creating Command Pool
+2023-04-23 02:07:51 .... finding Queue Families
+2023-04-23 02:07:51 .... creating Command Buffers
+2023-04-23 02:07:52 ... destructing Capital Engine
+2023-04-23 02:07:52 [ CAPITAL engine terminated ]
+2023-04-23 02:07:52 ... terminating Window
+2023-04-23 02:07:52 ... destructing Vulkan Mechanics
+2023-04-23 02:07:52 .. destructing Validation Layers
+2023-04-23 02:07:52 . destructing Logging

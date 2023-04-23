@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#define MAX_FRAMES_IN_FLIGHT 2
+constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
 std::ostream& operator<<(std::ostream& os, VkPhysicalDeviceProperties& device);
 
@@ -41,6 +41,12 @@ class VulkanMechanics {
  private:
   const std::vector<const char*> deviceExtensions;
 
+  struct Queues {
+    VkQueue graphicsQueue;
+    VkQueue presentQueue;
+  };
+  Queues queues;
+
   struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
     std::optional<uint32_t> presentFamily;
@@ -56,12 +62,6 @@ class VulkanMechanics {
     std::vector<VkPresentModeKHR> presentModes;
   };
   SwapChainSupportDetails swapChainSupport;
-
-  struct Queues {
-    VkQueue graphicsQueue;
-    VkQueue presentQueue;
-  };
-  Queues queues;
 
   VkSwapchainKHR swapChain;
   std::vector<VkImage> swapChainImages;
