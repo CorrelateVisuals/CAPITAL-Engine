@@ -42,7 +42,8 @@ void CapitalEngine::initVulkan() {
   renderConfig.createRenderPass();
 
   renderConfig.createDescriptorSetLayout();
-  renderConfig.createComputeDescriptorSetLayout();
+  // renderConfig.createComputeDescriptorSetLayout();
+  renderConfig.createGraphicsPipeline();
 
   // vulkanMechanics.createSyncObjects();
   // vulkanMechanics.createCommandPool();

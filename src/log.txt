@@ -1,45 +1,46 @@
-2023-04-24 02:53:38 . constructing Logging
-2023-04-24 02:53:38 .. constructing Validation Layers
-2023-04-24 02:53:38 ... constructing Vulkan Mechanics
-2023-04-24 02:53:38 . . . . constructing Renderer Configuration
-2023-04-24 02:53:38 ... constructing Window
-2023-04-24 02:53:38 ... Window initialized with 1920 * 1080
-2023-04-24 02:53:38 [ Starting CAPITAL engine ]
-2023-04-24 02:53:38 ... constructing Capital Engine
-2023-04-24 02:53:38 ... initializing Capital Engine
-2023-04-24 02:53:38 .... creating Vulkan Instance
-2023-04-24 02:53:38 .... acquiring Required Extensions
-2023-04-24 02:53:38 .... creating Surface
-2023-04-24 02:53:38 .... picking Physical Device
-2023-04-24 02:53:38 .... checking if Physical Device is suitable
-2023-04-24 02:53:38 .... finding Queue Families
-2023-04-24 02:53:38 .... checking Device Extension Support
-2023-04-24 02:53:38  .... querying Swap Chain Support
-2023-04-24 02:53:38 ---- GPU: NVIDIA GeForce GTX 1070
-2023-04-24 02:53:38 .... creating Logical Device
-2023-04-24 02:53:38 .... finding Queue Families
-2023-04-24 02:53:38  .... creating Swap Chain
-2023-04-24 02:53:38  .... querying Swap Chain Support
-2023-04-24 02:53:38  .... choosing Swap Surface Format
-2023-04-24 02:53:38  .... choosing Swap Present Mode
-2023-04-24 02:53:38  .... choosing Swap Extent
-2023-04-24 02:53:38 .... finding Queue Families
-2023-04-24 02:53:38  . . . . creating Depth Resources
-2023-04-24 02:53:38  . . . . finding Depth Format
-2023-04-24 02:53:38  . . . . finding Supported Format
-2023-04-24 02:53:38  . . . . creating Image
-2023-04-24 02:53:38  . . . . finding Memory Type
-2023-04-24 02:53:38  . . . . creating Image View
-2023-04-24 02:53:38  . . . . creating Image Views
-2023-04-24 02:53:38  . . . . finding Depth Format
-2023-04-24 02:53:38  . . . . finding Supported Format
-2023-04-24 02:53:39 > > Mouse Click at 0.683854 : 0.615741
-2023-04-24 02:53:39 > > Mouse Click at 0.683854 : 0.615741
-2023-04-24 02:53:39 > > Mouse Click at 0.683854 : 0.615741
-2023-04-24 02:53:40 ... destructing Capital Engine
-2023-04-24 02:53:40 [ CAPITAL engine terminated ]
-2023-04-24 02:53:40 ... terminating Window
-2023-04-24 02:53:40 . . . . destructing Renderer Configuration
-2023-04-24 02:53:40 ... destructing Vulkan Mechanics
-2023-04-24 02:53:40 .. destructing Validation Layers
-2023-04-24 02:53:40 . destructing Logging
+2023-04-24 14:29:14 . constructing Logging
+2023-04-24 14:29:14 .. constructing Validation Layers
+2023-04-24 14:29:14 ... constructing Vulkan Mechanics
+2023-04-24 14:29:14 . . . . constructing Render Configuration
+2023-04-24 14:29:14 ... constructing Window
+2023-04-24 14:29:14 ... Window initialized with 1920 * 1080
+2023-04-24 14:29:14 [ Starting CAPITAL engine ]
+2023-04-24 14:29:14 ... constructing Capital Engine
+2023-04-24 14:29:14 ... initializing Capital Engine
+2023-04-24 14:29:14 .... creating Vulkan Instance
+2023-04-24 14:29:14 .... acquiring Required Extensions
+2023-04-24 14:29:14 .... creating Surface
+2023-04-24 14:29:14 .... picking Physical Device
+2023-04-24 14:29:14 .... checking if Physical Device is suitable
+2023-04-24 14:29:14 .... finding Queue Families
+2023-04-24 14:29:14 .... checking Device Extension Support
+2023-04-24 14:29:14  .... querying Swap Chain Support
+2023-04-24 14:29:14 ---- GPU: NVIDIA GeForce GTX 1070
+2023-04-24 14:29:14 .... creating Logical Device
+2023-04-24 14:29:14 .... finding Queue Families
+2023-04-24 14:29:14  .... creating Swap Chain
+2023-04-24 14:29:14  .... querying Swap Chain Support
+2023-04-24 14:29:14  .... choosing Swap Surface Format
+2023-04-24 14:29:14  .... choosing Swap Present Mode
+2023-04-24 14:29:14  .... choosing Swap Extent
+2023-04-24 14:29:14 .... finding Queue Families
+2023-04-24 14:29:15  . . . . creating Depth Resources
+2023-04-24 14:29:15  . . . . finding Depth Format
+2023-04-24 14:29:15  . . . . finding Supported Format
+2023-04-24 14:29:15  . . . . creating Image
+2023-04-24 14:29:15  . . . . finding Memory Type
+2023-04-24 14:29:15  . . . . creating Image View
+2023-04-24 14:29:15  . . . . creating Image Views
+2023-04-24 14:29:15 ))))) creating Render Pass
+2023-04-24 14:29:15  . . . . finding Depth Format
+2023-04-24 14:29:15  . . . . finding Supported Format
+> > Validation Layer: Validation Performance Warning: [ UNASSIGNED-CoreValidation-Shader-OutputNotConsumed ] Object 0: handle = 0xe7e6d0000000000f, type = VK_OBJECT_TYPE_SHADER_MODULE; | MessageID = 0x609a13b | Vertex attribute at location 2 not consumed by vertex shader
+> > Validation Layer: Validation Performance Warning: [ UNASSIGNED-CoreValidation-Shader-OutputNotConsumed ] Object 0: handle = 0xe7e6d0000000000f, type = VK_OBJECT_TYPE_SHADER_MODULE; | MessageID = 0x609a13b | Vertex attribute at location 3 not consumed by vertex shader
+2023-04-24 14:29:15 > > Mouse Click at 0.682813 : 0.384259
+2023-04-24 14:29:16 ... destructing Capital Engine
+2023-04-24 14:29:16 [ CAPITAL engine terminated ]
+2023-04-24 14:29:16 ... terminating Window
+2023-04-24 14:29:16 . . . . destructing Render Configuration
+2023-04-24 14:29:16 ... destructing Vulkan Mechanics
+2023-04-24 14:29:16 .. destructing Validation Layers
+2023-04-24 14:29:16 . destructing Logging

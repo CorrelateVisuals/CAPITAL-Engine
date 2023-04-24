@@ -98,7 +98,8 @@ class RenderConfiguration {
   void createDepthResources();
 
   void createDescriptorSetLayout();
-  void createComputeDescriptorSetLayout();
+
+  void createGraphicsPipeline();
 
   void setupFrameBuffer();
 
@@ -111,6 +112,9 @@ class RenderConfiguration {
 
  private:
   VkRenderPass renderPass;
+  VkPipelineLayout pipelineLayout;
+  VkPipeline graphicsPipeline;
+
   std::vector<VkFramebuffer> frameBuffers;
 
   VkFormat findDepthFormat();
@@ -132,5 +136,6 @@ class RenderConfiguration {
   uint32_t findMemoryType(uint32_t typeFilter,
                           VkMemoryPropertyFlags properties);
   std::vector<char> readShaderFiles(const std::string& filename);
+  VkShaderModule createShaderModule(const std::vector<char>& code);
 };
 inline RenderConfiguration renderConfig;
