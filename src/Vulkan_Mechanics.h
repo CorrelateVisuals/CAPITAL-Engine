@@ -92,11 +92,13 @@ class RenderConfiguration {
   RenderConfiguration();
   ~RenderConfiguration();
 
-  void createDepthResources();
   void createImageViews();
+  void createRenderPass();
 
-  void setupRenderPass();
-  void createPipelineCache();
+  void createDepthResources();
+
+  void createDescriptorSetLayout();
+  void createComputeDescriptorSetLayout();
 
   void setupFrameBuffer();
 
@@ -104,9 +106,11 @@ class RenderConfiguration {
   VkDeviceMemory depthImageMemory;
   VkImageView depthImageView;
 
+  VkDescriptorSetLayout descriptorSetLayout;
+  VkDescriptorSetLayout computeDescriptorSetLayout;
+
  private:
   VkRenderPass renderPass;
-  VkPipelineCache pipelineCache;
   std::vector<VkFramebuffer> frameBuffers;
 
   VkFormat findDepthFormat();
@@ -127,5 +131,6 @@ class RenderConfiguration {
                               VkImageAspectFlags aspectFlags);
   uint32_t findMemoryType(uint32_t typeFilter,
                           VkMemoryPropertyFlags properties);
+  std::vector<char> readShaderFiles(const std::string& filename);
 };
 inline RenderConfiguration renderConfig;

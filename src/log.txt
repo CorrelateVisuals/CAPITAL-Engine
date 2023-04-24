@@ -1,42 +1,45 @@
-2023-04-24 00:35:24 . constructing Logging
-2023-04-24 00:35:24 .. constructing Validation Layers
-2023-04-24 00:35:24 ... constructing Vulkan Mechanics
-2023-04-24 00:35:24 . . . . constructing Renderer Configuration
-2023-04-24 00:35:24 ... constructing Window
-2023-04-24 00:35:24 ... Window initialized with 1920 * 1080
-2023-04-24 00:35:24 [ Starting CAPITAL engine ]
-2023-04-24 00:35:24 ... constructing Capital Engine
-2023-04-24 00:35:24 ... initializing Capital Engine
-2023-04-24 00:35:24 .... creating Vulkan Instance
-2023-04-24 00:35:24 .... acquiring Required Extensions
-2023-04-24 00:35:25 .... creating Surface
-2023-04-24 00:35:25 .... picking Physical Device
-2023-04-24 00:35:25 .... checking if Physical Device is suitable
-2023-04-24 00:35:25 .... finding Queue Families
-2023-04-24 00:35:25 .... checking Device Extension Support
-2023-04-24 00:35:25  .... querying Swap Chain Support
-2023-04-24 00:35:25 ---- GPU: NVIDIA GeForce GTX 1070
-2023-04-24 00:35:25 .... creating Logical Device
-2023-04-24 00:35:25 .... finding Queue Families
-2023-04-24 00:35:25  .... creating Swap Chain
-2023-04-24 00:35:25  .... querying Swap Chain Support
-2023-04-24 00:35:25  .... choosing Swap Surface Format
-2023-04-24 00:35:25  .... choosing Swap Present Mode
-2023-04-24 00:35:25  .... choosing Swap Extent
-2023-04-24 00:35:25 .... finding Queue Families
-2023-04-24 00:35:25  . . . . creating Image Views
-2023-04-24 00:35:25  . . . . finding Depth Format
-2023-04-24 00:35:25  . . . . finding Supported Format
-2023-04-24 00:35:25 > > Mouse Click at 0.680208 : 0.356481
-2023-04-24 00:35:26 > > Mouse Click at 0.808854 : 0.403704
-2023-04-24 00:35:26 > > Mouse Click at 0.670312 : 0.325
-2023-04-24 00:35:26 > > Mouse Click at 0.670312 : 0.325
-2023-04-24 00:35:27 > > Mouse Click at 0.670312 : 0.325
-2023-04-24 00:35:34 > > Mouse Click at 0.576562 : 0.339815
-2023-04-24 00:35:36 ... destructing Capital Engine
-2023-04-24 00:35:36 [ CAPITAL engine terminated ]
-2023-04-24 00:35:36 ... terminating Window
-2023-04-24 00:35:36 . . . . destructing Renderer Configuration
-2023-04-24 00:35:36 ... destructing Vulkan Mechanics
-2023-04-24 00:35:36 .. destructing Validation Layers
-2023-04-24 00:35:36 . destructing Logging
+2023-04-24 02:53:38 . constructing Logging
+2023-04-24 02:53:38 .. constructing Validation Layers
+2023-04-24 02:53:38 ... constructing Vulkan Mechanics
+2023-04-24 02:53:38 . . . . constructing Renderer Configuration
+2023-04-24 02:53:38 ... constructing Window
+2023-04-24 02:53:38 ... Window initialized with 1920 * 1080
+2023-04-24 02:53:38 [ Starting CAPITAL engine ]
+2023-04-24 02:53:38 ... constructing Capital Engine
+2023-04-24 02:53:38 ... initializing Capital Engine
+2023-04-24 02:53:38 .... creating Vulkan Instance
+2023-04-24 02:53:38 .... acquiring Required Extensions
+2023-04-24 02:53:38 .... creating Surface
+2023-04-24 02:53:38 .... picking Physical Device
+2023-04-24 02:53:38 .... checking if Physical Device is suitable
+2023-04-24 02:53:38 .... finding Queue Families
+2023-04-24 02:53:38 .... checking Device Extension Support
+2023-04-24 02:53:38  .... querying Swap Chain Support
+2023-04-24 02:53:38 ---- GPU: NVIDIA GeForce GTX 1070
+2023-04-24 02:53:38 .... creating Logical Device
+2023-04-24 02:53:38 .... finding Queue Families
+2023-04-24 02:53:38  .... creating Swap Chain
+2023-04-24 02:53:38  .... querying Swap Chain Support
+2023-04-24 02:53:38  .... choosing Swap Surface Format
+2023-04-24 02:53:38  .... choosing Swap Present Mode
+2023-04-24 02:53:38  .... choosing Swap Extent
+2023-04-24 02:53:38 .... finding Queue Families
+2023-04-24 02:53:38  . . . . creating Depth Resources
+2023-04-24 02:53:38  . . . . finding Depth Format
+2023-04-24 02:53:38  . . . . finding Supported Format
+2023-04-24 02:53:38  . . . . creating Image
+2023-04-24 02:53:38  . . . . finding Memory Type
+2023-04-24 02:53:38  . . . . creating Image View
+2023-04-24 02:53:38  . . . . creating Image Views
+2023-04-24 02:53:38  . . . . finding Depth Format
+2023-04-24 02:53:38  . . . . finding Supported Format
+2023-04-24 02:53:39 > > Mouse Click at 0.683854 : 0.615741
+2023-04-24 02:53:39 > > Mouse Click at 0.683854 : 0.615741
+2023-04-24 02:53:39 > > Mouse Click at 0.683854 : 0.615741
+2023-04-24 02:53:40 ... destructing Capital Engine
+2023-04-24 02:53:40 [ CAPITAL engine terminated ]
+2023-04-24 02:53:40 ... terminating Window
+2023-04-24 02:53:40 . . . . destructing Renderer Configuration
+2023-04-24 02:53:40 ... destructing Vulkan Mechanics
+2023-04-24 02:53:40 .. destructing Validation Layers
+2023-04-24 02:53:40 . destructing Logging

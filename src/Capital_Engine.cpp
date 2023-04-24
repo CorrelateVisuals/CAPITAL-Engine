@@ -35,15 +35,18 @@ void CapitalEngine::initVulkan() {
 
   // Engine mechanics
   vulkanMechanics.createSwapChain();
+
+  // Renderer Config
+  renderConfig.createDepthResources();
+  renderConfig.createImageViews();
+  renderConfig.createRenderPass();
+
+  renderConfig.createDescriptorSetLayout();
+  renderConfig.createComputeDescriptorSetLayout();
+
   // vulkanMechanics.createSyncObjects();
   // vulkanMechanics.createCommandPool();
   // vulkanMechanics.createCommandBuffers();
-
-  // Renderer Config
-  // renderConfig.createDepthResources();
-  renderConfig.createImageViews();
-  renderConfig.setupRenderPass();
-
   // renderConfig.createPipelineCache();
   // renderConfig.setupFrameBuffer();
 }

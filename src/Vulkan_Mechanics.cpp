@@ -461,12 +461,14 @@ RenderConfiguration::RenderConfiguration()
     : depthImage{},
       depthImageMemory{},
       depthImageView{},
-      renderPass{VK_NULL_HANDLE} {
-  LOG(". . . . constructing Renderer Configuration");
+      renderPass{VK_NULL_HANDLE},
+      descriptorSetLayout{},
+      computeDescriptorSetLayout{} {
+  LOG(". . . . constructing Render Configuration");
 }
 
 RenderConfiguration::~RenderConfiguration() {
-  LOG(". . . . destructing Renderer Configuration");
+  LOG(". . . . destructing Render Configuration");
 }
 
 void RenderConfiguration::createDepthResources() {
@@ -542,7 +544,8 @@ VkFormat RenderConfiguration::findSupportedFormat(
   throw std::runtime_error("failed to find supported format!");
 }
 
-void RenderConfiguration::setupRenderPass() {
+void RenderConfiguration::createRenderPass() {
+  LOG("))))) creating Render Pass");
   VkAttachmentDescription colorAttachment{};
   colorAttachment.format = vulkanMechanics.swapChainImageFormat;
   colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -684,16 +687,6 @@ void RenderConfiguration::setupFrameBuffer() {
   }
 }
 
-void RenderConfiguration::createPipelineCache() {
-  VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
-  pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-
-  if (vkCreatePipelineCache(vulkanMechanics.mainDevice.logical,
-                            &pipelineCacheCreateInfo, nullptr,
-                            &pipelineCache) != VK_SUCCESS) {
-    throw std::runtime_error("failed to create Pipeline Cache!");
-  }
-}
 VkImageView RenderConfiguration::createImageView(
     VkImage image,
     VkFormat format,
@@ -736,4 +729,75 @@ uint32_t RenderConfiguration::findMemoryType(uint32_t typeFilter,
   }
 
   throw std::runtime_error("failed to find suitable memory type!");
+}
+
+void RenderConfiguration::createDescriptorSetLayout() {
+  VkDescriptorSetLayoutBinding uboLayoutBinding{};
+  uboLayoutBinding.binding = 0;
+  uboLayoutBinding.descriptorCount = 1;
+  uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+  uboLayoutBinding.pImmutableSamplers = nullptr;
+  uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+  VkDescriptorSetLayoutCreateInfo layoutInfo{};
+  layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+  layoutInfo.bindingCount = 1;
+  layoutInfo.pBindings = &uboLayoutBinding;
+
+  if (vkCreateDescriptorSetLayout(vulkanMechanics.mainDevice.logical,
+                                  &layoutInfo, nullptr,
+                                  &descriptorSetLayout) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create descriptor set layout!");
+  }
+}
+
+void RenderConfiguration::createComputeDescriptorSetLayout() {
+  std::array<VkDescriptorSetLayoutBinding, 3> layoutBindings{};
+  layoutBindings[0].binding = 0;
+  layoutBindings[0].descriptorCount = 1;
+  layoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+  layoutBindings[0].pImmutableSamplers = nullptr;
+  layoutBindings[0].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+
+  layoutBindings[1].binding = 1;
+  layoutBindings[1].descriptorCount = 1;
+  layoutBindings[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  layoutBindings[1].pImmutableSamplers = nullptr;
+  layoutBindings[1].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+
+  layoutBindings[2].binding = 2;
+  layoutBindings[2].descriptorCount = 1;
+  layoutBindings[2].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  layoutBindings[2].pImmutableSamplers = nullptr;
+  layoutBindings[2].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+
+  VkDescriptorSetLayoutCreateInfo layoutInfo{};
+  layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+  layoutInfo.bindingCount = 3;
+  layoutInfo.pBindings = layoutBindings.data();
+
+  if (vkCreateDescriptorSetLayout(vulkanMechanics.mainDevice.logical,
+                                  &layoutInfo, nullptr,
+                                  &computeDescriptorSetLayout) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create compute descriptor set layout!");
+  }
+}
+
+std::vector<char> RenderConfiguration::readShaderFiles(
+    const std::string& filename) {
+  std::ifstream file(filename, std::ios::ate | std::ios::binary);
+
+  if (!file.is_open()) {
+    throw std::runtime_error("failed to open shader file :" + filename);
+  }
+
+  size_t fileSize = (size_t)file.tellg();
+  std::vector<char> buffer(fileSize);
+
+  file.seekg(0);
+  file.read(buffer.data(), fileSize);
+
+  file.close();
+
+  return buffer;
 }
