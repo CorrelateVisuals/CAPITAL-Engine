@@ -3,11 +3,20 @@
 class Pipelines {
  public:
   VkDescriptorSetLayout descriptorSetLayout;
-  VkPipelineLayout pipelineLayout;
-  VkPipeline graphicsPipeline;
+
+  struct Graphics {
+    VkPipelineLayout pipelineLayout;
+    VkPipeline pipeline;
+  } graphics;
+
+  struct Compute {
+    VkPipelineLayout pipelineLayout;
+    VkPipeline pipeline;
+  } compute;
 
   void createDescriptorSetLayout();
   void createGraphicsPipeline();
+  void createComputePipeline();
 
  private:
   std::vector<char> readShaderFiles(const std::string& filename);

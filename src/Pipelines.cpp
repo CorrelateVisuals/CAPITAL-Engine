@@ -162,7 +162,7 @@ void Pipelines::createGraphicsPipeline() {
   pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
 
   if (vkCreatePipelineLayout(mechanics.mainDevice.logical, &pipelineLayoutInfo,
-                             nullptr, &pipelineLayout) != VK_SUCCESS) {
+                             nullptr, &graphics.pipelineLayout) != VK_SUCCESS) {
     throw std::runtime_error("failed to create pipeline layout!");
   }
 
@@ -178,20 +178,57 @@ void Pipelines::createGraphicsPipeline() {
   pipelineInfo.pDepthStencilState = &depthStencil;
   pipelineInfo.pColorBlendState = &colorBlending;
   pipelineInfo.pDynamicState = &dynamicState;
-  pipelineInfo.layout = pipelineLayout;
+  pipelineInfo.layout = graphics.pipelineLayout;
   pipelineInfo.renderPass = renderConfig.renderPass;
   pipelineInfo.subpass = 0;
   pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
   if (vkCreateGraphicsPipelines(mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
                                 &pipelineInfo, nullptr,
-                                &graphicsPipeline) != VK_SUCCESS) {
+                                &graphics.pipeline) != VK_SUCCESS) {
     throw std::runtime_error("failed to create graphics pipeline!");
   }
 
   vkDestroyShaderModule(mechanics.mainDevice.logical, fragShaderModule,
                         nullptr);
   vkDestroyShaderModule(mechanics.mainDevice.logical, vertShaderModule,
+                        nullptr);
+}
+
+void Pipelines::createComputePipeline() {
+  auto computeShaderCode = readShaderFiles("shaders/comp.spv");
+
+  VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
+
+  VkPipelineShaderStageCreateInfo computeShaderStageInfo{};
+  computeShaderStageInfo.sType =
+      VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+  computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+  computeShaderStageInfo.module = computeShaderModule;
+  computeShaderStageInfo.pName = "main";
+
+  VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+  pipelineLayoutInfo.setLayoutCount = 1;
+  pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
+
+  if (vkCreatePipelineLayout(mechanics.mainDevice.logical, &pipelineLayoutInfo,
+                             nullptr, &compute.pipelineLayout) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create compute pipeline layout!");
+  }
+
+  VkComputePipelineCreateInfo pipelineInfo{};
+  pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+  pipelineInfo.layout = compute.pipelineLayout;
+  pipelineInfo.stage = computeShaderStageInfo;
+
+  if (vkCreateComputePipelines(mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
+                               &pipelineInfo, nullptr,
+                               &compute.pipeline) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create compute pipeline!");
+  }
+
+  vkDestroyShaderModule(mechanics.mainDevice.logical, computeShaderModule,
                         nullptr);
 }
 
