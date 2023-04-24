@@ -13,8 +13,10 @@ class World {
   ~World();
 
   struct Cell {
-    glm::vec3 pos;
+    glm::vec3 position;
     glm::vec3 color;
+    glm::vec2 velocity;
+
     glm::vec3 normals;
     glm::vec3 uv;
 

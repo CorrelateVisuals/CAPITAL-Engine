@@ -26,6 +26,8 @@ class VulkanMechanics {
   VkFormat swapChainImageFormat;
   std::vector<VkImageView> swapChainImageViews;
   VkExtent2D swapChainExtent;
+  std::vector<VkFramebuffer> swapChainFramebuffers;
+
 
   VkCommandPool commandPool;
   std::vector<VkCommandBuffer> commandBuffers;
@@ -97,7 +99,7 @@ class RenderConfiguration {
 
   void createDepthResources();
 
-  void setupFrameBuffer();
+  void createFrameBuffer();
 
   VkImage depthImage;
   VkDeviceMemory depthImageMemory;
@@ -106,8 +108,6 @@ class RenderConfiguration {
   VkRenderPass renderPass;
 
  private:
-  std::vector<VkFramebuffer> frameBuffers;
-
   VkFormat findDepthFormat();
   VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
                                VkImageTiling tiling,

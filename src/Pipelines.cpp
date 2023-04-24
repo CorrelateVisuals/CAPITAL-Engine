@@ -196,6 +196,7 @@ void Pipelines::createGraphicsPipeline() {
 }
 
 void Pipelines::createComputePipeline() {
+  LOG("))))) creating Compute Pipleline");
   auto computeShaderCode = readShaderFiles("shaders/comp.spv");
 
   VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);

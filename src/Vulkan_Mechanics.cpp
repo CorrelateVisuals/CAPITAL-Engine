@@ -653,35 +653,35 @@ void RenderConfiguration::createImage(uint32_t width,
   vkBindImageMemory(mechanics.mainDevice.logical, image, imageMemory, 0);
 }
 
-void RenderConfiguration::setupFrameBuffer() {
-  LOG(" . . . . setting up Frame Buffer");
-  VkImageView attachments[2];
+void RenderConfiguration::createFrameBuffer() {
+  mechanics.swapChainFramebuffers.resize(mechanics.swapChainImageViews.size());
 
-  // Depth/Stencil attachment is the same for all frame buffers
+  VkImageView attachments[2];
   attachments[1] = depthImageView;
 
-  VkFramebufferCreateInfo frameBufferCreateInfo = {};
-  frameBufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-  frameBufferCreateInfo.pNext = NULL;
-  frameBufferCreateInfo.renderPass = renderPass;
-  frameBufferCreateInfo.attachmentCount = 2;
-  frameBufferCreateInfo.pAttachments = attachments;
-  frameBufferCreateInfo.width = displayConfig.width;
-  frameBufferCreateInfo.height = displayConfig.height;
-  frameBufferCreateInfo.layers = 1;
-
-  // Create frame buffers for every swap chain image
-  frameBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-  for (uint32_t i = 0; i < frameBuffers.size(); i++) {
+  for (size_t i = 0; i < mechanics.swapChainImageViews.size(); i++) {
     attachments[0] = mechanics.swapChainImageViews[i];
 
-    if (vkCreateFramebuffer(mechanics.mainDevice.logical,
-                            &frameBufferCreateInfo, nullptr,
-                            &frameBuffers[i]) != VK_SUCCESS) {
-      throw std::runtime_error(
-          "failed to create Frame Buffer for every Swap Chain Image!");
+    VkFramebufferCreateInfo framebufferInfo{};
+    framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+    framebufferInfo.renderPass = renderPass;
+    framebufferInfo.attachmentCount = 2;
+    framebufferInfo.pAttachments = attachments;
+    framebufferInfo.width = mechanics.swapChainExtent.width;
+    framebufferInfo.height = mechanics.swapChainExtent.height;
+    framebufferInfo.layers = 1;
+
+    LOG("Creating framebuffer ", i, " of ",
+        mechanics.swapChainImageViews.size());
+
+    if (vkCreateFramebuffer(mechanics.mainDevice.logical, &framebufferInfo,
+                            nullptr, &mechanics.swapChainFramebuffers[i]) !=
+        VK_SUCCESS) {
+      throw std::runtime_error("Failed to create framebuffer!");
     }
   }
+
+  LOG("Framebuffers created successfully!");
 }
 
 VkImageView RenderConfiguration::createImageView(

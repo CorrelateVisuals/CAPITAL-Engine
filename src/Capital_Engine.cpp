@@ -46,7 +46,9 @@ void CapitalEngine::initVulkan() {
   pipelines.createDescriptorSetLayout();
   // renderConfig.createComputeDescriptorSetLayout();
   pipelines.createGraphicsPipeline();
-  // pipelines.createComputePipeline();
+  pipelines.createComputePipeline();
+
+  renderConfig.createFrameBuffer();
 
   // vulkanMechanics.createSyncObjects();
   // vulkanMechanics.createCommandPool();
