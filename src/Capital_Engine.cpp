@@ -2,6 +2,7 @@
 
 #include "Capital_Engine.h"
 #include "Debug.h"
+#include "Pipelines.h"
 #include "Vulkan_Mechanics.h"
 #include "Window.h"
 
@@ -41,9 +42,11 @@ void CapitalEngine::initVulkan() {
   renderConfig.createImageViews();
   renderConfig.createRenderPass();
 
-  renderConfig.createDescriptorSetLayout();
+  // Pipelines
+  pipelines.createDescriptorSetLayout();
   // renderConfig.createComputeDescriptorSetLayout();
-  renderConfig.createGraphicsPipeline();
+  pipelines.createGraphicsPipeline();
+  // pipelines.createComputePipeline();
 
   // vulkanMechanics.createSyncObjects();
   // vulkanMechanics.createCommandPool();
