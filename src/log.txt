@@ -1,46 +1,52 @@
-2023-04-24 14:29:14 . constructing Logging
-2023-04-24 14:29:14 .. constructing Validation Layers
-2023-04-24 14:29:14 ... constructing Vulkan Mechanics
-2023-04-24 14:29:14 . . . . constructing Render Configuration
-2023-04-24 14:29:14 ... constructing Window
-2023-04-24 14:29:14 ... Window initialized with 1920 * 1080
-2023-04-24 14:29:14 [ Starting CAPITAL engine ]
-2023-04-24 14:29:14 ... constructing Capital Engine
-2023-04-24 14:29:14 ... initializing Capital Engine
-2023-04-24 14:29:14 .... creating Vulkan Instance
-2023-04-24 14:29:14 .... acquiring Required Extensions
-2023-04-24 14:29:14 .... creating Surface
-2023-04-24 14:29:14 .... picking Physical Device
-2023-04-24 14:29:14 .... checking if Physical Device is suitable
-2023-04-24 14:29:14 .... finding Queue Families
-2023-04-24 14:29:14 .... checking Device Extension Support
-2023-04-24 14:29:14  .... querying Swap Chain Support
-2023-04-24 14:29:14 ---- GPU: NVIDIA GeForce GTX 1070
-2023-04-24 14:29:14 .... creating Logical Device
-2023-04-24 14:29:14 .... finding Queue Families
-2023-04-24 14:29:14  .... creating Swap Chain
-2023-04-24 14:29:14  .... querying Swap Chain Support
-2023-04-24 14:29:14  .... choosing Swap Surface Format
-2023-04-24 14:29:14  .... choosing Swap Present Mode
-2023-04-24 14:29:14  .... choosing Swap Extent
-2023-04-24 14:29:14 .... finding Queue Families
-2023-04-24 14:29:15  . . . . creating Depth Resources
-2023-04-24 14:29:15  . . . . finding Depth Format
-2023-04-24 14:29:15  . . . . finding Supported Format
-2023-04-24 14:29:15  . . . . creating Image
-2023-04-24 14:29:15  . . . . finding Memory Type
-2023-04-24 14:29:15  . . . . creating Image View
-2023-04-24 14:29:15  . . . . creating Image Views
-2023-04-24 14:29:15 ))))) creating Render Pass
-2023-04-24 14:29:15  . . . . finding Depth Format
-2023-04-24 14:29:15  . . . . finding Supported Format
-> > Validation Layer: Validation Performance Warning: [ UNASSIGNED-CoreValidation-Shader-OutputNotConsumed ] Object 0: handle = 0xe7e6d0000000000f, type = VK_OBJECT_TYPE_SHADER_MODULE; | MessageID = 0x609a13b | Vertex attribute at location 2 not consumed by vertex shader
-> > Validation Layer: Validation Performance Warning: [ UNASSIGNED-CoreValidation-Shader-OutputNotConsumed ] Object 0: handle = 0xe7e6d0000000000f, type = VK_OBJECT_TYPE_SHADER_MODULE; | MessageID = 0x609a13b | Vertex attribute at location 3 not consumed by vertex shader
-2023-04-24 14:29:15 > > Mouse Click at 0.682813 : 0.384259
-2023-04-24 14:29:16 ... destructing Capital Engine
-2023-04-24 14:29:16 [ CAPITAL engine terminated ]
-2023-04-24 14:29:16 ... terminating Window
-2023-04-24 14:29:16 . . . . destructing Render Configuration
-2023-04-24 14:29:16 ... destructing Vulkan Mechanics
-2023-04-24 14:29:16 .. destructing Validation Layers
-2023-04-24 14:29:16 . destructing Logging
+2023-04-24 14:38:54 . constructing Logging
+2023-04-24 14:38:54 .. constructing Validation Layers
+2023-04-24 14:38:54 ... constructing Vulkan Mechanics
+2023-04-24 14:38:54 . . . . constructing Render Configuration
+2023-04-24 14:38:54 ... constructing Window
+2023-04-24 14:38:55 ... Window initialized with 1920 * 1080
+2023-04-24 14:38:55 [ Starting CAPITAL engine ]
+2023-04-24 14:38:55 ... constructing Capital Engine
+2023-04-24 14:38:55 ... initializing Capital Engine
+2023-04-24 14:38:55 .... creating Vulkan Instance
+2023-04-24 14:38:55 .... acquiring Required Extensions
+2023-04-24 14:38:55 .... creating Surface
+2023-04-24 14:38:55 .... picking Physical Device
+2023-04-24 14:38:55 .... checking if Physical Device is suitable
+2023-04-24 14:38:55 .... finding Queue Families
+2023-04-24 14:38:55 .... checking Device Extension Support
+2023-04-24 14:38:55  .... querying Swap Chain Support
+2023-04-24 14:38:55 ---- GPU: NVIDIA GeForce GTX 1070
+2023-04-24 14:38:55 .... creating Logical Device
+2023-04-24 14:38:55 .... finding Queue Families
+2023-04-24 14:38:55  .... creating Swap Chain
+2023-04-24 14:38:55  .... querying Swap Chain Support
+2023-04-24 14:38:55  .... choosing Swap Surface Format
+2023-04-24 14:38:55  .... choosing Swap Present Mode
+2023-04-24 14:38:55  .... choosing Swap Extent
+2023-04-24 14:38:55 .... finding Queue Families
+2023-04-24 14:38:55  . . . . creating Depth Resources
+2023-04-24 14:38:55  . . . . finding Depth Format
+2023-04-24 14:38:55  . . . . finding Supported Format
+2023-04-24 14:38:55  . . . . creating Image
+2023-04-24 14:38:55  . . . . finding Memory Type
+2023-04-24 14:38:55  . . . . creating Image View
+2023-04-24 14:38:55  . . . . creating Image Views
+2023-04-24 14:38:55 ))))) creating Render Pass
+2023-04-24 14:38:55  . . . . finding Depth Format
+2023-04-24 14:38:55  . . . . finding Supported Format
+2023-04-24 14:38:55 ### creating Graphics Pipeline
+2023-04-24 14:38:55 
+
+                     > > > Validation Layer:  Validation Performance Warning: [ UNASSIGNED-CoreValidation-Shader-OutputNotConsumed ] Object 0: handle = 0xe7e6d0000000000f, type = VK_OBJECT_TYPE_SHADER_MODULE; | MessageID = 0x609a13b | Vertex attribute at location 2 not consumed by vertex shader 
+
+2023-04-24 14:38:55 
+
+                     > > > Validation Layer:  Validation Performance Warning: [ UNASSIGNED-CoreValidation-Shader-OutputNotConsumed ] Object 0: handle = 0xe7e6d0000000000f, type = VK_OBJECT_TYPE_SHADER_MODULE; | MessageID = 0x609a13b | Vertex attribute at location 3 not consumed by vertex shader 
+
+2023-04-24 14:38:56 ... destructing Capital Engine
+2023-04-24 14:38:56 [ CAPITAL engine terminated ]
+2023-04-24 14:38:56 ... terminating Window
+2023-04-24 14:38:56 . . . . destructing Render Configuration
+2023-04-24 14:38:56 ... destructing Vulkan Mechanics
+2023-04-24 14:38:56 .. destructing Validation Layers
+2023-04-24 14:38:56 . destructing Logging

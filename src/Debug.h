@@ -60,7 +60,7 @@ class ValidationLayers {
                 const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
                 void* pUserData) {
     const std::string debugMessage = pCallbackData->pMessage;
-    surpressError(debugMessage, "Epic Games");
+    logValidationMessage(debugMessage, "Epic Games");
     return VK_FALSE;
   }
 
@@ -70,8 +70,8 @@ class ValidationLayers {
   bool checkValidationLayerSupport();
 
  private:
-  void static surpressError(const std::string& string,
-                            const std::string& checkFor);
+  void static logValidationMessage(const std::string& string,
+                                   const std::string& excludeError);
   VkResult CreateDebugUtilsMessengerEXT(
       VkInstance instance,
       const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,

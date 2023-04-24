@@ -24,12 +24,12 @@ ValidationLayers::~ValidationLayers() {
   LOG(".. destructing Validation Layers");
 }
 
-void ValidationLayers::surpressError(const std::string& string,
-                                     const std::string& checkFor) {
-  if (string.find(checkFor) != std::string::npos)
+void ValidationLayers::logValidationMessage(const std::string& string,
+                                            const std::string& excludeError) {
+  if (string.find(excludeError) != std::string::npos)
     return;
-  std::cerr << "> > Validation Layer: " << string << std::endl;
-  logging.logFile << "> > Validation Layer: " << string << std::endl;
+
+  LOG("\n\n                     > > > Validation Layer: ", string, "\n");
 }
 
 VkResult ValidationLayers::CreateDebugUtilsMessengerEXT(
