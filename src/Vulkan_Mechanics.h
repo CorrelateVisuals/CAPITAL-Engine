@@ -85,7 +85,7 @@ class VulkanMechanics {
       const std::vector<VkPresentModeKHR>& availablePresentModes);
   VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 };
-inline VulkanMechanics vulkanMechanics;
+inline VulkanMechanics mechanics;
 
 class RenderConfiguration {
  public:

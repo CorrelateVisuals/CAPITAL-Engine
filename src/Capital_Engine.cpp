@@ -26,16 +26,16 @@ void CapitalEngine::initVulkan() {
   LOG("... initializing Capital Engine");
 
   // Init Vulkan
-  vulkanMechanics.createInstance();
-  debug.setupDebugMessenger(vulkanMechanics.instance);
-  vulkanMechanics.createSurface();
+  mechanics.createInstance();
+  debug.setupDebugMessenger(mechanics.instance);
+  mechanics.createSurface();
 
   // GPU handling
-  vulkanMechanics.pickPhysicalDevice();
-  vulkanMechanics.createLogicalDevice();
+  mechanics.pickPhysicalDevice();
+  mechanics.createLogicalDevice();
 
   // Engine mechanics
-  vulkanMechanics.createSwapChain();
+  mechanics.createSwapChain();
 
   // Renderer Config
   renderConfig.createDepthResources();

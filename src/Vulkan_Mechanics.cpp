@@ -474,26 +474,25 @@ void RenderConfiguration::createDepthResources() {
   LOG(" . . . . creating Depth Resources");
 
   VkFormat depthFormat = findDepthFormat();
-  createImage(
-      vulkanMechanics.swapChainExtent.width,
-      vulkanMechanics.swapChainExtent.height, depthFormat,
-      VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
+  createImage(mechanics.swapChainExtent.width, mechanics.swapChainExtent.height,
+              depthFormat, VK_IMAGE_TILING_OPTIMAL,
+              VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage,
+              depthImageMemory);
   depthImageView =
       createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
 }
 
 void RenderConfiguration::createImageViews() {
   LOG(" . . . . creating Image Views");
-  vulkanMechanics.swapChainImageViews.resize(
-      vulkanMechanics.swapChainImages.size());
+  mechanics.swapChainImageViews.resize(mechanics.swapChainImages.size());
 
-  for (size_t i = 0; i < vulkanMechanics.swapChainImages.size(); i++) {
+  for (size_t i = 0; i < mechanics.swapChainImages.size(); i++) {
     VkImageViewCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    createInfo.image = vulkanMechanics.swapChainImages[i];
+    createInfo.image = mechanics.swapChainImages[i];
     createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    createInfo.format = vulkanMechanics.swapChainImageFormat;
+    createInfo.format = mechanics.swapChainImageFormat;
     createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
     createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
     createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -504,9 +503,8 @@ void RenderConfiguration::createImageViews() {
     createInfo.subresourceRange.baseArrayLayer = 0;
     createInfo.subresourceRange.layerCount = 1;
 
-    if (vkCreateImageView(vulkanMechanics.mainDevice.logical, &createInfo,
-                          nullptr, &vulkanMechanics.swapChainImageViews[i]) !=
-        VK_SUCCESS) {
+    if (vkCreateImageView(mechanics.mainDevice.logical, &createInfo, nullptr,
+                          &mechanics.swapChainImageViews[i]) != VK_SUCCESS) {
       throw std::runtime_error("failed to create image views!");
     }
   }
@@ -529,8 +527,8 @@ VkFormat RenderConfiguration::findSupportedFormat(
 
   for (VkFormat format : candidates) {
     VkFormatProperties props;
-    vkGetPhysicalDeviceFormatProperties(vulkanMechanics.mainDevice.physical,
-                                        format, &props);
+    vkGetPhysicalDeviceFormatProperties(mechanics.mainDevice.physical, format,
+                                        &props);
 
     if (tiling == VK_IMAGE_TILING_LINEAR &&
         (props.linearTilingFeatures & features) == features) {
@@ -546,7 +544,7 @@ VkFormat RenderConfiguration::findSupportedFormat(
 void RenderConfiguration::createRenderPass() {
   LOG("))))) creating Render Pass");
   VkAttachmentDescription colorAttachment{};
-  colorAttachment.format = vulkanMechanics.swapChainImageFormat;
+  colorAttachment.format = mechanics.swapChainImageFormat;
   colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
   colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
   colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -602,8 +600,8 @@ void RenderConfiguration::createRenderPass() {
   renderPassInfo.dependencyCount = 1;
   renderPassInfo.pDependencies = &dependency;
 
-  if (vkCreateRenderPass(vulkanMechanics.mainDevice.logical, &renderPassInfo,
-                         nullptr, &renderPass) != VK_SUCCESS) {
+  if (vkCreateRenderPass(mechanics.mainDevice.logical, &renderPassInfo, nullptr,
+                         &renderPass) != VK_SUCCESS) {
     throw std::runtime_error("failed to create render pass!");
   }
 }
@@ -633,13 +631,13 @@ void RenderConfiguration::createImage(uint32_t width,
   imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
   imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-  if (vkCreateImage(vulkanMechanics.mainDevice.logical, &imageInfo, nullptr,
+  if (vkCreateImage(mechanics.mainDevice.logical, &imageInfo, nullptr,
                     &image) != VK_SUCCESS) {
     throw std::runtime_error("failed to create image!");
   }
 
   VkMemoryRequirements memRequirements;
-  vkGetImageMemoryRequirements(vulkanMechanics.mainDevice.logical, image,
+  vkGetImageMemoryRequirements(mechanics.mainDevice.logical, image,
                                &memRequirements);
 
   VkMemoryAllocateInfo allocInfo{};
@@ -648,11 +646,11 @@ void RenderConfiguration::createImage(uint32_t width,
   allocInfo.memoryTypeIndex =
       findMemoryType(memRequirements.memoryTypeBits, properties);
 
-  if (vkAllocateMemory(vulkanMechanics.mainDevice.logical, &allocInfo, nullptr,
+  if (vkAllocateMemory(mechanics.mainDevice.logical, &allocInfo, nullptr,
                        &imageMemory) != VK_SUCCESS) {
     throw std::runtime_error("failed to allocate image memory!");
   }
-  vkBindImageMemory(vulkanMechanics.mainDevice.logical, image, imageMemory, 0);
+  vkBindImageMemory(mechanics.mainDevice.logical, image, imageMemory, 0);
 }
 
 void RenderConfiguration::setupFrameBuffer() {
@@ -675,9 +673,9 @@ void RenderConfiguration::setupFrameBuffer() {
   // Create frame buffers for every swap chain image
   frameBuffers.resize(MAX_FRAMES_IN_FLIGHT);
   for (uint32_t i = 0; i < frameBuffers.size(); i++) {
-    attachments[0] = vulkanMechanics.swapChainImageViews[i];
+    attachments[0] = mechanics.swapChainImageViews[i];
 
-    if (vkCreateFramebuffer(vulkanMechanics.mainDevice.logical,
+    if (vkCreateFramebuffer(mechanics.mainDevice.logical,
                             &frameBufferCreateInfo, nullptr,
                             &frameBuffers[i]) != VK_SUCCESS) {
       throw std::runtime_error(
@@ -704,7 +702,7 @@ VkImageView RenderConfiguration::createImageView(
   viewInfo.subresourceRange.layerCount = 1;
 
   VkImageView imageView;
-  if (vkCreateImageView(vulkanMechanics.mainDevice.logical, &viewInfo, nullptr,
+  if (vkCreateImageView(mechanics.mainDevice.logical, &viewInfo, nullptr,
                         &imageView) != VK_SUCCESS) {
     throw std::runtime_error("failed to create texture image view!");
   }
@@ -717,7 +715,7 @@ uint32_t RenderConfiguration::findMemoryType(uint32_t typeFilter,
   LOG(" . . . . finding Memory Type");
 
   VkPhysicalDeviceMemoryProperties memProperties;
-  vkGetPhysicalDeviceMemoryProperties(vulkanMechanics.mainDevice.physical,
+  vkGetPhysicalDeviceMemoryProperties(mechanics.mainDevice.physical,
                                       &memProperties);
 
   for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
