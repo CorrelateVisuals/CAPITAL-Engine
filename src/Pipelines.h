@@ -23,3 +23,25 @@ class Pipelines {
   VkShaderModule createShaderModule(const std::vector<char>& code);
 };
 inline Pipelines pipelines;
+
+class MemoryCommands {
+ public:
+  MemoryCommands();
+  ~MemoryCommands();
+
+  void createShaderStorageBuffers();
+
+ private:
+  std::vector<VkBuffer> shaderStorageBuffers;
+  std::vector<VkDeviceMemory> shaderStorageBuffersMemory;
+
+  void createBuffer(VkDeviceSize size,
+                    VkBufferUsageFlags usage,
+                    VkMemoryPropertyFlags properties,
+                    VkBuffer& buffer,
+                    VkDeviceMemory& bufferMemory);
+  void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+  uint32_t findMemoryType(uint32_t typeFilter,
+                          VkMemoryPropertyFlags properties);
+};
+inline MemoryCommands memCommands;

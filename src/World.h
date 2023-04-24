@@ -7,6 +7,8 @@
 
 #include "Settings.h"
 
+constexpr int CELL_COUNT = 4;
+
 class World {
  public:
   World();

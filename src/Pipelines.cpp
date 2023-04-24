@@ -1,6 +1,7 @@
 #include <vulkan/vulkan.h>
 
 #include <array>
+#include <random>
 
 #include "Debug.h"
 #include "Pipelines.h"
@@ -264,4 +265,151 @@ VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
   }
 
   return shaderModule;
+}
+
+MemoryCommands::MemoryCommands() {
+  LOG("... constructing Memory Management");
+}
+
+MemoryCommands::~MemoryCommands() {
+  LOG("... destructing Memory Management");
+}
+
+void MemoryCommands::createShaderStorageBuffers() {
+  // Initialize particles
+  std::default_random_engine rndEngine((unsigned)time(nullptr));
+  std::uniform_real_distribution<float> rndDist(0.0f, 1.0f);
+
+  // Initial particle positions on a circle
+  std::vector<World::Cell> particles(CELL_COUNT);
+  for (auto& particle : particles) {
+    float r = 0.25f * sqrt(rndDist(rndEngine));
+    float theta = rndDist(rndEngine) * 2.0f * 3.14159265358979323846f;
+    float x = r * cos(theta) * displayConfig.height / displayConfig.width;
+    float y = r * sin(theta);
+    particle.position = glm::vec3(x, y, 0);
+    particle.velocity = glm::normalize(glm::vec2(x, y)) * 0.00025f;
+    particle.color = glm::vec4(rndDist(rndEngine), rndDist(rndEngine),
+                               rndDist(rndEngine), 1.0f);
+  }
+
+  VkDeviceSize bufferSize = sizeof(World::Cell) * CELL_COUNT;
+
+  // Create a staging buffer used to upload data to the gpu
+  VkBuffer stagingBuffer;
+  VkDeviceMemory stagingBufferMemory;
+  createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                   VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+               stagingBuffer, stagingBufferMemory);
+
+  void* data;
+  vkMapMemory(mechanics.mainDevice.logical, stagingBufferMemory, 0, bufferSize,
+              0, &data);
+  memcpy(data, particles.data(), (size_t)bufferSize);
+  vkUnmapMemory(mechanics.mainDevice.logical, stagingBufferMemory);
+
+  shaderStorageBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+  shaderStorageBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+
+  // Copy initial particle data to all storage buffers
+  for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+    createBuffer(bufferSize,
+                 VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
+                     VK_BUFFER_USAGE_VERTEX_BUFFER_BIT |
+                     VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, shaderStorageBuffers[i],
+                 shaderStorageBuffersMemory[i]);
+    copyBuffer(stagingBuffer, shaderStorageBuffers[i], bufferSize);
+  }
+
+  vkDestroyBuffer(mechanics.mainDevice.logical, stagingBuffer, nullptr);
+  vkFreeMemory(mechanics.mainDevice.logical, stagingBufferMemory, nullptr);
+}
+
+void MemoryCommands::createBuffer(VkDeviceSize size,
+                                  VkBufferUsageFlags usage,
+                                  VkMemoryPropertyFlags properties,
+                                  VkBuffer& buffer,
+                                  VkDeviceMemory& bufferMemory) {
+  VkBufferCreateInfo bufferInfo{};
+  bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+  bufferInfo.size = size;
+  bufferInfo.usage = usage;
+  bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+  if (vkCreateBuffer(mechanics.mainDevice.logical, &bufferInfo, nullptr,
+                     &buffer) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create buffer!");
+  }
+
+  VkMemoryRequirements memRequirements;
+  vkGetBufferMemoryRequirements(mechanics.mainDevice.logical, buffer,
+                                &memRequirements);
+
+  VkMemoryAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+  allocInfo.allocationSize = memRequirements.size;
+  allocInfo.memoryTypeIndex =
+      findMemoryType(memRequirements.memoryTypeBits, properties);
+
+  if (vkAllocateMemory(mechanics.mainDevice.logical, &allocInfo, nullptr,
+                       &bufferMemory) != VK_SUCCESS) {
+    throw std::runtime_error("failed to allocate buffer memory!");
+  }
+
+  vkBindBufferMemory(mechanics.mainDevice.logical, buffer, bufferMemory, 0);
+}
+
+void MemoryCommands::copyBuffer(VkBuffer srcBuffer,
+                                VkBuffer dstBuffer,
+                                VkDeviceSize size) {
+  VkCommandBufferAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+  allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+  allocInfo.commandPool = mechanics.commandPool;
+  allocInfo.commandBufferCount = 1;
+
+  VkCommandBuffer commandBuffer;
+  vkAllocateCommandBuffers(mechanics.mainDevice.logical, &allocInfo,
+                           &commandBuffer);
+
+  VkCommandBufferBeginInfo beginInfo{};
+  beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+  beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+  vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+  VkBufferCopy copyRegion{};
+  copyRegion.size = size;
+  vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+
+  vkEndCommandBuffer(commandBuffer);
+
+  VkSubmitInfo submitInfo{};
+  submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+  submitInfo.commandBufferCount = 1;
+  submitInfo.pCommandBuffers = &commandBuffer;
+
+  vkQueueSubmit(mechanics.queues.graphics, 1, &submitInfo, VK_NULL_HANDLE);
+  vkQueueWaitIdle(mechanics.queues.graphics);
+
+  vkFreeCommandBuffers(mechanics.mainDevice.logical, mechanics.commandPool, 1,
+                       &commandBuffer);
+}
+
+uint32_t MemoryCommands::findMemoryType(uint32_t typeFilter,
+                                        VkMemoryPropertyFlags properties) {
+  VkPhysicalDeviceMemoryProperties memProperties;
+  vkGetPhysicalDeviceMemoryProperties(mechanics.mainDevice.physical,
+                                      &memProperties);
+
+  for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+    if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags &
+                                    properties) == properties) {
+      return i;
+    }
+  }
+
+  throw std::runtime_error("failed to find suitable memory type!");
 }

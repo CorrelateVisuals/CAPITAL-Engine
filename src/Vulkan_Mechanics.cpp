@@ -653,7 +653,7 @@ void RenderConfiguration::createImage(uint32_t width,
   vkBindImageMemory(mechanics.mainDevice.logical, image, imageMemory, 0);
 }
 
-void RenderConfiguration::createFrameBuffer() {
+void RenderConfiguration::createFrameBuffers() {
   mechanics.swapChainFramebuffers.resize(mechanics.swapChainImageViews.size());
 
   VkImageView attachments[2];

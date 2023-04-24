@@ -22,12 +22,17 @@ class VulkanMechanics {
     VkDevice logical;
   } mainDevice;
 
+  struct Queues {
+    VkQueue graphics;
+    VkQueue compute;
+    VkQueue present;
+  } queues;
+
   std::vector<VkImage> swapChainImages;
   VkFormat swapChainImageFormat;
   std::vector<VkImageView> swapChainImageViews;
   VkExtent2D swapChainExtent;
   std::vector<VkFramebuffer> swapChainFramebuffers;
-
 
   VkCommandPool commandPool;
   std::vector<VkCommandBuffer> commandBuffers;
@@ -46,12 +51,6 @@ class VulkanMechanics {
 
  private:
   const std::vector<const char*> deviceExtensions;
-
-  struct Queues {
-    VkQueue graphics;
-    VkQueue compute;
-    VkQueue present;
-  } queues;
 
   struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
@@ -99,7 +98,7 @@ class RenderConfiguration {
 
   void createDepthResources();
 
-  void createFrameBuffer();
+  void createFrameBuffers();
 
   VkImage depthImage;
   VkDeviceMemory depthImageMemory;
