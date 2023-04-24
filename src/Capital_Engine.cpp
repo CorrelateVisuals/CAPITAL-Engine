@@ -53,8 +53,11 @@ void CapitalEngine::initVulkan() {
   memCommands.createShaderStorageBuffers();
   memCommands.createUniformBuffers();
 
-  // vulkanMechanics.createSyncObjects();
-  // vulkanMechanics.createCommandBuffers();
-  // renderConfig.createPipelineCache();
-  // renderConfig.setupFrameBuffer();
+  memCommands.createDescriptorPool();
+  memCommands.createComputeDescriptorSets();
+
+  memCommands.createCommandBuffers();
+  memCommands.createComputeCommandBuffers();
+
+  mechanics.createSyncObjects();
 }

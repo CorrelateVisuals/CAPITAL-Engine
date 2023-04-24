@@ -44,8 +44,8 @@ void Pipelines::createDescriptorSetLayout() {
   layoutInfo.pBindings = layoutBindings.data();
 
   if (vkCreateDescriptorSetLayout(mechanics.mainDevice.logical, &layoutInfo,
-                                  nullptr,
-                                  &descriptorSetLayout) != VK_SUCCESS) {
+                                  nullptr, &memCommands.descriptorSetLayout) !=
+      VK_SUCCESS) {
     throw std::runtime_error("failed to create compute descriptor set layout!");
   }
 }
@@ -160,7 +160,7 @@ void Pipelines::createGraphicsPipeline() {
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
   pipelineLayoutInfo.setLayoutCount = 0;
-  pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
+  pipelineLayoutInfo.pSetLayouts = &memCommands.descriptorSetLayout;
 
   if (vkCreatePipelineLayout(mechanics.mainDevice.logical, &pipelineLayoutInfo,
                              nullptr, &graphics.pipelineLayout) != VK_SUCCESS) {
@@ -212,7 +212,7 @@ void Pipelines::createComputePipeline() {
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
   pipelineLayoutInfo.setLayoutCount = 1;
-  pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
+  pipelineLayoutInfo.pSetLayouts = &memCommands.descriptorSetLayout;
 
   if (vkCreatePipelineLayout(mechanics.mainDevice.logical, &pipelineLayoutInfo,
                              nullptr, &compute.pipelineLayout) != VK_SUCCESS) {
@@ -306,6 +306,21 @@ void MemoryCommands::createCommandBuffers() {
     throw std::runtime_error("failed to allocate command buffers!");
   }
 }
+void MemoryCommands::createComputeCommandBuffers() {
+  computeCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
+  VkCommandBufferAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+  allocInfo.commandPool = commandPool;
+  allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+  allocInfo.commandBufferCount = (uint32_t)computeCommandBuffers.size();
+
+  if (vkAllocateCommandBuffers(mechanics.mainDevice.logical, &allocInfo,
+                               computeCommandBuffers.data()) != VK_SUCCESS) {
+    throw std::runtime_error("failed to allocate compute command buffers!");
+  }
+}
+
 void MemoryCommands::createShaderStorageBuffers() {
   // Initialize particles
   std::default_random_engine rndEngine((unsigned)time(nullptr));
@@ -373,6 +388,88 @@ void MemoryCommands::createUniformBuffers() {
 
     vkMapMemory(mechanics.mainDevice.logical, uniformBuffersMemory[i], 0,
                 bufferSize, 0, &uniformBuffersMapped[i]);
+  }
+}
+
+void MemoryCommands::createDescriptorPool() {
+  std::array<VkDescriptorPoolSize, 2> poolSizes{};
+  poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+  poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+  poolSizes[1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  poolSizes[1].descriptorCount =
+      static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT) * 2;
+
+  VkDescriptorPoolCreateInfo poolInfo{};
+  poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+  poolInfo.poolSizeCount = 2;
+  poolInfo.pPoolSizes = poolSizes.data();
+  poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+  if (vkCreateDescriptorPool(mechanics.mainDevice.logical, &poolInfo, nullptr,
+                             &descriptorPool) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create descriptor pool!");
+  }
+}
+void MemoryCommands::createComputeDescriptorSets() {
+  std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
+                                             descriptorSetLayout);
+  VkDescriptorSetAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+  allocInfo.descriptorPool = descriptorPool;
+  allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+  allocInfo.pSetLayouts = layouts.data();
+
+  computeDescriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+  if (vkAllocateDescriptorSets(mechanics.mainDevice.logical, &allocInfo,
+                               computeDescriptorSets.data()) != VK_SUCCESS) {
+    throw std::runtime_error("failed to allocate descriptor sets!");
+  }
+
+  for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+    VkDescriptorBufferInfo uniformBufferInfo{};
+    uniformBufferInfo.buffer = uniformBuffers[i];
+    uniformBufferInfo.offset = 0;
+    uniformBufferInfo.range = sizeof(UniformBufferObject);
+
+    std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
+    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[0].dstSet = computeDescriptorSets[i];
+    descriptorWrites[0].dstBinding = 0;
+    descriptorWrites[0].dstArrayElement = 0;
+    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites[0].descriptorCount = 1;
+    descriptorWrites[0].pBufferInfo = &uniformBufferInfo;
+
+    VkDescriptorBufferInfo storageBufferInfoLastFrame{};
+    storageBufferInfoLastFrame.buffer =
+        shaderStorageBuffers[(i - 1) % MAX_FRAMES_IN_FLIGHT];
+    storageBufferInfoLastFrame.offset = 0;
+    storageBufferInfoLastFrame.range = sizeof(World::Cell) * CELL_COUNT;
+
+    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[1].dstSet = computeDescriptorSets[i];
+    descriptorWrites[1].dstBinding = 1;
+    descriptorWrites[1].dstArrayElement = 0;
+    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    descriptorWrites[1].descriptorCount = 1;
+    descriptorWrites[1].pBufferInfo = &storageBufferInfoLastFrame;
+
+    VkDescriptorBufferInfo storageBufferInfoCurrentFrame{};
+    storageBufferInfoCurrentFrame.buffer = shaderStorageBuffers[i];
+    storageBufferInfoCurrentFrame.offset = 0;
+    storageBufferInfoCurrentFrame.range = sizeof(World::Cell) * CELL_COUNT;
+
+    descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites[2].dstSet = computeDescriptorSets[i];
+    descriptorWrites[2].dstBinding = 2;
+    descriptorWrites[2].dstArrayElement = 0;
+    descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    descriptorWrites[2].descriptorCount = 1;
+    descriptorWrites[2].pBufferInfo = &storageBufferInfoCurrentFrame;
+
+    vkUpdateDescriptorSets(mechanics.mainDevice.logical, 3,
+                           descriptorWrites.data(), 0, nullptr);
   }
 }
 

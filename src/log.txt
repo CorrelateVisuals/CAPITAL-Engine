@@ -1,55 +1,54 @@
-2023-04-25 01:03:24 . constructing Logging
-2023-04-25 01:03:24 .. constructing Validation Layers
-2023-04-25 01:03:24 ... constructing Memory Management
-2023-04-25 01:03:24 ... constructing Vulkan Mechanics
-2023-04-25 01:03:24 . . . . constructing Render Configuration
-2023-04-25 01:03:24 ... constructing Window
-2023-04-25 01:03:25 ... Window initialized with 1920 * 1080
-2023-04-25 01:03:25 [ Starting CAPITAL engine ]
-2023-04-25 01:03:25 ... constructing Capital Engine
-2023-04-25 01:03:25 ... initializing Capital Engine
-2023-04-25 01:03:25 .... creating Vulkan Instance
-2023-04-25 01:03:25 .... acquiring Required Extensions
-2023-04-25 01:03:25 .... creating Surface
-2023-04-25 01:03:25 .... picking Physical Device
-2023-04-25 01:03:25 .... checking if Physical Device is suitable
-2023-04-25 01:03:25 .... finding Queue Families
-2023-04-25 01:03:25 .... checking Device Extension Support
-2023-04-25 01:03:25  .... querying Swap Chain Support
-2023-04-25 01:03:25 ---- GPU: NVIDIA GeForce GTX 1070
-2023-04-25 01:03:25 .... creating Logical Device
-2023-04-25 01:03:25 .... finding Queue Families
-2023-04-25 01:03:25  .... creating Swap Chain
-2023-04-25 01:03:25  .... querying Swap Chain Support
-2023-04-25 01:03:25  .... choosing Swap Surface Format
-2023-04-25 01:03:25  .... choosing Swap Present Mode
-2023-04-25 01:03:25  .... choosing Swap Extent
-2023-04-25 01:03:25 .... finding Queue Families
-2023-04-25 01:03:25  . . . . creating Depth Resources
-2023-04-25 01:03:25  . . . . finding Depth Format
-2023-04-25 01:03:25  . . . . finding Supported Format
-2023-04-25 01:03:25  . . . . creating Image
-2023-04-25 01:03:25  . . . . finding Memory Type
-2023-04-25 01:03:25  . . . . creating Image View
-2023-04-25 01:03:25  . . . . creating Image Views
-2023-04-25 01:03:25 ))))) creating Render Pass
-2023-04-25 01:03:25  . . . . finding Depth Format
-2023-04-25 01:03:25  . . . . finding Supported Format
-2023-04-25 01:03:25 ### creating Graphics Pipeline
-2023-04-25 01:03:25 ))))) creating Compute Pipleline
-2023-04-25 01:03:25 Creating framebuffer  0  of  3
-2023-04-25 01:03:25 Creating framebuffer  1  of  3
-2023-04-25 01:03:25 Creating framebuffer  2  of  3
-2023-04-25 01:03:25 Framebuffers created successfully!
-2023-04-25 01:03:25 .... creating Command Pool
-2023-04-25 01:03:25 .... finding Queue Families
-2023-04-25 01:03:26 > > Mouse Click at 0.553125 : 0.331481
-2023-04-25 01:03:26 > > Mouse Click at 0.670312 : 0.419444
-2023-04-25 01:03:27 ... destructing Capital Engine
-2023-04-25 01:03:27 [ CAPITAL engine terminated ]
-2023-04-25 01:03:27 ... terminating Window
-2023-04-25 01:03:27 . . . . destructing Render Configuration
-2023-04-25 01:03:27 ... destructing Vulkan Mechanics
-2023-04-25 01:03:27 ... destructing Memory Management
-2023-04-25 01:03:27 .. destructing Validation Layers
-2023-04-25 01:03:27 . destructing Logging
+2023-04-25 01:41:54 . constructing Logging
+2023-04-25 01:41:54 .. constructing Validation Layers
+2023-04-25 01:41:54 ... constructing Memory Management
+2023-04-25 01:41:54 ... constructing Vulkan Mechanics
+2023-04-25 01:41:54 . . . . constructing Render Configuration
+2023-04-25 01:41:54 ... constructing Window
+2023-04-25 01:41:54 ... Window initialized with 1920 * 1080
+2023-04-25 01:41:54 [ Starting CAPITAL engine ]
+2023-04-25 01:41:54 ... constructing Capital Engine
+2023-04-25 01:41:54 ... initializing Capital Engine
+2023-04-25 01:41:54 .... creating Vulkan Instance
+2023-04-25 01:41:54 .... acquiring Required Extensions
+2023-04-25 01:41:54 .... creating Surface
+2023-04-25 01:41:54 .... picking Physical Device
+2023-04-25 01:41:54 .... checking if Physical Device is suitable
+2023-04-25 01:41:54 .... finding Queue Families
+2023-04-25 01:41:54 .... checking Device Extension Support
+2023-04-25 01:41:54  .... querying Swap Chain Support
+2023-04-25 01:41:54 ---- GPU: NVIDIA GeForce GTX 1070
+2023-04-25 01:41:54 .... creating Logical Device
+2023-04-25 01:41:54 .... finding Queue Families
+2023-04-25 01:41:54  .... creating Swap Chain
+2023-04-25 01:41:54  .... querying Swap Chain Support
+2023-04-25 01:41:55  .... choosing Swap Surface Format
+2023-04-25 01:41:55  .... choosing Swap Present Mode
+2023-04-25 01:41:55  .... choosing Swap Extent
+2023-04-25 01:41:55 .... finding Queue Families
+2023-04-25 01:41:55  . . . . creating Depth Resources
+2023-04-25 01:41:55  . . . . finding Depth Format
+2023-04-25 01:41:55  . . . . finding Supported Format
+2023-04-25 01:41:55  . . . . creating Image
+2023-04-25 01:41:55  . . . . finding Memory Type
+2023-04-25 01:41:55  . . . . creating Image View
+2023-04-25 01:41:55  . . . . creating Image Views
+2023-04-25 01:41:55 ))))) creating Render Pass
+2023-04-25 01:41:55  . . . . finding Depth Format
+2023-04-25 01:41:55  . . . . finding Supported Format
+2023-04-25 01:41:55 ### creating Graphics Pipeline
+2023-04-25 01:41:55 ))))) creating Compute Pipleline
+2023-04-25 01:41:55 Creating framebuffer  0  of  3
+2023-04-25 01:41:55 Creating framebuffer  1  of  3
+2023-04-25 01:41:55 Creating framebuffer  2  of  3
+2023-04-25 01:41:55 Framebuffers created successfully!
+2023-04-25 01:41:55 .... creating Command Pool
+2023-04-25 01:41:55 .... finding Queue Families
+2023-04-25 01:41:55 .... creating Command Buffers
+2023-04-25 01:41:55 ... destructing Capital Engine
+2023-04-25 01:41:55 [ CAPITAL engine terminated ]
+2023-04-25 01:41:55 ... terminating Window
+2023-04-25 01:41:55 . . . . destructing Render Configuration
+2023-04-25 01:41:55 ... destructing Vulkan Mechanics
+2023-04-25 01:41:55 ... destructing Memory Management
+2023-04-25 01:41:55 .. destructing Validation Layers
+2023-04-25 01:41:55 . destructing Logging

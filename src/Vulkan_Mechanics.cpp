@@ -270,12 +270,11 @@ VkExtent2D VulkanMechanics::chooseSwapExtent(
 }
 
 void VulkanMechanics::createSyncObjects() {
-  LOG(" .... creating Sync Objects");
-  int maxFrames = MAX_FRAMES_IN_FLIGHT;
-
-  imageAvailableSemaphores.resize(maxFrames);
-  renderFinishedSemaphores.resize(maxFrames);
-  inFlightFences.resize(maxFrames);
+  imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+  renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+  computeFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+  inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+  computeInFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
 
   VkSemaphoreCreateInfo semaphoreInfo{};
   semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -284,15 +283,22 @@ void VulkanMechanics::createSyncObjects() {
   fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
   fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-  for (size_t i = 0; i < maxFrames; i++) {
-    if (vkCreateSemaphore(mainDevice.logical, &semaphoreInfo, nullptr,
+  for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+    if (vkCreateSemaphore(mechanics.mainDevice.logical, &semaphoreInfo, nullptr,
                           &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-        vkCreateSemaphore(mainDevice.logical, &semaphoreInfo, nullptr,
+        vkCreateSemaphore(mechanics.mainDevice.logical, &semaphoreInfo, nullptr,
                           &renderFinishedSemaphores[i]) != VK_SUCCESS ||
-        vkCreateFence(mainDevice.logical, &fenceInfo, nullptr,
+        vkCreateFence(mechanics.mainDevice.logical, &fenceInfo, nullptr,
                       &inFlightFences[i]) != VK_SUCCESS) {
       throw std::runtime_error(
-          "failed to create synchronization objects for a frame!");
+          "failed to create graphics synchronization objects for a frame!");
+    }
+    if (vkCreateSemaphore(mechanics.mainDevice.logical, &semaphoreInfo, nullptr,
+                          &computeFinishedSemaphores[i]) != VK_SUCCESS ||
+        vkCreateFence(mechanics.mainDevice.logical, &fenceInfo, nullptr,
+                      &computeInFlightFences[i]) != VK_SUCCESS) {
+      throw std::runtime_error(
+          "failed to create compute synchronization objects for a frame!");
     }
   }
 }

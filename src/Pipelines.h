@@ -2,8 +2,6 @@
 
 class Pipelines {
  public:
-  VkDescriptorSetLayout descriptorSetLayout;
-
   struct Graphics {
     VkPipelineLayout pipelineLayout;
     VkPipeline pipeline;
@@ -35,12 +33,22 @@ class MemoryCommands {
 
   VkCommandPool commandPool;
   std::vector<VkCommandBuffer> commandBuffers;
+  std::vector<VkCommandBuffer> computeCommandBuffers;
+
+  VkDescriptorSetLayout descriptorSetLayout;
+  VkDescriptorPool descriptorPool;
+  std::vector<VkDescriptorSet> computeDescriptorSets;
+
 
   void createCommandPool();
   void createCommandBuffers();
+  void createComputeCommandBuffers();
 
   void createShaderStorageBuffers();
   void createUniformBuffers();
+
+  void createDescriptorPool();
+  void createComputeDescriptorSets();
 
  private:
   std::vector<VkBuffer> shaderStorageBuffers;

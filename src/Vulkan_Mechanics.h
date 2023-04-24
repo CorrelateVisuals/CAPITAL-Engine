@@ -64,7 +64,10 @@ class VulkanMechanics {
 
   std::vector<VkSemaphore> imageAvailableSemaphores;
   std::vector<VkSemaphore> renderFinishedSemaphores;
+  std::vector<VkSemaphore> computeFinishedSemaphores;
   std::vector<VkFence> inFlightFences;
+  std::vector<VkFence> computeInFlightFences;
+  uint32_t currentFrame = 0;
 
   VkFormat depthFormat;
 
