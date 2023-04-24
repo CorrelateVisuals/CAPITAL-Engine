@@ -7,8 +7,6 @@
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-std::ostream& operator<<(std::ostream& os, VkPhysicalDeviceProperties& device);
-
 class VulkanMechanics {
  public:
   VulkanMechanics();
@@ -28,14 +26,19 @@ class VulkanMechanics {
     VkQueue present;
   } queues;
 
+  struct QueueFamilyIndices {
+    std::optional<uint32_t> graphicsFamily;
+    std::optional<uint32_t> presentFamily;
+    bool isComplete() const {
+      return graphicsFamily.has_value() && presentFamily.has_value();
+    }
+  } queueFamilyIndices;
+
   std::vector<VkImage> swapChainImages;
   VkFormat swapChainImageFormat;
   std::vector<VkImageView> swapChainImageViews;
   VkExtent2D swapChainExtent;
   std::vector<VkFramebuffer> swapChainFramebuffers;
-
-  VkCommandPool commandPool;
-  std::vector<VkCommandBuffer> commandBuffers;
 
   void createInstance();
   void createSurface();
@@ -46,19 +49,10 @@ class VulkanMechanics {
   void createSwapChain();
   void createSyncObjects();
 
-  void createCommandPool();
-  void createCommandBuffers();
+  QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physical);
 
  private:
   const std::vector<const char*> deviceExtensions;
-
-  struct QueueFamilyIndices {
-    std::optional<uint32_t> graphicsFamily;
-    std::optional<uint32_t> presentFamily;
-    bool isComplete() const {
-      return graphicsFamily.has_value() && presentFamily.has_value();
-    }
-  } queueFamilyIndices;
 
   struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -76,10 +70,8 @@ class VulkanMechanics {
 
   std::vector<const char*> getRequiredExtensions();
   bool isDeviceSuitable(VkPhysicalDevice physical);
-  QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physical);
   bool checkDeviceExtensionSupport(VkPhysicalDevice physical);
   SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physical);
-
   VkSurfaceFormatKHR chooseSwapSurfaceFormat(
       const std::vector<VkSurfaceFormatKHR>& availableFormats);
   VkPresentModeKHR chooseSwapPresentMode(
@@ -93,18 +85,17 @@ class RenderConfiguration {
   RenderConfiguration();
   ~RenderConfiguration();
 
-  void createImageViews();
-  void createRenderPass();
-
-  void createDepthResources();
-
-  void createFrameBuffers();
-
   VkImage depthImage;
   VkDeviceMemory depthImageMemory;
   VkImageView depthImageView;
 
   VkRenderPass renderPass;
+
+  void createImageViews();
+  void createRenderPass();
+
+  void createDepthResources();
+  void createFrameBuffers();
 
  private:
   VkFormat findDepthFormat();

@@ -29,11 +29,26 @@ class MemoryCommands {
   MemoryCommands();
   ~MemoryCommands();
 
+  struct UniformBufferObject {
+    float deltaTime = 1.0f;
+  };
+
+  VkCommandPool commandPool;
+  std::vector<VkCommandBuffer> commandBuffers;
+
+  void createCommandPool();
+  void createCommandBuffers();
+
   void createShaderStorageBuffers();
+  void createUniformBuffers();
 
  private:
   std::vector<VkBuffer> shaderStorageBuffers;
   std::vector<VkDeviceMemory> shaderStorageBuffersMemory;
+
+  std::vector<VkBuffer> uniformBuffers;
+  std::vector<VkDeviceMemory> uniformBuffersMemory;
+  std::vector<void*> uniformBuffersMapped;
 
   void createBuffer(VkDeviceSize size,
                     VkBufferUsageFlags usage,

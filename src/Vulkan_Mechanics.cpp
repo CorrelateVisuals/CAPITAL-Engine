@@ -15,8 +15,6 @@
 VulkanMechanics::VulkanMechanics()
     : surface{},
       instance{},
-      commandPool{},
-      commandBuffers{},
       mainDevice{VK_NULL_HANDLE, VK_NULL_HANDLE},
       deviceExtensions{VK_KHR_SWAPCHAIN_EXTENSION_NAME},
       queues{},
@@ -86,22 +84,6 @@ void VulkanMechanics::createSurface() {
   if (glfwCreateWindowSurface(instance, mainWindow.window, nullptr, &surface) !=
       VK_SUCCESS) {
     throw std::runtime_error("failed to create window surface!");
-  }
-}
-
-void VulkanMechanics::createCommandBuffers() {
-  LOG(".... creating Command Buffers");
-  commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-
-  VkCommandBufferAllocateInfo allocInfo{};
-  allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-  allocInfo.commandPool = commandPool;
-  allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-  allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
-
-  if (vkAllocateCommandBuffers(mainDevice.logical, &allocInfo,
-                               commandBuffers.data()) != VK_SUCCESS) {
-    throw std::runtime_error("failed to allocate command buffers!");
   }
 }
 
@@ -315,22 +297,6 @@ void VulkanMechanics::createSyncObjects() {
   }
 }
 
-void VulkanMechanics::createCommandPool() {
-  LOG(".... creating Command Pool");
-  VulkanMechanics::QueueFamilyIndices queueFamilyIndices =
-      findQueueFamilies(mainDevice.physical);
-
-  VkCommandPoolCreateInfo poolInfo{};
-  poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-  poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-  poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-
-  if (vkCreateCommandPool(mainDevice.logical, &poolInfo, nullptr,
-                          &commandPool) != VK_SUCCESS) {
-    throw std::runtime_error("failed to create command pool!");
-  }
-}
-
 bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physical) {
   LOG(".... checking if Physical Device is suitable");
 
@@ -451,11 +417,6 @@ VulkanMechanics::SwapChainSupportDetails VulkanMechanics::querySwapChainSupport(
       physical, surface, &presentModeCount, details.presentModes.data());
 
   return details;
-}
-
-std::ostream& operator<<(std::ostream& os, VkPhysicalDeviceProperties& device) {
-  // os << device.limits.maxUniformBufferRange;
-  return os;
 }
 
 RenderConfiguration::RenderConfiguration()

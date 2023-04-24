@@ -275,6 +275,37 @@ MemoryCommands::~MemoryCommands() {
   LOG("... destructing Memory Management");
 }
 
+void MemoryCommands::createCommandPool() {
+  LOG(".... creating Command Pool");
+  VulkanMechanics::QueueFamilyIndices queueFamilyIndices =
+      mechanics.findQueueFamilies(mechanics.mainDevice.physical);
+
+  VkCommandPoolCreateInfo poolInfo{};
+  poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+  poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+  poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+
+  if (vkCreateCommandPool(mechanics.mainDevice.logical, &poolInfo, nullptr,
+                          &commandPool) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create command pool!");
+  }
+}
+
+void MemoryCommands::createCommandBuffers() {
+  LOG(".... creating Command Buffers");
+  commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
+  VkCommandBufferAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+  allocInfo.commandPool = commandPool;
+  allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+  allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
+
+  if (vkAllocateCommandBuffers(mechanics.mainDevice.logical, &allocInfo,
+                               commandBuffers.data()) != VK_SUCCESS) {
+    throw std::runtime_error("failed to allocate command buffers!");
+  }
+}
 void MemoryCommands::createShaderStorageBuffers() {
   // Initialize particles
   std::default_random_engine rndEngine((unsigned)time(nullptr));
@@ -327,6 +358,24 @@ void MemoryCommands::createShaderStorageBuffers() {
   vkFreeMemory(mechanics.mainDevice.logical, stagingBufferMemory, nullptr);
 }
 
+void MemoryCommands::createUniformBuffers() {
+  VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+  uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+  uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+  uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+
+  for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+    createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                     VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                 uniformBuffers[i], uniformBuffersMemory[i]);
+
+    vkMapMemory(mechanics.mainDevice.logical, uniformBuffersMemory[i], 0,
+                bufferSize, 0, &uniformBuffersMapped[i]);
+  }
+}
+
 void MemoryCommands::createBuffer(VkDeviceSize size,
                                   VkBufferUsageFlags usage,
                                   VkMemoryPropertyFlags properties,
@@ -367,7 +416,7 @@ void MemoryCommands::copyBuffer(VkBuffer srcBuffer,
   VkCommandBufferAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-  allocInfo.commandPool = mechanics.commandPool;
+  allocInfo.commandPool = commandPool;
   allocInfo.commandBufferCount = 1;
 
   VkCommandBuffer commandBuffer;
@@ -394,7 +443,7 @@ void MemoryCommands::copyBuffer(VkBuffer srcBuffer,
   vkQueueSubmit(mechanics.queues.graphics, 1, &submitInfo, VK_NULL_HANDLE);
   vkQueueWaitIdle(mechanics.queues.graphics);
 
-  vkFreeCommandBuffers(mechanics.mainDevice.logical, mechanics.commandPool, 1,
+  vkFreeCommandBuffers(mechanics.mainDevice.logical, commandPool, 1,
                        &commandBuffer);
 }
 

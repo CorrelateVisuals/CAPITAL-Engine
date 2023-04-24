@@ -49,7 +49,9 @@ void CapitalEngine::initVulkan() {
 
   renderConfig.createFrameBuffers();
 
-  mechanics.createCommandPool();
+  memCommands.createCommandPool();
+  memCommands.createShaderStorageBuffers();
+  memCommands.createUniformBuffers();
 
   // vulkanMechanics.createSyncObjects();
   // vulkanMechanics.createCommandBuffers();
