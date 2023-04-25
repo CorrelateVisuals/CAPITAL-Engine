@@ -106,6 +106,7 @@ class RenderConfiguration {
   VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
                                VkImageTiling tiling,
                                VkFormatFeatureFlags features);
+  bool hasStencilComponent(VkFormat format);
   void createImage(uint32_t width,
                    uint32_t height,
                    VkFormat format,

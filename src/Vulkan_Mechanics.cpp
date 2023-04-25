@@ -464,6 +464,10 @@ void RenderConfiguration::createImageViews() {
   mechanics.swapChainImageViews.resize(mechanics.swapChainImages.size());
 
   for (size_t i = 0; i < mechanics.swapChainImages.size(); i++) {
+    mechanics.swapChainImageViews[i] = createImageView(
+        mechanics.swapChainImages[i], mechanics.swapChainImageFormat,
+        VK_IMAGE_ASPECT_COLOR_BIT);
+
     VkImageViewCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     createInfo.image = mechanics.swapChainImages[i];
@@ -515,6 +519,11 @@ VkFormat RenderConfiguration::findSupportedFormat(
     }
   }
   throw std::runtime_error("failed to find supported format!");
+}
+
+bool RenderConfiguration::hasStencilComponent(VkFormat format) {
+  return format == VK_FORMAT_D32_SFLOAT_S8_UINT ||
+         format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
 
 void RenderConfiguration::createRenderPass() {
