@@ -39,6 +39,7 @@ class MemoryCommands {
   VkDescriptorPool descriptorPool;
   std::vector<VkDescriptorSet> computeDescriptorSets;
 
+  float lastFrameTime = 0.0f;
 
   void createCommandPool();
   void createCommandBuffers();
@@ -49,6 +50,11 @@ class MemoryCommands {
 
   void createDescriptorPool();
   void createComputeDescriptorSets();
+
+  void updateUniformBuffer(uint32_t currentImage);
+
+  void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);
+  void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
  private:
   std::vector<VkBuffer> shaderStorageBuffers;

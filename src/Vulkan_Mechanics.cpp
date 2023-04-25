@@ -382,6 +382,15 @@ void VulkanMechanics::createSwapChain() {
   swapChainExtent = extent;
 }
 
+void VulkanMechanics::recreateSwapChain() {
+  int width = 0, height = 0;
+  glfwGetFramebufferSize(mainWindow.window, &width, &height);
+  while (width == 0 || height == 0) {
+    glfwGetFramebufferSize(mainWindow.window, &width, &height);
+    glfwWaitEvents();
+  }
+}
+
 std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
   LOG(".... acquiring Required Extensions");
 

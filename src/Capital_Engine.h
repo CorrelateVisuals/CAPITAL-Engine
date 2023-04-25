@@ -9,4 +9,5 @@ class CapitalEngine {
 
  private:
   void initVulkan();
+  void drawFrame();
 };

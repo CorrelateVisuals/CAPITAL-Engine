@@ -34,11 +34,19 @@ class VulkanMechanics {
     }
   } queueFamilyIndices;
 
+  VkSwapchainKHR swapChain;
   std::vector<VkImage> swapChainImages;
   VkFormat swapChainImageFormat;
   std::vector<VkImageView> swapChainImageViews;
   VkExtent2D swapChainExtent;
   std::vector<VkFramebuffer> swapChainFramebuffers;
+
+  std::vector<VkSemaphore> imageAvailableSemaphores;
+  std::vector<VkSemaphore> renderFinishedSemaphores;
+  std::vector<VkSemaphore> computeFinishedSemaphores;
+  std::vector<VkFence> inFlightFences;
+  std::vector<VkFence> computeInFlightFences;
+  uint32_t currentFrame = 0;
 
   void createInstance();
   void createSurface();
@@ -47,6 +55,8 @@ class VulkanMechanics {
   void createLogicalDevice();
 
   void createSwapChain();
+  void recreateSwapChain();
+
   void createSyncObjects();
 
   QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physical);
@@ -59,15 +69,6 @@ class VulkanMechanics {
     std::vector<VkSurfaceFormatKHR> formats;
     std::vector<VkPresentModeKHR> presentModes;
   } swapChainSupport;
-
-  VkSwapchainKHR swapChain;
-
-  std::vector<VkSemaphore> imageAvailableSemaphores;
-  std::vector<VkSemaphore> renderFinishedSemaphores;
-  std::vector<VkSemaphore> computeFinishedSemaphores;
-  std::vector<VkFence> inFlightFences;
-  std::vector<VkFence> computeInFlightFences;
-  uint32_t currentFrame = 0;
 
   VkFormat depthFormat;
 
