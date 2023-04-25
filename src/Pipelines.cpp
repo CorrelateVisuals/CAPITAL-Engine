@@ -333,7 +333,7 @@ void MemoryCommands::createShaderStorageBuffers() {
     float theta = rndDist(rndEngine) * 2.0f * 3.14159265358979323846f;
     float x = r * cos(theta) * displayConfig.height / displayConfig.width;
     float y = r * sin(theta);
-    particle.position = glm::vec3(x, y, 0);
+    particle.position = glm::vec2(x, y);
     particle.velocity = glm::normalize(glm::vec2(x, y)) * 0.00025f;
     particle.color = glm::vec4(rndDist(rndEngine), rndDist(rndEngine),
                                rndDist(rndEngine), 1.0f);
