@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "Capital_Engine.h"
 #include "Debug.h"
 #include "Settings.h"
 #include "Window.h"

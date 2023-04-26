@@ -6,6 +6,7 @@
 #include <set>
 #include <stdexcept>
 
+#include "Capital_Engine.h"
 #include "Debug.h"
 #include "Pipelines.h"
 #include "Settings.h"
@@ -57,16 +58,17 @@ void VulkanMechanics::createInstance() {
   instanceCreateInfo.ppEnabledExtensionNames = requiredExtensions.data();
 
   VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
-  if (debug.enableValidationLayers) {
-    if (!debug.checkValidationLayerSupport()) {
+  if (Globals::obj.debug.enableValidationLayers) {
+    if (!Globals::obj.debug.checkValidationLayerSupport()) {
       throw std::runtime_error(
           "validation layers requested, but not available!");
     }
     instanceCreateInfo.enabledLayerCount =
-        static_cast<uint32_t>(debug.validationLayers.size());
-    instanceCreateInfo.ppEnabledLayerNames = debug.validationLayers.data();
+        static_cast<uint32_t>(Globals::obj.debug.validationLayers.size());
+    instanceCreateInfo.ppEnabledLayerNames =
+        Globals::obj.debug.validationLayers.data();
 
-    debug.populateDebugMessengerCreateInfo(debugCreateInfo);
+    Globals::obj.debug.populateDebugMessengerCreateInfo(debugCreateInfo);
     instanceCreateInfo.pNext =
         (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
   } else {
@@ -82,8 +84,8 @@ void VulkanMechanics::createInstance() {
 void VulkanMechanics::createSurface() {
   LOG("{ [] }", "creating Surface");
 
-  if (glfwCreateWindowSurface(instance, mainWindow.window, nullptr, &surface) !=
-      VK_SUCCESS) {
+  if (glfwCreateWindowSurface(instance, Globals::obj.mainWindow.window, nullptr,
+                              &surface) != VK_SUCCESS) {
     throw std::runtime_error("failed to create window surface!");
   }
 }
@@ -202,10 +204,10 @@ void VulkanMechanics::createLogicalDevice() {
       static_cast<uint32_t>(deviceExtensions.size());
   createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-  if (debug.enableValidationLayers) {
+  if (Globals::obj.debug.enableValidationLayers) {
     createInfo.enabledLayerCount =
-        static_cast<uint32_t>(debug.validationLayers.size());
-    createInfo.ppEnabledLayerNames = debug.validationLayers.data();
+        static_cast<uint32_t>(Globals::obj.debug.validationLayers.size());
+    createInfo.ppEnabledLayerNames = Globals::obj.debug.validationLayers.data();
   } else {
     createInfo.enabledLayerCount = 0;
   }
@@ -254,7 +256,7 @@ VkExtent2D VulkanMechanics::chooseSwapExtent(
     return capabilities.currentExtent;
   } else {
     int width, height;
-    glfwGetFramebufferSize(mainWindow.window, &width, &height);
+    glfwGetFramebufferSize(Globals::obj.mainWindow.window, &width, &height);
 
     VkExtent2D actualExtent = {static_cast<uint32_t>(width),
                                static_cast<uint32_t>(height)};
@@ -399,9 +401,9 @@ void VulkanMechanics::createSwapChain() {
 
 void VulkanMechanics::recreateSwapChain() {
   int width = 0, height = 0;
-  glfwGetFramebufferSize(mainWindow.window, &width, &height);
+  glfwGetFramebufferSize(Globals::obj.mainWindow.window, &width, &height);
   while (width == 0 || height == 0) {
-    glfwGetFramebufferSize(mainWindow.window, &width, &height);
+    glfwGetFramebufferSize(Globals::obj.mainWindow.window, &width, &height);
     glfwWaitEvents();
   }
 
@@ -425,7 +427,7 @@ std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
   std::vector<const char*> extensions(glfwExtensions,
                                       glfwExtensions + glfwExtensionCount);
 
-  if (debug.enableValidationLayers) {
+  if (Globals::obj.debug.enableValidationLayers) {
     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
   }
 

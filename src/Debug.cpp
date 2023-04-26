@@ -4,6 +4,7 @@
 #include <set>
 #include <string>
 
+#include "Capital_Engine.h"
 #include "Debug.h"
 
 Logging::Logging()

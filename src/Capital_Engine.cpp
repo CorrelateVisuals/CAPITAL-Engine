@@ -18,10 +18,11 @@ CapitalEngine::~CapitalEngine() {
 
 void CapitalEngine::mainLoop() {
   LOG("{ main }", "running ...");
-  while (!glfwWindowShouldClose(mainWindow.window)) {
+  while (!glfwWindowShouldClose(Globals::obj.mainWindow.window)) {
     glfwPollEvents();
     drawFrame();
-    mainWindow.mouseClick(mainWindow.window, GLFW_MOUSE_BUTTON_LEFT);
+    Globals::obj.mainWindow.mouseClick(Globals::obj.mainWindow.window,
+                                       GLFW_MOUSE_BUTTON_LEFT);
   }
   LOG("{ main }", "terminated");
 }
@@ -31,7 +32,7 @@ void CapitalEngine::initVulkan() {
 
   // Init Vulkan
   mechanics.createInstance();
-  debug.setupDebugMessenger(mechanics.instance);
+  Globals::obj.debug.setupDebugMessenger(mechanics.instance);
   mechanics.createSurface();
 
   // GPU handling
@@ -166,8 +167,8 @@ void CapitalEngine::drawFrame() {
   result = vkQueuePresentKHR(mechanics.queues.present, &presentInfo);
 
   if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
-      mainWindow.framebufferResized) {
-    mainWindow.framebufferResized = false;
+      Globals::obj.mainWindow.framebufferResized) {
+    Globals::obj.mainWindow.framebufferResized = false;
     mechanics.recreateSwapChain();
   } else if (result != VK_SUCCESS) {
     throw std::runtime_error("failed to present swap chain image!");
@@ -231,15 +232,15 @@ void CapitalEngine::cleanup() {
 
   vkDestroyDevice(mechanics.mainDevice.logical, nullptr);
 
-  if (debug.enableValidationLayers) {
-    debug.DestroyDebugUtilsMessengerEXT(mechanics.instance,
-                                        debug.debugMessenger, nullptr);
+  if (Globals::obj.debug.enableValidationLayers) {
+    Globals::obj.debug.DestroyDebugUtilsMessengerEXT(
+        mechanics.instance, Globals::obj.debug.debugMessenger, nullptr);
   }
 
   vkDestroySurfaceKHR(mechanics.instance, mechanics.surface, nullptr);
   vkDestroyInstance(mechanics.instance, nullptr);
 
-  glfwDestroyWindow(mainWindow.window);
+  glfwDestroyWindow(Globals::obj.mainWindow.window);
 
   glfwTerminate();
 }

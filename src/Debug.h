@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <vector>
 
-#define LOG logging.console
+#define LOG Globals::obj.logging.console
 
 class Logging {
  public:
@@ -38,7 +38,7 @@ class Logging {
  private:
   std::string returnDateAndTime();
 };
-inline Logging logging;
+// inline Logging logging;
 
 class ValidationLayers {
  public:
@@ -81,4 +81,4 @@ class ValidationLayers {
       const VkAllocationCallbacks* pAllocator,
       VkDebugUtilsMessengerEXT* pDebugMessenger);
 };
-inline ValidationLayers debug;
+// inline ValidationLayers debug;
