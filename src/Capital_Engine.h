@@ -41,11 +41,11 @@ class Globals {
   inline static Objects obj;
 };
 
-constexpr auto& LOG = Globals::obj.logging;
-constexpr auto& LOG_LAYERS = Globals::obj.validationLayers;
-constexpr auto& WINDOW = Globals::obj.mainWindow;
-constexpr auto& MECHANICS = Globals::obj.mechanics;
-constexpr auto& RENDER_CONFIG = Globals::obj.renderConfig;
-constexpr auto& MEM_COMMANDS = Globals::obj.memCommands;
-constexpr auto& PIPELINES = Globals::obj.pipelines;
-constexpr auto& WORLD = Globals::obj.world;
+constexpr auto& _log = Globals::obj.logging;
+constexpr auto& _validationLayers = Globals::obj.validationLayers;
+constexpr auto& _window = Globals::obj.mainWindow;
+constexpr auto& _mechanics = Globals::obj.mechanics;
+constexpr auto& _renderConfig = Globals::obj.renderConfig;
+constexpr auto& _memCommands = Globals::obj.memCommands;
+constexpr auto& _pipelines = Globals::obj.pipelines;
+constexpr auto& _world = Globals::obj.world;

@@ -5,24 +5,23 @@
 #include <string>
 
 #include "Capital_Engine.h"
-#include "Debug.h"
 
 Logging::Logging()
     : logFile("log.txt", std::ofstream::out | std::ofstream::trunc) {
-  LOG.console("{ . }", "constructing Logging");
+  _log.console("{ . }", "constructing Logging");
 }
 
 Logging::~Logging() {
-  LOG.console("{ . }", "destructing Logging");
+  _log.console("{ . }", "destructing Logging");
 }
 
 ValidationLayers::ValidationLayers()
     : debugMessenger{}, validationLayers{"VK_LAYER_KHRONOS_validation"} {
-  LOG.console("{ = }", "constructing Validation Layers");
+  _log.console("{ = }", "constructing Validation Layers");
 }
 
 ValidationLayers::~ValidationLayers() {
-  LOG.console("{ = }", "destructing Validation Layers");
+  _log.console("{ = }", "destructing Validation Layers");
 }
 
 void ValidationLayers::logValidationMessage(const std::string& string,
@@ -30,8 +29,8 @@ void ValidationLayers::logValidationMessage(const std::string& string,
   if (string.find(excludeError) != std::string::npos)
     return;
 
-  LOG.console("\n\n                     > > > Validation Layer: ", string,
-              "\n");
+  _log.console("\n\n                     > > > Validation Layer: ", string,
+               "\n");
 }
 
 VkResult ValidationLayers::CreateDebugUtilsMessengerEXT(

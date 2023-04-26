@@ -1,6 +1,9 @@
 #include "World.h"
+#include "Capital_Engine.h"
 
-World::World() {}
+World::World() {
+  _log.console("{ (:) }", "constructing World");
+}
 
 World::~World() {}
 
