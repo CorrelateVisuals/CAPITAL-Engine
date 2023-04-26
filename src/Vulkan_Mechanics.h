@@ -59,6 +59,8 @@ class VulkanMechanics {
 
   void createSyncObjects();
 
+  void cleanupSwapChain();
+
   QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physical);
 
  private:

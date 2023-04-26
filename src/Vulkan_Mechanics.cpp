@@ -7,6 +7,7 @@
 #include <stdexcept>
 
 #include "Debug.h"
+#include "Pipelines.h"
 #include "Settings.h"
 #include "Vulkan_Mechanics.h"
 #include "Window.h"
@@ -27,15 +28,15 @@ VulkanMechanics::VulkanMechanics()
       imageAvailableSemaphores{},
       renderFinishedSemaphores{},
       inFlightFences{} {
-  LOG("... constructing Vulkan Mechanics");
+  LOG("{ # }", "constructing Vulkan Mechanics");
 }
 
 VulkanMechanics::~VulkanMechanics() {
-  LOG("... destructing Vulkan Mechanics");
+  LOG("{ # }", "destructing Vulkan Mechanics");
 }
 
 void VulkanMechanics::createInstance() {
-  LOG(".... creating Vulkan Instance");
+  LOG("{ vk }", "creating Vulkan Instance");
 
   const std::vector<const char*> requiredExtensions = getRequiredExtensions();
 
@@ -79,7 +80,7 @@ void VulkanMechanics::createInstance() {
 }
 
 void VulkanMechanics::createSurface() {
-  LOG(".... creating Surface");
+  LOG("{ [] }", "creating Surface");
 
   if (glfwCreateWindowSurface(instance, mainWindow.window, nullptr, &surface) !=
       VK_SUCCESS) {
@@ -88,7 +89,7 @@ void VulkanMechanics::createSurface() {
 }
 
 void VulkanMechanics::pickPhysicalDevice() {
-  LOG(".... picking Physical Device");
+  LOG("{ ## }", "picking Physical Device");
 
   uint32_t deviceCount = 0;
   vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -106,7 +107,7 @@ void VulkanMechanics::pickPhysicalDevice() {
 
       VkPhysicalDeviceProperties deviceProperties;
       vkGetPhysicalDeviceProperties(device, &deviceProperties);
-      LOG("---- GPU:", deviceProperties.deviceName);
+      LOG("{ ## }", "GPU picked:", deviceProperties.deviceName);
       break;
     }
   }
@@ -118,7 +119,7 @@ void VulkanMechanics::pickPhysicalDevice() {
 
 VulkanMechanics::QueueFamilyIndices VulkanMechanics::findQueueFamilies(
     VkPhysicalDevice physical) {
-  LOG(".... finding Queue Families");
+  LOG("  ....  ", "finding Queue Families");
 
   VulkanMechanics::QueueFamilyIndices indices;
 
@@ -148,7 +149,7 @@ VulkanMechanics::QueueFamilyIndices VulkanMechanics::findQueueFamilies(
 }
 
 bool VulkanMechanics::checkDeviceExtensionSupport(VkPhysicalDevice physical) {
-  LOG(".... checking Device Extension Support");
+  LOG("  ....  ", "checking Device Extension Support");
 
   uint32_t extensionCount;
   vkEnumerateDeviceExtensionProperties(physical, nullptr, &extensionCount,
@@ -167,7 +168,7 @@ bool VulkanMechanics::checkDeviceExtensionSupport(VkPhysicalDevice physical) {
 }
 
 void VulkanMechanics::createLogicalDevice() {
-  LOG(".... creating Logical Device");
+  LOG("{ ++ }", "creating Logical Device");
 
   VulkanMechanics::QueueFamilyIndices indices =
       findQueueFamilies(mainDevice.physical);
@@ -224,7 +225,7 @@ void VulkanMechanics::createLogicalDevice() {
 
 VkSurfaceFormatKHR VulkanMechanics::chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR>& availableFormats) {
-  LOG(" .... choosing Swap Surface Format");
+  LOG("  ....  ", "choosing Swap Surface Format");
   for (const auto& availableFormat : availableFormats) {
     if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
         availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
@@ -236,7 +237,7 @@ VkSurfaceFormatKHR VulkanMechanics::chooseSwapSurfaceFormat(
 
 VkPresentModeKHR VulkanMechanics::chooseSwapPresentMode(
     const std::vector<VkPresentModeKHR>& availablePresentModes) {
-  LOG(" .... choosing Swap Present Mode");
+  LOG("  ....  ", "choosing Swap Present Mode");
   for (const auto& availablePresentMode : availablePresentModes) {
     if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
       return availablePresentMode;
@@ -247,7 +248,7 @@ VkPresentModeKHR VulkanMechanics::chooseSwapPresentMode(
 
 VkExtent2D VulkanMechanics::chooseSwapExtent(
     const VkSurfaceCapabilitiesKHR& capabilities) {
-  LOG(" .... choosing Swap Extent");
+  LOG("  ....  ", "choosing Swap Extent");
   if (capabilities.currentExtent.width !=
       std::numeric_limits<uint32_t>::max()) {
     return capabilities.currentExtent;
@@ -303,8 +304,20 @@ void VulkanMechanics::createSyncObjects() {
   }
 }
 
+void VulkanMechanics::cleanupSwapChain() {
+  for (auto framebuffer : swapChainFramebuffers) {
+    vkDestroyFramebuffer(mechanics.mainDevice.logical, framebuffer, nullptr);
+  }
+
+  for (auto imageView : swapChainImageViews) {
+    vkDestroyImageView(mechanics.mainDevice.logical, imageView, nullptr);
+  }
+
+  vkDestroySwapchainKHR(mechanics.mainDevice.logical, swapChain, nullptr);
+}
+
 bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physical) {
-  LOG(".... checking if Physical Device is suitable");
+  LOG("  ....  ", "checking if Physical Device is suitable");
 
   QueueFamilyIndices indices = findQueueFamilies(physical);
 
@@ -321,7 +334,7 @@ bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physical) {
 }
 
 void VulkanMechanics::createSwapChain() {
-  LOG(" .... creating Swap Chain");
+  LOG("{ <> }", "creating Swap Chain");
   VulkanMechanics::SwapChainSupportDetails swapChainSupport =
       querySwapChainSupport(mainDevice.physical);
 
@@ -389,10 +402,19 @@ void VulkanMechanics::recreateSwapChain() {
     glfwGetFramebufferSize(mainWindow.window, &width, &height);
     glfwWaitEvents();
   }
+
+  vkDeviceWaitIdle(mechanics.mainDevice.logical);
+
+  cleanupSwapChain();
+
+  createSwapChain();
+  renderConfig.createImageViews();
+  renderConfig.createDepthResources();
+  renderConfig.createFrameBuffers();
 }
 
 std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
-  LOG(".... acquiring Required Extensions");
+  LOG("  ....  ", "acquiring Required Extensions");
 
   uint32_t glfwExtensionCount = 0;
   const char** glfwExtensions;
@@ -410,7 +432,7 @@ std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
 
 VulkanMechanics::SwapChainSupportDetails VulkanMechanics::querySwapChainSupport(
     VkPhysicalDevice physical) {
-  LOG(" .... querying Swap Chain Support");
+  LOG("  ....  ", "querying Swap Chain Support");
 
   VulkanMechanics::SwapChainSupportDetails details;
 
@@ -439,15 +461,15 @@ RenderConfiguration::RenderConfiguration()
       depthImageMemory{},
       depthImageView{},
       renderPass{VK_NULL_HANDLE} {
-  LOG(". . . . constructing Render Configuration");
+  LOG("{ < }", "constructing Render Configuration");
 }
 
 RenderConfiguration::~RenderConfiguration() {
-  LOG(". . . . destructing Render Configuration");
+  LOG("{ < }", "constructing Render Configuration");
 }
 
 void RenderConfiguration::createDepthResources() {
-  LOG(" . . . . creating Depth Resources");
+  LOG("{ -z }", "creating Depth Resources");
 
   VkFormat depthFormat = findDepthFormat();
   createImage(mechanics.swapChainExtent.width, mechanics.swapChainExtent.height,
@@ -460,7 +482,7 @@ void RenderConfiguration::createDepthResources() {
 }
 
 void RenderConfiguration::createImageViews() {
-  LOG(" . . . . creating Image Views");
+  LOG("  ....  ", "creating Image Views");
   mechanics.swapChainImageViews.resize(mechanics.swapChainImages.size());
 
   for (size_t i = 0; i < mechanics.swapChainImages.size(); i++) {
@@ -491,7 +513,7 @@ void RenderConfiguration::createImageViews() {
 }
 
 VkFormat RenderConfiguration::findDepthFormat() {
-  LOG(" . . . . finding Depth Format");
+  LOG("  ....  ", "finding Depth Format");
   ;
   hasStencilComponent(depthFormat);
 
@@ -505,7 +527,7 @@ VkFormat RenderConfiguration::findSupportedFormat(
     const std::vector<VkFormat>& candidates,
     VkImageTiling tiling,
     VkFormatFeatureFlags features) {
-  LOG(" . . . . finding Supported Format");
+  LOG("  ....  ", "finding Supported Format");
 
   for (VkFormat format : candidates) {
     VkFormatProperties props;
@@ -530,7 +552,7 @@ bool RenderConfiguration::hasStencilComponent(VkFormat format) {
 }
 
 void RenderConfiguration::createRenderPass() {
-  LOG("))))) creating Render Pass");
+  LOG("{ RP }", "creating Render Pass");
   VkAttachmentDescription colorAttachment{};
   colorAttachment.format = mechanics.swapChainImageFormat;
   colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -602,7 +624,7 @@ void RenderConfiguration::createImage(uint32_t width,
                                       VkMemoryPropertyFlags properties,
                                       VkImage& image,
                                       VkDeviceMemory& imageMemory) {
-  LOG(" . . . . creating Image");
+  LOG("  ....  ", "creating Image");
 
   VkImageCreateInfo imageInfo{};
   imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -642,13 +664,15 @@ void RenderConfiguration::createImage(uint32_t width,
 }
 
 void RenderConfiguration::createFrameBuffers() {
+  LOG("{ [0] }", "creating Frame Buffers");
+
   mechanics.swapChainFramebuffers.resize(mechanics.swapChainImageViews.size());
 
-  VkImageView attachments[2];
-  attachments[1] = depthImageView;
+  VkImageView attachments[2] = {0};
 
   for (size_t i = 0; i < mechanics.swapChainImageViews.size(); i++) {
     attachments[0] = mechanics.swapChainImageViews[i];
+    attachments[1] = depthImageView;
 
     VkFramebufferCreateInfo framebufferInfo{};
     framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -659,7 +683,7 @@ void RenderConfiguration::createFrameBuffers() {
     framebufferInfo.height = mechanics.swapChainExtent.height;
     framebufferInfo.layers = 1;
 
-    LOG("Creating framebuffer ", i, " of ",
+    LOG("  ....  ", "Creating framebuffer", i, "of",
         mechanics.swapChainImageViews.size());
 
     if (vkCreateFramebuffer(mechanics.mainDevice.logical, &framebufferInfo,
@@ -668,15 +692,13 @@ void RenderConfiguration::createFrameBuffers() {
       throw std::runtime_error("Failed to create framebuffer!");
     }
   }
-
-  LOG("Framebuffers created successfully!");
 }
 
 VkImageView RenderConfiguration::createImageView(
     VkImage image,
     VkFormat format,
     VkImageAspectFlags aspectFlags) {
-  LOG(" . . . . creating Image View");
+  LOG("  ....  ", "creating Image View");
 
   VkImageViewCreateInfo viewInfo{};
   viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -700,7 +722,7 @@ VkImageView RenderConfiguration::createImageView(
 
 uint32_t RenderConfiguration::findMemoryType(uint32_t typeFilter,
                                              VkMemoryPropertyFlags properties) {
-  LOG(" . . . . finding Memory Type");
+  LOG("  ....  ", "finding Memory Type");
 
   VkPhysicalDeviceMemoryProperties memProperties;
   vkGetPhysicalDeviceMemoryProperties(mechanics.mainDevice.physical,

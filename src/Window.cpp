@@ -5,12 +5,12 @@
 #include "Window.h"
 
 Window::Window() : window{nullptr}, framebufferResized{false} {
-  LOG("... constructing Window");
+  LOG("{ [X] }", "constructing Window");
   initWindow();
 }
 
 Window::~Window() {
-  LOG("... terminating Window");
+  LOG("{ [X] }", "destructing Window");
   glfwDestroyWindow(window);
   glfwTerminate();
 }
@@ -23,7 +23,7 @@ void Window::initWindow() {
 
   glfwSetWindowUserPointer(window, this);
   glfwSetFramebufferSizeCallback(window, windowResize);
-  LOG("... Window initialized with", displayConfig.width, "*",
+  LOG("{ [*] }", "Window initialized with", displayConfig.width, "*",
       displayConfig.height);
 }
 

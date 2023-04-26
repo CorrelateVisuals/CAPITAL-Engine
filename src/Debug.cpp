@@ -8,20 +8,20 @@
 
 Logging::Logging()
     : logFile("log.txt", std::ofstream::out | std::ofstream::trunc) {
-  LOG(". constructing Logging");
+  LOG("{ . }", "constructing Logging");
 }
 
 Logging::~Logging() {
-  LOG(". destructing Logging");
+  LOG("{ . }", "destructing Logging");
 }
 
 ValidationLayers::ValidationLayers()
     : debugMessenger{}, validationLayers{"VK_LAYER_KHRONOS_validation"} {
-  LOG(".. constructing Validation Layers");
+  LOG("{ = }", "constructing Validation Layers");
 }
 
 ValidationLayers::~ValidationLayers() {
-  LOG(".. destructing Validation Layers");
+  LOG("{ = }", "destructing Validation Layers");
 }
 
 void ValidationLayers::logValidationMessage(const std::string& string,

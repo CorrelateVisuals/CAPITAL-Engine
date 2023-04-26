@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Debug.h"
+
 class CapitalEngine {
  public:
   CapitalEngine();
@@ -10,4 +12,5 @@ class CapitalEngine {
  private:
   void initVulkan();
   void drawFrame();
+  void cleanup();
 };

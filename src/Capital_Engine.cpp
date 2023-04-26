@@ -7,12 +7,13 @@
 #include "Window.h"
 
 CapitalEngine::CapitalEngine() {
-  LOG("... constructing Capital Engine");
+  LOG("\n                    [", "Starting CAPITAL engine", "]\n");
+
   initVulkan();
 }
 
 CapitalEngine::~CapitalEngine() {
-  LOG("... destructing Capital Engine");
+  LOG("\n                    [", "Terminating CAPITAL engine", "]\n");
 }
 
 void CapitalEngine::mainLoop() {
@@ -24,7 +25,7 @@ void CapitalEngine::mainLoop() {
 }
 
 void CapitalEngine::initVulkan() {
-  LOG("... initializing Capital Engine");
+  LOG("{ ** }", "initializing Capital Engine");
 
   // Init Vulkan
   mechanics.createInstance();
@@ -171,4 +172,71 @@ void CapitalEngine::drawFrame() {
   }
 
   mechanics.currentFrame = (mechanics.currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+}
+
+void CapitalEngine::cleanup() {
+  mechanics.cleanupSwapChain();
+
+  vkDestroyPipeline(mechanics.mainDevice.logical, pipelines.graphics.pipeline,
+                    nullptr);
+  vkDestroyPipelineLayout(mechanics.mainDevice.logical,
+                          pipelines.graphics.pipelineLayout, nullptr);
+
+  vkDestroyPipeline(mechanics.mainDevice.logical, pipelines.compute.pipeline,
+                    nullptr);
+  vkDestroyPipelineLayout(mechanics.mainDevice.logical,
+                          pipelines.compute.pipelineLayout, nullptr);
+
+  vkDestroyRenderPass(mechanics.mainDevice.logical, renderConfig.renderPass,
+                      nullptr);
+
+  for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+    vkDestroyBuffer(mechanics.mainDevice.logical, memCommands.uniformBuffers[i],
+                    nullptr);
+    vkFreeMemory(mechanics.mainDevice.logical,
+                 memCommands.uniformBuffersMemory[i], nullptr);
+  }
+
+  vkDestroyDescriptorPool(mechanics.mainDevice.logical,
+                          memCommands.descriptorPool, nullptr);
+
+  vkDestroyDescriptorSetLayout(mechanics.mainDevice.logical,
+                               memCommands.descriptorSetLayout, nullptr);
+
+  for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+    vkDestroyBuffer(mechanics.mainDevice.logical,
+                    memCommands.shaderStorageBuffers[i], nullptr);
+    vkFreeMemory(mechanics.mainDevice.logical,
+                 memCommands.shaderStorageBuffersMemory[i], nullptr);
+  }
+
+  for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+    vkDestroySemaphore(mechanics.mainDevice.logical,
+                       mechanics.renderFinishedSemaphores[i], nullptr);
+    vkDestroySemaphore(mechanics.mainDevice.logical,
+                       mechanics.imageAvailableSemaphores[i], nullptr);
+    vkDestroySemaphore(mechanics.mainDevice.logical,
+                       mechanics.computeFinishedSemaphores[i], nullptr);
+    vkDestroyFence(mechanics.mainDevice.logical, mechanics.inFlightFences[i],
+                   nullptr);
+    vkDestroyFence(mechanics.mainDevice.logical,
+                   mechanics.computeInFlightFences[i], nullptr);
+  }
+
+  vkDestroyCommandPool(mechanics.mainDevice.logical, memCommands.commandPool,
+                       nullptr);
+
+  vkDestroyDevice(mechanics.mainDevice.logical, nullptr);
+
+  if (debug.enableValidationLayers) {
+    debug.DestroyDebugUtilsMessengerEXT(mechanics.instance,
+                                        debug.debugMessenger, nullptr);
+  }
+
+  vkDestroySurfaceKHR(mechanics.instance, mechanics.surface, nullptr);
+  vkDestroyInstance(mechanics.instance, nullptr);
+
+  glfwDestroyWindow(mainWindow.window);
+
+  glfwTerminate();
 }

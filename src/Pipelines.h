@@ -2,6 +2,9 @@
 
 class Pipelines {
  public:
+  Pipelines();
+  ~Pipelines();
+
   struct Graphics {
     VkPipelineLayout pipelineLayout;
     VkPipeline pipeline;
@@ -39,6 +42,13 @@ class MemoryCommands {
   VkDescriptorPool descriptorPool;
   std::vector<VkDescriptorSet> computeDescriptorSets;
 
+  std::vector<VkBuffer> uniformBuffers;
+  std::vector<VkDeviceMemory> uniformBuffersMemory;
+  std::vector<void*> uniformBuffersMapped;
+
+  std::vector<VkBuffer> shaderStorageBuffers;
+  std::vector<VkDeviceMemory> shaderStorageBuffersMemory;
+
   float lastFrameTime = 0.0f;
 
   void createCommandPool();
@@ -57,13 +67,6 @@ class MemoryCommands {
   void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
  private:
-  std::vector<VkBuffer> shaderStorageBuffers;
-  std::vector<VkDeviceMemory> shaderStorageBuffersMemory;
-
-  std::vector<VkBuffer> uniformBuffers;
-  std::vector<VkDeviceMemory> uniformBuffersMemory;
-  std::vector<void*> uniformBuffersMapped;
-
   void createBuffer(VkDeviceSize size,
                     VkBufferUsageFlags usage,
                     VkMemoryPropertyFlags properties,
