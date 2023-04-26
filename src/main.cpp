@@ -5,9 +5,8 @@
 #include "Debug.h"
 
 int main() {
-  CapitalEngine CAPITAL;
-
   try {
+    CapitalEngine CAPITAL;
     CAPITAL.mainLoop();
   } catch (const std::exception& e) {
     LOG(e.what());

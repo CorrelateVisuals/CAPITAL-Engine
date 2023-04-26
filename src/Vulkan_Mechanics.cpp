@@ -58,17 +58,16 @@ void VulkanMechanics::createInstance() {
   instanceCreateInfo.ppEnabledExtensionNames = requiredExtensions.data();
 
   VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
-  if (Globals::obj.debug.enableValidationLayers) {
-    if (!Globals::obj.debug.checkValidationLayerSupport()) {
+  if (LOG_LAYERS.enableValidationLayers) {
+    if (!LOG_LAYERS.checkValidationLayerSupport()) {
       throw std::runtime_error(
           "validation layers requested, but not available!");
     }
     instanceCreateInfo.enabledLayerCount =
-        static_cast<uint32_t>(Globals::obj.debug.validationLayers.size());
-    instanceCreateInfo.ppEnabledLayerNames =
-        Globals::obj.debug.validationLayers.data();
+        static_cast<uint32_t>(LOG_LAYERS.validationLayers.size());
+    instanceCreateInfo.ppEnabledLayerNames = LOG_LAYERS.validationLayers.data();
 
-    Globals::obj.debug.populateDebugMessengerCreateInfo(debugCreateInfo);
+    LOG_LAYERS.populateDebugMessengerCreateInfo(debugCreateInfo);
     instanceCreateInfo.pNext =
         (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
   } else {
@@ -84,8 +83,8 @@ void VulkanMechanics::createInstance() {
 void VulkanMechanics::createSurface() {
   LOG("{ [] }", "creating Surface");
 
-  if (glfwCreateWindowSurface(instance, Globals::obj.mainWindow.window, nullptr,
-                              &surface) != VK_SUCCESS) {
+  if (glfwCreateWindowSurface(instance, WINDOW.window, nullptr, &surface) !=
+      VK_SUCCESS) {
     throw std::runtime_error("failed to create window surface!");
   }
 }
@@ -204,10 +203,10 @@ void VulkanMechanics::createLogicalDevice() {
       static_cast<uint32_t>(deviceExtensions.size());
   createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-  if (Globals::obj.debug.enableValidationLayers) {
+  if (LOG_LAYERS.enableValidationLayers) {
     createInfo.enabledLayerCount =
-        static_cast<uint32_t>(Globals::obj.debug.validationLayers.size());
-    createInfo.ppEnabledLayerNames = Globals::obj.debug.validationLayers.data();
+        static_cast<uint32_t>(LOG_LAYERS.validationLayers.size());
+    createInfo.ppEnabledLayerNames = LOG_LAYERS.validationLayers.data();
   } else {
     createInfo.enabledLayerCount = 0;
   }
@@ -256,7 +255,7 @@ VkExtent2D VulkanMechanics::chooseSwapExtent(
     return capabilities.currentExtent;
   } else {
     int width, height;
-    glfwGetFramebufferSize(Globals::obj.mainWindow.window, &width, &height);
+    glfwGetFramebufferSize(WINDOW.window, &width, &height);
 
     VkExtent2D actualExtent = {static_cast<uint32_t>(width),
                                static_cast<uint32_t>(height)};
@@ -289,18 +288,18 @@ void VulkanMechanics::createSyncObjects() {
   fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-    if (vkCreateSemaphore(mechanics.mainDevice.logical, &semaphoreInfo, nullptr,
+    if (vkCreateSemaphore(MECHANICS.mainDevice.logical, &semaphoreInfo, nullptr,
                           &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-        vkCreateSemaphore(mechanics.mainDevice.logical, &semaphoreInfo, nullptr,
+        vkCreateSemaphore(MECHANICS.mainDevice.logical, &semaphoreInfo, nullptr,
                           &renderFinishedSemaphores[i]) != VK_SUCCESS ||
-        vkCreateFence(mechanics.mainDevice.logical, &fenceInfo, nullptr,
+        vkCreateFence(MECHANICS.mainDevice.logical, &fenceInfo, nullptr,
                       &inFlightFences[i]) != VK_SUCCESS) {
       throw std::runtime_error(
           "failed to create graphics synchronization objects for a frame!");
     }
-    if (vkCreateSemaphore(mechanics.mainDevice.logical, &semaphoreInfo, nullptr,
+    if (vkCreateSemaphore(MECHANICS.mainDevice.logical, &semaphoreInfo, nullptr,
                           &computeFinishedSemaphores[i]) != VK_SUCCESS ||
-        vkCreateFence(mechanics.mainDevice.logical, &fenceInfo, nullptr,
+        vkCreateFence(MECHANICS.mainDevice.logical, &fenceInfo, nullptr,
                       &computeInFlightFences[i]) != VK_SUCCESS) {
       throw std::runtime_error(
           "failed to create compute synchronization objects for a frame!");
@@ -310,14 +309,14 @@ void VulkanMechanics::createSyncObjects() {
 
 void VulkanMechanics::cleanupSwapChain() {
   for (auto framebuffer : swapChainFramebuffers) {
-    vkDestroyFramebuffer(mechanics.mainDevice.logical, framebuffer, nullptr);
+    vkDestroyFramebuffer(MECHANICS.mainDevice.logical, framebuffer, nullptr);
   }
 
   for (auto imageView : swapChainImageViews) {
-    vkDestroyImageView(mechanics.mainDevice.logical, imageView, nullptr);
+    vkDestroyImageView(MECHANICS.mainDevice.logical, imageView, nullptr);
   }
 
-  vkDestroySwapchainKHR(mechanics.mainDevice.logical, swapChain, nullptr);
+  vkDestroySwapchainKHR(MECHANICS.mainDevice.logical, swapChain, nullptr);
 }
 
 bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physical) {
@@ -401,20 +400,20 @@ void VulkanMechanics::createSwapChain() {
 
 void VulkanMechanics::recreateSwapChain() {
   int width = 0, height = 0;
-  glfwGetFramebufferSize(Globals::obj.mainWindow.window, &width, &height);
+  glfwGetFramebufferSize(WINDOW.window, &width, &height);
   while (width == 0 || height == 0) {
-    glfwGetFramebufferSize(Globals::obj.mainWindow.window, &width, &height);
+    glfwGetFramebufferSize(WINDOW.window, &width, &height);
     glfwWaitEvents();
   }
 
-  vkDeviceWaitIdle(mechanics.mainDevice.logical);
+  vkDeviceWaitIdle(MECHANICS.mainDevice.logical);
 
   cleanupSwapChain();
 
   createSwapChain();
-  renderConfig.createImageViews();
-  renderConfig.createDepthResources();
-  renderConfig.createFrameBuffers();
+  RENDER_CONFIG.createImageViews();
+  RENDER_CONFIG.createDepthResources();
+  RENDER_CONFIG.createFrameBuffers();
 }
 
 std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
@@ -427,7 +426,7 @@ std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
   std::vector<const char*> extensions(glfwExtensions,
                                       glfwExtensions + glfwExtensionCount);
 
-  if (Globals::obj.debug.enableValidationLayers) {
+  if (LOG_LAYERS.enableValidationLayers) {
     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
   }
 
@@ -476,7 +475,7 @@ void RenderConfiguration::createDepthResources() {
   LOG("{ -z }", "creating Depth Resources");
 
   VkFormat depthFormat = findDepthFormat();
-  createImage(mechanics.swapChainExtent.width, mechanics.swapChainExtent.height,
+  createImage(MECHANICS.swapChainExtent.width, MECHANICS.swapChainExtent.height,
               depthFormat, VK_IMAGE_TILING_OPTIMAL,
               VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
               VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage,
@@ -487,18 +486,18 @@ void RenderConfiguration::createDepthResources() {
 
 void RenderConfiguration::createImageViews() {
   LOG("  ....  ", "creating Image Views");
-  mechanics.swapChainImageViews.resize(mechanics.swapChainImages.size());
+  MECHANICS.swapChainImageViews.resize(MECHANICS.swapChainImages.size());
 
-  for (size_t i = 0; i < mechanics.swapChainImages.size(); i++) {
-    mechanics.swapChainImageViews[i] = createImageView(
-        mechanics.swapChainImages[i], mechanics.swapChainImageFormat,
+  for (size_t i = 0; i < MECHANICS.swapChainImages.size(); i++) {
+    MECHANICS.swapChainImageViews[i] = createImageView(
+        MECHANICS.swapChainImages[i], MECHANICS.swapChainImageFormat,
         VK_IMAGE_ASPECT_COLOR_BIT);
 
     VkImageViewCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    createInfo.image = mechanics.swapChainImages[i];
+    createInfo.image = MECHANICS.swapChainImages[i];
     createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    createInfo.format = mechanics.swapChainImageFormat;
+    createInfo.format = MECHANICS.swapChainImageFormat;
     createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
     createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
     createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -509,8 +508,8 @@ void RenderConfiguration::createImageViews() {
     createInfo.subresourceRange.baseArrayLayer = 0;
     createInfo.subresourceRange.layerCount = 1;
 
-    if (vkCreateImageView(mechanics.mainDevice.logical, &createInfo, nullptr,
-                          &mechanics.swapChainImageViews[i]) != VK_SUCCESS) {
+    if (vkCreateImageView(MECHANICS.mainDevice.logical, &createInfo, nullptr,
+                          &MECHANICS.swapChainImageViews[i]) != VK_SUCCESS) {
       throw std::runtime_error("failed to create image views!");
     }
   }
@@ -535,7 +534,7 @@ VkFormat RenderConfiguration::findSupportedFormat(
 
   for (VkFormat format : candidates) {
     VkFormatProperties props;
-    vkGetPhysicalDeviceFormatProperties(mechanics.mainDevice.physical, format,
+    vkGetPhysicalDeviceFormatProperties(MECHANICS.mainDevice.physical, format,
                                         &props);
 
     if (tiling == VK_IMAGE_TILING_LINEAR &&
@@ -558,7 +557,7 @@ bool RenderConfiguration::hasStencilComponent(VkFormat format) {
 void RenderConfiguration::createRenderPass() {
   LOG("{ RP }", "creating Render Pass");
   VkAttachmentDescription colorAttachment{};
-  colorAttachment.format = mechanics.swapChainImageFormat;
+  colorAttachment.format = MECHANICS.swapChainImageFormat;
   colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
   colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
   colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -614,7 +613,7 @@ void RenderConfiguration::createRenderPass() {
   renderPassInfo.dependencyCount = 1;
   renderPassInfo.pDependencies = &dependency;
 
-  if (vkCreateRenderPass(mechanics.mainDevice.logical, &renderPassInfo, nullptr,
+  if (vkCreateRenderPass(MECHANICS.mainDevice.logical, &renderPassInfo, nullptr,
                          &renderPass) != VK_SUCCESS) {
     throw std::runtime_error("failed to create render pass!");
   }
@@ -645,13 +644,13 @@ void RenderConfiguration::createImage(uint32_t width,
   imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
   imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-  if (vkCreateImage(mechanics.mainDevice.logical, &imageInfo, nullptr,
+  if (vkCreateImage(MECHANICS.mainDevice.logical, &imageInfo, nullptr,
                     &image) != VK_SUCCESS) {
     throw std::runtime_error("failed to create image!");
   }
 
   VkMemoryRequirements memRequirements;
-  vkGetImageMemoryRequirements(mechanics.mainDevice.logical, image,
+  vkGetImageMemoryRequirements(MECHANICS.mainDevice.logical, image,
                                &memRequirements);
 
   VkMemoryAllocateInfo allocInfo{};
@@ -660,22 +659,22 @@ void RenderConfiguration::createImage(uint32_t width,
   allocInfo.memoryTypeIndex =
       findMemoryType(memRequirements.memoryTypeBits, properties);
 
-  if (vkAllocateMemory(mechanics.mainDevice.logical, &allocInfo, nullptr,
+  if (vkAllocateMemory(MECHANICS.mainDevice.logical, &allocInfo, nullptr,
                        &imageMemory) != VK_SUCCESS) {
     throw std::runtime_error("failed to allocate image memory!");
   }
-  vkBindImageMemory(mechanics.mainDevice.logical, image, imageMemory, 0);
+  vkBindImageMemory(MECHANICS.mainDevice.logical, image, imageMemory, 0);
 }
 
 void RenderConfiguration::createFrameBuffers() {
   LOG("{ [0] }", "creating Frame Buffers");
 
-  mechanics.swapChainFramebuffers.resize(mechanics.swapChainImageViews.size());
+  MECHANICS.swapChainFramebuffers.resize(MECHANICS.swapChainImageViews.size());
 
   VkImageView attachments[2] = {0};
 
-  for (size_t i = 0; i < mechanics.swapChainImageViews.size(); i++) {
-    attachments[0] = mechanics.swapChainImageViews[i];
+  for (size_t i = 0; i < MECHANICS.swapChainImageViews.size(); i++) {
+    attachments[0] = MECHANICS.swapChainImageViews[i];
     attachments[1] = depthImageView;
 
     VkFramebufferCreateInfo framebufferInfo{};
@@ -683,15 +682,15 @@ void RenderConfiguration::createFrameBuffers() {
     framebufferInfo.renderPass = renderPass;
     framebufferInfo.attachmentCount = 2;
     framebufferInfo.pAttachments = attachments;
-    framebufferInfo.width = mechanics.swapChainExtent.width;
-    framebufferInfo.height = mechanics.swapChainExtent.height;
+    framebufferInfo.width = MECHANICS.swapChainExtent.width;
+    framebufferInfo.height = MECHANICS.swapChainExtent.height;
     framebufferInfo.layers = 1;
 
     LOG("  ....  ", "creating framebuffer", i, "of",
-        mechanics.swapChainImageViews.size());
+        MECHANICS.swapChainImageViews.size());
 
-    if (vkCreateFramebuffer(mechanics.mainDevice.logical, &framebufferInfo,
-                            nullptr, &mechanics.swapChainFramebuffers[i]) !=
+    if (vkCreateFramebuffer(MECHANICS.mainDevice.logical, &framebufferInfo,
+                            nullptr, &MECHANICS.swapChainFramebuffers[i]) !=
         VK_SUCCESS) {
       throw std::runtime_error("Failed to create framebuffer!");
     }
@@ -716,7 +715,7 @@ VkImageView RenderConfiguration::createImageView(
   viewInfo.subresourceRange.layerCount = 1;
 
   VkImageView imageView;
-  if (vkCreateImageView(mechanics.mainDevice.logical, &viewInfo, nullptr,
+  if (vkCreateImageView(MECHANICS.mainDevice.logical, &viewInfo, nullptr,
                         &imageView) != VK_SUCCESS) {
     throw std::runtime_error("failed to create texture image view!");
   }
@@ -729,7 +728,7 @@ uint32_t RenderConfiguration::findMemoryType(uint32_t typeFilter,
   LOG("  ....  ", "finding Memory Type");
 
   VkPhysicalDeviceMemoryProperties memProperties;
-  vkGetPhysicalDeviceMemoryProperties(mechanics.mainDevice.physical,
+  vkGetPhysicalDeviceMemoryProperties(MECHANICS.mainDevice.physical,
                                       &memProperties);
 
   for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {

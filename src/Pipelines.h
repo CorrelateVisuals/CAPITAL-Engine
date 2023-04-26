@@ -23,7 +23,6 @@ class Pipelines {
   std::vector<char> readShaderFiles(const std::string& filename);
   VkShaderModule createShaderModule(const std::vector<char>& code);
 };
-inline Pipelines pipelines;
 
 class MemoryCommands {
  public:
@@ -76,4 +75,3 @@ class MemoryCommands {
   uint32_t findMemoryType(uint32_t typeFilter,
                           VkMemoryPropertyFlags properties);
 };
-inline MemoryCommands memCommands;

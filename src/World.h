@@ -27,4 +27,3 @@ class World {
     getAttributeDescriptions();
   };
 };
-inline World world;

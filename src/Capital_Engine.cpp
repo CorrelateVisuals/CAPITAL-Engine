@@ -18,11 +18,10 @@ CapitalEngine::~CapitalEngine() {
 
 void CapitalEngine::mainLoop() {
   LOG("{ main }", "running ...");
-  while (!glfwWindowShouldClose(Globals::obj.mainWindow.window)) {
+  while (!glfwWindowShouldClose(WINDOW.window)) {
     glfwPollEvents();
     drawFrame();
-    Globals::obj.mainWindow.mouseClick(Globals::obj.mainWindow.window,
-                                       GLFW_MOUSE_BUTTON_LEFT);
+    WINDOW.mouseClick(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT);
   }
   LOG("{ main }", "terminated");
 }
@@ -31,40 +30,40 @@ void CapitalEngine::initVulkan() {
   LOG("{ ** }", "initializing Capital Engine");
 
   // Init Vulkan
-  mechanics.createInstance();
-  Globals::obj.debug.setupDebugMessenger(mechanics.instance);
-  mechanics.createSurface();
+  MECHANICS.createInstance();
+  LOG_LAYERS.setupDebugMessenger(MECHANICS.instance);
+  MECHANICS.createSurface();
 
   // GPU handling
-  mechanics.pickPhysicalDevice();
-  mechanics.createLogicalDevice();
+  MECHANICS.pickPhysicalDevice();
+  MECHANICS.createLogicalDevice();
 
   // Engine mechanics
-  mechanics.createSwapChain();
+  MECHANICS.createSwapChain();
 
   // Renderer Config
-  renderConfig.createDepthResources();
-  renderConfig.createImageViews();
-  renderConfig.createRenderPass();
+  RENDER_CONFIG.createDepthResources();
+  RENDER_CONFIG.createImageViews();
+  RENDER_CONFIG.createRenderPass();
 
   // Pipelines
-  pipelines.createDescriptorSetLayout();
-  pipelines.createGraphicsPipeline();
-  pipelines.createComputePipeline();
+  PIPELINES.createDescriptorSetLayout();
+  PIPELINES.createGraphicsPipeline();
+  PIPELINES.createComputePipeline();
 
-  renderConfig.createFrameBuffers();
+  RENDER_CONFIG.createFrameBuffers();
 
-  memCommands.createCommandPool();
-  memCommands.createShaderStorageBuffers();
-  memCommands.createUniformBuffers();
+  MEM_COMMANDS.createCommandPool();
+  MEM_COMMANDS.createShaderStorageBuffers();
+  MEM_COMMANDS.createUniformBuffers();
 
-  memCommands.createDescriptorPool();
-  memCommands.createComputeDescriptorSets();
+  MEM_COMMANDS.createDescriptorPool();
+  MEM_COMMANDS.createComputeDescriptorSets();
 
-  memCommands.createCommandBuffers();
-  memCommands.createComputeCommandBuffers();
+  MEM_COMMANDS.createCommandBuffers();
+  MEM_COMMANDS.createComputeCommandBuffers();
 
-  mechanics.createSyncObjects();
+  MECHANICS.createSyncObjects();
 }
 
 void CapitalEngine::drawFrame() {
@@ -72,63 +71,63 @@ void CapitalEngine::drawFrame() {
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
   // Compute submission
-  vkWaitForFences(mechanics.mainDevice.logical, 1,
-                  &mechanics.computeInFlightFences[mechanics.currentFrame],
+  vkWaitForFences(MECHANICS.mainDevice.logical, 1,
+                  &MECHANICS.computeInFlightFences[MECHANICS.currentFrame],
                   VK_TRUE, UINT64_MAX);
 
-  memCommands.updateUniformBuffer(mechanics.currentFrame);
+  MEM_COMMANDS.updateUniformBuffer(MECHANICS.currentFrame);
 
-  vkResetFences(mechanics.mainDevice.logical, 1,
-                &mechanics.computeInFlightFences[mechanics.currentFrame]);
+  vkResetFences(MECHANICS.mainDevice.logical, 1,
+                &MECHANICS.computeInFlightFences[MECHANICS.currentFrame]);
 
   vkResetCommandBuffer(
-      memCommands.computeCommandBuffers[mechanics.currentFrame],
+      MEM_COMMANDS.computeCommandBuffers[MECHANICS.currentFrame],
       /*VkCommandBufferResetFlagBits*/ 0);
-  memCommands.recordComputeCommandBuffer(
-      memCommands.computeCommandBuffers[mechanics.currentFrame]);
+  MEM_COMMANDS.recordComputeCommandBuffer(
+      MEM_COMMANDS.computeCommandBuffers[MECHANICS.currentFrame]);
 
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers =
-      &memCommands.computeCommandBuffers[mechanics.currentFrame];
+      &MEM_COMMANDS.computeCommandBuffers[MECHANICS.currentFrame];
   submitInfo.signalSemaphoreCount = 1;
   submitInfo.pSignalSemaphores =
-      &mechanics.computeFinishedSemaphores[mechanics.currentFrame];
+      &MECHANICS.computeFinishedSemaphores[MECHANICS.currentFrame];
 
-  if (vkQueueSubmit(mechanics.queues.compute, 1, &submitInfo,
-                    mechanics.computeInFlightFences[mechanics.currentFrame]) !=
+  if (vkQueueSubmit(MECHANICS.queues.compute, 1, &submitInfo,
+                    MECHANICS.computeInFlightFences[MECHANICS.currentFrame]) !=
       VK_SUCCESS) {
     throw std::runtime_error("failed to submit compute command buffer!");
   };
 
   // Graphics submission
-  vkWaitForFences(mechanics.mainDevice.logical, 1,
-                  &mechanics.inFlightFences[mechanics.currentFrame], VK_TRUE,
+  vkWaitForFences(MECHANICS.mainDevice.logical, 1,
+                  &MECHANICS.inFlightFences[MECHANICS.currentFrame], VK_TRUE,
                   UINT64_MAX);
 
   uint32_t imageIndex;
   VkResult result = vkAcquireNextImageKHR(
-      mechanics.mainDevice.logical, mechanics.swapChain, UINT64_MAX,
-      mechanics.imageAvailableSemaphores[mechanics.currentFrame],
+      MECHANICS.mainDevice.logical, MECHANICS.swapChain, UINT64_MAX,
+      MECHANICS.imageAvailableSemaphores[MECHANICS.currentFrame],
       VK_NULL_HANDLE, &imageIndex);
 
   if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-    mechanics.recreateSwapChain();
+    MECHANICS.recreateSwapChain();
     return;
   } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
     throw std::runtime_error("failed to acquire swap chain image!");
   }
 
-  vkResetFences(mechanics.mainDevice.logical, 1,
-                &mechanics.inFlightFences[mechanics.currentFrame]);
+  vkResetFences(MECHANICS.mainDevice.logical, 1,
+                &MECHANICS.inFlightFences[MECHANICS.currentFrame]);
 
-  vkResetCommandBuffer(memCommands.commandBuffers[mechanics.currentFrame],
+  vkResetCommandBuffer(MEM_COMMANDS.commandBuffers[MECHANICS.currentFrame],
                        /*VkCommandBufferResetFlagBits*/ 0);
-  memCommands.recordCommandBuffer(
-      memCommands.commandBuffers[mechanics.currentFrame], imageIndex);
+  MEM_COMMANDS.recordCommandBuffer(
+      MEM_COMMANDS.commandBuffers[MECHANICS.currentFrame], imageIndex);
 
   VkSemaphore waitSemaphores[] = {
-      mechanics.computeFinishedSemaphores[mechanics.currentFrame],
-      mechanics.imageAvailableSemaphores[mechanics.currentFrame]};
+      MECHANICS.computeFinishedSemaphores[MECHANICS.currentFrame],
+      MECHANICS.imageAvailableSemaphores[MECHANICS.currentFrame]};
   VkPipelineStageFlags waitStages[] = {
       VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
       VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
@@ -140,13 +139,13 @@ void CapitalEngine::drawFrame() {
   submitInfo.pWaitDstStageMask = waitStages;
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers =
-      &memCommands.commandBuffers[mechanics.currentFrame];
+      &MEM_COMMANDS.commandBuffers[MECHANICS.currentFrame];
   submitInfo.signalSemaphoreCount = 1;
   submitInfo.pSignalSemaphores =
-      &mechanics.renderFinishedSemaphores[mechanics.currentFrame];
+      &MECHANICS.renderFinishedSemaphores[MECHANICS.currentFrame];
 
-  if (vkQueueSubmit(mechanics.queues.graphics, 1, &submitInfo,
-                    mechanics.inFlightFences[mechanics.currentFrame]) !=
+  if (vkQueueSubmit(MECHANICS.queues.graphics, 1, &submitInfo,
+                    MECHANICS.inFlightFences[MECHANICS.currentFrame]) !=
       VK_SUCCESS) {
     throw std::runtime_error("failed to submit draw command buffer!");
   }
@@ -156,91 +155,96 @@ void CapitalEngine::drawFrame() {
 
   presentInfo.waitSemaphoreCount = 1;
   presentInfo.pWaitSemaphores =
-      &mechanics.renderFinishedSemaphores[mechanics.currentFrame];
+      &MECHANICS.renderFinishedSemaphores[MECHANICS.currentFrame];
 
-  VkSwapchainKHR swapChains[] = {mechanics.swapChain};
+  VkSwapchainKHR swapChains[] = {MECHANICS.swapChain};
   presentInfo.swapchainCount = 1;
   presentInfo.pSwapchains = swapChains;
 
   presentInfo.pImageIndices = &imageIndex;
 
-  result = vkQueuePresentKHR(mechanics.queues.present, &presentInfo);
+  result = vkQueuePresentKHR(MECHANICS.queues.present, &presentInfo);
 
   if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
-      Globals::obj.mainWindow.framebufferResized) {
-    Globals::obj.mainWindow.framebufferResized = false;
-    mechanics.recreateSwapChain();
+      WINDOW.framebufferResized) {
+    WINDOW.framebufferResized = false;
+    MECHANICS.recreateSwapChain();
   } else if (result != VK_SUCCESS) {
     throw std::runtime_error("failed to present swap chain image!");
   }
 
-  mechanics.currentFrame = (mechanics.currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+  MECHANICS.currentFrame = (MECHANICS.currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
-void CapitalEngine::cleanup() {
+void Globals::cleanup() {
   LOG("{ cleanup }");
-  mechanics.cleanupSwapChain();
 
-  vkDestroyPipeline(mechanics.mainDevice.logical, pipelines.graphics.pipeline,
+  MECHANICS.cleanupSwapChain();
+
+  vkDestroyPipeline(MECHANICS.mainDevice.logical, PIPELINES.graphics.pipeline,
                     nullptr);
-  vkDestroyPipelineLayout(mechanics.mainDevice.logical,
-                          pipelines.graphics.pipelineLayout, nullptr);
+  vkDestroyPipelineLayout(MECHANICS.mainDevice.logical,
+                          PIPELINES.graphics.pipelineLayout, nullptr);
 
-  vkDestroyPipeline(mechanics.mainDevice.logical, pipelines.compute.pipeline,
+  vkDestroyPipeline(MECHANICS.mainDevice.logical, PIPELINES.compute.pipeline,
                     nullptr);
-  vkDestroyPipelineLayout(mechanics.mainDevice.logical,
-                          pipelines.compute.pipelineLayout, nullptr);
+  vkDestroyPipelineLayout(MECHANICS.mainDevice.logical,
+                          PIPELINES.compute.pipelineLayout, nullptr);
 
-  vkDestroyRenderPass(mechanics.mainDevice.logical, renderConfig.renderPass,
+  vkDestroyRenderPass(MECHANICS.mainDevice.logical, RENDER_CONFIG.renderPass,
                       nullptr);
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-    vkDestroyBuffer(mechanics.mainDevice.logical, memCommands.uniformBuffers[i],
-                    nullptr);
-    vkFreeMemory(mechanics.mainDevice.logical,
-                 memCommands.uniformBuffersMemory[i], nullptr);
+    vkDestroyBuffer(MECHANICS.mainDevice.logical,
+                    MEM_COMMANDS.uniformBuffers[i], nullptr);
+    vkFreeMemory(MECHANICS.mainDevice.logical,
+                 MEM_COMMANDS.uniformBuffersMemory[i], nullptr);
   }
 
-  vkDestroyDescriptorPool(mechanics.mainDevice.logical,
-                          memCommands.descriptorPool, nullptr);
+  vkDestroyDescriptorPool(MECHANICS.mainDevice.logical,
+                          MEM_COMMANDS.descriptorPool, nullptr);
 
-  vkDestroyDescriptorSetLayout(mechanics.mainDevice.logical,
-                               memCommands.descriptorSetLayout, nullptr);
+  vkDestroyDescriptorSetLayout(MECHANICS.mainDevice.logical,
+                               MEM_COMMANDS.descriptorSetLayout, nullptr);
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-    vkDestroyBuffer(mechanics.mainDevice.logical,
-                    memCommands.shaderStorageBuffers[i], nullptr);
-    vkFreeMemory(mechanics.mainDevice.logical,
-                 memCommands.shaderStorageBuffersMemory[i], nullptr);
+    vkDestroyBuffer(MECHANICS.mainDevice.logical,
+                    MEM_COMMANDS.shaderStorageBuffers[i], nullptr);
+    vkFreeMemory(MECHANICS.mainDevice.logical,
+                 MEM_COMMANDS.shaderStorageBuffersMemory[i], nullptr);
   }
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-    vkDestroySemaphore(mechanics.mainDevice.logical,
-                       mechanics.renderFinishedSemaphores[i], nullptr);
-    vkDestroySemaphore(mechanics.mainDevice.logical,
-                       mechanics.imageAvailableSemaphores[i], nullptr);
-    vkDestroySemaphore(mechanics.mainDevice.logical,
-                       mechanics.computeFinishedSemaphores[i], nullptr);
-    vkDestroyFence(mechanics.mainDevice.logical, mechanics.inFlightFences[i],
+    vkDestroySemaphore(MECHANICS.mainDevice.logical,
+                       MECHANICS.renderFinishedSemaphores[i], nullptr);
+    vkDestroySemaphore(MECHANICS.mainDevice.logical,
+                       MECHANICS.imageAvailableSemaphores[i], nullptr);
+    vkDestroySemaphore(MECHANICS.mainDevice.logical,
+                       MECHANICS.computeFinishedSemaphores[i], nullptr);
+    vkDestroyFence(MECHANICS.mainDevice.logical, MECHANICS.inFlightFences[i],
                    nullptr);
-    vkDestroyFence(mechanics.mainDevice.logical,
-                   mechanics.computeInFlightFences[i], nullptr);
+    vkDestroyFence(MECHANICS.mainDevice.logical,
+                   MECHANICS.computeInFlightFences[i], nullptr);
   }
 
-  vkDestroyCommandPool(mechanics.mainDevice.logical, memCommands.commandPool,
+  vkDestroyCommandPool(MECHANICS.mainDevice.logical, MEM_COMMANDS.commandPool,
                        nullptr);
 
-  vkDestroyDevice(mechanics.mainDevice.logical, nullptr);
+  vkDestroyDevice(MECHANICS.mainDevice.logical, nullptr);
 
-  if (Globals::obj.debug.enableValidationLayers) {
-    Globals::obj.debug.DestroyDebugUtilsMessengerEXT(
-        mechanics.instance, Globals::obj.debug.debugMessenger, nullptr);
+  if (LOG_LAYERS.enableValidationLayers) {
+    LOG_LAYERS.DestroyDebugUtilsMessengerEXT(
+        MECHANICS.instance, LOG_LAYERS.debugMessenger, nullptr);
   }
 
-  vkDestroySurfaceKHR(mechanics.instance, mechanics.surface, nullptr);
-  vkDestroyInstance(mechanics.instance, nullptr);
+  vkDestroySurfaceKHR(MECHANICS.instance, MECHANICS.surface, nullptr);
+  vkDestroyInstance(MECHANICS.instance, nullptr);
 
-  glfwDestroyWindow(Globals::obj.mainWindow.window);
+  glfwDestroyWindow(WINDOW.window);
 
   glfwTerminate();
+}
+
+Globals::~Globals() {
+  cleanup();
 }

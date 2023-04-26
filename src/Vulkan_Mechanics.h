@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include "Capital_Engine.h"
+
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
 class VulkanMechanics {
@@ -82,7 +84,6 @@ class VulkanMechanics {
       const std::vector<VkPresentModeKHR>& availablePresentModes);
   VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 };
-inline VulkanMechanics mechanics;
 
 class RenderConfiguration {
  public:
@@ -123,4 +124,3 @@ class RenderConfiguration {
   uint32_t findMemoryType(uint32_t typeFilter,
                           VkMemoryPropertyFlags properties);
 };
-inline RenderConfiguration renderConfig;
