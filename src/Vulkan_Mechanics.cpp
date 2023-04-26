@@ -271,6 +271,8 @@ VkExtent2D VulkanMechanics::chooseSwapExtent(
 }
 
 void VulkanMechanics::createSyncObjects() {
+  LOG("{ || }", "creating Sync Objects");
+
   imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
   renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
   computeFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -334,7 +336,7 @@ bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physical) {
 }
 
 void VulkanMechanics::createSwapChain() {
-  LOG("{ <> }", "creating Swap Chain");
+  LOG("{ <-> }", "creating Swap Chain");
   VulkanMechanics::SwapChainSupportDetails swapChainSupport =
       querySwapChainSupport(mainDevice.physical);
 
@@ -683,7 +685,7 @@ void RenderConfiguration::createFrameBuffers() {
     framebufferInfo.height = mechanics.swapChainExtent.height;
     framebufferInfo.layers = 1;
 
-    LOG("  ....  ", "Creating framebuffer", i, "of",
+    LOG("  ....  ", "creating framebuffer", i, "of",
         mechanics.swapChainImageViews.size());
 
     if (vkCreateFramebuffer(mechanics.mainDevice.logical, &framebufferInfo,

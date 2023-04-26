@@ -17,6 +17,7 @@ CapitalEngine::~CapitalEngine() {
 }
 
 void CapitalEngine::mainLoop() {
+  LOG("{ main loop }");
   while (!glfwWindowShouldClose(mainWindow.window)) {
     glfwPollEvents();
     drawFrame();
@@ -175,6 +176,7 @@ void CapitalEngine::drawFrame() {
 }
 
 void CapitalEngine::cleanup() {
+  LOG("{ cleanup }");
   mechanics.cleanupSwapChain();
 
   vkDestroyPipeline(mechanics.mainDevice.logical, pipelines.graphics.pipeline,

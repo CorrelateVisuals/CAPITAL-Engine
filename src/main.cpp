@@ -5,15 +5,15 @@
 #include "Debug.h"
 
 int main() {
-  try {
-    CapitalEngine CAPITAL;
+  CapitalEngine CAPITAL;
 
+  try {
     CAPITAL.mainLoop();
   } catch (const std::exception& e) {
     LOG(e.what());
     return EXIT_FAILURE;
   } catch (...) {
-    LOG("!!! Unknown error caught in main() !!!");
+    LOG("!!!!!!!!!", "unknown error caught in main()");
   }
   return EXIT_SUCCESS;
 }

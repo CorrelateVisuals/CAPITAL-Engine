@@ -32,7 +32,7 @@ void Window::windowResize(GLFWwindow* window, int width, int height) {
   app->framebufferResized = true;
   displayConfig.width = width;
   displayConfig.height = height;
-  LOG("> > Window resized to", width, "*", height);
+  LOG("{ [*] }", "Window resized to", width, "*", height);
 }
 
 void Window::mouseClick(GLFWwindow* window, int button) {
@@ -44,7 +44,7 @@ void Window::mouseClick(GLFWwindow* window, int button) {
     glfwGetCursorPos(window, &xpos, &ypos);
     xpos /= displayConfig.width;
     ypos /= displayConfig.height;
-    LOG("> > Mouse Click at", xpos, ":", ypos);
+    LOG("{ in }", "Mouse Click at", xpos, ":", ypos);
   }
   oldState = newState;
 }

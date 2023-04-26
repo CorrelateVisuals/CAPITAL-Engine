@@ -17,6 +17,7 @@ Pipelines::~Pipelines() {
 }
 
 void Pipelines::createDescriptorSetLayout() {
+  LOG("  ....  ", "creating Descriptor Set Layout");
   constexpr int numBindings = 4;
   std::array<VkDescriptorSetLayoutBinding, numBindings> layoutBindings{};
 
@@ -60,7 +61,7 @@ void Pipelines::createDescriptorSetLayout() {
 }
 
 void Pipelines::createGraphicsPipeline() {
-  LOG("{ PL }", "creating Graphics Pipeline");
+  LOG("{ P }", "creating Graphics Pipeline");
   auto vertShaderCode = readShaderFiles("shaders/vert.spv");
   auto fragShaderCode = readShaderFiles("shaders/frag.spv");
 
@@ -207,7 +208,7 @@ void Pipelines::createGraphicsPipeline() {
 }
 
 void Pipelines::createComputePipeline() {
-  LOG("{ PL }", "creating Compute Pipleline");
+  LOG("{ P }", "creating Compute Pipleline");
   auto computeShaderCode = readShaderFiles("shaders/comp.spv");
 
   VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
@@ -247,6 +248,8 @@ void Pipelines::createComputePipeline() {
 }
 
 std::vector<char> Pipelines::readShaderFiles(const std::string& filename) {
+  LOG("  ....  ", "reading Shader Files");
+
   std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
   if (!file.is_open()) {
@@ -266,6 +269,8 @@ std::vector<char> Pipelines::readShaderFiles(const std::string& filename) {
 }
 
 VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
+  LOG("  ....  ", "creating Shader Module");
+
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   createInfo.codeSize = code.size();
@@ -327,6 +332,8 @@ void MemoryCommands::createCommandBuffers() {
   }
 }
 void MemoryCommands::createComputeCommandBuffers() {
+  LOG("  ....  ", "creating Compute Command Buffers");
+
   computeCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
   VkCommandBufferAllocateInfo allocInfo{};
@@ -343,6 +350,8 @@ void MemoryCommands::createComputeCommandBuffers() {
 }
 
 void MemoryCommands::createShaderStorageBuffers() {
+  LOG("  ....  ", "creating Shader Storage Buffers");
+
   // Initialize particles
   std::default_random_engine rndEngine((unsigned)time(nullptr));
   std::uniform_real_distribution<float> rndDist(0.0f, 1.0f);
@@ -395,6 +404,8 @@ void MemoryCommands::createShaderStorageBuffers() {
 }
 
 void MemoryCommands::createUniformBuffers() {
+  LOG("  ....  ", "creating Uniform Buffers");
+
   VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
   uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -413,17 +424,20 @@ void MemoryCommands::createUniformBuffers() {
 }
 
 void MemoryCommands::createDescriptorPool() {
-  std::array<VkDescriptorPoolSize, 2> poolSizes{};
+  const int numPools = 2;
+  LOG("  ....  ", "creating", numPools, "Descriptor Pools");
+
+  std::array<VkDescriptorPoolSize, numPools> poolSizes{};
   poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
   poolSizes[1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
   poolSizes[1].descriptorCount =
-      static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT) * 2;
+      static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT) * numPools;
 
   VkDescriptorPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-  poolInfo.poolSizeCount = 2;
+  poolInfo.poolSizeCount = numPools;
   poolInfo.pPoolSizes = poolSizes.data();
   poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
@@ -433,6 +447,8 @@ void MemoryCommands::createDescriptorPool() {
   }
 }
 void MemoryCommands::createComputeDescriptorSets() {
+  LOG("  ....  ", "creating Compute Descriptor Sets");
+
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptorSetLayout);
   VkDescriptorSetAllocateInfo allocInfo{};

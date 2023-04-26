@@ -11,10 +11,10 @@ class Window {
   GLFWwindow* window;
   bool framebufferResized;
 
+  void initWindow();
   void mouseClick(GLFWwindow* window, int button);
 
  private:
-  void initWindow();
   static void windowResize(GLFWwindow* window, int width, int height);
 };
 inline Window mainWindow;
