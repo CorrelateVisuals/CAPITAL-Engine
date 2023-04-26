@@ -17,12 +17,13 @@ CapitalEngine::~CapitalEngine() {
 }
 
 void CapitalEngine::mainLoop() {
-  LOG("{ main loop }");
+  LOG("{ main }", "running ...");
   while (!glfwWindowShouldClose(mainWindow.window)) {
     glfwPollEvents();
     drawFrame();
     mainWindow.mouseClick(mainWindow.window, GLFW_MOUSE_BUTTON_LEFT);
   }
+  LOG("{ main }", "terminated");
 }
 
 void CapitalEngine::initVulkan() {

@@ -1,138 +1,76 @@
-2023-04-26 17:35:05 { . } constructing Logging
-2023-04-26 17:35:05 { = } constructing Validation Layers
-2023-04-26 17:35:05 { P } constructing Pipelines
-2023-04-26 17:35:05 { 0 } constructing Memory Management
-2023-04-26 17:35:05 { # } constructing Vulkan Mechanics
-2023-04-26 17:35:05 { < } constructing Render Configuration
-2023-04-26 17:35:05 { [X] } constructing Window
-2023-04-26 17:35:05 { [*] } Window initialized with 1920 * 1080
-2023-04-26 17:35:05 
+2023-04-26 20:00:50 { . } constructing Logging
+2023-04-26 20:00:50 { = } constructing Validation Layers
+2023-04-26 20:00:50 { P } constructing Pipelines
+2023-04-26 20:00:50 { 0 } constructing Memory Management
+2023-04-26 20:00:50 { # } constructing Vulkan Mechanics
+2023-04-26 20:00:50 { < } constructing Render Configuration
+2023-04-26 20:00:50 { [X] } constructing Window
+2023-04-26 20:00:50 { [*] } Window initialized with 1920 * 1080
+2023-04-26 20:00:50 
                     [ Starting CAPITAL engine ]
 
-2023-04-26 17:35:05 { ** } initializing Capital Engine
-2023-04-26 17:35:05 { vk } creating Vulkan Instance
-2023-04-26 17:35:05   ....   acquiring Required Extensions
-2023-04-26 17:35:05 { [] } creating Surface
-2023-04-26 17:35:05 { ## } picking Physical Device
-2023-04-26 17:35:05   ....   checking if Physical Device is suitable
-2023-04-26 17:35:05   ....   finding Queue Families
-2023-04-26 17:35:05   ....   checking Device Extension Support
-2023-04-26 17:35:05   ....   querying Swap Chain Support
-2023-04-26 17:35:05 { ## } GPU picked: NVIDIA GeForce GTX 1070
-2023-04-26 17:35:05 { ++ } creating Logical Device
-2023-04-26 17:35:05   ....   finding Queue Families
-2023-04-26 17:35:05 { <-> } creating Swap Chain
-2023-04-26 17:35:05   ....   querying Swap Chain Support
-2023-04-26 17:35:05   ....   choosing Swap Surface Format
-2023-04-26 17:35:05   ....   choosing Swap Present Mode
-2023-04-26 17:35:05   ....   choosing Swap Extent
-2023-04-26 17:35:05   ....   finding Queue Families
-2023-04-26 17:35:05 { -z } creating Depth Resources
-2023-04-26 17:35:05   ....   finding Depth Format
-2023-04-26 17:35:05   ....   finding Supported Format
-2023-04-26 17:35:05   ....   creating Image
-2023-04-26 17:35:05   ....   finding Memory Type
-2023-04-26 17:35:05   ....   creating Image View
-2023-04-26 17:35:05   ....   creating Image Views
-2023-04-26 17:35:05   ....   creating Image View
-2023-04-26 17:35:05   ....   creating Image View
-2023-04-26 17:35:05   ....   creating Image View
-2023-04-26 17:35:05 { RP } creating Render Pass
-2023-04-26 17:35:05   ....   finding Depth Format
-2023-04-26 17:35:05   ....   finding Supported Format
-2023-04-26 17:35:05   ....   creating Descriptor Set Layout
-2023-04-26 17:35:05 { P } creating Graphics Pipeline
-2023-04-26 17:35:05   ....   reading Shader Files
-2023-04-26 17:35:05   ....   reading Shader Files
-2023-04-26 17:35:05   ....   creating Shader Module
-2023-04-26 17:35:05   ....   creating Shader Module
-2023-04-26 17:35:05 { P } creating Compute Pipleline
-2023-04-26 17:35:05   ....   reading Shader Files
-2023-04-26 17:35:05   ....   creating Shader Module
-2023-04-26 17:35:05 { [0] } creating Frame Buffers
-2023-04-26 17:35:05   ....   creating framebuffer 0 of 3
-2023-04-26 17:35:05   ....   creating framebuffer 1 of 3
-2023-04-26 17:35:05   ....   creating framebuffer 2 of 3
-2023-04-26 17:35:05 { cmd } creating Command Pool
-2023-04-26 17:35:05   ....   finding Queue Families
-2023-04-26 17:35:05   ....   creating Shader Storage Buffers
-2023-04-26 17:35:05   ....   creating Uniform Buffers
-2023-04-26 17:35:05   ....   creating 2 Descriptor Pools
-2023-04-26 17:35:05   ....   creating Compute Descriptor Sets
-2023-04-26 17:35:05   ....   creating Command Buffers
-2023-04-26 17:35:05   ....   creating Compute Command Buffers
-2023-04-26 17:35:05 { || } creating Sync Objects
-2023-04-26 17:35:05 { main loop }
-2023-04-26 17:35:07 { [*] } Window resized to 2131 * 1213
-2023-04-26 17:35:07 { <-> } creating Swap Chain
-2023-04-26 17:35:07   ....   querying Swap Chain Support
-2023-04-26 17:35:07   ....   choosing Swap Surface Format
-2023-04-26 17:35:07   ....   choosing Swap Present Mode
-2023-04-26 17:35:07   ....   choosing Swap Extent
-2023-04-26 17:35:07   ....   finding Queue Families
-2023-04-26 17:35:07   ....   creating Image Views
-2023-04-26 17:35:07   ....   creating Image View
-2023-04-26 17:35:07   ....   creating Image View
-2023-04-26 17:35:07   ....   creating Image View
-2023-04-26 17:35:07 { -z } creating Depth Resources
-2023-04-26 17:35:07   ....   finding Depth Format
-2023-04-26 17:35:07   ....   finding Supported Format
-2023-04-26 17:35:07   ....   creating Image
-2023-04-26 17:35:07   ....   finding Memory Type
-2023-04-26 17:35:07   ....   creating Image View
-2023-04-26 17:35:07 { [0] } creating Frame Buffers
-2023-04-26 17:35:07   ....   creating framebuffer 0 of 3
-2023-04-26 17:35:07   ....   creating framebuffer 1 of 3
-2023-04-26 17:35:07   ....   creating framebuffer 2 of 3
-2023-04-26 17:35:08 { [*] } Window resized to 2284 * 871
-2023-04-26 17:35:08 { <-> } creating Swap Chain
-2023-04-26 17:35:08   ....   querying Swap Chain Support
-2023-04-26 17:35:08   ....   choosing Swap Surface Format
-2023-04-26 17:35:08   ....   choosing Swap Present Mode
-2023-04-26 17:35:08   ....   choosing Swap Extent
-2023-04-26 17:35:08   ....   finding Queue Families
-2023-04-26 17:35:08   ....   creating Image Views
-2023-04-26 17:35:08   ....   creating Image View
-2023-04-26 17:35:08   ....   creating Image View
-2023-04-26 17:35:08   ....   creating Image View
-2023-04-26 17:35:08 { -z } creating Depth Resources
-2023-04-26 17:35:08   ....   finding Depth Format
-2023-04-26 17:35:08   ....   finding Supported Format
-2023-04-26 17:35:08   ....   creating Image
-2023-04-26 17:35:08   ....   finding Memory Type
-2023-04-26 17:35:08   ....   creating Image View
-2023-04-26 17:35:08 { [0] } creating Frame Buffers
-2023-04-26 17:35:08   ....   creating framebuffer 0 of 3
-2023-04-26 17:35:08   ....   creating framebuffer 1 of 3
-2023-04-26 17:35:08   ....   creating framebuffer 2 of 3
-2023-04-26 17:35:08 { [*] } Window resized to 2221 * 1187
-2023-04-26 17:35:08 { <-> } creating Swap Chain
-2023-04-26 17:35:08   ....   querying Swap Chain Support
-2023-04-26 17:35:08   ....   choosing Swap Surface Format
-2023-04-26 17:35:08   ....   choosing Swap Present Mode
-2023-04-26 17:35:08   ....   choosing Swap Extent
-2023-04-26 17:35:08   ....   finding Queue Families
-2023-04-26 17:35:08   ....   creating Image Views
-2023-04-26 17:35:08   ....   creating Image View
-2023-04-26 17:35:08   ....   creating Image View
-2023-04-26 17:35:08   ....   creating Image View
-2023-04-26 17:35:08 { -z } creating Depth Resources
-2023-04-26 17:35:08   ....   finding Depth Format
-2023-04-26 17:35:08   ....   finding Supported Format
-2023-04-26 17:35:08   ....   creating Image
-2023-04-26 17:35:08   ....   finding Memory Type
-2023-04-26 17:35:08   ....   creating Image View
-2023-04-26 17:35:08 { [0] } creating Frame Buffers
-2023-04-26 17:35:08   ....   creating framebuffer 0 of 3
-2023-04-26 17:35:08   ....   creating framebuffer 1 of 3
-2023-04-26 17:35:08   ....   creating framebuffer 2 of 3
-2023-04-26 17:35:09 
+2023-04-26 20:00:50 { ** } initializing Capital Engine
+2023-04-26 20:00:50 { vk } creating Vulkan Instance
+2023-04-26 20:00:50   ....   acquiring Required Extensions
+2023-04-26 20:00:50 { [] } creating Surface
+2023-04-26 20:00:50 { ## } picking Physical Device
+2023-04-26 20:00:50   ....   checking if Physical Device is suitable
+2023-04-26 20:00:50   ....   finding Queue Families
+2023-04-26 20:00:50   ....   checking Device Extension Support
+2023-04-26 20:00:50   ....   querying Swap Chain Support
+2023-04-26 20:00:50 { ## } GPU picked: NVIDIA GeForce GTX 1070
+2023-04-26 20:00:50 { ++ } creating Logical Device
+2023-04-26 20:00:50   ....   finding Queue Families
+2023-04-26 20:00:50 { <-> } creating Swap Chain
+2023-04-26 20:00:50   ....   querying Swap Chain Support
+2023-04-26 20:00:50   ....   choosing Swap Surface Format
+2023-04-26 20:00:50   ....   choosing Swap Present Mode
+2023-04-26 20:00:50   ....   choosing Swap Extent
+2023-04-26 20:00:50   ....   finding Queue Families
+2023-04-26 20:00:50 { -z } creating Depth Resources
+2023-04-26 20:00:50   ....   finding Depth Format
+2023-04-26 20:00:50   ....   finding Supported Format
+2023-04-26 20:00:50   ....   creating Image
+2023-04-26 20:00:50   ....   finding Memory Type
+2023-04-26 20:00:50   ....   creating Image View
+2023-04-26 20:00:50   ....   creating Image Views
+2023-04-26 20:00:50   ....   creating Image View
+2023-04-26 20:00:50   ....   creating Image View
+2023-04-26 20:00:50   ....   creating Image View
+2023-04-26 20:00:50 { RP } creating Render Pass
+2023-04-26 20:00:50   ....   finding Depth Format
+2023-04-26 20:00:50   ....   finding Supported Format
+2023-04-26 20:00:50   ....   creating Descriptor Set Layout
+2023-04-26 20:00:50 { P } creating Graphics Pipeline
+2023-04-26 20:00:50   ....   reading Shader Files
+2023-04-26 20:00:50   ....   reading Shader Files
+2023-04-26 20:00:50   ....   creating Shader Module
+2023-04-26 20:00:50   ....   creating Shader Module
+2023-04-26 20:00:50 { P } creating Compute Pipleline
+2023-04-26 20:00:50   ....   reading Shader Files
+2023-04-26 20:00:50   ....   creating Shader Module
+2023-04-26 20:00:50 { [0] } creating Frame Buffers
+2023-04-26 20:00:50   ....   creating framebuffer 0 of 3
+2023-04-26 20:00:50   ....   creating framebuffer 1 of 3
+2023-04-26 20:00:50   ....   creating framebuffer 2 of 3
+2023-04-26 20:00:50 { cmd } creating Command Pool
+2023-04-26 20:00:50   ....   finding Queue Families
+2023-04-26 20:00:50   ....   creating Shader Storage Buffers
+2023-04-26 20:00:50   ....   creating Uniform Buffers
+2023-04-26 20:00:50   ....   creating 2 Descriptor Pools
+2023-04-26 20:00:50   ....   creating Compute Descriptor Sets
+2023-04-26 20:00:50   ....   creating Command Buffers
+2023-04-26 20:00:50   ....   creating Compute Command Buffers
+2023-04-26 20:00:50 { || } creating Sync Objects
+2023-04-26 20:00:50 { main } running ...
+2023-04-26 20:00:51 { main } terminated
+2023-04-26 20:00:51 
                     [ Terminating CAPITAL engine ]
 
-2023-04-26 17:35:09 { [X] } destructing Window
-2023-04-26 17:35:09 { < } constructing Render Configuration
-2023-04-26 17:35:09 { # } destructing Vulkan Mechanics
-2023-04-26 17:35:09 { 0 } destructing Memory Management
-2023-04-26 17:35:09 { P } destructing Pipelines
-2023-04-26 17:35:09 { = } destructing Validation Layers
-2023-04-26 17:35:09 { . } destructing Logging
+2023-04-26 20:00:51 { [X] } destructing Window
+2023-04-26 20:00:51 { < } constructing Render Configuration
+2023-04-26 20:00:51 { # } destructing Vulkan Mechanics
+2023-04-26 20:00:51 { 0 } destructing Memory Management
+2023-04-26 20:00:51 { P } destructing Pipelines
+2023-04-26 20:00:51 { = } destructing Validation Layers
+2023-04-26 20:00:51 { . } destructing Logging
