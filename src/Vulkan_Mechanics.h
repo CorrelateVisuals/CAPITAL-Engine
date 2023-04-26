@@ -7,8 +7,6 @@
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-std::ostream& operator<<(std::ostream& os, VkPhysicalDeviceProperties& device);
-
 class VulkanMechanics {
  public:
   VulkanMechanics();
@@ -17,19 +15,38 @@ class VulkanMechanics {
   VkSurfaceKHR surface;
   VkInstance instance;
 
-  using MainDevice = struct {
-    VkPhysicalDevice physicalDevice;
-    VkDevice logicalDevice;
-  };
-  MainDevice mainDevice;
+  struct Device {
+    VkPhysicalDevice physical;
+    VkDevice logical;
+  } mainDevice;
 
+  struct Queues {
+    VkQueue graphics;
+    VkQueue compute;
+    VkQueue present;
+  } queues;
+
+  struct QueueFamilyIndices {
+    std::optional<uint32_t> graphicsFamily;
+    std::optional<uint32_t> presentFamily;
+    bool isComplete() const {
+      return graphicsFamily.has_value() && presentFamily.has_value();
+    }
+  } queueFamilyIndices;
+
+  VkSwapchainKHR swapChain;
   std::vector<VkImage> swapChainImages;
   VkFormat swapChainImageFormat;
   std::vector<VkImageView> swapChainImageViews;
   VkExtent2D swapChainExtent;
+  std::vector<VkFramebuffer> swapChainFramebuffers;
 
-  VkCommandPool commandPool;
-  std::vector<VkCommandBuffer> commandBuffers;
+  std::vector<VkSemaphore> imageAvailableSemaphores;
+  std::vector<VkSemaphore> renderFinishedSemaphores;
+  std::vector<VkSemaphore> computeFinishedSemaphores;
+  std::vector<VkFence> inFlightFences;
+  std::vector<VkFence> computeInFlightFences;
+  uint32_t currentFrame = 0;
 
   void createInstance();
   void createSurface();
@@ -38,85 +55,59 @@ class VulkanMechanics {
   void createLogicalDevice();
 
   void createSwapChain();
+  void recreateSwapChain();
+
   void createSyncObjects();
 
-  void createCommandPool();
-  void createCommandBuffers();
+  void cleanupSwapChain();
+
+  QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physical);
 
  private:
   const std::vector<const char*> deviceExtensions;
-
-  struct Queues {
-    VkQueue graphicsQueue;
-    VkQueue presentQueue;
-  };
-  Queues queues;
-
-  struct QueueFamilyIndices {
-    std::optional<uint32_t> graphicsFamily;
-    std::optional<uint32_t> presentFamily;
-    bool isComplete() const {
-      return graphicsFamily.has_value() && presentFamily.has_value();
-    }
-  };
-  QueueFamilyIndices queueFamilyIndices;
 
   struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
     std::vector<VkPresentModeKHR> presentModes;
-  };
-  SwapChainSupportDetails swapChainSupport;
-
-  VkSwapchainKHR swapChain;
-
-  std::vector<VkSemaphore> imageAvailableSemaphores;
-  std::vector<VkSemaphore> renderFinishedSemaphores;
-  std::vector<VkFence> inFlightFences;
-
-  // VkFormat depthFormat;
+  } swapChainSupport;
 
   std::vector<const char*> getRequiredExtensions();
-  bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
-  QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice);
-  bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
-  SwapChainSupportDetails querySwapChainSupport(
-      VkPhysicalDevice physicalDevice);
-
+  bool isDeviceSuitable(VkPhysicalDevice physical);
+  bool checkDeviceExtensionSupport(VkPhysicalDevice physical);
+  SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physical);
   VkSurfaceFormatKHR chooseSwapSurfaceFormat(
       const std::vector<VkSurfaceFormatKHR>& availableFormats);
   VkPresentModeKHR chooseSwapPresentMode(
       const std::vector<VkPresentModeKHR>& availablePresentModes);
   VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 };
-inline VulkanMechanics vulkanMechanics;
+inline VulkanMechanics mechanics;
 
 class RenderConfiguration {
  public:
   RenderConfiguration();
   ~RenderConfiguration();
 
-  void createDepthResources();
-  void createImageViews();
-
-  void setupRenderPass();
-  void createPipelineCache();
-
-  void setupFrameBuffer();
-
   VkImage depthImage;
   VkDeviceMemory depthImageMemory;
   VkImageView depthImageView;
+  VkFormat depthFormat;
+
+  VkRenderPass renderPass;
+
+  void createImageViews();
+  void createRenderPass();
+
+  void createDepthResources();
+  void createFrameBuffers();
 
  private:
-  VkRenderPass renderPass;
-  VkPipelineCache pipelineCache;
-  std::vector<VkFramebuffer> frameBuffers;
-
   VkFormat findDepthFormat();
   VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
                                VkImageTiling tiling,
                                VkFormatFeatureFlags features);
+  bool hasStencilComponent(VkFormat format);
   void createImage(uint32_t width,
                    uint32_t height,
                    VkFormat format,
