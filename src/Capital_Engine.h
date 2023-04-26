@@ -32,10 +32,10 @@ class Globals {
     Logging logging;
     ValidationLayers validationLayers;
     Window mainWindow;
-    VulkanMechanics mechanics;
+    VulkanMechanics vulkanMechanics;
     RenderConfiguration renderConfig;
     Pipelines pipelines;
-    MemoryCommands memCommands;
+    MemoryCommands memoryCommands;
     World world;
   };
   inline static Objects obj;
@@ -44,8 +44,8 @@ class Globals {
 constexpr auto& _log = Globals::obj.logging;
 constexpr auto& _validationLayers = Globals::obj.validationLayers;
 constexpr auto& _window = Globals::obj.mainWindow;
-constexpr auto& _mechanics = Globals::obj.mechanics;
+constexpr auto& _mechanics = Globals::obj.vulkanMechanics;
 constexpr auto& _renderConfig = Globals::obj.renderConfig;
-constexpr auto& _memCommands = Globals::obj.memCommands;
+constexpr auto& _memCommands = Globals::obj.memoryCommands;
 constexpr auto& _pipelines = Globals::obj.pipelines;
 constexpr auto& _world = Globals::obj.world;

@@ -16,6 +16,10 @@ CapitalEngine::~CapitalEngine() {
   _log.console("\n                    [", "Terminating CAPITAL engine", "]\n");
 }
 
+Globals::~Globals() {
+  cleanup();
+}
+
 void CapitalEngine::mainLoop() {
   _log.console("{ main }", "running ...");
   while (!glfwWindowShouldClose(_window.window)) {
@@ -245,8 +249,4 @@ void Globals::cleanup() {
   glfwDestroyWindow(_window.window);
 
   glfwTerminate();
-}
-
-Globals::~Globals() {
-  cleanup();
 }
