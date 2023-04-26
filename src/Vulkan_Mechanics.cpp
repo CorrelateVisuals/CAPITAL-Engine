@@ -29,15 +29,15 @@ VulkanMechanics::VulkanMechanics()
       imageAvailableSemaphores{},
       renderFinishedSemaphores{},
       inFlightFences{} {
-  LOG("{ # }", "constructing Vulkan Mechanics");
+  LOG.console("{ # }", "constructing Vulkan Mechanics");
 }
 
 VulkanMechanics::~VulkanMechanics() {
-  LOG("{ # }", "destructing Vulkan Mechanics");
+  LOG.console("{ # }", "destructing Vulkan Mechanics");
 }
 
 void VulkanMechanics::createInstance() {
-  LOG("{ vk }", "creating Vulkan Instance");
+  LOG.console("{ vk }", "creating Vulkan Instance");
 
   const std::vector<const char*> requiredExtensions = getRequiredExtensions();
 
@@ -81,7 +81,7 @@ void VulkanMechanics::createInstance() {
 }
 
 void VulkanMechanics::createSurface() {
-  LOG("{ [] }", "creating Surface");
+  LOG.console("{ [] }", "creating Surface");
 
   if (glfwCreateWindowSurface(instance, WINDOW.window, nullptr, &surface) !=
       VK_SUCCESS) {
@@ -90,7 +90,7 @@ void VulkanMechanics::createSurface() {
 }
 
 void VulkanMechanics::pickPhysicalDevice() {
-  LOG("{ ## }", "picking Physical Device");
+  LOG.console("{ ## }", "picking Physical Device");
 
   uint32_t deviceCount = 0;
   vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -108,7 +108,7 @@ void VulkanMechanics::pickPhysicalDevice() {
 
       VkPhysicalDeviceProperties deviceProperties;
       vkGetPhysicalDeviceProperties(device, &deviceProperties);
-      LOG("{ ## }", "GPU picked:", deviceProperties.deviceName);
+      LOG.console("{ ## }", "GPU picked:", deviceProperties.deviceName);
       break;
     }
   }
@@ -120,7 +120,7 @@ void VulkanMechanics::pickPhysicalDevice() {
 
 VulkanMechanics::QueueFamilyIndices VulkanMechanics::findQueueFamilies(
     VkPhysicalDevice physical) {
-  LOG("  ....  ", "finding Queue Families");
+  LOG.console("  ....  ", "finding Queue Families");
 
   VulkanMechanics::QueueFamilyIndices indices;
 
@@ -150,7 +150,7 @@ VulkanMechanics::QueueFamilyIndices VulkanMechanics::findQueueFamilies(
 }
 
 bool VulkanMechanics::checkDeviceExtensionSupport(VkPhysicalDevice physical) {
-  LOG("  ....  ", "checking Device Extension Support");
+  LOG.console("  ....  ", "checking Device Extension Support");
 
   uint32_t extensionCount;
   vkEnumerateDeviceExtensionProperties(physical, nullptr, &extensionCount,
@@ -169,7 +169,7 @@ bool VulkanMechanics::checkDeviceExtensionSupport(VkPhysicalDevice physical) {
 }
 
 void VulkanMechanics::createLogicalDevice() {
-  LOG("{ ++ }", "creating Logical Device");
+  LOG.console("{ ++ }", "creating Logical Device");
 
   VulkanMechanics::QueueFamilyIndices indices =
       findQueueFamilies(mainDevice.physical);
@@ -226,7 +226,7 @@ void VulkanMechanics::createLogicalDevice() {
 
 VkSurfaceFormatKHR VulkanMechanics::chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR>& availableFormats) {
-  LOG("  ....  ", "choosing Swap Surface Format");
+  LOG.console("  ....  ", "choosing Swap Surface Format");
   for (const auto& availableFormat : availableFormats) {
     if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
         availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
@@ -238,7 +238,7 @@ VkSurfaceFormatKHR VulkanMechanics::chooseSwapSurfaceFormat(
 
 VkPresentModeKHR VulkanMechanics::chooseSwapPresentMode(
     const std::vector<VkPresentModeKHR>& availablePresentModes) {
-  LOG("  ....  ", "choosing Swap Present Mode");
+  LOG.console("  ....  ", "choosing Swap Present Mode");
   for (const auto& availablePresentMode : availablePresentModes) {
     if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
       return availablePresentMode;
@@ -249,7 +249,7 @@ VkPresentModeKHR VulkanMechanics::chooseSwapPresentMode(
 
 VkExtent2D VulkanMechanics::chooseSwapExtent(
     const VkSurfaceCapabilitiesKHR& capabilities) {
-  LOG("  ....  ", "choosing Swap Extent");
+  LOG.console("  ....  ", "choosing Swap Extent");
   if (capabilities.currentExtent.width !=
       std::numeric_limits<uint32_t>::max()) {
     return capabilities.currentExtent;
@@ -272,7 +272,7 @@ VkExtent2D VulkanMechanics::chooseSwapExtent(
 }
 
 void VulkanMechanics::createSyncObjects() {
-  LOG("{ || }", "creating Sync Objects");
+  LOG.console("{ || }", "creating Sync Objects");
 
   imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
   renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -320,7 +320,7 @@ void VulkanMechanics::cleanupSwapChain() {
 }
 
 bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physical) {
-  LOG("  ....  ", "checking if Physical Device is suitable");
+  LOG.console("  ....  ", "checking if Physical Device is suitable");
 
   QueueFamilyIndices indices = findQueueFamilies(physical);
 
@@ -337,7 +337,7 @@ bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physical) {
 }
 
 void VulkanMechanics::createSwapChain() {
-  LOG("{ <-> }", "creating Swap Chain");
+  LOG.console("{ <-> }", "creating Swap Chain");
   VulkanMechanics::SwapChainSupportDetails swapChainSupport =
       querySwapChainSupport(mainDevice.physical);
 
@@ -417,7 +417,7 @@ void VulkanMechanics::recreateSwapChain() {
 }
 
 std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
-  LOG("  ....  ", "acquiring Required Extensions");
+  LOG.console("  ....  ", "acquiring Required Extensions");
 
   uint32_t glfwExtensionCount = 0;
   const char** glfwExtensions;
@@ -435,7 +435,7 @@ std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
 
 VulkanMechanics::SwapChainSupportDetails VulkanMechanics::querySwapChainSupport(
     VkPhysicalDevice physical) {
-  LOG("  ....  ", "querying Swap Chain Support");
+  LOG.console("  ....  ", "querying Swap Chain Support");
 
   VulkanMechanics::SwapChainSupportDetails details;
 
@@ -464,15 +464,15 @@ RenderConfiguration::RenderConfiguration()
       depthImageMemory{},
       depthImageView{},
       renderPass{VK_NULL_HANDLE} {
-  LOG("{ < }", "constructing Render Configuration");
+  LOG.console("{ < }", "constructing Render Configuration");
 }
 
 RenderConfiguration::~RenderConfiguration() {
-  LOG("{ < }", "constructing Render Configuration");
+  LOG.console("{ < }", "constructing Render Configuration");
 }
 
 void RenderConfiguration::createDepthResources() {
-  LOG("{ -z }", "creating Depth Resources");
+  LOG.console("{ -z }", "creating Depth Resources");
 
   VkFormat depthFormat = findDepthFormat();
   createImage(MECHANICS.swapChainExtent.width, MECHANICS.swapChainExtent.height,
@@ -485,7 +485,7 @@ void RenderConfiguration::createDepthResources() {
 }
 
 void RenderConfiguration::createImageViews() {
-  LOG("  ....  ", "creating Image Views");
+  LOG.console("  ....  ", "creating Image Views");
   MECHANICS.swapChainImageViews.resize(MECHANICS.swapChainImages.size());
 
   for (size_t i = 0; i < MECHANICS.swapChainImages.size(); i++) {
@@ -516,7 +516,7 @@ void RenderConfiguration::createImageViews() {
 }
 
 VkFormat RenderConfiguration::findDepthFormat() {
-  LOG("  ....  ", "finding Depth Format");
+  LOG.console("  ....  ", "finding Depth Format");
   ;
   hasStencilComponent(depthFormat);
 
@@ -530,7 +530,7 @@ VkFormat RenderConfiguration::findSupportedFormat(
     const std::vector<VkFormat>& candidates,
     VkImageTiling tiling,
     VkFormatFeatureFlags features) {
-  LOG("  ....  ", "finding Supported Format");
+  LOG.console("  ....  ", "finding Supported Format");
 
   for (VkFormat format : candidates) {
     VkFormatProperties props;
@@ -555,7 +555,7 @@ bool RenderConfiguration::hasStencilComponent(VkFormat format) {
 }
 
 void RenderConfiguration::createRenderPass() {
-  LOG("{ RP }", "creating Render Pass");
+  LOG.console("{ RP }", "creating Render Pass");
   VkAttachmentDescription colorAttachment{};
   colorAttachment.format = MECHANICS.swapChainImageFormat;
   colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -627,7 +627,7 @@ void RenderConfiguration::createImage(uint32_t width,
                                       VkMemoryPropertyFlags properties,
                                       VkImage& image,
                                       VkDeviceMemory& imageMemory) {
-  LOG("  ....  ", "creating Image");
+  LOG.console("  ....  ", "creating Image");
 
   VkImageCreateInfo imageInfo{};
   imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -667,7 +667,7 @@ void RenderConfiguration::createImage(uint32_t width,
 }
 
 void RenderConfiguration::createFrameBuffers() {
-  LOG("{ [0] }", "creating Frame Buffers");
+  LOG.console("{ [0] }", "creating Frame Buffers");
 
   MECHANICS.swapChainFramebuffers.resize(MECHANICS.swapChainImageViews.size());
 
@@ -686,8 +686,8 @@ void RenderConfiguration::createFrameBuffers() {
     framebufferInfo.height = MECHANICS.swapChainExtent.height;
     framebufferInfo.layers = 1;
 
-    LOG("  ....  ", "creating framebuffer", i, "of",
-        MECHANICS.swapChainImageViews.size());
+    LOG.console("  ....  ", "creating framebuffer", i, "of",
+                MECHANICS.swapChainImageViews.size());
 
     if (vkCreateFramebuffer(MECHANICS.mainDevice.logical, &framebufferInfo,
                             nullptr, &MECHANICS.swapChainFramebuffers[i]) !=
@@ -701,7 +701,7 @@ VkImageView RenderConfiguration::createImageView(
     VkImage image,
     VkFormat format,
     VkImageAspectFlags aspectFlags) {
-  LOG("  ....  ", "creating Image View");
+  LOG.console("  ....  ", "creating Image View");
 
   VkImageViewCreateInfo viewInfo{};
   viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -725,7 +725,7 @@ VkImageView RenderConfiguration::createImageView(
 
 uint32_t RenderConfiguration::findMemoryType(uint32_t typeFilter,
                                              VkMemoryPropertyFlags properties) {
-  LOG("  ....  ", "finding Memory Type");
+  LOG.console("  ....  ", "finding Memory Type");
 
   VkPhysicalDeviceMemoryProperties memProperties;
   vkGetPhysicalDeviceMemoryProperties(MECHANICS.mainDevice.physical,

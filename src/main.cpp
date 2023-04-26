@@ -9,10 +9,10 @@ int main() {
     CapitalEngine CAPITAL;
     CAPITAL.mainLoop();
   } catch (const std::exception& e) {
-    LOG(e.what());
+    LOG.console(e.what());
     return EXIT_FAILURE;
   } catch (...) {
-    LOG("!!!!!!!!!", "unknown error caught in main()");
+    LOG.console("!!!!!!!!!", "unknown error caught in main()");
   }
   return EXIT_SUCCESS;
 }

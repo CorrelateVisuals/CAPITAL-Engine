@@ -7,27 +7,27 @@
 #include "Window.h"
 
 CapitalEngine::CapitalEngine() {
-  LOG("\n                    [", "Starting CAPITAL engine", "]\n");
+  LOG.console("\n                    [", "Starting CAPITAL engine", "]\n");
 
   initVulkan();
 }
 
 CapitalEngine::~CapitalEngine() {
-  LOG("\n                    [", "Terminating CAPITAL engine", "]\n");
+  LOG.console("\n                    [", "Terminating CAPITAL engine", "]\n");
 }
 
 void CapitalEngine::mainLoop() {
-  LOG("{ main }", "running ...");
+  LOG.console("{ main }", "running ...");
   while (!glfwWindowShouldClose(WINDOW.window)) {
     glfwPollEvents();
     drawFrame();
     WINDOW.mouseClick(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT);
   }
-  LOG("{ main }", "terminated");
+  LOG.console("{ main }", "terminated");
 }
 
 void CapitalEngine::initVulkan() {
-  LOG("{ ** }", "initializing Capital Engine");
+  LOG.console("{ ** }", "initializing Capital Engine");
 
   // Init Vulkan
   MECHANICS.createInstance();
@@ -177,7 +177,7 @@ void CapitalEngine::drawFrame() {
 }
 
 void Globals::cleanup() {
-  LOG("{ cleanup }");
+  LOG.console("{ cleanup }");
 
   MECHANICS.cleanupSwapChain();
 

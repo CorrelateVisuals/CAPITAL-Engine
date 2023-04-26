@@ -6,12 +6,12 @@
 #include "Window.h"
 
 Window::Window() : window{nullptr}, framebufferResized{false} {
-  LOG("{ [X] }", "constructing Window");
+  LOG.console("{ [X] }", "constructing Window");
   initWindow();
 }
 
 Window::~Window() {
-  LOG("{ [X] }", "destructing Window");
+  LOG.console("{ [X] }", "destructing Window");
   glfwDestroyWindow(window);
   glfwTerminate();
 }
@@ -24,8 +24,8 @@ void Window::initWindow() {
 
   glfwSetWindowUserPointer(window, this);
   glfwSetFramebufferSizeCallback(window, windowResize);
-  LOG("{ [*] }", "Window initialized with", displayConfig.width, "*",
-      displayConfig.height);
+  LOG.console("{ [*] }", "Window initialized with", displayConfig.width, "*",
+              displayConfig.height);
 }
 
 void Window::windowResize(GLFWwindow* window, int width, int height) {
@@ -33,7 +33,7 @@ void Window::windowResize(GLFWwindow* window, int width, int height) {
   app->framebufferResized = true;
   displayConfig.width = width;
   displayConfig.height = height;
-  LOG("{ [*] }", "Window resized to", width, "*", height);
+  LOG.console("{ [*] }", "Window resized to", width, "*", height);
 }
 
 void Window::mouseClick(GLFWwindow* window, int button) {
@@ -45,7 +45,7 @@ void Window::mouseClick(GLFWwindow* window, int button) {
     glfwGetCursorPos(window, &xpos, &ypos);
     xpos /= displayConfig.width;
     ypos /= displayConfig.height;
-    LOG("{ in }", "Mouse Click at", xpos, ":", ypos);
+    LOG.console("{ in }", "Mouse Click at", xpos, ":", ypos);
   }
   oldState = newState;
 }
