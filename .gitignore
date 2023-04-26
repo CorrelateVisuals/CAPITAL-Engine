@@ -80,3 +80,4 @@ _deps
 *.log
 *.tlog/link.read.1.tlog
 
+.vs/CAPITAL-engine/v17/fileList.bin

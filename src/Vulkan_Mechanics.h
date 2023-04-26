@@ -70,8 +70,6 @@ class VulkanMechanics {
     std::vector<VkPresentModeKHR> presentModes;
   } swapChainSupport;
 
-  VkFormat depthFormat;
-
   std::vector<const char*> getRequiredExtensions();
   bool isDeviceSuitable(VkPhysicalDevice physical);
   bool checkDeviceExtensionSupport(VkPhysicalDevice physical);
@@ -92,6 +90,7 @@ class RenderConfiguration {
   VkImage depthImage;
   VkDeviceMemory depthImageMemory;
   VkImageView depthImageView;
+  VkFormat depthFormat;
 
   VkRenderPass renderPass;
 

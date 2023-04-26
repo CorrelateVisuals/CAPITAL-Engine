@@ -492,6 +492,8 @@ void RenderConfiguration::createImageViews() {
 
 VkFormat RenderConfiguration::findDepthFormat() {
   LOG(" . . . . finding Depth Format");
+  ;
+  hasStencilComponent(depthFormat);
 
   return findSupportedFormat(
       {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT,
@@ -518,6 +520,7 @@ VkFormat RenderConfiguration::findSupportedFormat(
       return format;
     }
   }
+
   throw std::runtime_error("failed to find supported format!");
 }
 

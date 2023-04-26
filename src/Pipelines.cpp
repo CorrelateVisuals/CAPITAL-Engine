@@ -9,7 +9,7 @@
 #include "World.h"
 
 void Pipelines::createDescriptorSetLayout() {
-  constexpr int numBindings = 3;
+  constexpr int numBindings = 4;
   std::array<VkDescriptorSetLayoutBinding, numBindings> layoutBindings{};
 
   // Compute Shader input
@@ -32,11 +32,11 @@ void Pipelines::createDescriptorSetLayout() {
   layoutBindings[2].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 
   // Vertex Shader input
-  // layoutBindings[3].binding = 3;
-  // layoutBindings[3].descriptorCount = 1;
-  // layoutBindings[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-  // layoutBindings[3].pImmutableSamplers = nullptr;
-  // layoutBindings[3].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+  layoutBindings[3].binding = 3;
+  layoutBindings[3].descriptorCount = 1;
+  layoutBindings[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+  layoutBindings[3].pImmutableSamplers = nullptr;
+  layoutBindings[3].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
   VkDescriptorSetLayoutCreateInfo layoutInfo{};
   layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -91,7 +91,7 @@ void Pipelines::createGraphicsPipeline() {
   VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
   inputAssembly.sType =
       VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
   inputAssembly.primitiveRestartEnable = VK_FALSE;
 
   VkPipelineViewportStateCreateInfo viewportState{};
@@ -105,7 +105,7 @@ void Pipelines::createGraphicsPipeline() {
   rasterizer.rasterizerDiscardEnable = VK_FALSE;
   rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
   rasterizer.lineWidth = 1.0f;
-  rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+  rasterizer.cullMode = VK_CULL_MODE_NONE;
   rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
   rasterizer.depthBiasEnable = VK_FALSE;
 
@@ -128,7 +128,7 @@ void Pipelines::createGraphicsPipeline() {
   colorBlendAttachment.colorWriteMask =
       VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
       VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-  colorBlendAttachment.blendEnable = VK_TRUE;
+  colorBlendAttachment.blendEnable = VK_FALSE;
   colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
   colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
   colorBlendAttachment.dstColorBlendFactor =
@@ -159,7 +159,7 @@ void Pipelines::createGraphicsPipeline() {
 
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-  pipelineLayoutInfo.setLayoutCount = 0;
+  pipelineLayoutInfo.setLayoutCount = 0;  // ????
   pipelineLayoutInfo.pSetLayouts = &memCommands.descriptorSetLayout;
 
   if (vkCreatePipelineLayout(mechanics.mainDevice.logical, &pipelineLayoutInfo,
