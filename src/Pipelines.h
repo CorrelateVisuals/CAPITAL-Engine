@@ -49,6 +49,7 @@ class MemoryCommands {
   std::vector<VkDeviceMemory> shaderStorageBuffersMemory;
 
   float lastFrameTime = 0.0f;
+  double lastTime = 0.0f;
 
   void createCommandPool();
   void createCommandBuffers();

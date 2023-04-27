@@ -25,6 +25,12 @@ void CapitalEngine::mainLoop() {
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
     drawFrame();
+    // We want to animate the particle system using the last frames time to
+    // get smooth, frame-rate independent animation
+    double currentTime = glfwGetTime();
+    _memCommands.lastFrameTime = (currentTime - _memCommands.lastTime) * 1000.0;
+    _memCommands.lastTime = currentTime;
+
     _window.mouseClick(_window.window, GLFW_MOUSE_BUTTON_LEFT);
   }
   _log.console("{ main }", "terminated");
@@ -220,6 +226,9 @@ void Globals::cleanup() {
                  _memCommands.shaderStorageBuffersMemory[i], nullptr);
   }
 
+  vkDestroyCommandPool(_mechanics.mainDevice.logical, _memCommands.commandPool,
+                       nullptr);
+
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     vkDestroySemaphore(_mechanics.mainDevice.logical,
                        _mechanics.renderFinishedSemaphores[i], nullptr);
@@ -232,9 +241,6 @@ void Globals::cleanup() {
     vkDestroyFence(_mechanics.mainDevice.logical,
                    _mechanics.computeInFlightFences[i], nullptr);
   }
-
-  vkDestroyCommandPool(_mechanics.mainDevice.logical, _memCommands.commandPool,
-                       nullptr);
 
   vkDestroyDevice(_mechanics.mainDevice.logical, nullptr);
 

@@ -18,7 +18,7 @@ Pipelines::~Pipelines() {
 
 void Pipelines::createDescriptorSetLayout() {
   _log.console("  ....  ", "creating Descriptor Set Layout");
-  constexpr int numBindings = 4;
+  constexpr int numBindings = 3;
   std::array<VkDescriptorSetLayoutBinding, numBindings> layoutBindings{};
 
   // Compute Shader input
@@ -41,11 +41,11 @@ void Pipelines::createDescriptorSetLayout() {
   layoutBindings[2].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 
   // Vertex Shader input
-  layoutBindings[3].binding = 3;
-  layoutBindings[3].descriptorCount = 1;
-  layoutBindings[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-  layoutBindings[3].pImmutableSamplers = nullptr;
-  layoutBindings[3].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+  /* layoutBindings[3].binding = 3;
+   layoutBindings[3].descriptorCount = 1;
+   layoutBindings[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+   layoutBindings[3].pImmutableSamplers = nullptr;
+   layoutBindings[3].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;*/
 
   VkDescriptorSetLayoutCreateInfo layoutInfo{};
   layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -101,7 +101,7 @@ void Pipelines::createGraphicsPipeline() {
   VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
   inputAssembly.sType =
       VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
   inputAssembly.primitiveRestartEnable = VK_FALSE;
 
   VkPipelineViewportStateCreateInfo viewportState{};
@@ -115,7 +115,7 @@ void Pipelines::createGraphicsPipeline() {
   rasterizer.rasterizerDiscardEnable = VK_FALSE;
   rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
   rasterizer.lineWidth = 1.0f;
-  rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+  rasterizer.cullMode = VK_CULL_MODE_NONE;
   rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
   rasterizer.depthBiasEnable = VK_FALSE;
 
@@ -138,7 +138,7 @@ void Pipelines::createGraphicsPipeline() {
   colorBlendAttachment.colorWriteMask =
       VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
       VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-  colorBlendAttachment.blendEnable = VK_FALSE;
+  colorBlendAttachment.blendEnable = VK_TRUE;
   colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
   colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
   colorBlendAttachment.dstColorBlendFactor =
@@ -357,15 +357,15 @@ void MemoryCommands::createShaderStorageBuffers() {
   std::uniform_real_distribution<float> rndDist(0.0f, 1.0f);
 
   // Initial particle positions on a circle
-  std::vector<World::Cell> particles(CELL_COUNT);
-  for (auto& particle : particles) {
+  std::vector<World::Cell> cells(CELL_COUNT);
+  for (auto& cell : cells) {
     float r = 0.25f * sqrt(rndDist(rndEngine));
     float theta = rndDist(rndEngine) * 2.0f * 3.14159265358979323846f;
     float x = r * cos(theta) * displayConfig.height / displayConfig.width;
     float y = r * sin(theta);
-    particle.position = glm::vec2(x, y);
-    particle.velocity = glm::normalize(glm::vec2(x, y)) * 0.00025f;
-    particle.color = glm::vec4(rndDist(rndEngine), rndDist(rndEngine),
+    cell.position = glm::vec2(x, y);
+    cell.velocity = glm::normalize(glm::vec2(x, y)) * 0.00025f;
+    cell.color = glm::vec4(rndDist(rndEngine), rndDist(rndEngine),
                                rndDist(rndEngine), 1.0f);
   }
 
@@ -382,7 +382,7 @@ void MemoryCommands::createShaderStorageBuffers() {
   void* data;
   vkMapMemory(_mechanics.mainDevice.logical, stagingBufferMemory, 0, bufferSize,
               0, &data);
-  memcpy(data, particles.data(), (size_t)bufferSize);
+  memcpy(data, cells.data(), (size_t)bufferSize);
   vkUnmapMemory(_mechanics.mainDevice.logical, stagingBufferMemory);
 
   shaderStorageBuffers.resize(MAX_FRAMES_IN_FLIGHT);

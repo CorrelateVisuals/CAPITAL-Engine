@@ -464,6 +464,7 @@ VulkanMechanics::SwapChainSupportDetails VulkanMechanics::querySwapChainSupport(
 
 RenderConfiguration::RenderConfiguration()
     : depthImage{},
+      depthFormat{},
       depthImageMemory{},
       depthImageView{},
       renderPass{VK_NULL_HANDLE} {
