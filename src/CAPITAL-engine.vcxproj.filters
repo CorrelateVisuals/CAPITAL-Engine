@@ -62,8 +62,5 @@
     <ClInclude Include="Control.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ALL_CLASSES.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

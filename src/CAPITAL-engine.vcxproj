@@ -165,7 +165,6 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ALL_CLASSES.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="CAPITAL_Engine.h" />

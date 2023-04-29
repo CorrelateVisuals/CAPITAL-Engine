@@ -70,12 +70,16 @@ class VulkanMechanics {
   void createLogicalDevice();
 
   void createSwapChain();
+  void recreateSwapChain();
+  void cleanupSwapChain();
+
   void createImageViews();
+
+  void createSyncObjects();
 
   Queues::FamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice);
 
  private:
-  void createSurface();
   std::vector<const char*> getRequiredExtensions();
 
   bool isDeviceSuitable(VkPhysicalDevice physicalDevice);

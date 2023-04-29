@@ -109,7 +109,7 @@ VulkanMechanics::Queues::FamilyIndices VulkanMechanics::findQueueFamilies(
   vkGetPhysicalDeviceQueueFamilyProperties(
       mainDevice.physical, &queueFamilyCount, queueFamilies.data());
 
-  int i = 0;
+  static int i = 0;
   for (const auto& queueFamily : queueFamilies) {
     if ((queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) &&
         (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT)) {

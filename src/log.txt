@@ -1,83 +1,17 @@
-2023-04-29 13:35:44 { . } constructing Logging
-2023-04-29 13:35:44 { = } constructing Validation Layers
-2023-04-29 13:35:44 { [X] } constructing Window
-2023-04-29 13:35:44 { [*] } Window initialized with 1920 * 1080
-2023-04-29 13:35:44 { # } constructing Vulkan Mechanics
-2023-04-29 13:35:44 { < } constructing Render Configuration
-2023-04-29 13:35:44 { P } constructing Pipelines
-2023-04-29 13:35:44 { 0 } constructing Memory Management
-2023-04-29 13:35:44 { (:) } constructing World
-2023-04-29 13:35:44 
+2023-04-30 01:15:05 { . } constructing Logging
+2023-04-30 01:15:05 { = } constructing Validation Layers
+2023-04-30 01:15:05 { [X] } constructing Window
+2023-04-30 01:15:05 { [*] } Window initialized with 1920 * 1080
+2023-04-30 01:15:05 { # } constructing Vulkan Mechanics
+2023-04-30 01:15:05 { P } constructing Pipelines
+2023-04-30 01:15:05 { 0 } constructing Memory Management
+2023-04-30 01:15:05 { (:) } constructing World
+2023-04-30 01:15:05 
                     [ Starting CAPITAL engine ]
 
-2023-04-29 13:35:44 { ** } initializing Capital Engine
-2023-04-29 13:35:44 { vk } creating Vulkan Instance
-2023-04-29 13:35:44   ....   acquiring Required Extensions
-2023-04-29 13:35:44 { [] } creating Surface
-2023-04-29 13:35:44 { ## } picking Physical Device
-2023-04-29 13:35:44   ....   checking if Physical Device is suitable
-2023-04-29 13:35:44   ....   finding Queue Families
-2023-04-29 13:35:44   ....   checking Device Extension Support
-2023-04-29 13:35:44   ....   querying Swap Chain Support
-2023-04-29 13:35:44 { ## } GPU picked: NVIDIA GeForce GTX 1070
-2023-04-29 13:35:44 { ++ } creating Logical Device
-2023-04-29 13:35:44   ....   finding Queue Families
-2023-04-29 13:35:44 { <-> } creating Swap Chain
-2023-04-29 13:35:44   ....   querying Swap Chain Support
-2023-04-29 13:35:44   ....   choosing Swap Surface Format
-2023-04-29 13:35:44   ....   choosing Swap Present Mode
-2023-04-29 13:35:44   ....   choosing Swap Extent
-2023-04-29 13:35:44   ....   finding Queue Families
-2023-04-29 13:35:45 { -z } creating Depth Resources
-2023-04-29 13:35:45   ....   finding Depth Format
-2023-04-29 13:35:45   ....   finding Supported Format
-2023-04-29 13:35:45   ....   creating Image
-2023-04-29 13:35:45   ....   finding Memory Type
-2023-04-29 13:35:45   ....   creating Image View
-2023-04-29 13:35:45   ....   creating Image Views
-2023-04-29 13:35:45   ....   creating Image View
-2023-04-29 13:35:45   ....   creating Image View
-2023-04-29 13:35:45   ....   creating Image View
-2023-04-29 13:35:45 { RP } creating Render Pass
-2023-04-29 13:35:45   ....   finding Depth Format
-2023-04-29 13:35:45   ....   finding Supported Format
-2023-04-29 13:35:45   ....   creating Descriptor Set Layout
-2023-04-29 13:35:45 { P } creating Graphics Pipeline
-2023-04-29 13:35:45   ....   reading Shader Files
-2023-04-29 13:35:45   ....   reading Shader Files
-2023-04-29 13:35:45   ....   creating Shader Module
-2023-04-29 13:35:45   ....   creating Shader Module
-2023-04-29 13:35:45 { P } creating Compute Pipleline
-2023-04-29 13:35:45   ....   reading Shader Files
-2023-04-29 13:35:45   ....   creating Shader Module
-2023-04-29 13:35:45 { [0] } creating Frame Buffers
-2023-04-29 13:35:45   ....   creating framebuffer 0 of 3
-2023-04-29 13:35:45   ....   creating framebuffer 1 of 3
-2023-04-29 13:35:45   ....   creating framebuffer 2 of 3
-2023-04-29 13:35:45 { cmd } creating Command Pool
-2023-04-29 13:35:45   ....   finding Queue Families
-2023-04-29 13:35:45   ....   creating Shader Storage Buffers
-2023-04-29 13:35:45   ....   creating Uniform Buffers
-2023-04-29 13:35:45   ....   creating 2 Descriptor Pools
-2023-04-29 13:35:45   ....   creating Compute Descriptor Sets
-2023-04-29 13:35:45   ....   creating Command Buffers
-2023-04-29 13:35:45   ....   creating Compute Command Buffers
-2023-04-29 13:35:45 { || } creating Sync Objects
-2023-04-29 13:35:45 { main } running ...
-2023-04-29 13:35:45 { in } Mouse Click at 0.561979 : 0.77037
-2023-04-29 13:35:45 { in } Mouse Click at 0.654167 : 0.743519
-2023-04-29 13:35:46 { in } Mouse Click at 0.654167 : 0.743519
-2023-04-29 13:35:46 { in } Mouse Click at 0.6625 : 0.72037
-2023-04-29 13:35:46 { in } Mouse Click at 0.684375 : 0.667593
-2023-04-29 13:35:46 { in } Mouse Click at 0.785417 : 0.414815
-2023-04-29 13:35:47 { main } terminated
-2023-04-29 13:35:47 
-                    [ Terminating CAPITAL engine ]
-
-2023-04-29 13:35:47 { 0 } destructing Memory Management
-2023-04-29 13:35:47 { P } destructing Pipelines
-2023-04-29 13:35:47 { < } constructing Render Configuration
-2023-04-29 13:35:47 { # } destructing Vulkan Mechanics
-2023-04-29 13:35:47 { [X] } destructing Window
-2023-04-29 13:35:47 { = } destructing Validation Layers
-2023-04-29 13:35:47 { . } destructing Logging
+2023-04-30 01:15:05 { ** } initializing Capital Engine
+2023-04-30 01:15:05 { vk } creating Vulkan Instance
+2023-04-30 01:15:05 { [] } creating Surface
+2023-04-30 01:15:05 { ## } picking Physical Device
+2023-04-30 01:15:05   ....   checking if Physical Device is suitable
+2023-04-30 01:15:05   ....   finding Queue Families

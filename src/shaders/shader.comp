@@ -2,19 +2,19 @@
 
 struct Particle {
 	vec2 position;
-	vec2 velocity;
     vec4 color;
+    vec4 color2;
 };
 
 layout (binding = 0) uniform ParameterUBO {
     float deltaTime;
 } ubo;
 
-layout(std140, binding = 1) readonly buffer ParticleSSBOIn {
+layout(std430 , binding = 1) readonly buffer ParticleSSBOIn {
    Particle particlesIn[ ];
 };
 
-layout(std140, binding = 2) buffer ParticleSSBOOut {
+layout(std430 , binding = 2) buffer ParticleSSBOOut {
    Particle particlesOut[ ];
 };
 
@@ -26,15 +26,25 @@ void main()
 
     Particle particleIn = particlesIn[index];
 
-    particlesOut[index].position = particleIn.position + particleIn.velocity.xy * ubo.deltaTime;
-    particlesOut[index].velocity = particleIn.velocity;
+    particlesOut[index].position = vec2(particleIn.position.xy);
+    particlesOut[index].color = vec4(0.0, 1.0, 0.0, 1.0);
+    particlesOut[index].color2 = particleIn.color2; //vec4(1.0, 0.0, 0.0, 1.0);
+    
+
+
+
+    //particlesOut[index].color = vec4(1.0, 1.0, 1.0, ubo.deltaTime);
+
+
+    // particlesOut[index].position = particleIn.position + particleIn.velocity.xy * ubo.deltaTime;
+    // particlesOut[index].velocity = particleIn.velocity;
 
     // Flip movement at window border
-    if ((particlesOut[index].position.x <= -1.0) || (particlesOut[index].position.x >= 1.0)) {
-        particlesOut[index].velocity.x = -particlesOut[index].velocity.x;
-    }
-    if ((particlesOut[index].position.y <= -1.0) || (particlesOut[index].position.y >= 1.0)) {
-        particlesOut[index].velocity.y = -particlesOut[index].velocity.y;
-    }
+    // if ((particlesOut[index].position.x <= -1.0) || (particlesOut[index].position.x >= 1.0)) {
+    //     particlesOut[index].velocity.x = -particlesOut[index].velocity.x;
+    // }
+    // if ((particlesOut[index].position.y <= -1.0) || (particlesOut[index].position.y >= 1.0)) {
+    //     particlesOut[index].velocity.y = -particlesOut[index].velocity.y;
+    // }
 
 }

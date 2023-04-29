@@ -1,7 +1,5 @@
 #pragma once
 
-constexpr int MAX_FRAMES_IN_FLIGHT = 2;
-
 class Pipelines {
  public:
   Pipelines();
@@ -19,15 +17,8 @@ class Pipelines {
 
   VkRenderPass renderPass;
 
-  struct Descriptor {
-    VkDescriptorPool pool;
-    std::vector<VkDescriptorSet> sets;
-    VkDescriptorSetLayout setLayout;
-  } descriptor;
-
  public:
   void createRenderPass();
-  void createComputeDescriptorSetLayout();
 
   void createGraphicsPipeline();
   void createComputePipeline();
@@ -66,7 +57,39 @@ class MemoryCommands {
     std::vector<VkDeviceMemory> buffersMemory;
   } shaderStorage;
 
+  struct Descriptor {
+    VkDescriptorPool pool;
+    std::vector<VkDescriptorSet> sets;
+    VkDescriptorSetLayout setLayout;
+  } descriptor;
+
  public:
   void createFramebuffers();
+
   void createCommandPool();
+  void createCommandBuffers();
+
+  void createShaderStorageBuffers();
+
+  void createUniformBuffers();
+  void updateUniformBuffer(uint32_t currentImage);
+
+  void createComputeDescriptorSetLayout();
+  void createDescriptorPool();
+
+  void createComputeDescriptorSets();
+  void createComputeCommandBuffers();
+
+  void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);
+  void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+ private:
+  void createBuffer(VkDeviceSize size,
+                    VkBufferUsageFlags usage,
+                    VkMemoryPropertyFlags properties,
+                    VkBuffer& buffer,
+                    VkDeviceMemory& bufferMemory);
+  uint32_t findMemoryType(uint32_t typeFilter,
+                          VkMemoryPropertyFlags properties);
+  void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 };

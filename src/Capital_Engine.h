@@ -1,4 +1,5 @@
 #pragma once
+#include "Control.h"
 #include "Debug.h"
 #include "Mechanics.h"
 #include "Pipelines.h"
@@ -35,6 +36,7 @@ class Global {
     VulkanMechanics vulkanMechanics;
     Pipelines pipelines;
     MemoryCommands memoryCommands;
+    Control control;
     World world;
   };
   inline static Objects obj;
@@ -44,6 +46,7 @@ constexpr auto& _log = Global::obj.logging;
 constexpr auto& _validationLayers = Global::obj.validationLayers;
 constexpr auto& _window = Global::obj.mainWindow;
 constexpr auto& _mechanics = Global::obj.vulkanMechanics;
-constexpr auto& _memCommands = Global::obj.memoryCommands;
 constexpr auto& _pipelines = Global::obj.pipelines;
+constexpr auto& _memCommands = Global::obj.memoryCommands;
+constexpr auto& _control = Global::obj.control;
 constexpr auto& _world = Global::obj.world;
