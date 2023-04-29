@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Capital_Engine.cpp" />
+    <ClCompile Include="Control.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Pipelines.cpp" />
@@ -164,11 +165,12 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ALL_CLASSES.h" />
+    <ClInclude Include="Control.h" />
     <ClInclude Include="Debug.h" />
-    <ClInclude Include="Capital_Engine.h" />
+    <ClInclude Include="CAPITAL_Engine.h" />
     <ClInclude Include="Pipelines.h" />
-    <ClInclude Include="Settings.h" />
-    <ClInclude Include="Vulkan_Mechanics.h" />
+    <ClInclude Include="Mechanics.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

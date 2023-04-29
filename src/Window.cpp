@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "Capital_Engine.h"
-#include "Settings.h"
+#include "CAPITAL_Engine.h"
+#include "Control.h"
 #include "Window.h"
 
 Window::Window() : window{nullptr}, framebufferResized{false} {

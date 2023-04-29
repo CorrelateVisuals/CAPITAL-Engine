@@ -3,9 +3,9 @@
 #include <array>
 #include <random>
 
-#include "Capital_Engine.h"
+#include "CAPITAL_Engine.h"
+#include "Mechanics.h"
 #include "Pipelines.h"
-#include "Vulkan_Mechanics.h"
 #include "World.h"
 
 Pipelines::Pipelines() : graphics{}, compute{} {
@@ -366,7 +366,7 @@ void MemoryCommands::createShaderStorageBuffers() {
     cell.position = glm::vec2(x, y);
     cell.velocity = glm::normalize(glm::vec2(x, y)) * 0.00025f;
     cell.color = glm::vec4(rndDist(rndEngine), rndDist(rndEngine),
-                               rndDist(rndEngine), 1.0f);
+                           rndDist(rndEngine), 1.0f);
   }
 
   VkDeviceSize bufferSize = sizeof(World::Cell) * CELL_COUNT;

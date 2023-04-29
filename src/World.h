@@ -5,7 +5,7 @@
 #include <array>
 #include <vector>
 
-#include "Settings.h"
+#include "Control.h"
 
 constexpr int CELL_COUNT = 4;
 

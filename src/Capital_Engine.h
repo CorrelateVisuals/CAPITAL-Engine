@@ -1,7 +1,7 @@
 #pragma once
 #include "Debug.h"
+#include "Mechanics.h"
 #include "Pipelines.h"
-#include "Vulkan_Mechanics.h"
 #include "Window.h"
 #include "World.h"
 

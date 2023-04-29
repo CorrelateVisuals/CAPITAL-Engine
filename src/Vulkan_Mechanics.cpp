@@ -6,10 +6,10 @@
 #include <set>
 #include <stdexcept>
 
-#include "Capital_Engine.h"
+#include "CAPITAL_Engine.h"
+#include "Control.h"
+#include "Mechanics.h"
 #include "Pipelines.h"
-#include "Settings.h"
-#include "Vulkan_Mechanics.h"
 #include "Window.h"
 #include "World.h"
 

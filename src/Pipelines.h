@@ -22,6 +22,41 @@ class Pipelines {
  private:
   std::vector<char> readShaderFiles(const std::string& filename);
   VkShaderModule createShaderModule(const std::vector<char>& code);
+
+ public:
+  VkImage depthImage;
+  VkDeviceMemory depthImageMemory;
+  VkImageView depthImageView;
+  VkFormat depthFormat;
+
+  VkRenderPass renderPass;
+
+  void createImageViews();
+  void createRenderPass();
+
+  void createDepthResources();
+  void createFrameBuffers();
+
+ private:
+  VkFormat findDepthFormat();
+  VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
+                               VkImageTiling tiling,
+                               VkFormatFeatureFlags features);
+  bool hasStencilComponent(VkFormat format);
+  void createImage(uint32_t width,
+                   uint32_t height,
+                   VkFormat format,
+                   VkImageTiling tiling,
+                   VkImageUsageFlags usage,
+                   VkMemoryPropertyFlags properties,
+                   VkImage& image,
+                   VkDeviceMemory& imageMemory);
+
+  VkImageView createImageView(VkImage image,
+                              VkFormat format,
+                              VkImageAspectFlags aspectFlags);
+  uint32_t findMemoryType(uint32_t typeFilter,
+                          VkMemoryPropertyFlags properties);
 };
 
 class MemoryCommands {

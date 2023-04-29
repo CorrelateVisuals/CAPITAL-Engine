@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include "Capital_Engine.h"
+#include "CAPITAL_Engine.h"
 #include "Debug.h"
+#include "Mechanics.h"
 #include "Pipelines.h"
-#include "Vulkan_Mechanics.h"
 #include "Window.h"
 
 CapitalEngine::CapitalEngine() {

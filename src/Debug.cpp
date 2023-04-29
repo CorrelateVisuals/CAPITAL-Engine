@@ -4,7 +4,7 @@
 #include <set>
 #include <string>
 
-#include "Capital_Engine.h"
+#include "CAPITAL_Engine.h"
 
 Logging::Logging()
     : logFile("log.txt", std::ofstream::out | std::ofstream::trunc) {
