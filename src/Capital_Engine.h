@@ -17,10 +17,10 @@ class CapitalEngine {
   void drawFrame();
 };
 
-class Globals {
+class Global {
  public:
-  Globals() = default;
-  ~Globals();
+  Global() = default;
+  ~Global();
 
   void cleanup();
 
@@ -33,7 +33,6 @@ class Globals {
     ValidationLayers validationLayers;
     Window mainWindow;
     VulkanMechanics vulkanMechanics;
-    RenderConfiguration renderConfig;
     Pipelines pipelines;
     MemoryCommands memoryCommands;
     World world;
@@ -41,11 +40,10 @@ class Globals {
   inline static Objects obj;
 };
 
-constexpr auto& _log = Globals::obj.logging;
-constexpr auto& _validationLayers = Globals::obj.validationLayers;
-constexpr auto& _window = Globals::obj.mainWindow;
-constexpr auto& _mechanics = Globals::obj.vulkanMechanics;
-constexpr auto& _renderConfig = Globals::obj.renderConfig;
-constexpr auto& _memCommands = Globals::obj.memoryCommands;
-constexpr auto& _pipelines = Globals::obj.pipelines;
-constexpr auto& _world = Globals::obj.world;
+constexpr auto& _log = Global::obj.logging;
+constexpr auto& _validationLayers = Global::obj.validationLayers;
+constexpr auto& _window = Global::obj.mainWindow;
+constexpr auto& _mechanics = Global::obj.vulkanMechanics;
+constexpr auto& _memCommands = Global::obj.memoryCommands;
+constexpr auto& _pipelines = Global::obj.pipelines;
+constexpr auto& _world = Global::obj.world;

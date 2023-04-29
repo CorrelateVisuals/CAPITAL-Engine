@@ -16,7 +16,7 @@ CapitalEngine::~CapitalEngine() {
   _log.console("\n                    [", "Terminating CAPITAL engine", "]\n");
 }
 
-Globals::~Globals() {
+Global::~Global() {
   cleanup();
 }
 
@@ -38,42 +38,29 @@ void CapitalEngine::mainLoop() {
 
 void CapitalEngine::initVulkan() {
   _log.console("{ ** }", "initializing Capital Engine");
-
-  // Init Vulkan
   _mechanics.createInstance();
   _validationLayers.setupDebugMessenger(_mechanics.instance);
   _mechanics.createSurface();
-
-  // GPU handling
   _mechanics.pickPhysicalDevice();
   _mechanics.createLogicalDevice();
 
-  // Engine mechanics
   _mechanics.createSwapChain();
+  _mechanics.createImageViews();
 
-  // Renderer Config
-  _renderConfig.createDepthResources();
-  _renderConfig.createImageViews();
-  _renderConfig.createRenderPass();
-
-  // Pipelines
-  _pipelines.createDescriptorSetLayout();
-  _pipelines.createGraphicsPipeline();
-  _pipelines.createComputePipeline();
-
-  _renderConfig.createFrameBuffers();
-
-  _memCommands.createCommandPool();
-  _memCommands.createShaderStorageBuffers();
-  _memCommands.createUniformBuffers();
-
-  _memCommands.createDescriptorPool();
-  _memCommands.createComputeDescriptorSets();
-
-  _memCommands.createCommandBuffers();
-  _memCommands.createComputeCommandBuffers();
-
-  _mechanics.createSyncObjects();
+  // createImageViews();
+  // createRenderPass();
+  // createComputeDescriptorSetLayout();
+  // createGraphicsPipeline();
+  // createComputePipeline();
+  // createFramebuffers();
+  // createCommandPool();
+  // createShaderStorageBuffers();
+  // createUniformBuffers();
+  // createDescriptorPool();
+  // createComputeDescriptorSets();
+  // createCommandBuffers();
+  // createComputeCommandBuffers();
+  // createSyncObjects();
 }
 
 void CapitalEngine::drawFrame() {
@@ -188,7 +175,7 @@ void CapitalEngine::drawFrame() {
       (_mechanics.currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
-void Globals::cleanup() {
+void Global::cleanup() {
   _log.console("{ cleanup }");
 
   _mechanics.cleanupSwapChain();

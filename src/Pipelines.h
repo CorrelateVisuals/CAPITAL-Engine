@@ -1,5 +1,7 @@
 #pragma once
 
+constexpr int MAX_FRAMES_IN_FLIGHT = 2;
+
 class Pipelines {
  public:
   Pipelines();
@@ -15,48 +17,24 @@ class Pipelines {
     VkPipeline pipeline;
   } compute;
 
-  void createDescriptorSetLayout();
+  VkRenderPass renderPass;
+
+  struct Descriptor {
+    VkDescriptorPool pool;
+    std::vector<VkDescriptorSet> sets;
+    VkDescriptorSetLayout setLayout;
+  } descriptor;
+
+ public:
+  void createRenderPass();
+  void createComputeDescriptorSetLayout();
+
   void createGraphicsPipeline();
   void createComputePipeline();
 
  private:
-  std::vector<char> readShaderFiles(const std::string& filename);
+  static std::vector<char> readShaderFile(const std::string& filename);
   VkShaderModule createShaderModule(const std::vector<char>& code);
-
- public:
-  VkImage depthImage;
-  VkDeviceMemory depthImageMemory;
-  VkImageView depthImageView;
-  VkFormat depthFormat;
-
-  VkRenderPass renderPass;
-
-  void createImageViews();
-  void createRenderPass();
-
-  void createDepthResources();
-  void createFrameBuffers();
-
- private:
-  VkFormat findDepthFormat();
-  VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
-                               VkImageTiling tiling,
-                               VkFormatFeatureFlags features);
-  bool hasStencilComponent(VkFormat format);
-  void createImage(uint32_t width,
-                   uint32_t height,
-                   VkFormat format,
-                   VkImageTiling tiling,
-                   VkImageUsageFlags usage,
-                   VkMemoryPropertyFlags properties,
-                   VkImage& image,
-                   VkDeviceMemory& imageMemory);
-
-  VkImageView createImageView(VkImage image,
-                              VkFormat format,
-                              VkImageAspectFlags aspectFlags);
-  uint32_t findMemoryType(uint32_t typeFilter,
-                          VkMemoryPropertyFlags properties);
 };
 
 class MemoryCommands {
@@ -71,43 +49,24 @@ class MemoryCommands {
   float lastFrameTime = 0.0f;
   double lastTime = 0.0f;
 
-  VkCommandPool commandPool;
-  std::vector<VkCommandBuffer> commandBuffers;
-  std::vector<VkCommandBuffer> computeCommandBuffers;
+  struct Command {
+    VkCommandPool pool;
+    std::vector<VkCommandBuffer> graphicBuffers;
+    std::vector<VkCommandBuffer> computeBuffers;
+  } command;
 
-  VkDescriptorSetLayout descriptorSetLayout;
-  VkDescriptorPool descriptorPool;
-  std::vector<VkDescriptorSet> computeDescriptorSets;
+  struct UniformBuffers {
+    std::vector<VkBuffer> buffers;
+    std::vector<VkDeviceMemory> buffersMemory;
+    std::vector<void*> buffersMapped;
+  } uniform;
 
-  std::vector<VkBuffer> uniformBuffers;
-  std::vector<VkDeviceMemory> uniformBuffersMemory;
-  std::vector<void*> uniformBuffersMapped;
+  struct ShaderStorageBuffers {
+    std::vector<VkBuffer> buffers;
+    std::vector<VkDeviceMemory> buffersMemory;
+  } shaderStorage;
 
-  std::vector<VkBuffer> shaderStorageBuffers;
-  std::vector<VkDeviceMemory> shaderStorageBuffersMemory;
-
+ public:
+  void createFramebuffers();
   void createCommandPool();
-  void createCommandBuffers();
-  void createComputeCommandBuffers();
-
-  void createShaderStorageBuffers();
-  void createUniformBuffers();
-
-  void createDescriptorPool();
-  void createComputeDescriptorSets();
-
-  void updateUniformBuffer(uint32_t currentImage);
-
-  void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);
-  void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
-
- private:
-  void createBuffer(VkDeviceSize size,
-                    VkBufferUsageFlags usage,
-                    VkMemoryPropertyFlags properties,
-                    VkBuffer& buffer,
-                    VkDeviceMemory& bufferMemory);
-  void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-  uint32_t findMemoryType(uint32_t typeFilter,
-                          VkMemoryPropertyFlags properties);
 };

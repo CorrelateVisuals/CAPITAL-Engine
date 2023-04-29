@@ -20,36 +20,49 @@ class VulkanMechanics {
   struct Device {
     VkPhysicalDevice physical;
     VkDevice logical;
+    const std::vector<const char*> deviceExtensions;
   } mainDevice;
 
   struct Queues {
     VkQueue graphics;
     VkQueue compute;
     VkQueue present;
+
+    struct FamilyIndices {
+      std::optional<uint32_t> graphicsAndComputeFamily;
+      std::optional<uint32_t> presentFamily;
+      bool isComplete() const {
+        return graphicsAndComputeFamily.has_value() &&
+               presentFamily.has_value();
+      }
+    } familyIndices;
   } queues;
 
-  struct QueueFamilyIndices {
-    std::optional<uint32_t> graphicsFamily;
-    std::optional<uint32_t> presentFamily;
-    bool isComplete() const {
-      return graphicsFamily.has_value() && presentFamily.has_value();
-    }
-  } queueFamilyIndices;
+  struct SwapChain {
+    VkSwapchainKHR swapChain;
+    std::vector<VkImage> images;
+    VkFormat imageFormat;
+    std::vector<VkImageView> imageViews;
+    VkExtent2D extent;
+    std::vector<VkFramebuffer> framebuffers;
 
-  VkSwapchainKHR swapChain;
-  std::vector<VkImage> swapChainImages;
-  VkFormat swapChainImageFormat;
-  std::vector<VkImageView> swapChainImageViews;
-  VkExtent2D swapChainExtent;
-  std::vector<VkFramebuffer> swapChainFramebuffers;
+    struct SupportDetails {
+      VkSurfaceCapabilitiesKHR capabilities;
+      std::vector<VkSurfaceFormatKHR> formats;
+      std::vector<VkPresentModeKHR> presentModes;
+    } supportDetails;
+  } swapChain;
 
-  std::vector<VkSemaphore> imageAvailableSemaphores;
-  std::vector<VkSemaphore> renderFinishedSemaphores;
-  std::vector<VkSemaphore> computeFinishedSemaphores;
-  std::vector<VkFence> inFlightFences;
-  std::vector<VkFence> computeInFlightFences;
-  uint32_t currentFrame = 0;
+  struct SynchronizationObjects {
+    std::vector<VkSemaphore> imageAvailableSemaphores;
+    std::vector<VkSemaphore> renderFinishedSemaphores;
+    std::vector<VkSemaphore> computeFinishedSemaphores;
+    std::vector<VkFence> inFlightFences;
+    std::vector<VkFence> computeInFlightFences;
+    uint32_t currentFrame = 0;
+  } syncObjects;
 
+ public:
   void createInstance();
   void createSurface();
 
@@ -57,70 +70,22 @@ class VulkanMechanics {
   void createLogicalDevice();
 
   void createSwapChain();
-  void recreateSwapChain();
+  void createImageViews();
 
-  void createSyncObjects();
-
-  void cleanupSwapChain();
-
-  QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physical);
+  Queues::FamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice);
 
  private:
-  const std::vector<const char*> deviceExtensions;
-
-  struct SwapChainSupportDetails {
-    VkSurfaceCapabilitiesKHR capabilities;
-    std::vector<VkSurfaceFormatKHR> formats;
-    std::vector<VkPresentModeKHR> presentModes;
-  } swapChainSupport;
-
+  void createSurface();
   std::vector<const char*> getRequiredExtensions();
-  bool isDeviceSuitable(VkPhysicalDevice physical);
-  bool checkDeviceExtensionSupport(VkPhysicalDevice physical);
-  SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physical);
+
+  bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
+  bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
+
+  SwapChain::SupportDetails querySwapChainSupport(
+      VkPhysicalDevice physicalDevice);
   VkSurfaceFormatKHR chooseSwapSurfaceFormat(
       const std::vector<VkSurfaceFormatKHR>& availableFormats);
   VkPresentModeKHR chooseSwapPresentMode(
       const std::vector<VkPresentModeKHR>& availablePresentModes);
   VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
-};
-
-class RenderConfiguration {
- public:
-  RenderConfiguration();
-  ~RenderConfiguration();
-
-  VkImage depthImage;
-  VkDeviceMemory depthImageMemory;
-  VkImageView depthImageView;
-  VkFormat depthFormat;
-
-  VkRenderPass renderPass;
-
-  void createImageViews();
-  void createRenderPass();
-
-  void createDepthResources();
-  void createFrameBuffers();
-
- private:
-  VkFormat findDepthFormat();
-  VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
-                               VkImageTiling tiling,
-                               VkFormatFeatureFlags features);
-  bool hasStencilComponent(VkFormat format);
-  void createImage(uint32_t width,
-                   uint32_t height,
-                   VkFormat format,
-                   VkImageTiling tiling,
-                   VkImageUsageFlags usage,
-                   VkMemoryPropertyFlags properties,
-                   VkImage& image,
-                   VkDeviceMemory& imageMemory);
-
-  VkImageView createImageView(VkImage image,
-                              VkFormat format,
-                              VkImageAspectFlags aspectFlags);
-  uint32_t findMemoryType(uint32_t typeFilter,
-                          VkMemoryPropertyFlags properties);
 };

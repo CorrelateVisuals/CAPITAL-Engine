@@ -18,7 +18,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Capital_Engine.cpp">
+    <ClCompile Include="CAPITAL_Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp">
@@ -27,7 +27,7 @@
     <ClCompile Include="Debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Vulkan_Mechanics.cpp">
+    <ClCompile Include="Mechanics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="World.cpp">

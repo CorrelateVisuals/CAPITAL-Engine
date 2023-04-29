@@ -16,12 +16,51 @@ Pipelines::~Pipelines() {
   _log.console("{ P }", "destructing Pipelines");
 }
 
-void Pipelines::createDescriptorSetLayout() {
-  _log.console("  ....  ", "creating Descriptor Set Layout");
-  constexpr int numBindings = 3;
-  std::array<VkDescriptorSetLayoutBinding, numBindings> layoutBindings{};
+void Pipelines::createRenderPass() {
+  VkAttachmentDescription colorAttachment{};
+  colorAttachment.format = _mechanics.swapChain.imageFormat;
+  colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+  colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+  colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+  colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-  // Compute Shader input
+  VkAttachmentReference colorAttachmentRef{};
+  colorAttachmentRef.attachment = 0;
+  colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+  VkSubpassDescription subpass{};
+  subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+  subpass.colorAttachmentCount = 1;
+  subpass.pColorAttachments = &colorAttachmentRef;
+
+  VkSubpassDependency dependency{};
+  dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+  dependency.dstSubpass = 0;
+  dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+  dependency.srcAccessMask = 0;
+  dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+  dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+  VkRenderPassCreateInfo renderPassInfo{};
+  renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+  renderPassInfo.attachmentCount = 1;
+  renderPassInfo.pAttachments = &colorAttachment;
+  renderPassInfo.subpassCount = 1;
+  renderPassInfo.pSubpasses = &subpass;
+  renderPassInfo.dependencyCount = 1;
+  renderPassInfo.pDependencies = &dependency;
+
+  if (vkCreateRenderPass(_mechanics.mainDevice.logical, &renderPassInfo,
+                         nullptr, &renderPass) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create render pass!");
+  }
+}
+
+void Pipelines::createComputeDescriptorSetLayout() {
+  std::array<VkDescriptorSetLayoutBinding, 3> layoutBindings{};
   layoutBindings[0].binding = 0;
   layoutBindings[0].descriptorCount = 1;
   layoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -40,30 +79,21 @@ void Pipelines::createDescriptorSetLayout() {
   layoutBindings[2].pImmutableSamplers = nullptr;
   layoutBindings[2].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 
-  // Vertex Shader input
-  /* layoutBindings[3].binding = 3;
-   layoutBindings[3].descriptorCount = 1;
-   layoutBindings[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-   layoutBindings[3].pImmutableSamplers = nullptr;
-   layoutBindings[3].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;*/
-
   VkDescriptorSetLayoutCreateInfo layoutInfo{};
   layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-  layoutInfo.bindingCount = numBindings;
+  layoutInfo.bindingCount = 3;
   layoutInfo.pBindings = layoutBindings.data();
 
   if (vkCreateDescriptorSetLayout(_mechanics.mainDevice.logical, &layoutInfo,
-                                  nullptr, &_memCommands.descriptorSetLayout) !=
-      VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to create compute descriptor set layout!");
+                                  nullptr,
+                                  &descriptor.setLayout) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create compute descriptor set layout!");
   }
 }
 
 void Pipelines::createGraphicsPipeline() {
-  _log.console("{ P }", "creating Graphics Pipeline");
-  auto vertShaderCode = readShaderFiles("shaders/vert.spv");
-  auto fragShaderCode = readShaderFiles("shaders/frag.spv");
+  auto vertShaderCode = readShaderFile("shaders/vert.spv");
+  auto fragShaderCode = readShaderFile("shaders/frag.spv");
 
   VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
   VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -115,8 +145,8 @@ void Pipelines::createGraphicsPipeline() {
   rasterizer.rasterizerDiscardEnable = VK_FALSE;
   rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
   rasterizer.lineWidth = 1.0f;
-  rasterizer.cullMode = VK_CULL_MODE_NONE;
-  rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+  rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+  rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
   rasterizer.depthBiasEnable = VK_FALSE;
 
   VkPipelineMultisampleStateCreateInfo multisampling{};
@@ -124,15 +154,6 @@ void Pipelines::createGraphicsPipeline() {
       VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
   multisampling.sampleShadingEnable = VK_FALSE;
   multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-
-  VkPipelineDepthStencilStateCreateInfo depthStencil{};
-  depthStencil.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-  depthStencil.depthTestEnable = VK_TRUE;
-  depthStencil.depthWriteEnable = VK_TRUE;
-  depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
-  depthStencil.depthBoundsTestEnable = VK_FALSE;
-  depthStencil.stencilTestEnable = VK_FALSE;
 
   VkPipelineColorBlendAttachmentState colorBlendAttachment{};
   colorBlendAttachment.colorWriteMask =
@@ -170,11 +191,11 @@ void Pipelines::createGraphicsPipeline() {
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
   pipelineLayoutInfo.setLayoutCount = 0;
-  pipelineLayoutInfo.pSetLayouts = &_memCommands.descriptorSetLayout;
+  pipelineLayoutInfo.pSetLayouts = nullptr;
 
   if (vkCreatePipelineLayout(_mechanics.mainDevice.logical, &pipelineLayoutInfo,
                              nullptr, &graphics.pipelineLayout) != VK_SUCCESS) {
-    throw std::runtime_error("! ! ! ! ! ! ! failed to create pipeline layout!");
+    throw std::runtime_error("failed to create pipeline layout!");
   }
 
   VkGraphicsPipelineCreateInfo pipelineInfo{};
@@ -186,19 +207,17 @@ void Pipelines::createGraphicsPipeline() {
   pipelineInfo.pViewportState = &viewportState;
   pipelineInfo.pRasterizationState = &rasterizer;
   pipelineInfo.pMultisampleState = &multisampling;
-  pipelineInfo.pDepthStencilState = &depthStencil;
   pipelineInfo.pColorBlendState = &colorBlending;
   pipelineInfo.pDynamicState = &dynamicState;
   pipelineInfo.layout = graphics.pipelineLayout;
-  pipelineInfo.renderPass = _renderConfig.renderPass;
+  pipelineInfo.renderPass = renderPass;
   pipelineInfo.subpass = 0;
   pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
   if (vkCreateGraphicsPipelines(_mechanics.mainDevice.logical, VK_NULL_HANDLE,
                                 1, &pipelineInfo, nullptr,
                                 &graphics.pipeline) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to create graphics pipeline!");
+    throw std::runtime_error("failed to create graphics pipeline!");
   }
 
   vkDestroyShaderModule(_mechanics.mainDevice.logical, fragShaderModule,
@@ -207,54 +226,11 @@ void Pipelines::createGraphicsPipeline() {
                         nullptr);
 }
 
-void Pipelines::createComputePipeline() {
-  _log.console("{ P }", "creating Compute Pipleline");
-  auto computeShaderCode = readShaderFiles("shaders/comp.spv");
-
-  VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
-
-  VkPipelineShaderStageCreateInfo computeShaderStageInfo{};
-  computeShaderStageInfo.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-  computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-  computeShaderStageInfo.module = computeShaderModule;
-  computeShaderStageInfo.pName = "main";
-
-  VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
-  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-  pipelineLayoutInfo.setLayoutCount = 1;
-  pipelineLayoutInfo.pSetLayouts = &_memCommands.descriptorSetLayout;
-
-  if (vkCreatePipelineLayout(_mechanics.mainDevice.logical, &pipelineLayoutInfo,
-                             nullptr, &compute.pipelineLayout) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to create compute pipeline layout!");
-  }
-
-  VkComputePipelineCreateInfo pipelineInfo{};
-  pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-  pipelineInfo.layout = compute.pipelineLayout;
-  pipelineInfo.stage = computeShaderStageInfo;
-
-  if (vkCreateComputePipelines(_mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
-                               &pipelineInfo, nullptr,
-                               &compute.pipeline) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to create compute pipeline!");
-  }
-
-  vkDestroyShaderModule(_mechanics.mainDevice.logical, computeShaderModule,
-                        nullptr);
-}
-
-std::vector<char> Pipelines::readShaderFiles(const std::string& filename) {
-  _log.console("  ....  ", "reading Shader Files");
-
+std::vector<char> Pipelines::readShaderFile(const std::string& filename) {
   std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
   if (!file.is_open()) {
-    throw std::runtime_error("! ! ! ! ! ! ! failed to open shader file :" +
-                             filename);
+    throw std::runtime_error("failed to open file!");
   }
 
   size_t fileSize = (size_t)file.tellg();
@@ -268,9 +244,45 @@ std::vector<char> Pipelines::readShaderFiles(const std::string& filename) {
   return buffer;
 }
 
+void Pipelines::createComputePipeline() {
+  auto computeShaderCode = readShaderFile("shaders/comp.spv");
+
+  VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
+
+  VkPipelineShaderStageCreateInfo computeShaderStageInfo{};
+  computeShaderStageInfo.sType =
+      VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+  computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+  computeShaderStageInfo.module = computeShaderModule;
+  computeShaderStageInfo.pName = "main";
+
+  VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+  pipelineLayoutInfo.setLayoutCount = 1;
+  pipelineLayoutInfo.pSetLayouts = &descriptor.setLayout;
+
+  if (vkCreatePipelineLayout(_mechanics.mainDevice.logical, &pipelineLayoutInfo,
+                             nullptr, &compute.pipelineLayout) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create compute pipeline layout!");
+  }
+
+  VkComputePipelineCreateInfo pipelineInfo{};
+  pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+  pipelineInfo.layout = compute.pipelineLayout;
+  pipelineInfo.stage = computeShaderStageInfo;
+
+  if (vkCreateComputePipelines(_mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
+                               &pipelineInfo, nullptr,
+                               &compute.pipeline) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create compute pipeline!");
+  }
+
+  vkDestroyShaderModule(_mechanics.mainDevice.logical, computeShaderModule,
+                        nullptr);
+}
+
 VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
   _log.console("  ....  ", "creating Shader Module");
-
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   createInfo.codeSize = code.size();
@@ -279,19 +291,13 @@ VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
   VkShaderModule shaderModule;
   if (vkCreateShaderModule(_mechanics.mainDevice.logical, &createInfo, nullptr,
                            &shaderModule) != VK_SUCCESS) {
-    throw std::runtime_error("! ! ! ! ! ! ! failed to create shader module!");
+    throw std::runtime_error("failed to create shader module!");
   }
 
   return shaderModule;
 }
 
-MemoryCommands::MemoryCommands()
-    : commandPool{},
-      commandBuffers{},
-      computeCommandBuffers{},
-      descriptorSetLayout{},
-      descriptorPool{},
-      computeDescriptorSets{} {
+MemoryCommands::MemoryCommands() {
   _log.console("{ 0 }", "constructing Memory Management");
 }
 
@@ -299,19 +305,45 @@ MemoryCommands::~MemoryCommands() {
   _log.console("{ 0 }", "destructing Memory Management");
 }
 
+void MemoryCommands::createFramebuffers() {
+  _mechanics.swapChain.framebuffers.resize(
+      _mechanics.swapChain.imageViews.size());
+
+  for (size_t i = 0; i < _mechanics.swapChain.imageViews.size(); i++) {
+    VkImageView attachments[] = {_mechanics.swapChain.imageViews[i]};
+
+    VkFramebufferCreateInfo framebufferInfo{};
+    framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+    framebufferInfo.renderPass = _pipelines.renderPass;
+    framebufferInfo.attachmentCount = 1;
+    framebufferInfo.pAttachments = attachments;
+    framebufferInfo.width = _mechanics.swapChain.extent.width;
+    framebufferInfo.height = _mechanics.swapChain.extent.height;
+    framebufferInfo.layers = 1;
+
+    if (vkCreateFramebuffer(_mechanics.mainDevice.logical, &framebufferInfo,
+                            nullptr, &_mechanics.swapChain.framebuffers[i]) !=
+        VK_SUCCESS) {
+      throw std::runtime_error("failed to create framebuffer!");
+    }
+  }
+}
+
 void MemoryCommands::createCommandPool() {
   _log.console("{ cmd }", "creating Command Pool");
-  VulkanMechanics::QueueFamilyIndices queueFamilyIndices =
+
+  VulkanMechanics::Queues::FamilyIndices queueFamilyIndices =
       _mechanics.findQueueFamilies(_mechanics.mainDevice.physical);
 
   VkCommandPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
   poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-  poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+  poolInfo.queueFamilyIndex =
+      queueFamilyIndices.graphicsAndComputeFamily.value();
 
   if (vkCreateCommandPool(_mechanics.mainDevice.logical, &poolInfo, nullptr,
-                          &commandPool) != VK_SUCCESS) {
-    throw std::runtime_error("! ! ! ! ! ! ! failed to create command pool!");
+                          &command.pool) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create graphics command pool!");
   }
 }
 
