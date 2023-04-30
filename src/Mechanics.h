@@ -20,8 +20,10 @@ class VulkanMechanics {
   struct Device {
     VkPhysicalDevice physical;
     VkDevice logical;
-    const std::vector<const char*> deviceExtensions;
   } mainDevice;
+
+  const std::vector<const char*> deviceExtensions = {
+      VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
   struct Queues {
     VkQueue graphics;

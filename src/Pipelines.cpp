@@ -386,8 +386,8 @@ void MemoryCommands::createShaderStorageBuffers() {
   std::vector<World::Cell> particles(CELL_COUNT);
 
   // Grid size
-  const int gridWidth = 32;
-  const int gridHeight = 32;
+  const int gridWidth = 2;
+  const int gridHeight = 2;
 
   const float cellSize = 1.0f;
 

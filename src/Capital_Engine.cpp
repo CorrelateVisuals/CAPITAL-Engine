@@ -59,21 +59,6 @@ void CapitalEngine::initVulkan() {
   _memCommands.createComputeCommandBuffers();
 
   _mechanics.createSyncObjects();
-
-  // createImageViews();
-  // createRenderPass();
-  // createComputeDescriptorSetLayout();
-  // createGraphicsPipeline();
-  // createComputePipeline();
-  // createFramebuffers();
-  // createCommandPool();
-  // createShaderStorageBuffers();
-  // createUniformBuffers();
-  // createDescriptorPool();
-  // createComputeDescriptorSets();
-  // createCommandBuffers();
-  // createComputeCommandBuffers();
-  // createSyncObjects();
 }
 
 void CapitalEngine::drawFrame() {

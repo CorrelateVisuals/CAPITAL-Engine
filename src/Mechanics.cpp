@@ -106,8 +106,8 @@ VulkanMechanics::Queues::FamilyIndices VulkanMechanics::findQueueFamilies(
                                            nullptr);
 
   std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-  vkGetPhysicalDeviceQueueFamilyProperties(
-      mainDevice.physical, &queueFamilyCount, queueFamilies.data());
+  vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount,
+                                           queueFamilies.data());
 
   int i = 0;
   for (const auto& queueFamily : queueFamilies) {
@@ -179,8 +179,8 @@ bool VulkanMechanics::checkDeviceExtensionSupport(
   vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount,
                                        availableExtensions.data());
 
-  std::set<std::string> requiredExtensions(mainDevice.deviceExtensions.begin(),
-                                           mainDevice.deviceExtensions.end());
+  std::set<std::string> requiredExtensions(deviceExtensions.begin(),
+                                           deviceExtensions.end());
 
   for (const auto& extension : availableExtensions) {
     requiredExtensions.erase(extension.extensionName);
@@ -219,8 +219,8 @@ void VulkanMechanics::createLogicalDevice() {
   createInfo.pEnabledFeatures = &deviceFeatures;
 
   createInfo.enabledExtensionCount =
-      static_cast<uint32_t>(mainDevice.deviceExtensions.size());
-  createInfo.ppEnabledExtensionNames = mainDevice.deviceExtensions.data();
+      static_cast<uint32_t>(deviceExtensions.size());
+  createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
   if (_validationLayers.enableValidationLayers) {
     createInfo.enabledLayerCount =
@@ -408,6 +408,8 @@ void VulkanMechanics::createSwapChain() {
   createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
   createInfo.presentMode = presentMode;
   createInfo.clipped = VK_TRUE;
+
+  _log.console(&mainDevice.logical, &createInfo.sType, &swapChain.swapChain);
 
   if (vkCreateSwapchainKHR(mainDevice.logical, &createInfo, nullptr,
                            &swapChain.swapChain) != VK_SUCCESS) {
