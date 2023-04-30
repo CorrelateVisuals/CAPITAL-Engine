@@ -2,19 +2,20 @@
 
 struct Particle {
 	vec2 position;
+    vec2 newVariableToShader;
     vec4 color;
-    vec4 color2;
+
 };
 
 layout (binding = 0) uniform ParameterUBO {
     float deltaTime;
 } ubo;
 
-layout(std430 , binding = 1) readonly buffer ParticleSSBOIn {
+layout(std140, binding = 1) readonly buffer ParticleSSBOIn {
    Particle particlesIn[ ];
 };
 
-layout(std430 , binding = 2) buffer ParticleSSBOOut {
+layout(std140, binding = 2) buffer ParticleSSBOOut {
    Particle particlesOut[ ];
 };
 
@@ -27,10 +28,11 @@ void main()
     Particle particleIn = particlesIn[index];
 
     particlesOut[index].position = vec2(particleIn.position.xy);
-    particlesOut[index].color = vec4(0.0, 1.0, 0.0, 1.0);
-    particlesOut[index].color2 = particleIn.color2; //vec4(1.0, 0.0, 0.0, 1.0);
-    
+    particlesOut[index].newVariableToShader = vec2(0.0);
 
+    if( index == ubo.deltaTime){
+        particlesOut[index].newVariableToShader = vec2(1.0);
+    }
 
 
     //particlesOut[index].color = vec4(1.0, 1.0, 1.0, ubo.deltaTime);

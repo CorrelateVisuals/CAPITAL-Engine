@@ -119,8 +119,8 @@ void Pipelines::createGraphicsPipeline() {
   vertexInputInfo.sType =
       VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-  auto bindingDescription = World::Cell::getBindingDescription();
-  auto attributeDescriptions = World::Cell::getAttributeDescriptions();
+  auto bindingDescription = World::Particle::getBindingDescription();
+  auto attributeDescriptions = World::Particle::getAttributeDescriptions();
 
   vertexInputInfo.vertexBindingDescriptionCount = 1;
   vertexInputInfo.vertexAttributeDescriptionCount =
@@ -383,37 +383,36 @@ void MemoryCommands::createComputeCommandBuffers() {
 
 void MemoryCommands::createShaderStorageBuffers() {
   _log.console("  ....  ", "creating Shader Storage Buffers");
-  std::vector<World::Cell> cells(_world.grid.numGridPoints);
+  std::vector<World::Particle> particles(_world.grid.numGridPoints);
 
   // Grid size
-  const int gridWidth = _world.grid.width;
-  const int gridHeight = _world.grid.height;
+  const int gridWidth = 32;
+  const int gridHeight = 32;
 
-  const float cellSize = 1.0f;
+  const float particlesize = 1.0f;
 
   // Grid cell size
-  const float cellWidth = cellSize / gridWidth;
-  const float cellHeight = cellSize / gridHeight;
+  const float cellWidth = particlesize / gridWidth;
+  const float cellHeight = particlesize / gridHeight;
 
   // Particle position offset
-  const float remainingWidth = 2.0f - cellSize;
-  const float remainingHeight = 2.0f - cellSize;
+  const float remainingWidth = 2.0f - particlesize;
+  const float remainingHeight = 2.0f - particlesize;
   const float offsetX = -1.0f + remainingWidth / 2.0f + cellWidth / 2.0f;
   const float offsetY = -1.0f + remainingHeight / 2.0f + cellHeight / 2.0f;
 
-  // Initialize cells on grid
+  // Initialize particles on grid
   for (int x = 0; x < gridWidth; x++) {
     for (int y = 0; y < gridHeight; y++) {
       int index = x + y * gridWidth;
-      cells[index].position = {offsetX + x * cellWidth,
-                               offsetY + y * cellHeight, 0, 0};
-
-      cells[index].color = {1.0f, 0.0f, 0.0f, 1.0f};
-      // cells[index].position2 = { 1.0f, 1.0f, 0.0f, 1.0f };
+      particles[index].position = glm::vec4(
+          glm::vec2(offsetX + x * cellWidth, offsetY + y * cellHeight),
+          glm::vec2(0.0, 0.0));
+      particles[index].color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
     }
   }
 
-  VkDeviceSize bufferSize = sizeof(World::Cell) * _world.grid.numGridPoints;
+  VkDeviceSize bufferSize = sizeof(World::Particle) * _world.grid.numGridPoints;
 
   // Create a staging buffer used to upload data to the gpu
   VkBuffer stagingBuffer;
@@ -426,13 +425,13 @@ void MemoryCommands::createShaderStorageBuffers() {
   void* data;
   vkMapMemory(_mechanics.mainDevice.logical, stagingBufferMemory, 0, bufferSize,
               0, &data);
-  memcpy(data, cells.data(), (size_t)bufferSize);
+  memcpy(data, particles.data(), (size_t)bufferSize);
   vkUnmapMemory(_mechanics.mainDevice.logical, stagingBufferMemory);
 
   shaderStorage.buffers.resize(MAX_FRAMES_IN_FLIGHT);
   shaderStorage.buffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
 
-  // Copy initial particle data to all storage buffers
+  // Copy initial Cell data to all storage buffers
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     createBuffer(bufferSize,
                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
@@ -524,7 +523,7 @@ void MemoryCommands::createComputeDescriptorSets() {
         shaderStorage.buffers[(i - 1) % MAX_FRAMES_IN_FLIGHT];
     storageBufferInfoLastFrame.offset = 0;
     storageBufferInfoLastFrame.range =
-        sizeof(World::Cell) * _world.grid.numGridPoints;
+        sizeof(World::Particle) * _world.grid.numGridPoints;
 
     descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[1].dstSet = descriptor.sets[i];
@@ -538,7 +537,7 @@ void MemoryCommands::createComputeDescriptorSets() {
     storageBufferInfoCurrentFrame.buffer = shaderStorage.buffers[i];
     storageBufferInfoCurrentFrame.offset = 0;
     storageBufferInfoCurrentFrame.range =
-        sizeof(World::Cell) * _world.grid.numGridPoints;
+        sizeof(World::Particle) * _world.grid.numGridPoints;
 
     descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[2].dstSet = descriptor.sets[i];
@@ -555,7 +554,10 @@ void MemoryCommands::createComputeDescriptorSets() {
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   UniformBufferObject ubo{};
-  ubo.deltaTime = static_cast<float>(_control.timer());
+  ubo.deltaTime = _control.timer();
+
+  std::cout << ubo.deltaTime << std::endl;
+
   memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 
