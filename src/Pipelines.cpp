@@ -383,11 +383,11 @@ void MemoryCommands::createComputeCommandBuffers() {
 
 void MemoryCommands::createShaderStorageBuffers() {
   _log.console("  ....  ", "creating Shader Storage Buffers");
-  std::vector<World::Cell> particles(CELL_COUNT);
+  std::vector<World::Cell> cells(_world.grid.numGridPoints);
 
   // Grid size
-  const int gridWidth = 2;
-  const int gridHeight = 2;
+  const int gridWidth = _world.grid.width;
+  const int gridHeight = _world.grid.height;
 
   const float cellSize = 1.0f;
 
@@ -401,19 +401,19 @@ void MemoryCommands::createShaderStorageBuffers() {
   const float offsetX = -1.0f + remainingWidth / 2.0f + cellWidth / 2.0f;
   const float offsetY = -1.0f + remainingHeight / 2.0f + cellHeight / 2.0f;
 
-  // Initialize particles on grid
+  // Initialize cells on grid
   for (int x = 0; x < gridWidth; x++) {
     for (int y = 0; y < gridHeight; y++) {
       int index = x + y * gridWidth;
-      particles[index].position = glm::vec4(
-          glm::vec2(offsetX + x * cellWidth, offsetY + y * cellHeight),
-          glm::vec2(0.0));
-      particles[index].color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-      // particles[index].position2 = { 1.0f, 1.0f, 0.0f, 1.0f };
+      cells[index].position = {offsetX + x * cellWidth,
+                               offsetY + y * cellHeight, 0, 0};
+
+      cells[index].color = {1.0f, 0.0f, 0.0f, 1.0f};
+      // cells[index].position2 = { 1.0f, 1.0f, 0.0f, 1.0f };
     }
   }
 
-  VkDeviceSize bufferSize = sizeof(World::Cell) * CELL_COUNT;
+  VkDeviceSize bufferSize = sizeof(World::Cell) * _world.grid.numGridPoints;
 
   // Create a staging buffer used to upload data to the gpu
   VkBuffer stagingBuffer;
@@ -426,7 +426,7 @@ void MemoryCommands::createShaderStorageBuffers() {
   void* data;
   vkMapMemory(_mechanics.mainDevice.logical, stagingBufferMemory, 0, bufferSize,
               0, &data);
-  memcpy(data, particles.data(), (size_t)bufferSize);
+  memcpy(data, cells.data(), (size_t)bufferSize);
   vkUnmapMemory(_mechanics.mainDevice.logical, stagingBufferMemory);
 
   shaderStorage.buffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -523,7 +523,8 @@ void MemoryCommands::createComputeDescriptorSets() {
     storageBufferInfoLastFrame.buffer =
         shaderStorage.buffers[(i - 1) % MAX_FRAMES_IN_FLIGHT];
     storageBufferInfoLastFrame.offset = 0;
-    storageBufferInfoLastFrame.range = sizeof(World::Cell) * CELL_COUNT;
+    storageBufferInfoLastFrame.range =
+        sizeof(World::Cell) * _world.grid.numGridPoints;
 
     descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[1].dstSet = descriptor.sets[i];
@@ -536,7 +537,8 @@ void MemoryCommands::createComputeDescriptorSets() {
     VkDescriptorBufferInfo storageBufferInfoCurrentFrame{};
     storageBufferInfoCurrentFrame.buffer = shaderStorage.buffers[i];
     storageBufferInfoCurrentFrame.offset = 0;
-    storageBufferInfoCurrentFrame.range = sizeof(World::Cell) * CELL_COUNT;
+    storageBufferInfoCurrentFrame.range =
+        sizeof(World::Cell) * _world.grid.numGridPoints;
 
     descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[2].dstSet = descriptor.sets[i];
@@ -553,12 +555,7 @@ void MemoryCommands::createComputeDescriptorSets() {
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   UniformBufferObject ubo{};
-  ubo.deltaTime = _control.timer();
-
-  // std::cout << ubo.deltaTime << std::endl;
-  std::cout << "vec4: " << sizeof(glm::vec4) << "vec3: " << sizeof(glm::vec3)
-            << "vec2: " << sizeof(glm::vec2) << "int: " << sizeof(int)
-            << "float: " << sizeof(float) << std::endl;
+  ubo.deltaTime = static_cast<float>(_control.timer());
   memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 
@@ -579,7 +576,7 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
                           &descriptor.sets[_mechanics.syncObjects.currentFrame],
                           0, nullptr);
 
-  vkCmdDispatch(commandBuffer, CELL_COUNT / 256, 1, 1);
+  vkCmdDispatch(commandBuffer, _world.grid.numGridPoints / 256, 1, 1);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to record compute command buffer!");
@@ -632,7 +629,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
       &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],
       offsets);
 
-  vkCmdDraw(commandBuffer, CELL_COUNT, 1, 0, 0);
+  vkCmdDraw(commandBuffer, _world.grid.numGridPoints, 1, 0, 0);
 
   vkCmdEndRenderPass(commandBuffer);
 

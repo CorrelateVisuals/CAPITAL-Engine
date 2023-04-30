@@ -7,17 +7,23 @@
 
 #include "Control.h"
 
-constexpr int CELL_COUNT = 4;
-
 class World {
  public:
   World();
   ~World();
 
+  struct Grid {
+    int width = 10;
+    int height = 10;
+    int numGridPoints = width * height;
+  } grid;
+
   struct Cell {
-    glm::vec2 position;
-    glm::vec2 velocity;
-    glm::vec4 color;
+    // glm::vec2 position;
+    // glm::vec2 velocity;
+    // glm::vec4 color;
+    std::array<float, 4> position;
+    std::array<float, 4> color;
 
     static VkVertexInputBindingDescription getBindingDescription() {
       VkVertexInputBindingDescription bindingDescription{};

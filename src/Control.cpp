@@ -16,6 +16,6 @@ double Control::timer() {
   time = fmod(elapsed_seconds / max_time, 1024.0);
   int step = static_cast<int>(time / step_size);
   time = step * step_size;
-  int intTime = time;
+  int intTime = static_cast<int>(time);
   return intTime;
 }
