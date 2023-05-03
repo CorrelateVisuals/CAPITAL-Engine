@@ -33,7 +33,7 @@ void CapitalEngine::mainLoop() {
 }
 
 void CapitalEngine::initVulkan() {
-  _log.console("{ ** }", "initializing Capital Engine");
+  _log.console("{ *** }", "initializing Capital Engine");
   _mechanics.createInstance();
   _validationLayers.setupDebugMessenger(_mechanics.instance);
   _mechanics.createSurface();

@@ -9,11 +9,11 @@
 #include "World.h"
 
 Pipelines::Pipelines() : graphics{}, compute{} {
-  _log.console("{ P }", "constructing Pipelines");
+  _log.console("{ PPP }", "constructing Pipelines");
 }
 
 Pipelines::~Pipelines() {
-  _log.console("{ P }", "destructing Pipelines");
+  _log.console("{ PPP }", "destructing Pipelines");
 }
 
 void Pipelines::createRenderPass() {
@@ -282,7 +282,7 @@ void Pipelines::createComputePipeline() {
 }
 
 VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
-  _log.console("  ....  ", "creating Shader Module");
+  _log.console("  .....  ", "creating Shader Module");
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   createInfo.codeSize = code.size();
@@ -298,11 +298,11 @@ VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
 }
 
 MemoryCommands::MemoryCommands() {
-  _log.console("{ 0 }", "constructing Memory Management");
+  _log.console("{ 010 }", "constructing Memory Management");
 }
 
 MemoryCommands::~MemoryCommands() {
-  _log.console("{ 0 }", "destructing Memory Management");
+  _log.console("{ 010 }", "destructing Memory Management");
 }
 
 void MemoryCommands::createFramebuffers() {
@@ -348,7 +348,7 @@ void MemoryCommands::createCommandPool() {
 }
 
 void MemoryCommands::createCommandBuffers() {
-  _log.console("  ....  ", "creating Command Buffers");
+  _log.console("  .....  ", "creating Command Buffers");
 
   command.graphicBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -365,7 +365,7 @@ void MemoryCommands::createCommandBuffers() {
 }
 
 void MemoryCommands::createComputeCommandBuffers() {
-  _log.console("  ....  ", "creating Compute Command Buffers");
+  _log.console("  .....  ", "creating Compute Command Buffers");
 
   command.computeBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -382,12 +382,12 @@ void MemoryCommands::createComputeCommandBuffers() {
 }
 
 void MemoryCommands::createShaderStorageBuffers() {
-  _log.console("  ....  ", "creating Shader Storage Buffers");
+  _log.console("  .....  ", "creating Shader Storage Buffers");
   std::vector<World::Cells> cells(_world.grid.numGridPoints);
 
   // Grid size
-  const int gridWidth = 32;
-  const int gridHeight = 32;
+  const int gridWidth = _world.grid.width;
+  const int gridHeight = _world.grid.height;
 
   const float particlesize = 1.0f;
 
@@ -405,11 +405,13 @@ void MemoryCommands::createShaderStorageBuffers() {
   for (int x = 0; x < gridWidth; x++) {
     for (int y = 0; y < gridHeight; y++) {
       int index = x + y * gridWidth;
-      cells[index].position = glm::vec4(
-          glm::vec2(offsetX + x * cellWidth, offsetY + y * cellHeight),
-          glm::vec2(0.0, 0.0));
-      cells[index].color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-      cells[index].newVariableToShader = glm::vec2{1.0};
+
+      cells[index].position = {offsetX + x * cellWidth,
+                               offsetY + y * cellHeight, 1.0, 1.0};
+      cells[index].color = {1.0f, 1.0f, 1.0f, 1.0f};
+      cells[index].size = {30.0};
+      cells[index].substractGrid = {
+          static_cast<float>(_world.grid.numGridPoints), 0, 0, 0};
     }
   }
 
@@ -467,7 +469,7 @@ void MemoryCommands::createUniformBuffers() {
 
 void MemoryCommands::createDescriptorPool() {
   const int numPools = 2;
-  _log.console("  ....  ", "creating", numPools, "Descriptor Pools");
+  _log.console("  .....  ", "creating", numPools, "Descriptor Pools");
   std::array<VkDescriptorPoolSize, 2> poolSizes{};
   poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
@@ -489,7 +491,7 @@ void MemoryCommands::createDescriptorPool() {
 }
 
 void MemoryCommands::createComputeDescriptorSets() {
-  _log.console("  ....  ", "creating Compute Descriptor Sets");
+  _log.console("  .....  ", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptor.setLayout);
   VkDescriptorSetAllocateInfo allocInfo{};
