@@ -3,25 +3,64 @@
 #include <array>
 #include <random>
 
-#include "Debug.h"
+#include "CAPITAL_Engine.h"
+#include "Mechanics.h"
 #include "Pipelines.h"
-#include "Vulkan_Mechanics.h"
 #include "World.h"
 
 Pipelines::Pipelines() : graphics{}, compute{} {
-  LOG("{ P }", "constructing Pipelines");
+  _log.console("{ PPP }", "constructing Pipelines");
 }
 
 Pipelines::~Pipelines() {
-  LOG("{ P }", "destructing Pipelines");
+  _log.console("{ PPP }", "destructing Pipelines");
 }
 
-void Pipelines::createDescriptorSetLayout() {
-  LOG("  ....  ", "creating Descriptor Set Layout");
-  constexpr int numBindings = 4;
-  std::array<VkDescriptorSetLayoutBinding, numBindings> layoutBindings{};
+void Pipelines::createRenderPass() {
+  VkAttachmentDescription colorAttachment{};
+  colorAttachment.format = _mechanics.swapChain.imageFormat;
+  colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+  colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+  colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+  colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-  // Compute Shader input
+  VkAttachmentReference colorAttachmentRef{};
+  colorAttachmentRef.attachment = 0;
+  colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+  VkSubpassDescription subpass{};
+  subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+  subpass.colorAttachmentCount = 1;
+  subpass.pColorAttachments = &colorAttachmentRef;
+
+  VkSubpassDependency dependency{};
+  dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+  dependency.dstSubpass = 0;
+  dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+  dependency.srcAccessMask = 0;
+  dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+  dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+  VkRenderPassCreateInfo renderPassInfo{};
+  renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+  renderPassInfo.attachmentCount = 1;
+  renderPassInfo.pAttachments = &colorAttachment;
+  renderPassInfo.subpassCount = 1;
+  renderPassInfo.pSubpasses = &subpass;
+  renderPassInfo.dependencyCount = 1;
+  renderPassInfo.pDependencies = &dependency;
+
+  if (vkCreateRenderPass(_mechanics.mainDevice.logical, &renderPassInfo,
+                         nullptr, &renderPass) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create render pass!");
+  }
+}
+
+void MemoryCommands::createComputeDescriptorSetLayout() {
+  std::array<VkDescriptorSetLayoutBinding, 3> layoutBindings{};
   layoutBindings[0].binding = 0;
   layoutBindings[0].descriptorCount = 1;
   layoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -40,30 +79,21 @@ void Pipelines::createDescriptorSetLayout() {
   layoutBindings[2].pImmutableSamplers = nullptr;
   layoutBindings[2].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 
-  // Vertex Shader input
-  layoutBindings[3].binding = 3;
-  layoutBindings[3].descriptorCount = 1;
-  layoutBindings[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-  layoutBindings[3].pImmutableSamplers = nullptr;
-  layoutBindings[3].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
   VkDescriptorSetLayoutCreateInfo layoutInfo{};
   layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-  layoutInfo.bindingCount = numBindings;
+  layoutInfo.bindingCount = 3;
   layoutInfo.pBindings = layoutBindings.data();
 
-  if (vkCreateDescriptorSetLayout(mechanics.mainDevice.logical, &layoutInfo,
-                                  nullptr, &memCommands.descriptorSetLayout) !=
-      VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to create compute descriptor set layout!");
+  if (vkCreateDescriptorSetLayout(
+          _mechanics.mainDevice.logical, &layoutInfo, nullptr,
+          &_memCommands.descriptor.setLayout) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create compute descriptor set layout!");
   }
 }
 
 void Pipelines::createGraphicsPipeline() {
-  LOG("{ P }", "creating Graphics Pipeline");
-  auto vertShaderCode = readShaderFiles("shaders/vert.spv");
-  auto fragShaderCode = readShaderFiles("shaders/frag.spv");
+  auto vertShaderCode = readShaderFile("shaders/vert.spv");
+  auto fragShaderCode = readShaderFile("shaders/frag.spv");
 
   VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
   VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -101,7 +131,7 @@ void Pipelines::createGraphicsPipeline() {
   VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
   inputAssembly.sType =
       VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
   inputAssembly.primitiveRestartEnable = VK_FALSE;
 
   VkPipelineViewportStateCreateInfo viewportState{};
@@ -116,7 +146,7 @@ void Pipelines::createGraphicsPipeline() {
   rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
   rasterizer.lineWidth = 1.0f;
   rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-  rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+  rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
   rasterizer.depthBiasEnable = VK_FALSE;
 
   VkPipelineMultisampleStateCreateInfo multisampling{};
@@ -125,20 +155,11 @@ void Pipelines::createGraphicsPipeline() {
   multisampling.sampleShadingEnable = VK_FALSE;
   multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
-  VkPipelineDepthStencilStateCreateInfo depthStencil{};
-  depthStencil.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-  depthStencil.depthTestEnable = VK_TRUE;
-  depthStencil.depthWriteEnable = VK_TRUE;
-  depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
-  depthStencil.depthBoundsTestEnable = VK_FALSE;
-  depthStencil.stencilTestEnable = VK_FALSE;
-
   VkPipelineColorBlendAttachmentState colorBlendAttachment{};
   colorBlendAttachment.colorWriteMask =
       VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
       VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-  colorBlendAttachment.blendEnable = VK_FALSE;
+  colorBlendAttachment.blendEnable = VK_TRUE;
   colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
   colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
   colorBlendAttachment.dstColorBlendFactor =
@@ -170,11 +191,11 @@ void Pipelines::createGraphicsPipeline() {
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
   pipelineLayoutInfo.setLayoutCount = 0;
-  pipelineLayoutInfo.pSetLayouts = &memCommands.descriptorSetLayout;
+  pipelineLayoutInfo.pSetLayouts = nullptr;
 
-  if (vkCreatePipelineLayout(mechanics.mainDevice.logical, &pipelineLayoutInfo,
+  if (vkCreatePipelineLayout(_mechanics.mainDevice.logical, &pipelineLayoutInfo,
                              nullptr, &graphics.pipelineLayout) != VK_SUCCESS) {
-    throw std::runtime_error("! ! ! ! ! ! ! failed to create pipeline layout!");
+    throw std::runtime_error("failed to create pipeline layout!");
   }
 
   VkGraphicsPipelineCreateInfo pipelineInfo{};
@@ -186,75 +207,30 @@ void Pipelines::createGraphicsPipeline() {
   pipelineInfo.pViewportState = &viewportState;
   pipelineInfo.pRasterizationState = &rasterizer;
   pipelineInfo.pMultisampleState = &multisampling;
-  pipelineInfo.pDepthStencilState = &depthStencil;
   pipelineInfo.pColorBlendState = &colorBlending;
   pipelineInfo.pDynamicState = &dynamicState;
   pipelineInfo.layout = graphics.pipelineLayout;
-  pipelineInfo.renderPass = renderConfig.renderPass;
+  pipelineInfo.renderPass = renderPass;
   pipelineInfo.subpass = 0;
   pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-  if (vkCreateGraphicsPipelines(mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
-                                &pipelineInfo, nullptr,
+  if (vkCreateGraphicsPipelines(_mechanics.mainDevice.logical, VK_NULL_HANDLE,
+                                1, &pipelineInfo, nullptr,
                                 &graphics.pipeline) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to create graphics pipeline!");
+    throw std::runtime_error("failed to create graphics pipeline!");
   }
 
-  vkDestroyShaderModule(mechanics.mainDevice.logical, fragShaderModule,
+  vkDestroyShaderModule(_mechanics.mainDevice.logical, fragShaderModule,
                         nullptr);
-  vkDestroyShaderModule(mechanics.mainDevice.logical, vertShaderModule,
-                        nullptr);
-}
-
-void Pipelines::createComputePipeline() {
-  LOG("{ P }", "creating Compute Pipleline");
-  auto computeShaderCode = readShaderFiles("shaders/comp.spv");
-
-  VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
-
-  VkPipelineShaderStageCreateInfo computeShaderStageInfo{};
-  computeShaderStageInfo.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-  computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-  computeShaderStageInfo.module = computeShaderModule;
-  computeShaderStageInfo.pName = "main";
-
-  VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
-  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-  pipelineLayoutInfo.setLayoutCount = 1;
-  pipelineLayoutInfo.pSetLayouts = &memCommands.descriptorSetLayout;
-
-  if (vkCreatePipelineLayout(mechanics.mainDevice.logical, &pipelineLayoutInfo,
-                             nullptr, &compute.pipelineLayout) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to create compute pipeline layout!");
-  }
-
-  VkComputePipelineCreateInfo pipelineInfo{};
-  pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-  pipelineInfo.layout = compute.pipelineLayout;
-  pipelineInfo.stage = computeShaderStageInfo;
-
-  if (vkCreateComputePipelines(mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
-                               &pipelineInfo, nullptr,
-                               &compute.pipeline) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to create compute pipeline!");
-  }
-
-  vkDestroyShaderModule(mechanics.mainDevice.logical, computeShaderModule,
+  vkDestroyShaderModule(_mechanics.mainDevice.logical, vertShaderModule,
                         nullptr);
 }
 
-std::vector<char> Pipelines::readShaderFiles(const std::string& filename) {
-  LOG("  ....  ", "reading Shader Files");
-
+std::vector<char> Pipelines::readShaderFile(const std::string& filename) {
   std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
   if (!file.is_open()) {
-    throw std::runtime_error("! ! ! ! ! ! ! failed to open shader file :" +
-                             filename);
+    throw std::runtime_error("failed to open file!");
   }
 
   size_t fileSize = (size_t)file.tellg();
@@ -268,108 +244,179 @@ std::vector<char> Pipelines::readShaderFiles(const std::string& filename) {
   return buffer;
 }
 
-VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
-  LOG("  ....  ", "creating Shader Module");
+void Pipelines::createComputePipeline() {
+  auto computeShaderCode = readShaderFile("shaders/comp.spv");
 
+  VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
+
+  VkPipelineShaderStageCreateInfo computeShaderStageInfo{};
+  computeShaderStageInfo.sType =
+      VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+  computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+  computeShaderStageInfo.module = computeShaderModule;
+  computeShaderStageInfo.pName = "main";
+
+  VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+  pipelineLayoutInfo.setLayoutCount = 1;
+  pipelineLayoutInfo.pSetLayouts = &_memCommands.descriptor.setLayout;
+
+  if (vkCreatePipelineLayout(_mechanics.mainDevice.logical, &pipelineLayoutInfo,
+                             nullptr, &compute.pipelineLayout) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create compute pipeline layout!");
+  }
+
+  VkComputePipelineCreateInfo pipelineInfo{};
+  pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+  pipelineInfo.layout = compute.pipelineLayout;
+  pipelineInfo.stage = computeShaderStageInfo;
+
+  if (vkCreateComputePipelines(_mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
+                               &pipelineInfo, nullptr,
+                               &compute.pipeline) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create compute pipeline!");
+  }
+
+  vkDestroyShaderModule(_mechanics.mainDevice.logical, computeShaderModule,
+                        nullptr);
+}
+
+VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
+  _log.console("  .....  ", "creating Shader Module");
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   createInfo.codeSize = code.size();
   createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
   VkShaderModule shaderModule;
-  if (vkCreateShaderModule(mechanics.mainDevice.logical, &createInfo, nullptr,
+  if (vkCreateShaderModule(_mechanics.mainDevice.logical, &createInfo, nullptr,
                            &shaderModule) != VK_SUCCESS) {
-    throw std::runtime_error("! ! ! ! ! ! ! failed to create shader module!");
+    throw std::runtime_error("failed to create shader module!");
   }
 
   return shaderModule;
 }
 
-MemoryCommands::MemoryCommands()
-    : commandPool{},
-      commandBuffers{},
-      computeCommandBuffers{},
-      descriptorSetLayout{},
-      descriptorPool{},
-      computeDescriptorSets{} {
-  LOG("{ 0 }", "constructing Memory Management");
+MemoryCommands::MemoryCommands() {
+  _log.console("{ 010 }", "constructing Memory Management");
 }
 
 MemoryCommands::~MemoryCommands() {
-  LOG("{ 0 }", "destructing Memory Management");
+  _log.console("{ 010 }", "destructing Memory Management");
+}
+
+void MemoryCommands::createFramebuffers() {
+  _mechanics.swapChain.framebuffers.resize(
+      _mechanics.swapChain.imageViews.size());
+
+  for (size_t i = 0; i < _mechanics.swapChain.imageViews.size(); i++) {
+    VkImageView attachments[] = {_mechanics.swapChain.imageViews[i]};
+
+    VkFramebufferCreateInfo framebufferInfo{};
+    framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+    framebufferInfo.renderPass = _pipelines.renderPass;
+    framebufferInfo.attachmentCount = 1;
+    framebufferInfo.pAttachments = attachments;
+    framebufferInfo.width = _mechanics.swapChain.extent.width;
+    framebufferInfo.height = _mechanics.swapChain.extent.height;
+    framebufferInfo.layers = 1;
+
+    if (vkCreateFramebuffer(_mechanics.mainDevice.logical, &framebufferInfo,
+                            nullptr, &_mechanics.swapChain.framebuffers[i]) !=
+        VK_SUCCESS) {
+      throw std::runtime_error("failed to create framebuffer!");
+    }
+  }
 }
 
 void MemoryCommands::createCommandPool() {
-  LOG("{ cmd }", "creating Command Pool");
-  VulkanMechanics::QueueFamilyIndices queueFamilyIndices =
-      mechanics.findQueueFamilies(mechanics.mainDevice.physical);
+  _log.console("{ cmd }", "creating Command Pool");
+
+  VulkanMechanics::Queues::FamilyIndices queueFamilyIndices =
+      _mechanics.findQueueFamilies(_mechanics.mainDevice.physical);
 
   VkCommandPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
   poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-  poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+  poolInfo.queueFamilyIndex =
+      queueFamilyIndices.graphicsAndComputeFamily.value();
 
-  if (vkCreateCommandPool(mechanics.mainDevice.logical, &poolInfo, nullptr,
-                          &commandPool) != VK_SUCCESS) {
-    throw std::runtime_error("! ! ! ! ! ! ! failed to create command pool!");
+  if (vkCreateCommandPool(_mechanics.mainDevice.logical, &poolInfo, nullptr,
+                          &command.pool) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create graphics command pool!");
   }
 }
 
 void MemoryCommands::createCommandBuffers() {
-  LOG("  ....  ", "creating Command Buffers");
-  commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+  _log.console("  .....  ", "creating Command Buffers");
+
+  command.graphicBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
   VkCommandBufferAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-  allocInfo.commandPool = commandPool;
+  allocInfo.commandPool = command.pool;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-  allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
+  allocInfo.commandBufferCount = (uint32_t)command.graphicBuffers.size();
 
-  if (vkAllocateCommandBuffers(mechanics.mainDevice.logical, &allocInfo,
-                               commandBuffers.data()) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to allocate command buffers!");
+  if (vkAllocateCommandBuffers(_mechanics.mainDevice.logical, &allocInfo,
+                               command.graphicBuffers.data()) != VK_SUCCESS) {
+    throw std::runtime_error("failed to allocate command buffers!");
   }
 }
-void MemoryCommands::createComputeCommandBuffers() {
-  LOG("  ....  ", "creating Compute Command Buffers");
 
-  computeCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+void MemoryCommands::createComputeCommandBuffers() {
+  _log.console("  .....  ", "creating Compute Command Buffers");
+
+  command.computeBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
   VkCommandBufferAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-  allocInfo.commandPool = commandPool;
+  allocInfo.commandPool = command.pool;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-  allocInfo.commandBufferCount = (uint32_t)computeCommandBuffers.size();
+  allocInfo.commandBufferCount = (uint32_t)command.computeBuffers.size();
 
-  if (vkAllocateCommandBuffers(mechanics.mainDevice.logical, &allocInfo,
-                               computeCommandBuffers.data()) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to allocate compute command buffers!");
+  if (vkAllocateCommandBuffers(_mechanics.mainDevice.logical, &allocInfo,
+                               command.computeBuffers.data()) != VK_SUCCESS) {
+    throw std::runtime_error("failed to allocate compute command buffers!");
   }
 }
 
 void MemoryCommands::createShaderStorageBuffers() {
-  LOG("  ....  ", "creating Shader Storage Buffers");
+  _log.console("  .....  ", "creating Shader Storage Buffers");
 
-  // Initialize particles
-  std::default_random_engine rndEngine((unsigned)time(nullptr));
-  std::uniform_real_distribution<float> rndDist(0.0f, 1.0f);
+  std::vector<World::Cell> cells(_world.grid.numGridPoints);
 
-  // Initial particle positions on a circle
-  std::vector<World::Cell> particles(CELL_COUNT);
-  for (auto& particle : particles) {
-    float r = 0.25f * sqrt(rndDist(rndEngine));
-    float theta = rndDist(rndEngine) * 2.0f * 3.14159265358979323846f;
-    float x = r * cos(theta) * displayConfig.height / displayConfig.width;
-    float y = r * sin(theta);
-    particle.position = glm::vec2(x, y);
-    particle.velocity = glm::normalize(glm::vec2(x, y)) * 0.00025f;
-    particle.color = glm::vec4(rndDist(rndEngine), rndDist(rndEngine),
-                               rndDist(rndEngine), 1.0f);
+  // Grid size
+  const int gridWidth = _world.grid.width;
+  const int gridHeight = _world.grid.height;
+
+  const float particlesize = 1.0f;
+
+  // Grid cell size
+  const float cellWidth = particlesize / gridWidth;
+  const float cellHeight = particlesize / gridHeight;
+
+  // Cell position offset
+  const float remainingWidth = 2.0f - particlesize;
+  const float remainingHeight = 2.0f - particlesize;
+  const float offsetX = -1.0f + remainingWidth / 2.0f + cellWidth / 2.0f;
+  const float offsetY = -1.0f + remainingHeight / 2.0f + cellHeight / 2.0f;
+
+  // Initialize cells on grid
+  for (int x = 0; x < gridWidth; x++) {
+    for (int y = 0; y < gridHeight; y++) {
+      int index = x + y * gridWidth;
+
+      cells[index].position = {offsetX + x * cellWidth,
+                               offsetY + y * cellHeight, 1.0f, 1.0f};
+      cells[index].color = {1.0f, 1.0f, 1.0f, 1.0f};
+      cells[index].size = {30.0f, 0.0f, 0.0f, 0.0f};
+      cells[index].gridSize = {static_cast<float>(_world.grid.numGridPoints),
+                               0.0f, 0.0f, 0.0f};
+    }
   }
 
-  VkDeviceSize bufferSize = sizeof(World::Cell) * CELL_COUNT;
+  VkDeviceSize bufferSize = sizeof(World::Cell) * _world.grid.numGridPoints;
 
   // Create a staging buffer used to upload data to the gpu
   VkBuffer stagingBuffer;
@@ -380,99 +427,95 @@ void MemoryCommands::createShaderStorageBuffers() {
                stagingBuffer, stagingBufferMemory);
 
   void* data;
-  vkMapMemory(mechanics.mainDevice.logical, stagingBufferMemory, 0, bufferSize,
+  vkMapMemory(_mechanics.mainDevice.logical, stagingBufferMemory, 0, bufferSize,
               0, &data);
-  memcpy(data, particles.data(), (size_t)bufferSize);
-  vkUnmapMemory(mechanics.mainDevice.logical, stagingBufferMemory);
+  memcpy(data, cells.data(), (size_t)bufferSize);
+  vkUnmapMemory(_mechanics.mainDevice.logical, stagingBufferMemory);
 
-  shaderStorageBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-  shaderStorageBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+  shaderStorage.buffers.resize(MAX_FRAMES_IN_FLIGHT);
+  shaderStorage.buffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
 
-  // Copy initial particle data to all storage buffers
+  // Copy initial Cell data to all storage buffers
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     createBuffer(bufferSize,
                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
                      VK_BUFFER_USAGE_VERTEX_BUFFER_BIT |
                      VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, shaderStorageBuffers[i],
-                 shaderStorageBuffersMemory[i]);
-    copyBuffer(stagingBuffer, shaderStorageBuffers[i], bufferSize);
+                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, shaderStorage.buffers[i],
+                 shaderStorage.buffersMemory[i]);
+    copyBuffer(stagingBuffer, shaderStorage.buffers[i], bufferSize);
   }
 
-  vkDestroyBuffer(mechanics.mainDevice.logical, stagingBuffer, nullptr);
-  vkFreeMemory(mechanics.mainDevice.logical, stagingBufferMemory, nullptr);
+  vkDestroyBuffer(_mechanics.mainDevice.logical, stagingBuffer, nullptr);
+  vkFreeMemory(_mechanics.mainDevice.logical, stagingBufferMemory, nullptr);
 }
 
 void MemoryCommands::createUniformBuffers() {
-  LOG("  ....  ", "creating Uniform Buffers");
-
   VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
-  uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-  uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
-  uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+  uniform.buffers.resize(MAX_FRAMES_IN_FLIGHT);
+  uniform.buffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+  uniform.buffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                      VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                 uniformBuffers[i], uniformBuffersMemory[i]);
+                 uniform.buffers[i], uniform.buffersMemory[i]);
 
-    vkMapMemory(mechanics.mainDevice.logical, uniformBuffersMemory[i], 0,
-                bufferSize, 0, &uniformBuffersMapped[i]);
+    vkMapMemory(_mechanics.mainDevice.logical, uniform.buffersMemory[i], 0,
+                bufferSize, 0, &uniform.buffersMapped[i]);
   }
 }
 
 void MemoryCommands::createDescriptorPool() {
   const int numPools = 2;
-  LOG("  ....  ", "creating", numPools, "Descriptor Pools");
-
-  std::array<VkDescriptorPoolSize, numPools> poolSizes{};
+  _log.console("  .....  ", "creating", numPools, "Descriptor Pools");
+  std::array<VkDescriptorPoolSize, 2> poolSizes{};
   poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
   poolSizes[1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
   poolSizes[1].descriptorCount =
-      static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT) * numPools;
+      static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT) * 2;
 
   VkDescriptorPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-  poolInfo.poolSizeCount = numPools;
+  poolInfo.poolSizeCount = 2;
   poolInfo.pPoolSizes = poolSizes.data();
   poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
-  if (vkCreateDescriptorPool(mechanics.mainDevice.logical, &poolInfo, nullptr,
-                             &descriptorPool) != VK_SUCCESS) {
-    throw std::runtime_error("! ! ! ! ! ! ! failed to create descriptor pool!");
+  if (vkCreateDescriptorPool(_mechanics.mainDevice.logical, &poolInfo, nullptr,
+                             &_memCommands.descriptor.pool) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create descriptor pool!");
   }
 }
-void MemoryCommands::createComputeDescriptorSets() {
-  LOG("  ....  ", "creating Compute Descriptor Sets");
 
+void MemoryCommands::createComputeDescriptorSets() {
+  _log.console("  .....  ", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
-                                             descriptorSetLayout);
+                                             descriptor.setLayout);
   VkDescriptorSetAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-  allocInfo.descriptorPool = descriptorPool;
+  allocInfo.descriptorPool = descriptor.pool;
   allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
   allocInfo.pSetLayouts = layouts.data();
 
-  computeDescriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
-  if (vkAllocateDescriptorSets(mechanics.mainDevice.logical, &allocInfo,
-                               computeDescriptorSets.data()) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to allocate descriptor sets!");
+  descriptor.sets.resize(MAX_FRAMES_IN_FLIGHT);
+  if (vkAllocateDescriptorSets(_mechanics.mainDevice.logical, &allocInfo,
+                               descriptor.sets.data()) != VK_SUCCESS) {
+    throw std::runtime_error("failed to allocate descriptor sets!");
   }
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     VkDescriptorBufferInfo uniformBufferInfo{};
-    uniformBufferInfo.buffer = uniformBuffers[i];
+    uniformBufferInfo.buffer = uniform.buffers[i];
     uniformBufferInfo.offset = 0;
     uniformBufferInfo.range = sizeof(UniformBufferObject);
 
     std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
     descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    descriptorWrites[0].dstSet = computeDescriptorSets[i];
+    descriptorWrites[0].dstSet = descriptor.sets[i];
     descriptorWrites[0].dstBinding = 0;
     descriptorWrites[0].dstArrayElement = 0;
     descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -481,12 +524,13 @@ void MemoryCommands::createComputeDescriptorSets() {
 
     VkDescriptorBufferInfo storageBufferInfoLastFrame{};
     storageBufferInfoLastFrame.buffer =
-        shaderStorageBuffers[(i - 1) % MAX_FRAMES_IN_FLIGHT];
+        shaderStorage.buffers[(i - 1) % MAX_FRAMES_IN_FLIGHT];
     storageBufferInfoLastFrame.offset = 0;
-    storageBufferInfoLastFrame.range = sizeof(World::Cell) * CELL_COUNT;
+    storageBufferInfoLastFrame.range =
+        sizeof(World::Cell) * _world.grid.numGridPoints;
 
     descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    descriptorWrites[1].dstSet = computeDescriptorSets[i];
+    descriptorWrites[1].dstSet = descriptor.sets[i];
     descriptorWrites[1].dstBinding = 1;
     descriptorWrites[1].dstArrayElement = 0;
     descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
@@ -494,28 +538,28 @@ void MemoryCommands::createComputeDescriptorSets() {
     descriptorWrites[1].pBufferInfo = &storageBufferInfoLastFrame;
 
     VkDescriptorBufferInfo storageBufferInfoCurrentFrame{};
-    storageBufferInfoCurrentFrame.buffer = shaderStorageBuffers[i];
+    storageBufferInfoCurrentFrame.buffer = shaderStorage.buffers[i];
     storageBufferInfoCurrentFrame.offset = 0;
-    storageBufferInfoCurrentFrame.range = sizeof(World::Cell) * CELL_COUNT;
+    storageBufferInfoCurrentFrame.range =
+        sizeof(World::Cell) * _world.grid.numGridPoints;
 
     descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    descriptorWrites[2].dstSet = computeDescriptorSets[i];
+    descriptorWrites[2].dstSet = descriptor.sets[i];
     descriptorWrites[2].dstBinding = 2;
     descriptorWrites[2].dstArrayElement = 0;
     descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
     descriptorWrites[2].descriptorCount = 1;
     descriptorWrites[2].pBufferInfo = &storageBufferInfoCurrentFrame;
 
-    vkUpdateDescriptorSets(mechanics.mainDevice.logical, 3,
+    vkUpdateDescriptorSets(_mechanics.mainDevice.logical, 3,
                            descriptorWrites.data(), 0, nullptr);
   }
 }
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   UniformBufferObject ubo{};
-  ubo.deltaTime = lastFrameTime * 2.0f;
-
-  memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+  ubo.deltaTime = static_cast<float>(_control.timer());
+  memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 
 void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
@@ -524,22 +568,21 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
 
   if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
     throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to begin recording compute command buffer!");
+        "failed to begin recording compute command buffer!");
   }
 
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                    pipelines.compute.pipeline);
+                    _pipelines.compute.pipeline);
 
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                          pipelines.compute.pipelineLayout, 0, 1,
-                          &computeDescriptorSets[mechanics.currentFrame], 0,
-                          nullptr);
+                          _pipelines.compute.pipelineLayout, 0, 1,
+                          &descriptor.sets[_mechanics.syncObjects.currentFrame],
+                          0, nullptr);
 
-  vkCmdDispatch(commandBuffer, CELL_COUNT / 256, 1, 1);
+  vkCmdDispatch(commandBuffer, _world.grid.numGridPoints / 256, 1, 1);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to record compute command buffer!");
+    throw std::runtime_error("failed to record compute command buffer!");
   }
 }
 
@@ -549,55 +592,52 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
   if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "! ! ! ! ! ! ! failed to begin recording command buffer!");
+    throw std::runtime_error("failed to begin recording command buffer!");
   }
 
   VkRenderPassBeginInfo renderPassInfo{};
   renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-  renderPassInfo.renderPass = renderConfig.renderPass;
-  renderPassInfo.framebuffer = mechanics.swapChainFramebuffers[imageIndex];
+  renderPassInfo.renderPass = _pipelines.renderPass;
+  renderPassInfo.framebuffer = _mechanics.swapChain.framebuffers[imageIndex];
   renderPassInfo.renderArea.offset = {0, 0};
-  renderPassInfo.renderArea.extent = mechanics.swapChainExtent;
+  renderPassInfo.renderArea.extent = _mechanics.swapChain.extent;
 
-  std::array<VkClearValue, 2> clearValues{};
-  clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
-  clearValues[1].depthStencil = {1.0f, 0};
-
-  renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-  renderPassInfo.pClearValues = clearValues.data();
+  VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+  renderPassInfo.clearValueCount = 1;
+  renderPassInfo.pClearValues = &clearColor;
 
   vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
                        VK_SUBPASS_CONTENTS_INLINE);
 
   vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                    pipelines.graphics.pipeline);
+                    _pipelines.graphics.pipeline);
 
   VkViewport viewport{};
   viewport.x = 0.0f;
   viewport.y = 0.0f;
-  viewport.width = (float)mechanics.swapChainExtent.width;
-  viewport.height = (float)mechanics.swapChainExtent.height;
+  viewport.width = (float)_mechanics.swapChain.extent.width;
+  viewport.height = (float)_mechanics.swapChain.extent.height;
   viewport.minDepth = 0.0f;
   viewport.maxDepth = 1.0f;
   vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
   VkRect2D scissor{};
   scissor.offset = {0, 0};
-  scissor.extent = mechanics.swapChainExtent;
+  scissor.extent = _mechanics.swapChain.extent;
   vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
   VkDeviceSize offsets[] = {0};
-  vkCmdBindVertexBuffers(commandBuffer, 0, 1,
-                         &shaderStorageBuffers[mechanics.currentFrame],
-                         offsets);
+  vkCmdBindVertexBuffers(
+      commandBuffer, 0, 1,
+      &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],
+      offsets);
 
-  vkCmdDraw(commandBuffer, CELL_COUNT, 1, 0, 0);
+  vkCmdDraw(commandBuffer, _world.grid.numGridPoints, 1, 0, 0);
 
   vkCmdEndRenderPass(commandBuffer);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
-    throw std::runtime_error("! ! ! ! ! ! ! failed to record command buffer!");
+    throw std::runtime_error("failed to record command buffer!");
   }
 }
 
@@ -612,13 +652,13 @@ void MemoryCommands::createBuffer(VkDeviceSize size,
   bufferInfo.usage = usage;
   bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-  if (vkCreateBuffer(mechanics.mainDevice.logical, &bufferInfo, nullptr,
+  if (vkCreateBuffer(_mechanics.mainDevice.logical, &bufferInfo, nullptr,
                      &buffer) != VK_SUCCESS) {
-    throw std::runtime_error("! ! ! ! ! ! ! failed to create buffer!");
+    throw std::runtime_error("failed to create buffer!");
   }
 
   VkMemoryRequirements memRequirements;
-  vkGetBufferMemoryRequirements(mechanics.mainDevice.logical, buffer,
+  vkGetBufferMemoryRequirements(_mechanics.mainDevice.logical, buffer,
                                 &memRequirements);
 
   VkMemoryAllocateInfo allocInfo{};
@@ -627,12 +667,12 @@ void MemoryCommands::createBuffer(VkDeviceSize size,
   allocInfo.memoryTypeIndex =
       findMemoryType(memRequirements.memoryTypeBits, properties);
 
-  if (vkAllocateMemory(mechanics.mainDevice.logical, &allocInfo, nullptr,
+  if (vkAllocateMemory(_mechanics.mainDevice.logical, &allocInfo, nullptr,
                        &bufferMemory) != VK_SUCCESS) {
-    throw std::runtime_error("! ! ! ! ! ! ! failed to allocate buffer memory!");
+    throw std::runtime_error("failed to allocate buffer memory!");
   }
 
-  vkBindBufferMemory(mechanics.mainDevice.logical, buffer, bufferMemory, 0);
+  vkBindBufferMemory(_mechanics.mainDevice.logical, buffer, bufferMemory, 0);
 }
 
 void MemoryCommands::copyBuffer(VkBuffer srcBuffer,
@@ -641,11 +681,11 @@ void MemoryCommands::copyBuffer(VkBuffer srcBuffer,
   VkCommandBufferAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-  allocInfo.commandPool = commandPool;
+  allocInfo.commandPool = command.pool;
   allocInfo.commandBufferCount = 1;
 
   VkCommandBuffer commandBuffer;
-  vkAllocateCommandBuffers(mechanics.mainDevice.logical, &allocInfo,
+  vkAllocateCommandBuffers(_mechanics.mainDevice.logical, &allocInfo,
                            &commandBuffer);
 
   VkCommandBufferBeginInfo beginInfo{};
@@ -665,17 +705,17 @@ void MemoryCommands::copyBuffer(VkBuffer srcBuffer,
   submitInfo.commandBufferCount = 1;
   submitInfo.pCommandBuffers = &commandBuffer;
 
-  vkQueueSubmit(mechanics.queues.graphics, 1, &submitInfo, VK_NULL_HANDLE);
-  vkQueueWaitIdle(mechanics.queues.graphics);
+  vkQueueSubmit(_mechanics.queues.graphics, 1, &submitInfo, VK_NULL_HANDLE);
+  vkQueueWaitIdle(_mechanics.queues.graphics);
 
-  vkFreeCommandBuffers(mechanics.mainDevice.logical, commandPool, 1,
+  vkFreeCommandBuffers(_mechanics.mainDevice.logical, command.pool, 1,
                        &commandBuffer);
 }
 
 uint32_t MemoryCommands::findMemoryType(uint32_t typeFilter,
                                         VkMemoryPropertyFlags properties) {
   VkPhysicalDeviceMemoryProperties memProperties;
-  vkGetPhysicalDeviceMemoryProperties(mechanics.mainDevice.physical,
+  vkGetPhysicalDeviceMemoryProperties(_mechanics.mainDevice.physical,
                                       &memProperties);
 
   for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
@@ -685,6 +725,5 @@ uint32_t MemoryCommands::findMemoryType(uint32_t typeFilter,
     }
   }
 
-  throw std::runtime_error(
-      "! ! ! ! ! ! ! failed to find suitable memory type!");
+  throw std::runtime_error("failed to find suitable memory type!");
 }

@@ -5,26 +5,51 @@
 #include <array>
 #include <vector>
 
-#include "Settings.h"
-
-constexpr int CELL_COUNT = 4;
+#include "Control.h"
 
 class World {
  public:
   World();
   ~World();
 
+  struct Grid {
+    const uint32_t width = 32;
+    const uint32_t height = 32;
+    const uint32_t numGridPoints = width * height;
+  } grid;
+
   struct Cell {
-    glm::vec2 position;
-    glm::vec3 color;
-    glm::vec2 velocity;
+    // All cell parameters have to fit 16 byte memory blocks.
+    // An array of 4 floats, 4 integers, or a single vec4 fits this size.
+    // Multiple data types can fit in a block as well, for instance two vec2s.
+    std::array<float, 4> position;  // xyz
+    std::array<float, 4> color;     // rgba
+    std::array<float, 4> size;      // 1 float
+    std::array<float, 4> gridSize;  // 1 int
 
-    glm::vec3 normals;
-    glm::vec3 uv;
-
-    static VkVertexInputBindingDescription getBindingDescription();
     static std::vector<VkVertexInputAttributeDescription>
-    getAttributeDescriptions();
+    getAttributeDescriptions() {
+      std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
+
+      attributeDescriptions.push_back(
+          {0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, position)});
+      attributeDescriptions.push_back(
+          {1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, color)});
+      attributeDescriptions.push_back(
+          {2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, size)});
+      attributeDescriptions.push_back(
+          {3, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, gridSize)});
+
+      return attributeDescriptions;
+    }
+
+    static VkVertexInputBindingDescription getBindingDescription() {
+      VkVertexInputBindingDescription bindingDescription{};
+      bindingDescription.binding = 0;
+      bindingDescription.stride = sizeof(Cell);
+      bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+      return bindingDescription;
+    }
   };
 };
-inline World world;

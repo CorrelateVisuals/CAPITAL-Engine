@@ -1,19 +1,17 @@
 #include <iostream>
 #include <string>
 
-#include "Capital_Engine.h"
-#include "Debug.h"
+#include "CAPITAL_Engine.h"
 
 int main() {
-  CapitalEngine CAPITAL;
-
   try {
+    CapitalEngine CAPITAL;
     CAPITAL.mainLoop();
   } catch (const std::exception& e) {
-    LOG(e.what());
+    _log.console(e.what());
     return EXIT_FAILURE;
   } catch (...) {
-    LOG("!!!!!!!!!", "unknown error caught in main()");
+    _log.console("!!!!!!!!!", "unknown error caught in main()");
   }
   return EXIT_SUCCESS;
 }

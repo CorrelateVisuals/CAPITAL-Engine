@@ -15,15 +15,18 @@ class Pipelines {
     VkPipeline pipeline;
   } compute;
 
-  void createDescriptorSetLayout();
+  VkRenderPass renderPass;
+
+ public:
+  void createRenderPass();
+
   void createGraphicsPipeline();
   void createComputePipeline();
 
  private:
-  std::vector<char> readShaderFiles(const std::string& filename);
+  static std::vector<char> readShaderFile(const std::string& filename);
   VkShaderModule createShaderModule(const std::vector<char>& code);
 };
-inline Pipelines pipelines;
 
 class MemoryCommands {
  public:
@@ -34,34 +37,48 @@ class MemoryCommands {
     float deltaTime = 1.0f;
   };
 
-  VkCommandPool commandPool;
-  std::vector<VkCommandBuffer> commandBuffers;
-  std::vector<VkCommandBuffer> computeCommandBuffers;
+  // float lastFrameTime = 0.0f;
+  // double lastTime = 0.0f;
 
-  VkDescriptorSetLayout descriptorSetLayout;
-  VkDescriptorPool descriptorPool;
-  std::vector<VkDescriptorSet> computeDescriptorSets;
+  struct Command {
+    VkCommandPool pool;
+    std::vector<VkCommandBuffer> graphicBuffers;
+    std::vector<VkCommandBuffer> computeBuffers;
+  } command;
 
-  std::vector<VkBuffer> uniformBuffers;
-  std::vector<VkDeviceMemory> uniformBuffersMemory;
-  std::vector<void*> uniformBuffersMapped;
+  struct UniformBuffers {
+    std::vector<VkBuffer> buffers;
+    std::vector<VkDeviceMemory> buffersMemory;
+    std::vector<void*> buffersMapped;
+  } uniform;
 
-  std::vector<VkBuffer> shaderStorageBuffers;
-  std::vector<VkDeviceMemory> shaderStorageBuffersMemory;
+  struct ShaderStorageBuffers {
+    std::vector<VkBuffer> buffers;
+    std::vector<VkDeviceMemory> buffersMemory;
+  } shaderStorage;
 
-  float lastFrameTime = 0.0f;
+  struct Descriptor {
+    VkDescriptorPool pool;
+    std::vector<VkDescriptorSet> sets;
+    VkDescriptorSetLayout setLayout;
+  } descriptor;
+
+ public:
+  void createFramebuffers();
 
   void createCommandPool();
   void createCommandBuffers();
-  void createComputeCommandBuffers();
 
   void createShaderStorageBuffers();
+
   void createUniformBuffers();
-
-  void createDescriptorPool();
-  void createComputeDescriptorSets();
-
   void updateUniformBuffer(uint32_t currentImage);
+
+  void createComputeDescriptorSetLayout();
+  void createDescriptorPool();
+
+  void createComputeDescriptorSets();
+  void createComputeCommandBuffers();
 
   void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);
   void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
@@ -72,8 +89,7 @@ class MemoryCommands {
                     VkMemoryPropertyFlags properties,
                     VkBuffer& buffer,
                     VkDeviceMemory& bufferMemory);
-  void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
   uint32_t findMemoryType(uint32_t typeFilter,
                           VkMemoryPropertyFlags properties);
+  void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 };
-inline MemoryCommands memCommands;
