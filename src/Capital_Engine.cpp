@@ -191,6 +191,7 @@ void CapitalEngine::drawFrame() {
 
 void Global::cleanup() {
   _log.console("{ cleanup }");
+
   _mechanics.cleanupSwapChain();
 
   vkDestroyPipeline(_mechanics.mainDevice.logical, _pipelines.graphics.pipeline,

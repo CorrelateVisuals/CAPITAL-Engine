@@ -22,10 +22,10 @@ class World {
     // All cell parameters have to fit 16 byte memory blocks.
     // An array of 4 floats, 4 integers, or a single vec4 fits this size.
     // Multiple data types can fit in a block as well, for instance two vec2s.
-    std::array<float, 4> position;
-    std::array<float, 4> color;
-    std::array<float, 4> size;
-    std::array<float, 4> substractGrid;
+    std::array<float, 4> position;       // xyz
+    std::array<float, 4> color;          // rgba
+    std::array<float, 4> size;           // 1 float
+    std::array<float, 4> substractGrid;  // 1 int
 
     static VkVertexInputBindingDescription getBindingDescription() {
       VkVertexInputBindingDescription bindingDescription{};

@@ -1,9 +1,11 @@
 #version 450
 
+//  You can use xyzw, rgba (for colors), or stpq (for texture coordinates)
+
 struct Particle {
 	vec4 position;
     vec4 color;
-    vec4 size;
+    vec4 size;              // int size.x
     vec4 substractGrid;
 };
 
@@ -27,7 +29,7 @@ void main()
     Particle particleIn  = particlesIn[index];
 
     particlesOut[index].position = particleIn.position.rgba;
-    particlesOut[index].color = vec4( 1.0, vec3(0.0) );
+    particlesOut[index].color = vec4( 1.0, vec2(0.0), 1.0 );
 
     if( index == ubo.deltaTime){
         particlesOut[index].color = vec4(1.0);

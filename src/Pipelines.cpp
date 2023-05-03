@@ -383,6 +383,7 @@ void MemoryCommands::createComputeCommandBuffers() {
 
 void MemoryCommands::createShaderStorageBuffers() {
   _log.console("  .....  ", "creating Shader Storage Buffers");
+
   std::vector<World::Cells> cells(_world.grid.numGridPoints);
 
   // Grid size
@@ -407,11 +408,11 @@ void MemoryCommands::createShaderStorageBuffers() {
       int index = x + y * gridWidth;
 
       cells[index].position = {offsetX + x * cellWidth,
-                               offsetY + y * cellHeight, 1.0, 1.0};
+                               offsetY + y * cellHeight, 1.0f, 1.0f};
       cells[index].color = {1.0f, 1.0f, 1.0f, 1.0f};
-      cells[index].size = {30.0};
+      cells[index].size = {30.0f, 0.0f, 0.0f, 0.0f};
       cells[index].substractGrid = {
-          static_cast<float>(_world.grid.numGridPoints), 0, 0, 0};
+          static_cast<float>(_world.grid.numGridPoints), 0.0f, 0.0f, 0.0f};
     }
   }
 
