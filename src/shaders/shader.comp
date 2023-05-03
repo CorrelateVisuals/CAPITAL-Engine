@@ -6,7 +6,7 @@ struct Particle {
 	vec4 position;
     vec4 color;
     vec4 size;              // int size.x
-    vec4 substractGrid;
+    vec4 gridSize;
 };
 
 layout (binding = 0) uniform ParameterUBO {
@@ -35,7 +35,7 @@ void main()
         particlesOut[index].color = vec4(1.0);
     }
 
-    if( particleIn.substractGrid.x - ubo.deltaTime - 1 == index){
+    if( particleIn.gridSize.x - ubo.deltaTime - 1 == index){
         particlesOut[index].color = vec4(0.0, vec3(1.0));
     }
 

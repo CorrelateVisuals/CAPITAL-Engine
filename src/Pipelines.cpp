@@ -119,8 +119,8 @@ void Pipelines::createGraphicsPipeline() {
   vertexInputInfo.sType =
       VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-  auto bindingDescription = World::Cells::getBindingDescription();
-  auto attributeDescriptions = World::Cells::getAttributeDescriptions();
+  auto bindingDescription = World::Cell::getBindingDescription();
+  auto attributeDescriptions = World::Cell::getAttributeDescriptions();
 
   vertexInputInfo.vertexBindingDescriptionCount = 1;
   vertexInputInfo.vertexAttributeDescriptionCount =
@@ -384,7 +384,7 @@ void MemoryCommands::createComputeCommandBuffers() {
 void MemoryCommands::createShaderStorageBuffers() {
   _log.console("  .....  ", "creating Shader Storage Buffers");
 
-  std::vector<World::Cells> cells(_world.grid.numGridPoints);
+  std::vector<World::Cell> cells(_world.grid.numGridPoints);
 
   // Grid size
   const int gridWidth = _world.grid.width;
@@ -396,7 +396,7 @@ void MemoryCommands::createShaderStorageBuffers() {
   const float cellWidth = particlesize / gridWidth;
   const float cellHeight = particlesize / gridHeight;
 
-  // Cells position offset
+  // Cell position offset
   const float remainingWidth = 2.0f - particlesize;
   const float remainingHeight = 2.0f - particlesize;
   const float offsetX = -1.0f + remainingWidth / 2.0f + cellWidth / 2.0f;
@@ -411,12 +411,12 @@ void MemoryCommands::createShaderStorageBuffers() {
                                offsetY + y * cellHeight, 1.0f, 1.0f};
       cells[index].color = {1.0f, 1.0f, 1.0f, 1.0f};
       cells[index].size = {30.0f, 0.0f, 0.0f, 0.0f};
-      cells[index].substractGrid = {
-          static_cast<float>(_world.grid.numGridPoints), 0.0f, 0.0f, 0.0f};
+      cells[index].gridSize = {static_cast<float>(_world.grid.numGridPoints),
+                               0.0f, 0.0f, 0.0f};
     }
   }
 
-  VkDeviceSize bufferSize = sizeof(World::Cells) * _world.grid.numGridPoints;
+  VkDeviceSize bufferSize = sizeof(World::Cell) * _world.grid.numGridPoints;
 
   // Create a staging buffer used to upload data to the gpu
   VkBuffer stagingBuffer;
@@ -527,7 +527,7 @@ void MemoryCommands::createComputeDescriptorSets() {
         shaderStorage.buffers[(i - 1) % MAX_FRAMES_IN_FLIGHT];
     storageBufferInfoLastFrame.offset = 0;
     storageBufferInfoLastFrame.range =
-        sizeof(World::Cells) * _world.grid.numGridPoints;
+        sizeof(World::Cell) * _world.grid.numGridPoints;
 
     descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[1].dstSet = descriptor.sets[i];
@@ -541,7 +541,7 @@ void MemoryCommands::createComputeDescriptorSets() {
     storageBufferInfoCurrentFrame.buffer = shaderStorage.buffers[i];
     storageBufferInfoCurrentFrame.offset = 0;
     storageBufferInfoCurrentFrame.range =
-        sizeof(World::Cells) * _world.grid.numGridPoints;
+        sizeof(World::Cell) * _world.grid.numGridPoints;
 
     descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[2].dstSet = descriptor.sets[i];
