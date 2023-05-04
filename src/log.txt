@@ -1,51 +1,51 @@
-2023-05-04 02:12:44 { ... } constructing Logging
-2023-05-04 02:12:44 { --- } constructing Validation Layers
-2023-05-04 02:12:44 { [X] } constructing Window
-2023-05-04 02:12:44 { [*] } Window initialized with 1920 * 1080
-2023-05-04 02:12:44 { ..# } constructing Vulkan Mechanics
-2023-05-04 02:12:44 { .Pi } constructing Pipelines
-2023-05-04 02:12:44 { 010 } constructing Memory Management
-2023-05-04 02:12:44 { (:) } constructing World
-2023-05-04 02:12:44 
+2023-05-04 02:37:17 { ... } constructing Logging
+2023-05-04 02:37:17 { --- } constructing Validation Layers
+2023-05-04 02:37:17 { [X] } constructing Window
+2023-05-04 02:37:17 { [*] } Window initialized with 1920 * 1080
+2023-05-04 02:37:17 { ..# } constructing Vulkan Mechanics
+2023-05-04 02:37:17 { .Pi } constructing Pipelines
+2023-05-04 02:37:17 { 010 } constructing Memory Management
+2023-05-04 02:37:17 { (:) } constructing World
+2023-05-04 02:37:17 
                     [ Starting CAPITAL engine ]
 
-2023-05-04 02:12:44 { *** } initializing Capital Engine
-2023-05-04 02:12:44 { .vk } creating Vulkan Instance
-2023-05-04 02:12:44 { [ ] } creating Surface
-2023-05-04 02:12:44 { .#. } picking Physical Device
-2023-05-04 02:12:44   .....   checking if Physical Device is suitable
-2023-05-04 02:12:44   .....   finding Queue Families
-2023-05-04 02:12:44   .....   checking Device Extension Support
-2023-05-04 02:12:44   .....   querying Swap Chain Support
-2023-05-04 02:12:44 { +++ } creating Logical Device
-2023-05-04 02:12:44   .....   finding Queue Families
-2023-05-04 02:12:44 { <-> } creating Swap Chain
-2023-05-04 02:12:44   .....   querying Swap Chain Support
-2023-05-04 02:12:44   .....   choosing Swap Surface Format
-2023-05-04 02:12:44   .....   choosing Swap Present Mode
-2023-05-04 02:12:44   .....   choosing Swap Extent
-2023-05-04 02:12:44   .....   finding Queue Families
-2023-05-04 02:12:44 00007FF6345F4CD0 0000006E71CFF670 00007FF6345F4D20
-2023-05-04 02:12:44   .....   creating Image Views
-2023-05-04 02:12:44   .....   creating Shader Module
-2023-05-04 02:12:44   .....   creating Shader Module
-2023-05-04 02:12:44   .....   creating Shader Module
-2023-05-04 02:12:44 { cmd } creating Command Pool
-2023-05-04 02:12:44   .....   finding Queue Families
-2023-05-04 02:12:44   .....   creating Shader Storage Buffers
-2023-05-04 02:12:44   .....   creating 2 Descriptor Pools
-2023-05-04 02:12:44   .....   creating Compute Descriptor Sets
-2023-05-04 02:12:44   .....   creating Command Buffers
-2023-05-04 02:12:44   .....   creating Compute Command Buffers
-2023-05-04 02:12:44 { || } creating Sync Objects
-2023-05-04 02:12:44 { main } running ...
-2023-05-04 02:12:46 { main } terminated
-2023-05-04 02:12:46 
+2023-05-04 02:37:17 { *** } initializing Capital Engine
+2023-05-04 02:37:17 { .vk } creating Vulkan Instance
+2023-05-04 02:37:18 { [ ] } creating Surface
+2023-05-04 02:37:18 { .#. } picking Physical Device
+2023-05-04 02:37:18   .....   checking if Physical Device is suitable
+2023-05-04 02:37:18   .....   finding Queue Families
+2023-05-04 02:37:18   .....   checking Device Extension Support
+2023-05-04 02:37:18   .....   querying Swap Chain Support
+2023-05-04 02:37:18 { +++ } creating Logical Device
+2023-05-04 02:37:18   .....   finding Queue Families
+2023-05-04 02:37:18 { <-> } creating Swap Chain
+2023-05-04 02:37:18   .....   querying Swap Chain Support
+2023-05-04 02:37:18   .....   choosing Swap Surface Format
+2023-05-04 02:37:18   .....   choosing Swap Present Mode
+2023-05-04 02:37:18   .....   choosing Swap Extent
+2023-05-04 02:37:18   .....   finding Queue Families
+2023-05-04 02:37:18 00007FF7E5644CD0 00000035D46FF380 00007FF7E5644D20
+2023-05-04 02:37:18   .....   creating Image Views
+2023-05-04 02:37:18   .....   creating Shader Module
+2023-05-04 02:37:18   .....   creating Shader Module
+2023-05-04 02:37:18   .....   creating Shader Module
+2023-05-04 02:37:18 { cmd } creating Command Pool
+2023-05-04 02:37:18   .....   finding Queue Families
+2023-05-04 02:37:18   .....   creating Shader Storage Buffers
+2023-05-04 02:37:18   .....   creating 2 Descriptor Pools
+2023-05-04 02:37:18   .....   creating Compute Descriptor Sets
+2023-05-04 02:37:18   .....   creating Command Buffers
+2023-05-04 02:37:18   .....   creating Compute Command Buffers
+2023-05-04 02:37:18 { || } creating Sync Objects
+2023-05-04 02:37:18 { main } running ...
+2023-05-04 02:37:18 { main } terminated
+2023-05-04 02:37:18 
                     [ Terminating CAPITAL engine ]
 
-2023-05-04 02:12:46 { 010 } destructing Memory Management
-2023-05-04 02:12:46 { Pi. } destructing Pipelines
-2023-05-04 02:12:46 { #.. } destructing Vulkan Mechanics
-2023-05-04 02:12:46 { [-] } destructing Window
-2023-05-04 02:12:46 { --- } destructing Validation Layers
-2023-05-04 02:12:46 { ... } destructing Logging
+2023-05-04 02:37:18 { 010 } destructing Memory Management
+2023-05-04 02:37:18 { Pi. } destructing Pipelines
+2023-05-04 02:37:18 { #.. } destructing Vulkan Mechanics
+2023-05-04 02:37:18 { [-] } destructing Window
+2023-05-04 02:37:18 { --- } destructing Validation Layers
+2023-05-04 02:37:18 { ... } destructing Logging

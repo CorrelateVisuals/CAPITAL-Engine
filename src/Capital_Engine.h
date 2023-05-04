@@ -23,8 +23,6 @@ class Global {
   Global() = default;
   ~Global();
 
-  void cleanup();
-
   class Objects {
    public:
     Objects() = default;
@@ -40,6 +38,9 @@ class Global {
     World world;
   };
   inline static Objects obj;
+
+ private:
+  void cleanup();
 };
 
 constexpr auto& _log = Global::obj.logging;
