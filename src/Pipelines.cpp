@@ -561,7 +561,7 @@ void MemoryCommands::createComputeDescriptorSets() {
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   UniformBufferObject ubo{};
-  ubo.deltaTime = static_cast<float>(_control.simulationTimer());
+  ubo.passedHours = _control.passedSimulationHours;
   memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 

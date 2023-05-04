@@ -24,6 +24,9 @@ void CapitalEngine::mainLoop() {
   _log.console("\n                   ", "main loop running ..........\n");
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
+
+    _control.simulateHours();
+
     drawFrame();
 
     _window.mouseClick(_window.window, GLFW_MOUSE_BUTTON_LEFT);

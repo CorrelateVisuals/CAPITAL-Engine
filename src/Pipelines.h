@@ -33,7 +33,7 @@ class MemoryCommands {
   ~MemoryCommands();
 
   struct UniformBufferObject {
-    float deltaTime = 1.0f;
+    int passedHours;  // convert this to a long long
   };
 
   struct Command {

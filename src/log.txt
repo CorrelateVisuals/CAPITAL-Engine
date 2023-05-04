@@ -1,7 +1,7 @@
-23.05.04 16:10:24   { ... } constructing Logging
+23.05.04 17:36:19   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
-23.05.04 16:10:25   { [*] } Window initialized with 1920 * 1080
+ { [*] } Window initialized with 1920 * 1080
  { ..# } constructing Vulkan Mechanics
  { .Pi } constructing Pipelines
  { 010 } constructing Memory Management
@@ -20,7 +20,7 @@
    .....   querying Swap Chain Support
  { .++ } creating Logical Device
    .....   finding Queue Families
-23.05.04 16:10:26   { <-> } creating Swap Chain
+ { <-> } creating Swap Chain
    .....   querying Swap Chain Support
    .....   choosing Swap Surface Format
    .....   choosing Swap Present Mode
@@ -42,3 +42,15 @@
  
                     main loop running ..........
 
+23.05.04 17:36:20   
+                    main loop ....... terminated
+ 
+                    [ Terminating CAPITAL engine ]
+
+ { Ctr } destructing Control
+ { 010 } destructing Memory Management
+23.05.04 17:36:21   { Pi. } destructing Pipelines
+ { #.. } destructing Vulkan Mechanics
+ { [-] } destructing Window
+ { --. } destructing Validation Layers
+ { ... } destructing Logging

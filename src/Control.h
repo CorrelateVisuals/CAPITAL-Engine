@@ -8,13 +8,9 @@ class Control {
   Control();
   ~Control();
 
-  long long simulationHours;
-
-  void updateSimulation(long long& simulationHours,
-                        double speed,
-                        long long duration = -1);
-
-  double simulationTimer();
+  long long passedSimulationHours = 0;
+  float simulationSpeed = 100.0f;
+  void simulateHours();
 };
 
 struct DisplayConfig {
