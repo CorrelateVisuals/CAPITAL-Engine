@@ -9,11 +9,11 @@
 #include "World.h"
 
 Pipelines::Pipelines() : graphics{}, compute{} {
-  _log.console("{ PPP }", "constructing Pipelines");
+  _log.console("{ .Pi }", "constructing Pipelines");
 }
 
 Pipelines::~Pipelines() {
-  _log.console("{ PPP }", "destructing Pipelines");
+  _log.console("{ Pi. }", "destructing Pipelines");
 }
 
 void Pipelines::createRenderPass() {
