@@ -13,19 +13,19 @@ Control::~Control() {
 }
 
 double Control::timer() {
-  static auto start_time = std::chrono::high_resolution_clock::now();
-  auto current_time = std::chrono::high_resolution_clock::now();
+  static auto startTime = std::chrono::high_resolution_clock::now();
+  auto currentTime = std::chrono::high_resolution_clock::now();
   static double time = 0.0;
-  static const double max_time = 1;
-  static const int num_steps = _world.grid.numGridPoints;
-  static const double step_size = max_time / num_steps;
+  static const double maxTime = 1;
+  static const int numSteps = _world.grid.numGridPoints;
+  static const double stepSize = maxTime / numSteps;
 
-  std::chrono::duration<double> elapsed_time = current_time - start_time;
-  double elapsed_seconds = elapsed_time.count();
+  std::chrono::duration<double> elapsedTime = currentTime - startTime;
+  double elapsedSeconds = elapsedTime.count();
 
-  time = fmod(elapsed_seconds / max_time, _world.grid.numGridPoints);
-  int step = static_cast<int>(time / step_size);
-  time = step * step_size;
+  time = fmod(elapsedSeconds / maxTime, _world.grid.numGridPoints);
+  int step = static_cast<int>(time / stepSize);
+  time = step * stepSize;
   int intTime = static_cast<int>(time);
   return intTime;
 }

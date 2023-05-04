@@ -409,7 +409,7 @@ void MemoryCommands::createShaderStorageBuffers() {
       cells[index].position = {offsetX + x * cellWidth,
                                offsetY + y * cellHeight, 1.0f, 1.0f};
       cells[index].color = {1.0f, 1.0f, 1.0f, 1.0f};
-      cells[index].size = {15.0f, 0.0f, 0.0f, 0.0f};
+      cells[index].size = {20.0f, 0.0f, 0.0f, 0.0f};
       cells[index].gridSize = {static_cast<float>(_world.grid.numGridPoints),
                                0.0f, 0.0f, 0.0f};
     }

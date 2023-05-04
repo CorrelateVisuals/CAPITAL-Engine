@@ -1,4 +1,4 @@
-23.05.04 04:16:40   { ... } constructing Logging
+23.05.04 04:25:35   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1920 * 1080
@@ -20,13 +20,13 @@
    .....   querying Swap Chain Support
  { .++ } creating Logical Device
    .....   finding Queue Families
- { <-> } creating Swap Chain
+23.05.04 04:25:36   { <-> } creating Swap Chain
    .....   querying Swap Chain Support
    .....   choosing Swap Surface Format
    .....   choosing Swap Present Mode
    .....   choosing Swap Extent
    .....   finding Queue Families
-23.05.04 04:16:41     .....   creating Image Views
+   .....   creating Image Views
    .....   creating Shader Module
    .....   creating Shader Module
    .....   creating Shader Module
@@ -41,7 +41,8 @@
  
                     main loop running ..........
 
- 
+23.05.04 04:25:37   { in } Mouse Click at 0.965104 : 0.00277778
+23.05.04 04:25:38   
                     main loop ....... terminated
  
                     [ Terminating CAPITAL engine ]
