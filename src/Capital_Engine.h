@@ -42,7 +42,6 @@ class Global {
  private:
   void cleanup();
 };
-
 constexpr auto& _log = Global::obj.logging;
 constexpr auto& _validationLayers = Global::obj.validationLayers;
 constexpr auto& _window = Global::obj.mainWindow;

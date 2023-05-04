@@ -348,7 +348,7 @@ void MemoryCommands::createCommandPool() {
 }
 
 void MemoryCommands::createCommandBuffers() {
-  _log.console("  .....  ", "creating Command Buffers");
+  _log.console("{ cmd }", "creating Command Buffers");
 
   command.graphicBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -365,7 +365,7 @@ void MemoryCommands::createCommandBuffers() {
 }
 
 void MemoryCommands::createComputeCommandBuffers() {
-  _log.console("  .....  ", "creating Compute Command Buffers");
+  _log.console("{ cmd }", "creating Compute Command Buffers");
 
   command.computeBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -382,7 +382,7 @@ void MemoryCommands::createComputeCommandBuffers() {
 }
 
 void MemoryCommands::createShaderStorageBuffers() {
-  _log.console("  .....  ", "creating Shader Storage Buffers");
+  _log.console("{ >>> }", "creating Shader Storage Buffers");
 
   std::vector<World::Cell> cells(_world.grid.numGridPoints);
 
@@ -390,15 +390,15 @@ void MemoryCommands::createShaderStorageBuffers() {
   const int gridWidth = _world.grid.width;
   const int gridHeight = _world.grid.height;
 
-  const float particlesize = 1.0f;
+  const float cellSize = 1.0f;
 
   // Grid cell size
-  const float cellWidth = particlesize / gridWidth;
-  const float cellHeight = particlesize / gridHeight;
+  const float cellWidth = cellSize / gridWidth;
+  const float cellHeight = cellSize / gridHeight;
 
   // Cell position offset
-  const float remainingWidth = 2.0f - particlesize;
-  const float remainingHeight = 2.0f - particlesize;
+  const float remainingWidth = 2.0f - cellSize;
+  const float remainingHeight = 2.0f - cellSize;
   const float offsetX = -1.0f + remainingWidth / 2.0f + cellWidth / 2.0f;
   const float offsetY = -1.0f + remainingHeight / 2.0f + cellHeight / 2.0f;
 
@@ -470,7 +470,7 @@ void MemoryCommands::createUniformBuffers() {
 
 void MemoryCommands::createDescriptorPool() {
   const int numPools = 2;
-  _log.console("  .....  ", "creating", numPools, "Descriptor Pools");
+  _log.console("{ & & }", "creating", numPools, "Descriptor Pools");
   std::array<VkDescriptorPoolSize, 2> poolSizes{};
   poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
@@ -492,7 +492,7 @@ void MemoryCommands::createDescriptorPool() {
 }
 
 void MemoryCommands::createComputeDescriptorSets() {
-  _log.console("  .....  ", "creating Compute Descriptor Sets");
+  _log.console("{  &  }", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptor.setLayout);
   VkDescriptorSetAllocateInfo allocInfo{};

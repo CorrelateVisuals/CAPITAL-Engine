@@ -4,6 +4,14 @@
 #include "Control.h"
 #include "World.h"
 
+Control::Control() {
+  _log.console("{ Ctr }", "constructing Control");
+}
+
+Control::~Control() {
+  _log.console("{ Ctr }", "destructing Control");
+}
+
 double Control::timer() {
   static auto start_time = std::chrono::high_resolution_clock::now();
   auto current_time = std::chrono::high_resolution_clock::now();

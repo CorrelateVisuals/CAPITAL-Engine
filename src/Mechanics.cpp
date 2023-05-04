@@ -295,7 +295,7 @@ VkExtent2D VulkanMechanics::chooseSwapExtent(
 }
 
 void VulkanMechanics::createSyncObjects() {
-  _log.console("{ || }", "creating Sync Objects");
+  _log.console("{ ||| }", "creating Sync Objects");
 
   syncObjects.imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
   syncObjects.renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -408,8 +408,6 @@ void VulkanMechanics::createSwapChain() {
   createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
   createInfo.presentMode = presentMode;
   createInfo.clipped = VK_TRUE;
-
-  _log.console(&mainDevice.logical, &createInfo.sType, &swapChain.swapChain);
 
   if (vkCreateSwapchainKHR(mainDevice.logical, &createInfo, nullptr,
                            &swapChain.swapChain) != VK_SUCCESS) {

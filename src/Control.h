@@ -5,8 +5,8 @@
 
 class Control {
  public:
-  Control() = default;
-  ~Control() = default;
+  Control();
+  ~Control();
 
   double timer();
 };
