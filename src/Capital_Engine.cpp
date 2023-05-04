@@ -21,7 +21,7 @@ Global::~Global() {
 }
 
 void CapitalEngine::mainLoop() {
-  _log.console("\n                   ", "main loop running ..........");
+  _log.console("\n                   ", "main loop running ..........\n");
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
     drawFrame();

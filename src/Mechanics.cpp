@@ -190,7 +190,7 @@ bool VulkanMechanics::checkDeviceExtensionSupport(
 }
 
 void VulkanMechanics::createLogicalDevice() {
-  _log.console("{ +++ }", "creating Logical Device");
+  _log.console("{ .++ }", "creating Logical Device");
   Queues::FamilyIndices indices = findQueueFamilies(mainDevice.physical);
 
   std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;

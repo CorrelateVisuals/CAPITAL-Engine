@@ -1,4 +1,4 @@
-230504-03:27:45   { ... } constructing Logging
+230504-03:54:18   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1920 * 1080
@@ -12,13 +12,13 @@
 
  { *** } initializing Capital Engine
  { .vk } creating Vulkan Instance
- { [ ] } creating Surface
+230504-03:54:19   { [ ] } creating Surface
  { .#. } picking Physical Device
    .....   checking if Physical Device is suitable
    .....   finding Queue Families
    .....   checking Device Extension Support
    .....   querying Swap Chain Support
- { +++ } creating Logical Device
+ { .++ } creating Logical Device
    .....   finding Queue Families
  { <-> } creating Swap Chain
    .....   querying Swap Chain Support
@@ -40,7 +40,15 @@
  { ||| } creating Sync Objects
  
                     main loop running ..........
-230504-03:27:46   
+
+ { in } Mouse Click at 0.461979 : 0.200926
+230504-03:54:20   { in } Mouse Click at 0.695833 : 0.419444
+ { in } Mouse Click at 0.380729 : 0.418519
+230504-03:54:21   { in } Mouse Click at 0.667708 : 0.428704
+ { in } Mouse Click at 0.722396 : 0.383333
+ { in } Mouse Click at 0.761979 : 0.319444
+230504-03:54:22   { in } Mouse Click at 0.717187 : 0.264815
+230504-03:54:26   
                     main loop ....... terminated
  
                   [ Terminating CAPITAL engine ]
