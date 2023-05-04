@@ -33,7 +33,7 @@ class MemoryCommands {
   ~MemoryCommands();
 
   struct UniformBufferObject {
-    int passedHours;  // convert this to a long long
+    long long passedHours;
   };
 
   struct Command {
