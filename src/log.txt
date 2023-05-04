@@ -1,7 +1,7 @@
-23.05.04 04:25:35   { ... } constructing Logging
+23.05.04 16:10:24   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
- { [*] } Window initialized with 1920 * 1080
+23.05.04 16:10:25   { [*] } Window initialized with 1920 * 1080
  { ..# } constructing Vulkan Mechanics
  { .Pi } constructing Pipelines
  { 010 } constructing Memory Management
@@ -20,7 +20,7 @@
    .....   querying Swap Chain Support
  { .++ } creating Logical Device
    .....   finding Queue Families
-23.05.04 04:25:36   { <-> } creating Swap Chain
+23.05.04 16:10:26   { <-> } creating Swap Chain
    .....   querying Swap Chain Support
    .....   choosing Swap Surface Format
    .....   choosing Swap Present Mode
@@ -30,6 +30,7 @@
    .....   creating Shader Module
    .....   creating Shader Module
    .....   creating Shader Module
+ 3
  { cmd } creating Command Pool
    .....   finding Queue Families
  { >>> } creating Shader Storage Buffers
@@ -41,16 +42,3 @@
  
                     main loop running ..........
 
-23.05.04 04:25:37   { in } Mouse Click at 0.965104 : 0.00277778
-23.05.04 04:25:38   
-                    main loop ....... terminated
- 
-                    [ Terminating CAPITAL engine ]
-
- { Ctr } destructing Control
- { 010 } destructing Memory Management
- { Pi. } destructing Pipelines
- { #.. } destructing Vulkan Mechanics
- { [-] } destructing Window
- { --. } destructing Validation Layers
- { ... } destructing Logging

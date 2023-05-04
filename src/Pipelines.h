@@ -19,7 +19,6 @@ class Pipelines {
 
  public:
   void createRenderPass();
-
   void createGraphicsPipeline();
   void createComputePipeline();
 

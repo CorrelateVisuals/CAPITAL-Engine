@@ -309,14 +309,18 @@ void MemoryCommands::createFramebuffers() {
   _mechanics.swapChain.framebuffers.resize(
       _mechanics.swapChain.imageViews.size());
 
+  _log.console(_mechanics.swapChain.imageViews.size());
+
   for (size_t i = 0; i < _mechanics.swapChain.imageViews.size(); i++) {
-    VkImageView attachments[] = {_mechanics.swapChain.imageViews[i]};
+    std::array<VkImageView, 1> attachments = {
+        _mechanics.swapChain.imageViews[i]};
+    // add depth stencil here
 
     VkFramebufferCreateInfo framebufferInfo{};
     framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
     framebufferInfo.renderPass = _pipelines.renderPass;
-    framebufferInfo.attachmentCount = 1;
-    framebufferInfo.pAttachments = attachments;
+    framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+    framebufferInfo.pAttachments = attachments.data();
     framebufferInfo.width = _mechanics.swapChain.extent.width;
     framebufferInfo.height = _mechanics.swapChain.extent.height;
     framebufferInfo.layers = 1;
@@ -557,7 +561,7 @@ void MemoryCommands::createComputeDescriptorSets() {
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   UniformBufferObject ubo{};
-  ubo.deltaTime = static_cast<float>(_control.timer());
+  ubo.deltaTime = static_cast<float>(_control.simulationTimer());
   memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 
