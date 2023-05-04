@@ -1,4 +1,4 @@
-230504-03:54:18   { ... } constructing Logging
+23.05.04 04:16:40   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1920 * 1080
@@ -8,11 +8,11 @@
  { Ctr } constructing Control
  { (:) } constructing World
  
-                  [ Starting CAPITAL engine ]
+                    [ Starting CAPITAL engine ]
 
  { *** } initializing Capital Engine
  { .vk } creating Vulkan Instance
-230504-03:54:19   { [ ] } creating Surface
+ { [ ] } creating Surface
  { .#. } picking Physical Device
    .....   checking if Physical Device is suitable
    .....   finding Queue Families
@@ -26,7 +26,7 @@
    .....   choosing Swap Present Mode
    .....   choosing Swap Extent
    .....   finding Queue Families
-   .....   creating Image Views
+23.05.04 04:16:41     .....   creating Image Views
    .....   creating Shader Module
    .....   creating Shader Module
    .....   creating Shader Module
@@ -41,17 +41,10 @@
  
                     main loop running ..........
 
- { in } Mouse Click at 0.461979 : 0.200926
-230504-03:54:20   { in } Mouse Click at 0.695833 : 0.419444
- { in } Mouse Click at 0.380729 : 0.418519
-230504-03:54:21   { in } Mouse Click at 0.667708 : 0.428704
- { in } Mouse Click at 0.722396 : 0.383333
- { in } Mouse Click at 0.761979 : 0.319444
-230504-03:54:22   { in } Mouse Click at 0.717187 : 0.264815
-230504-03:54:26   
+ 
                     main loop ....... terminated
  
-                  [ Terminating CAPITAL engine ]
+                    [ Terminating CAPITAL engine ]
 
  { Ctr } destructing Control
  { 010 } destructing Memory Management

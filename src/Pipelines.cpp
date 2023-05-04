@@ -159,7 +159,7 @@ void Pipelines::createGraphicsPipeline() {
   colorBlendAttachment.colorWriteMask =
       VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
       VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-  colorBlendAttachment.blendEnable = VK_TRUE;
+  colorBlendAttachment.blendEnable = VK_FALSE;
   colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
   colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
   colorBlendAttachment.dstColorBlendFactor =
@@ -389,16 +389,15 @@ void MemoryCommands::createShaderStorageBuffers() {
   // Grid size
   const int gridWidth = _world.grid.width;
   const int gridHeight = _world.grid.height;
-
-  const float cellSize = 1.0f;
+  const float gridPointDistance = _world.grid.gridPointDistance;
 
   // Grid cell size
-  const float cellWidth = cellSize / gridWidth;
-  const float cellHeight = cellSize / gridHeight;
+  const float cellWidth = gridPointDistance / gridWidth;
+  const float cellHeight = gridPointDistance / gridHeight;
 
   // Cell position offset
-  const float remainingWidth = 2.0f - cellSize;
-  const float remainingHeight = 2.0f - cellSize;
+  const float remainingWidth = 2.0f - gridPointDistance;
+  const float remainingHeight = 2.0f - gridPointDistance;
   const float offsetX = -1.0f + remainingWidth / 2.0f + cellWidth / 2.0f;
   const float offsetY = -1.0f + remainingHeight / 2.0f + cellHeight / 2.0f;
 
@@ -410,7 +409,7 @@ void MemoryCommands::createShaderStorageBuffers() {
       cells[index].position = {offsetX + x * cellWidth,
                                offsetY + y * cellHeight, 1.0f, 1.0f};
       cells[index].color = {1.0f, 1.0f, 1.0f, 1.0f};
-      cells[index].size = {30.0f, 0.0f, 0.0f, 0.0f};
+      cells[index].size = {15.0f, 0.0f, 0.0f, 0.0f};
       cells[index].gridSize = {static_cast<float>(_world.grid.numGridPoints),
                                0.0f, 0.0f, 0.0f};
     }

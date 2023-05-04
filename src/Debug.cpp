@@ -108,6 +108,6 @@ std::string Logging::returnDateAndTime() {
   struct tm timeInfo;
   localtime_s(&timeInfo, &nowC);
   char nowStr[20];
-  strftime(nowStr, 20, "%y%m%d-%H:%M:%S  ", &timeInfo);
+  strftime(nowStr, 20, "%y.%m.%d %H:%M:%S  ", &timeInfo);
   return std::string(nowStr);
 }

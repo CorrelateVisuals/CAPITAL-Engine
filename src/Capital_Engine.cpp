@@ -7,13 +7,13 @@
 #include "Window.h"
 
 CapitalEngine::CapitalEngine() {
-  _log.console("\n                  [", "Starting CAPITAL engine", "]\n");
+  _log.console("\n                    [", "Starting CAPITAL engine", "]\n");
 
   initVulkan();
 }
 
 CapitalEngine::~CapitalEngine() {
-  _log.console("\n                  [", "Terminating CAPITAL engine", "]\n");
+  _log.console("\n                    [", "Terminating CAPITAL engine", "]\n");
 }
 
 Global::~Global() {

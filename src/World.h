@@ -16,6 +16,7 @@ class World {
     const int width = 32;
     const int height = 32;
     const int numGridPoints = width * height;
+    const float gridPointDistance = 2;
   } grid;
 
   struct Cell {

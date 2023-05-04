@@ -28,7 +28,7 @@ class Logging {
       std::cout << returnDateAndTime();
       logFile << returnDateAndTime();
     } else {
-      std::cout << "                 ";
+      std::cout << "                   ";
     }
     (
         [&] {
