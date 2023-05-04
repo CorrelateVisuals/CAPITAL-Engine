@@ -37,9 +37,6 @@ class MemoryCommands {
     float deltaTime = 1.0f;
   };
 
-  // float lastFrameTime = 0.0f;
-  // double lastTime = 0.0f;
-
   struct Command {
     VkCommandPool pool;
     std::vector<VkCommandBuffer> graphicBuffers;

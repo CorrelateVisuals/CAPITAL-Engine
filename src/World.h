@@ -13,9 +13,9 @@ class World {
   ~World();
 
   struct Grid {
-    const uint32_t width = 32;
-    const uint32_t height = 32;
-    const uint32_t numGridPoints = width * height;
+    const int width = 32;
+    const int height = 32;
+    const int numGridPoints = width * height;
   } grid;
 
   struct Cell {

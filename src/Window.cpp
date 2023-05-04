@@ -10,7 +10,7 @@ Window::Window() : window{nullptr}, framebufferResized{false} {
 }
 
 Window::~Window() {
-  _log.console("{ [X] }", "destructing Window");
+  _log.console("{ [-] }", "destructing Window");
   glfwDestroyWindow(window);
   glfwTerminate();
 }
