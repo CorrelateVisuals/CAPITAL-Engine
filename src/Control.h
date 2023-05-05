@@ -24,7 +24,7 @@ class Control {
   ~Control();
 
   long long passedSimulationHours = 0;
-  float simulationSpeed = 1000.0f;
+  float simulationSpeed = 10.0f;
   void simulateHours();
 };
 

@@ -31,19 +31,31 @@ void main()
     Cell cellIn  = cellsIn[index];
 
     cellOut[index].position = cellIn.position.rgba;
-    cellOut[index].color = vec4( 1.0, vec2(0.0), 1.0 );
+    cellOut[index].color = vec4( 0.5, vec2(0.0), 1.0 );
 
+        // Walking rows from down to up
+    if ( index == (ubo.passedHours / 32) * 32 ){
+        for (int i = 0; i < 32; i++){
+            cellOut[index + i].color = vec4(0.0, 0.0, 1.0, 1.0);
+        }
+    }
+
+    // Walking pixel white, from left top to corner right
     if( index == ubo.passedHours){
         cellOut[index].color = vec4(1.0);
     }
+    // Color all walked pixels green
+    if( index < ubo.passedHours) {
+        cellOut[index].color = vec4(0.0, 0.5, 0.0, 1);
+    }
 
+    // Walking pixel inverse
     if( int( cellIn.gridSize.x ) - ubo.passedHours - int(1) == int(index)){
         cellOut[index].color = vec4(0.0, vec3(1.0));
     }
 
-    if( index < ubo.passedHours) {
-        cellOut[index].color = vec4(0.0, 1.0, 0.0, 1);
-    }
 
-    cellOut[index].printGLSL =  vec4(gl_GlobalInvocationID.x, vec3(0.0));
+
+
+    cellOut[index].printGLSL =  vec4(gl_GlobalInvocationID.x + 10.0, vec3(0.0));
 }
