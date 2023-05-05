@@ -1,7 +1,7 @@
-23.05.05 17:05:18   { ... } constructing Logging
+23.05.05 17:12:00   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
-23.05.05 17:05:19   { [*] } Window initialized with 1920 * 1080
+ { [*] } Window initialized with 1920 * 1080
  { ..# } constructing Vulkan Mechanics
  { .Pi } constructing Pipelines
  { 010 } constructing Memory Management
@@ -43,7 +43,7 @@
  
                     main loop running ..........
 
-23.05.05 17:05:28   
+23.05.05 17:12:06   
                     main loop ....... terminated
  
                     [ Terminating CAPITAL engine ]
@@ -53,5 +53,5 @@
  { Pi. } destructing Pipelines
  { #.. } destructing Vulkan Mechanics
  { [-] } destructing Window
-23.05.05 17:05:29   { --. } destructing Validation Layers
+ { --. } destructing Validation Layers
  { ... } destructing Logging

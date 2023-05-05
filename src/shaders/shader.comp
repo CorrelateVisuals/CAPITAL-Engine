@@ -34,11 +34,15 @@ void main()
     cellOut[index].color = vec4( 0.5, vec2(0.0), 1.0 );
 
         // Walking rows from down to up
-    if ( index == (ubo.passedHours / 32) * 32 ){
-        for (int i = 0; i < 32; i++){
-            cellOut[index + i].color = vec4(0.0, 0.0, 1.0, 1.0);
-        }
+    int blockStart = (ubo.passedHours / 32) * 32; // start index of the block
+    int blockEnd = blockStart + 32; // end index of the block
+    int indexInBlock = ubo.passedHours % 32; // index within the block
+
+    // check if the current index is within the block
+    if (index >= blockStart && index < blockEnd) {
+        cellOut[index].color = vec4(0.0, 0.0, 1.0, 1.0);
     }
+
 
     // Walking pixel white, from left top to corner right
     if( index == ubo.passedHours){
