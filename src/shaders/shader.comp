@@ -33,33 +33,22 @@ void main()
     cellOut[index].position = cellIn.position.rgba;
     cellOut[index].color = vec4( 0.5, vec2(0.0), 1.0 );
 
-        // Walking rows from down to up
+    // Walking rows from down to up
     int blockStart = (ubo.passedHours / 32) * 32; // start index of the block
     int blockEnd = blockStart + 32; // end index of the block
     int indexInBlock = ubo.passedHours % 32; // index within the block
-
     // check if the current index is within the block
-    if (index >= blockStart && index < blockEnd) {
-        cellOut[index].color = vec4(0.0, 0.0, 1.0, 1.0);
-    }
-
+    if (index >= blockStart && index < blockEnd) { cellOut[index].color = vec4(0.0, 0.0, 1.0, 1.0); }
 
     // Walking pixel white, from left top to corner right
-    if( index == ubo.passedHours){
-        cellOut[index].color = vec4(1.0);
-    }
+    if( index == ubo.passedHours){ cellOut[index].color = vec4(1.0); }
     // Color all walked pixels green
-    if( index < ubo.passedHours) {
-        cellOut[index].color = vec4(0.0, 0.5, 0.0, 1);
-    }
+    if( index < ubo.passedHours) { cellOut[index].color = vec4(0.0, 0.5, 0.0, 1); }
 
     // Walking pixel inverse
-    if( int( cellIn.gridSize.x ) - ubo.passedHours - int(1) == int(index)){
+    if( int( cellIn.gridSize.x ) - ubo.passedHours - int(1) == int(index)){ 
         cellOut[index].color = vec4(0.0, vec3(1.0));
     }
-
-
-
 
     cellOut[index].printGLSL =  vec4(gl_GlobalInvocationID.x + 10.0, vec3(0.0));
 }

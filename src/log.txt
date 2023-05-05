@@ -1,4 +1,4 @@
-23.05.05 17:12:00   { ... } constructing Logging
+23.05.05 17:36:09   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1920 * 1080
@@ -27,7 +27,7 @@
    .....   choosing Swap Present Mode
    .....   choosing Swap Extent
    .....   finding Queue Families
-   .....   creating Image Views
+23.05.05 17:36:10     .....   creating Image Views
    .....   creating Shader Module
    .....   creating Shader Module
    .....   creating Shader Module
@@ -43,7 +43,7 @@
  
                     main loop running ..........
 
-23.05.05 17:12:06   
+23.05.05 17:36:12   
                     main loop ....... terminated
  
                     [ Terminating CAPITAL engine ]
