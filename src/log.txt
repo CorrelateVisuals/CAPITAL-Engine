@@ -1,4 +1,4 @@
-23.05.05 15:30:13   { ... } constructing Logging
+23.05.05 15:37:03   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1920 * 1080
@@ -43,7 +43,7 @@
  
                     main loop running ..........
 
-23.05.05 15:30:18   
+23.05.05 15:37:10   
                     main loop ....... terminated
  
                     [ Terminating CAPITAL engine ]
