@@ -222,6 +222,9 @@ void VulkanMechanics::createLogicalDevice() {
       static_cast<uint32_t>(deviceExtensions.size());
   createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
+  _log.console("  .....  ",
+               "Enabled Extension Names:", *createInfo.ppEnabledExtensionNames);
+
   if (_validationLayers.enableValidationLayers) {
     createInfo.enabledLayerCount =
         static_cast<uint32_t>(_validationLayers.validationLayers.size());

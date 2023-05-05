@@ -27,11 +27,11 @@ class World {
     std::array<float, 4> color;     // rgba
     std::array<float, 4> size;      // 1 float
     std::array<float, 4> gridSize;  // 1 int
+    std::array<float, 4> printGLSL;
 
     static std::vector<VkVertexInputAttributeDescription>
     getAttributeDescriptions() {
       std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
-
       attributeDescriptions.push_back(
           {0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, position)});
       attributeDescriptions.push_back(
@@ -40,17 +40,11 @@ class World {
           {2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, size)});
       attributeDescriptions.push_back(
           {3, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, gridSize)});
+      attributeDescriptions.push_back(
+          {4, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, printGLSL)});
 
       return attributeDescriptions;
     }
-
-    static VkVertexInputBindingDescription getBindingDescription() {
-      VkVertexInputBindingDescription bindingDescription{};
-      bindingDescription.binding = 0;
-      bindingDescription.stride = sizeof(Cell);
-      bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-      return bindingDescription;
-    }
+    static VkVertexInputBindingDescription getBindingDescription();
   };
 };

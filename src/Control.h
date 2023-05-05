@@ -3,6 +3,19 @@
 #include <array>
 #include <string>
 
+/// <TO DO>
+/// Adding 'long long' to shader with the right extension on the Vulkan side
+///
+/// Adding vertices and indices to instance cubes instead of grid points
+/// Adding model, view, projection matrices
+///
+/// Adding camera movement connected to the mouse
+///
+/// Moving one cell to another, than replacing the moving cell with another
+/// object
+///
+/// </TO DO>
+
 class Control {
  public:
   Control();

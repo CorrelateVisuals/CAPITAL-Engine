@@ -7,10 +7,12 @@ struct Particle {
     vec4 color;
     vec4 size;              // int size.x
     vec4 gridSize;
+    vec4 printGLSL;
 };
 
 layout (binding = 0) uniform ParameterUBO {
-    int64_t passedHours;
+    //int64_t passedHours;
+    int passedHours;
 } ubo;
 
 layout(std430, binding = 1) readonly buffer ParticleSSBOIn {
@@ -23,9 +25,9 @@ layout(std430, binding = 2) buffer ParticleSSBOOut {
 
 layout (local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
 
-void main() 
+void main()
 {
-    uint index = gl_GlobalInvocationID.x;  
+    uint index = gl_GlobalInvocationID.x;
     Particle particleIn  = particlesIn[index];
 
     particlesOut[index].position = particleIn.position.rgba;
@@ -35,7 +37,13 @@ void main()
         particlesOut[index].color = vec4(1.0);
     }
 
-    if( int( particleIn.gridSize.x) - ubo.passedHours - int(1) == int(index)){
+    if( int( particleIn.gridSize.x ) - ubo.passedHours - int(1) == int(index)){
         particlesOut[index].color = vec4(0.0, vec3(1.0));
     }
+
+    if( index < ubo.passedHours) {
+        particlesOut[index].color = vec4(0.0, 1.0, 0.0, 1);
+    }
+
+    particlesOut[index].printGLSL =  vec4(gl_GlobalInvocationID.x, vec3(0.0));
 }
