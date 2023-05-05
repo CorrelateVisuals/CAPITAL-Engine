@@ -1,18 +1,17 @@
 #version 450
 #extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
-//  You can use xyzw, rgba (for colors), or stpq (for texture coordinates)
 
+//  You can use xyzw, rgba (for colors), or stpq (for texture coordinates)
 struct Cell {
-	vec4 position;
-    vec4 color;
-    vec4 size;              // int size.x
-    vec4 gridSize;
-    vec4 printGLSL;
+	vec4 position;  // float    xy(z)
+    vec4 color;     // float    rgba
+    vec4 size;      // int      x
+    vec4 gridSize;  // int      xy
+    vec4 printGLSL; 
 };
 
 layout (binding = 0) uniform ParameterUBO {
-    //int64_t passedHours;
-    int passedHours;
+    int passedHours; //int64_t passedHours;
 } ubo;
 
 layout(std430, binding = 1) readonly buffer CellSSBOIn {
