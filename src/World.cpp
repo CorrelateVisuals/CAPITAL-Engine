@@ -15,3 +15,9 @@ VkVertexInputBindingDescription World::Cell::getBindingDescription() {
 
   return bindingDescription;
 }
+
+std::array<float, 6> World::setAliveCells() {
+  std::array<float, 6> localArray = {1.0f};
+  _log.console("testtesttest!!!!!!!!!!!!!!!!!!!", localArray[0]);
+  return localArray;
+}

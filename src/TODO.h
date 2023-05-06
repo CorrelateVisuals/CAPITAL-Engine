@@ -1,7 +1,6 @@
 #pragma once
-
 /// <TO DO>
-/// Add the option to turn on or off a cell
+/// Add the option to turn a Cell on/off
 ///
 /// Adding 'long long' to shader with the right extension on the Vulkan side
 ///
@@ -20,6 +19,8 @@
 /// Add multisampling
 ///
 /// Add depth stenciling
+///
+/// Add gui
 ///
 /// Add other objects on same grid
 ///
