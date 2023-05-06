@@ -104,10 +104,16 @@ bool ValidationLayers::checkValidationLayerSupport() {
 
 std::string Logging::returnDateAndTime() {
   auto now = std::chrono::system_clock::now();
-  std::time_t nowC = std::chrono::system_clock::to_time_t(now);
-  struct tm timeInfo;
-  localtime_s(&timeInfo, &nowC);
+  auto now_time_t = std::chrono::system_clock::to_time_t(now);
+
+  std::tm tm_time;
+#ifdef _MSC_VER
+  gmtime_s(&tm_time, &now_time_t);
+#else
+  gmtime_r(&now_time_t, &tm_time);
+#endif
+
   char nowStr[20];
-  strftime(nowStr, 20, "%y.%m.%d %H:%M:%S  ", &timeInfo);
+  std::strftime(nowStr, 20, "%y.%m.%d %H:%M:%S  ", &tm_time);
   return std::string(nowStr);
 }

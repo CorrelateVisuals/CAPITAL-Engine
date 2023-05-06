@@ -1,7 +1,7 @@
-23.05.06 04:37:18   { ... } constructing Logging
+23.05.06 11:57:57   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
- { [*] } Window initialized with 1920 * 1080
+23.05.06 11:57:58   { [*] } Window initialized with 1920 * 1080
  { ..# } constructing Vulkan Mechanics
  { .Pi } constructing Pipelines
  { 010 } constructing Memory Management
@@ -43,7 +43,21 @@
  
                     main loop running ..........
 
-23.05.06 04:37:19   
+23.05.06 11:57:59   { in } Mouse Click at 0.566667 : 0.289815
+ { in } Mouse Click at 0.738021 : 0.292593
+23.05.06 11:58:00   { in } Mouse Click at 0.738021 : 0.292593
+ { in } Mouse Click at 0.371354 : 0.178704
+ { in } Mouse Click at 0.371354 : 0.178704
+23.05.06 11:58:02   { [*] } Window resized to 2090 * 1080
+ { <-> } creating Swap Chain
+   .....   querying Swap Chain Support
+   .....   choosing Swap Surface Format
+   .....   choosing Swap Present Mode
+   .....   choosing Swap Extent
+   .....   finding Queue Families
+   .....   creating Image Views
+ 3
+23.05.06 11:58:08   
                     main loop ....... terminated
  
                     [ Terminating CAPITAL engine ]

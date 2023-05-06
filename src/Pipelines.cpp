@@ -1,6 +1,7 @@
 #include <vulkan/vulkan.h>
 
 #include <array>
+#include <cstring>
 #include <random>
 
 #include "CAPITAL_Engine.h"
@@ -433,7 +434,7 @@ void MemoryCommands::createShaderStorageBuffers() {
   void* data;
   vkMapMemory(_mechanics.mainDevice.logical, stagingBufferMemory, 0, bufferSize,
               0, &data);
-  memcpy(data, cells.data(), (size_t)bufferSize);
+  std::memcpy(data, cells.data(), (size_t)bufferSize);
   vkUnmapMemory(_mechanics.mainDevice.logical, stagingBufferMemory);
 
   shaderStorage.buffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -563,7 +564,7 @@ void MemoryCommands::createComputeDescriptorSets() {
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   UniformBufferObject ubo{};
   ubo.passedHours = _control.passedSimulationHours;
-  memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
+  std::memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 
 void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
