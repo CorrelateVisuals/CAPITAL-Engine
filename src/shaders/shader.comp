@@ -8,6 +8,7 @@ struct Cell {
     vec4 size;      // int      x
     vec4 gridSize;  // int      xy
     vec4 printGLSL; 
+    vec4 alive;     // int      r
 };
 
 layout (binding = 0) uniform ParameterUBO {

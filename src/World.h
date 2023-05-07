@@ -28,6 +28,7 @@ class World {
     std::array<float, 4> size;       // 1 float
     std::array<float, 4> gridSize;   // 1 int
     std::array<float, 4> printGLSL;  // used to write print statements to buffer
+    std::array<float, 4> alive;
     // std::array<float, 4> alive;      // 1 int
 
     static std::vector<VkVertexInputAttributeDescription>
@@ -49,7 +50,7 @@ class World {
     static VkVertexInputBindingDescription getBindingDescription();
   };
 
-  int* setAliveCellsRnd(int size);
+  std::vector<int> setCellAliveByRandom(int size);
 
   struct Cube {
     std::array<float, 4> position;  // xyz

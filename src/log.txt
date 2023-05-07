@@ -1,4 +1,4 @@
-23.05.07 11:42:15   { ... } constructing Logging
+23.05.07 12:15:41   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1920 * 1080
@@ -35,16 +35,36 @@
    .....   finding Queue Families
  { >>> } creating Shader Storage Buffers
  { cel } initializing Cells
-   .....   0 Randomly set CellID Alive: 197
-   .....   1 Randomly set CellID Alive: 716
-   .....   2 Randomly set CellID Alive: 820
-   .....   3 Randomly set CellID Alive: 305
-   .....   4 Randomly set CellID Alive: 400
-   .....   5 Randomly set CellID Alive: 416
-   .....   6 Randomly set CellID Alive: 343
-   .....   7 Randomly set CellID Alive: 41
-   .....   8 Randomly set CellID Alive: 193
-   .....   9 Randomly set CellID Alive: 767
+   .....   Cell: 676 set alive
+             at: -0.71875 0.34375 1
+   .....   Cell: 937 set alive
+             at: -0.40625 0.84375 1
+   .....   Cell: 139 set alive
+             at: -0.28125 -0.71875 1
+   .....   Cell: 492 set alive
+             at: -0.21875 -0.03125 1
+   .....   Cell: 620 set alive
+             at: -0.21875 0.21875 1
+   .....   Cell: 365 set alive
+             at: -0.15625 -0.28125 1
+   .....   Cell: 592 set alive
+             at: 0.03125 0.15625 1
+   .....   Cell: 976 set alive
+             at: 0.03125 0.90625 1
+   .....   Cell: 568 set alive
+             at: 0.53125 0.09375 1
+   .....   Cell: 603 set alive
+             at: 0.71875 0.15625 1
+   .....   Cell: 827 set alive
+             at: 0.71875 0.59375 1
+   .....   Cell: 444 set alive
+             at: 0.78125 -0.15625 1
+   .....   Cell: 829 set alive
+             at: 0.84375 0.59375 1
+   .....   Cell: 318 set alive
+             at: 0.90625 -0.40625 1
+   .....   Cell: 799 set alive
+             at: 0.96875 0.53125 1
  { & & } creating 2 Descriptor Pools
  {  &  } creating Compute Descriptor Sets
  { cmd } creating Command Buffers
@@ -53,8 +73,7 @@
  
                     main loop running ..........
 
-23.05.07 11:42:16   { in } Mouse Click at 0.976562 : 0.0101852
- 
+23.05.07 12:15:42   
                     main loop ....... terminated
  
                     [ Terminating CAPITAL engine ]

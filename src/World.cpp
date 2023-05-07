@@ -10,20 +10,20 @@ World::World() {
 
 World::~World() {}
 
-int* World::setAliveCellsRnd(int size) {
-  // Allocate memory for the array
-  int* IDs = new int[size];
-  // Seed the random number generator
-  std::srand(static_cast<uint32_t>(std::time(nullptr)));
+std::vector<int> World::setCellAliveByRandom(int size) {
+  std::vector<int> IDs;
+  srand(static_cast<unsigned int>(
+      time(NULL)));  // seed the random number generator
 
-  for (int i = 0; i < size; ++i) {
-    // Generate a random ID between 0 and grid.numGridPoints
-    int ID = (std::rand() % grid.numGridPoints);
-    IDs[i] = ID;
-    _log.console("  .....  ", i, "Randomly set CellID Alive:", ID);
+  while (IDs.size() < size) {
+    int ID = rand() % grid.numGridPoints;
+    // check if the ID is not already in IDs
+    if (std::find(IDs.begin(), IDs.end(), ID) == IDs.end()) {
+      IDs.push_back(ID);
+    }
   }
   return IDs;
-};
+}
 
 VkVertexInputBindingDescription World::Cell::getBindingDescription() {
   VkVertexInputBindingDescription bindingDescription{};
