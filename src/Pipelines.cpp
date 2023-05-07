@@ -310,8 +310,6 @@ void MemoryCommands::createFramebuffers() {
   _mechanics.swapChain.framebuffers.resize(
       _mechanics.swapChain.imageViews.size());
 
-  _log.console(_mechanics.swapChain.imageViews.size());
-
   for (size_t i = 0; i < _mechanics.swapChain.imageViews.size(); i++) {
     std::array<VkImageView, 1> attachments = {
         _mechanics.swapChain.imageViews[i]};
