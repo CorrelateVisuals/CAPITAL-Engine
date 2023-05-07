@@ -49,5 +49,19 @@ class World {
     static VkVertexInputBindingDescription getBindingDescription();
   };
 
-  std::array<float, 6> setAliveCells();
+  int* setAliveCellsRnd(int size);
+
+  struct Cube {
+    std::array<float, 4> position;  // xyz
+  };
+
+  inline static const std::vector<Cube> cubeVertices = {
+      {-1.0f, -1.0f, -1.0f}, {1.0f, -1.0f, -1.0f}, {-1.0f, 1.0f, -1.0f},
+      {1.0f, 1.0f, -1.0f},   {-1.0f, -1.0f, 1.0f}, {1.0f, -1.0f, 1.0f},
+      {-1.0f, 1.0f, 1.0f},   {1.0f, 1.0f, 1.0f}};
+
+  inline static const std::vector<uint16_t> cubeIndices = {
+      0, 2, 3, 0, 3, 1, 4, 5, 7, 4, 7, 6, 1, 3, 7, 1, 7, 5,
+      0, 4, 6, 0, 6, 2, 2, 6, 7, 2, 7, 3, 0, 1, 5, 0, 5, 4,
+  };
 };

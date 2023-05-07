@@ -1,4 +1,4 @@
-23.05.07 00:11:49   { ... } constructing Logging
+23.05.07 11:42:15   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1920 * 1080
@@ -27,13 +27,24 @@
    .....   choosing Swap Present Mode
    .....   choosing Swap Extent
    .....   finding Queue Families
-23.05.07 00:11:50     .....   creating Image Views
+   .....   creating Image Views
    .....   creating Shader Module
    .....   creating Shader Module
    .....   creating Shader Module
  { cmd } creating Command Pool
    .....   finding Queue Families
  { >>> } creating Shader Storage Buffers
+ { cel } initializing Cells
+   .....   0 Randomly set CellID Alive: 197
+   .....   1 Randomly set CellID Alive: 716
+   .....   2 Randomly set CellID Alive: 820
+   .....   3 Randomly set CellID Alive: 305
+   .....   4 Randomly set CellID Alive: 400
+   .....   5 Randomly set CellID Alive: 416
+   .....   6 Randomly set CellID Alive: 343
+   .....   7 Randomly set CellID Alive: 41
+   .....   8 Randomly set CellID Alive: 193
+   .....   9 Randomly set CellID Alive: 767
  { & & } creating 2 Descriptor Pools
  {  &  } creating Compute Descriptor Sets
  { cmd } creating Command Buffers
@@ -42,23 +53,8 @@
  
                     main loop running ..........
 
-23.05.07 00:25:14   { [*] } Window resized to 0 * 0
-23.05.07 00:32:32   { [*] } Window resized to 1920 * 1080
- { <-> } creating Swap Chain
-   .....   querying Swap Chain Support
-   .....   choosing Swap Surface Format
-   .....   choosing Swap Present Mode
-   .....   choosing Swap Extent
-   .....   finding Queue Families
-   .....   creating Image Views
- { <-> } creating Swap Chain
-   .....   querying Swap Chain Support
-   .....   choosing Swap Surface Format
-   .....   choosing Swap Present Mode
-   .....   choosing Swap Extent
-   .....   finding Queue Families
-   .....   creating Image Views
-23.05.07 00:32:35   
+23.05.07 11:42:16   { in } Mouse Click at 0.976562 : 0.0101852
+ 
                     main loop ....... terminated
  
                     [ Terminating CAPITAL engine ]

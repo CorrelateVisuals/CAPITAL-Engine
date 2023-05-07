@@ -388,6 +388,9 @@ void MemoryCommands::createShaderStorageBuffers() {
   _log.console("{ >>> }", "creating Shader Storage Buffers");
 
   // Initiliazation of cells on the grid
+  _log.console("{ cel }", "initializing Cells");
+  _world.setAliveCellsRnd(10);
+
   std::vector<World::Cell> cells(_world.grid.numGridPoints);
 
   // Grid size
