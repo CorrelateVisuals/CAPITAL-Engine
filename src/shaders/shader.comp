@@ -1,7 +1,8 @@
 #version 450
 #extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
 
-//  You can use xyzw, rgba (for colors), or stpq (for texture coordinates)
+const int SQRT_OF_GRID = 100;
+
 struct Cell {
 	vec4 position;  // float    xy(z)
     vec4 color;     // float    rgba
@@ -23,7 +24,7 @@ layout(std430, binding = 2) buffer CellSSBOOut {
    Cell cellOut[ ];
 };
 
-layout (local_size_x = 100 /* grid width */, local_size_y = 1, local_size_z = 1) in;
+layout (local_size_x = SQRT_OF_GRID, local_size_y = 1, local_size_z = 1) in;
 
 void main()
 {
@@ -39,9 +40,9 @@ void main()
     cellOut[index].color = vec4( 0.5, vec2(0.0), 1.0 );
 
     // Walking rows from down to up
-    int blockStart = (ubo.passedHours / 32) * 32; // start index of the block
-    int blockEnd = blockStart + 32; // end index of the block
-    int indexInBlock = ubo.passedHours % 32; // index within the block
+    int blockStart = (ubo.passedHours / SQRT_OF_GRID) * SQRT_OF_GRID; // start index of the block
+    int blockEnd = blockStart + SQRT_OF_GRID; // end index of the block
+    int indexInBlock = ubo.passedHours % SQRT_OF_GRID; // index within the block
     // check if the current index is within the block
     if (index >= blockStart && index < blockEnd) { cellOut[index].color = vec4(0.0, 0.0, 1.0, 1.0); }
 

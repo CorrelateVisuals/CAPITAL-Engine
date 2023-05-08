@@ -1,7 +1,7 @@
-23.05.08 17:58:44   { ... } constructing Logging
+23.05.08 18:12:43   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
- { [*] } Window initialized with 1920 * 1080
+23.05.08 18:12:44   { [*] } Window initialized with 1920 * 1080
  { ..# } constructing Vulkan Mechanics
  { .Pi } constructing Pipelines
  { 010 } constructing Memory Management
@@ -36,7 +36,7 @@
  { >>> } creating Shader Storage Buffers
  { oOo } initializing Cells
    .....   Alive cells:
-23.05.08 17:58:45   { & & } creating 2 Descriptor Pools
+ { & & } creating 2 Descriptor Pools
  {  &  } creating Compute Descriptor Sets
  { cmd } creating Command Buffers
  { cmd } creating Compute Command Buffers
@@ -44,7 +44,8 @@
  
                     main loop running ..........
 
-23.05.08 17:58:46   
+23.05.08 18:12:45   { in } Mouse Click at 0.984896 : 0.0111111
+23.05.08 18:12:46   
                     main loop ....... terminated
  
                     [ Terminating CAPITAL engine ]
