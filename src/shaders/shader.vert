@@ -13,6 +13,10 @@ vec3 cubeVertices[8] = {
     vec3(-size, -size, -size), vec3(size, -size, -size), vec3(-size, size, -size),
     vec3(size, size, -size),   vec3(-size, -size, size), vec3(size, -size, size),
     vec3(-size, size, size),   vec3(size, size, size)};
+vec3 cubeColors[8] = {
+    vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f),
+    vec3(1.0f, 1.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f), vec3(1.0f, 0.0f, 1.0f),
+    vec3(0.0f, 1.0f, 1.0f), vec3(1.0f, 1.0f, 1.0f)};
 int cubeIndices[36] = {
     0, 2, 3, 0, 3, 1, 4, 5, 7, 4, 7, 6, 1, 3, 7, 1, 7, 5,
     0, 4, 6, 0, 6, 2, 2, 6, 7, 2, 7, 3, 0, 1, 5, 0, 5, 4 };
@@ -24,5 +28,6 @@ void main() {
     }
 
     gl_Position = inPosition.rgba + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]], vec2(0.0));
-    fragColor = vec3(inColor.rgb);
+
+    fragColor = cubeColors[ cubeIndices[ gl_VertexIndex ]] + inColor.rgb;
 }
