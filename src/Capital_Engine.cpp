@@ -21,15 +21,18 @@ Global::~Global() {
 }
 
 void CapitalEngine::mainLoop() {
-  _log.console("{ main }", "running ...");
+  _log.console("\n                   ", "main loop running ..........\n");
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
+
+    // Simulation Essentials
+    _control.simulateHours();
     drawFrame();
 
     _window.mouseClick(_window.window, GLFW_MOUSE_BUTTON_LEFT);
   }
   vkDeviceWaitIdle(_mechanics.mainDevice.logical);
-  _log.console("{ main }", "terminated");
+  _log.console("\n                   ", "main loop", "....... terminated");
 }
 
 void CapitalEngine::initVulkan() {

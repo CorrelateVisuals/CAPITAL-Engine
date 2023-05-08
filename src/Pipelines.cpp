@@ -1,6 +1,7 @@
 #include <vulkan/vulkan.h>
 
 #include <array>
+#include <cstring>
 #include <random>
 
 #include "CAPITAL_Engine.h"
@@ -159,7 +160,7 @@ void Pipelines::createGraphicsPipeline() {
   colorBlendAttachment.colorWriteMask =
       VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
       VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-  colorBlendAttachment.blendEnable = VK_TRUE;
+  colorBlendAttachment.blendEnable = VK_FALSE;
   colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
   colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
   colorBlendAttachment.dstColorBlendFactor =
@@ -310,13 +311,15 @@ void MemoryCommands::createFramebuffers() {
       _mechanics.swapChain.imageViews.size());
 
   for (size_t i = 0; i < _mechanics.swapChain.imageViews.size(); i++) {
-    VkImageView attachments[] = {_mechanics.swapChain.imageViews[i]};
+    std::array<VkImageView, 1> attachments = {
+        _mechanics.swapChain.imageViews[i]};
+    // add depth stencil here
 
     VkFramebufferCreateInfo framebufferInfo{};
     framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
     framebufferInfo.renderPass = _pipelines.renderPass;
-    framebufferInfo.attachmentCount = 1;
-    framebufferInfo.pAttachments = attachments;
+    framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+    framebufferInfo.pAttachments = attachments.data();
     framebufferInfo.width = _mechanics.swapChain.extent.width;
     framebufferInfo.height = _mechanics.swapChain.extent.height;
     framebufferInfo.layers = 1;
@@ -348,7 +351,7 @@ void MemoryCommands::createCommandPool() {
 }
 
 void MemoryCommands::createCommandBuffers() {
-  _log.console("  .....  ", "creating Command Buffers");
+  _log.console("{ cmd }", "creating Command Buffers");
 
   command.graphicBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -365,7 +368,7 @@ void MemoryCommands::createCommandBuffers() {
 }
 
 void MemoryCommands::createComputeCommandBuffers() {
-  _log.console("  .....  ", "creating Compute Command Buffers");
+  _log.console("{ cmd }", "creating Compute Command Buffers");
 
   command.computeBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -382,23 +385,22 @@ void MemoryCommands::createComputeCommandBuffers() {
 }
 
 void MemoryCommands::createShaderStorageBuffers() {
-  _log.console("  .....  ", "creating Shader Storage Buffers");
-
+  _log.console("{ >>> }", "creating Shader Storage Buffers");
+  // Initiliazation of cells on the grid
+  _log.console("{ oOo }", "initializing Cells");
   std::vector<World::Cell> cells(_world.grid.numGridPoints);
+  std::vector<int> aliveCells = _world.setCellsAliveRandomly(15);
 
   // Grid size
   const int gridWidth = _world.grid.width;
   const int gridHeight = _world.grid.height;
-
-  const float particlesize = 1.0f;
-
+  const float gridPointDistance = _world.grid.gridPointDistance;
   // Grid cell size
-  const float cellWidth = particlesize / gridWidth;
-  const float cellHeight = particlesize / gridHeight;
-
+  const float cellWidth = gridPointDistance / gridWidth;
+  const float cellHeight = gridPointDistance / gridHeight;
   // Cell position offset
-  const float remainingWidth = 2.0f - particlesize;
-  const float remainingHeight = 2.0f - particlesize;
+  const float remainingWidth = 2.0f - gridPointDistance;
+  const float remainingHeight = 2.0f - gridPointDistance;
   const float offsetX = -1.0f + remainingWidth / 2.0f + cellWidth / 2.0f;
   const float offsetY = -1.0f + remainingHeight / 2.0f + cellHeight / 2.0f;
 
@@ -406,13 +408,20 @@ void MemoryCommands::createShaderStorageBuffers() {
   for (int x = 0; x < gridWidth; x++) {
     for (int y = 0; y < gridHeight; y++) {
       int index = x + y * gridWidth;
-
       cells[index].position = {offsetX + x * cellWidth,
                                offsetY + y * cellHeight, 1.0f, 1.0f};
-      cells[index].color = {1.0f, 1.0f, 1.0f, 1.0f};
-      cells[index].size = {30.0f, 0.0f, 0.0f, 0.0f};
+      cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
+      cells[index].size = {20.0f, 0.0f, 0.0f, 0.0f};
       cells[index].gridSize = {static_cast<float>(_world.grid.numGridPoints),
                                0.0f, 0.0f, 0.0f};
+      if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
+          aliveCells.end()) {
+        cells[index].alive = {1.0f};
+
+        _log.console("  Cell:", index,
+                     "  set alive at:", cells[index].position[0],
+                     cells[index].position[1], cells[index].position[2]);
+      }
     }
   }
 
@@ -429,7 +438,7 @@ void MemoryCommands::createShaderStorageBuffers() {
   void* data;
   vkMapMemory(_mechanics.mainDevice.logical, stagingBufferMemory, 0, bufferSize,
               0, &data);
-  memcpy(data, cells.data(), (size_t)bufferSize);
+  std::memcpy(data, cells.data(), (size_t)bufferSize);
   vkUnmapMemory(_mechanics.mainDevice.logical, stagingBufferMemory);
 
   shaderStorage.buffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -470,7 +479,7 @@ void MemoryCommands::createUniformBuffers() {
 
 void MemoryCommands::createDescriptorPool() {
   const int numPools = 2;
-  _log.console("  .....  ", "creating", numPools, "Descriptor Pools");
+  _log.console("{ & & }", "creating", numPools, "Descriptor Pools");
   std::array<VkDescriptorPoolSize, 2> poolSizes{};
   poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
@@ -492,7 +501,7 @@ void MemoryCommands::createDescriptorPool() {
 }
 
 void MemoryCommands::createComputeDescriptorSets() {
-  _log.console("  .....  ", "creating Compute Descriptor Sets");
+  _log.console("{  &  }", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptor.setLayout);
   VkDescriptorSetAllocateInfo allocInfo{};
@@ -558,8 +567,8 @@ void MemoryCommands::createComputeDescriptorSets() {
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   UniformBufferObject ubo{};
-  ubo.deltaTime = static_cast<float>(_control.timer());
-  memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
+  ubo.passedHours = _control.passedSimulationHours;
+  std::memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 
 void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {

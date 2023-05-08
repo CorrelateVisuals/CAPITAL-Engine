@@ -1,23 +1,28 @@
+#include <time.h>
 #include <chrono>
 
 #include "CAPITAL_Engine.h"
 #include "Control.h"
 #include "World.h"
 
-double Control::timer() {
-  static auto start_time = std::chrono::high_resolution_clock::now();
-  auto current_time = std::chrono::high_resolution_clock::now();
-  static double time = 0.0;
-  static const double max_time = 1;
-  static const int num_steps = _world.grid.numGridPoints;
-  static const double step_size = max_time / num_steps;
+Control::Control() {
+  _log.console("{ Ctr }", "constructing Control");
+}
 
-  std::chrono::duration<double> elapsed_time = current_time - start_time;
-  double elapsed_seconds = elapsed_time.count();
+Control::~Control() {
+  _log.console("{ Ctr }", "destructing Control");
+}
 
-  time = fmod(elapsed_seconds / max_time, _world.grid.numGridPoints);
-  int step = static_cast<int>(time / step_size);
-  time = step * step_size;
-  int intTime = static_cast<int>(time);
-  return intTime;
+void Control::simulateHours() {
+  static auto lastTime = std::chrono::system_clock::now();
+  auto currentTime = std::chrono::system_clock::now();
+  auto elapsedSeconds = std::chrono::duration_cast<std::chrono::microseconds>(
+                            currentTime - lastTime)
+                            .count() /
+                        1000000.0;
+
+  if (elapsedSeconds >= (1.0 / simulationSpeed)) {
+    passedSimulationHours++;
+    lastTime = currentTime;
+  }
 }

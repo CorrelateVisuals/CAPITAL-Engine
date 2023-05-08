@@ -13,6 +13,8 @@ class Logging {
 
   std::ofstream logFile;
 
+  std::string previousTime = "";
+
   template <class... Ts>
   void console(Ts&&... inputs) {
     int i = 0;
@@ -20,8 +22,14 @@ class Logging {
       std::cerr << "!!! Could not open logFile for writing !!!" << std::endl;
       return;
     }
-    std::cout << returnDateAndTime();
-    logFile << returnDateAndTime();
+    std::string currentTime = returnDateAndTime();
+
+    if (currentTime != previousTime) {
+      std::cout << returnDateAndTime();
+      logFile << returnDateAndTime();
+    } else {
+      std::cout << "                   ";
+    }
     (
         [&] {
           ++i;
@@ -31,6 +39,7 @@ class Logging {
         ...);
     std::cerr << std::endl;
     logFile << std::endl;
+    previousTime = currentTime;
   }
 
  private:

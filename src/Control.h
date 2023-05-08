@@ -5,7 +5,12 @@
 
 class Control {
  public:
-  double timer();
+  Control();
+  ~Control();
+
+  long long passedSimulationHours = 0;
+  float simulationSpeed = 50.0f;
+  void simulateHours();
 };
 
 struct DisplayConfig {

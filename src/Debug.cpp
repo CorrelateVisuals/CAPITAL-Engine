@@ -17,11 +17,11 @@ Logging::~Logging() {
 
 ValidationLayers::ValidationLayers()
     : debugMessenger{}, validationLayers{"VK_LAYER_KHRONOS_validation"} {
-  _log.console("{ --- }", "constructing Validation Layers");
+  _log.console("{ .-- }", "constructing Validation Layers");
 }
 
 ValidationLayers::~ValidationLayers() {
-  _log.console("{ --- }", "destructing Validation Layers");
+  _log.console("{ --. }", "destructing Validation Layers");
 }
 
 void ValidationLayers::logValidationMessage(const std::string& string,
@@ -104,10 +104,10 @@ bool ValidationLayers::checkValidationLayerSupport() {
 
 std::string Logging::returnDateAndTime() {
   auto now = std::chrono::system_clock::now();
-  std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-  struct tm timeinfo;
-  localtime_s(&timeinfo, &now_c);
-  char now_str[20];
-  strftime(now_str, 20, "%Y-%m-%d %H:%M:%S", &timeinfo);
-  return std::string(now_str);
+  std::time_t nowC = std::chrono::system_clock::to_time_t(now);
+  std::tm timeInfo;
+  gmtime_s(&timeInfo, &nowC);
+  char nowStr[20];
+  strftime(nowStr, 20, "%y.%m.%d %H:%M:%S  ", &timeInfo);
+  return std::string(nowStr);
 }

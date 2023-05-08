@@ -1,51 +1,72 @@
-2023-05-04 02:12:44 { ... } constructing Logging
-2023-05-04 02:12:44 { --- } constructing Validation Layers
-2023-05-04 02:12:44 { [X] } constructing Window
-2023-05-04 02:12:44 { [*] } Window initialized with 1920 * 1080
-2023-05-04 02:12:44 { ..# } constructing Vulkan Mechanics
-2023-05-04 02:12:44 { .Pi } constructing Pipelines
-2023-05-04 02:12:44 { 010 } constructing Memory Management
-2023-05-04 02:12:44 { (:) } constructing World
-2023-05-04 02:12:44 
+23.05.08 00:10:54   { ... } constructing Logging
+ { .-- } constructing Validation Layers
+ { [X] } constructing Window
+ { [*] } Window initialized with 1920 * 1080
+ { ..# } constructing Vulkan Mechanics
+ { .Pi } constructing Pipelines
+ { 010 } constructing Memory Management
+ { Ctr } constructing Control
+ { (:) } constructing World
+ 
                     [ Starting CAPITAL engine ]
 
-2023-05-04 02:12:44 { *** } initializing Capital Engine
-2023-05-04 02:12:44 { .vk } creating Vulkan Instance
-2023-05-04 02:12:44 { [ ] } creating Surface
-2023-05-04 02:12:44 { .#. } picking Physical Device
-2023-05-04 02:12:44   .....   checking if Physical Device is suitable
-2023-05-04 02:12:44   .....   finding Queue Families
-2023-05-04 02:12:44   .....   checking Device Extension Support
-2023-05-04 02:12:44   .....   querying Swap Chain Support
-2023-05-04 02:12:44 { +++ } creating Logical Device
-2023-05-04 02:12:44   .....   finding Queue Families
-2023-05-04 02:12:44 { <-> } creating Swap Chain
-2023-05-04 02:12:44   .....   querying Swap Chain Support
-2023-05-04 02:12:44   .....   choosing Swap Surface Format
-2023-05-04 02:12:44   .....   choosing Swap Present Mode
-2023-05-04 02:12:44   .....   choosing Swap Extent
-2023-05-04 02:12:44   .....   finding Queue Families
-2023-05-04 02:12:44 00007FF6345F4CD0 0000006E71CFF670 00007FF6345F4D20
-2023-05-04 02:12:44   .....   creating Image Views
-2023-05-04 02:12:44   .....   creating Shader Module
-2023-05-04 02:12:44   .....   creating Shader Module
-2023-05-04 02:12:44   .....   creating Shader Module
-2023-05-04 02:12:44 { cmd } creating Command Pool
-2023-05-04 02:12:44   .....   finding Queue Families
-2023-05-04 02:12:44   .....   creating Shader Storage Buffers
-2023-05-04 02:12:44   .....   creating 2 Descriptor Pools
-2023-05-04 02:12:44   .....   creating Compute Descriptor Sets
-2023-05-04 02:12:44   .....   creating Command Buffers
-2023-05-04 02:12:44   .....   creating Compute Command Buffers
-2023-05-04 02:12:44 { || } creating Sync Objects
-2023-05-04 02:12:44 { main } running ...
-2023-05-04 02:12:46 { main } terminated
-2023-05-04 02:12:46 
+ { *** } initializing Capital Engine
+ { .vk } creating Vulkan Instance
+ { [ ] } creating Surface
+ { .#. } picking Physical Device
+   .....   checking if Physical Device is suitable
+   .....   finding Queue Families
+   .....   checking Device Extension Support
+   .....   querying Swap Chain Support
+ { .++ } creating Logical Device
+   .....   finding Queue Families
+   .....   Enabled Extension Names: VK_KHR_swapchain
+ { <-> } creating Swap Chain
+   .....   querying Swap Chain Support
+   .....   choosing Swap Surface Format
+   .....   choosing Swap Present Mode
+   .....   choosing Swap Extent
+   .....   finding Queue Families
+   .....   creating Image Views
+   .....   creating Shader Module
+   .....   creating Shader Module
+   .....   creating Shader Module
+ { cmd } creating Command Pool
+   .....   finding Queue Families
+ { >>> } creating Shader Storage Buffers
+ { oOo } initializing Cells
+   Cell: 320   set alive at: -0.96875 -0.34375 1
+   Cell: 704   set alive at: -0.96875 0.40625 1
+   Cell: 322   set alive at: -0.84375 -0.34375 1
+   Cell: 451   set alive at: -0.78125 -0.09375 1
+   Cell: 805   set alive at: -0.65625 0.59375 1
+   Cell: 711   set alive at: -0.53125 0.40625 1
+   Cell: 969   set alive at: -0.40625 0.90625 1
+   Cell: 490   set alive at: -0.34375 -0.03125 1
+   Cell: 172   set alive at: -0.21875 -0.65625 1
+   Cell: 592   set alive at: 0.03125 0.15625 1
+   Cell: 241   set alive at: 0.09375 -0.53125 1
+   Cell: 786   set alive at: 0.15625 0.53125 1
+   Cell: 596   set alive at: 0.28125 0.15625 1
+   Cell: 93   set alive at: 0.84375 -0.84375 1
+   Cell: 575   set alive at: 0.96875 0.09375 1
+ { & & } creating 2 Descriptor Pools
+ {  &  } creating Compute Descriptor Sets
+ { cmd } creating Command Buffers
+ { cmd } creating Compute Command Buffers
+ { ||| } creating Sync Objects
+ 
+                    main loop running ..........
+
+23.05.08 00:10:56   
+                    main loop ....... terminated
+ 
                     [ Terminating CAPITAL engine ]
 
-2023-05-04 02:12:46 { 010 } destructing Memory Management
-2023-05-04 02:12:46 { Pi. } destructing Pipelines
-2023-05-04 02:12:46 { #.. } destructing Vulkan Mechanics
-2023-05-04 02:12:46 { [-] } destructing Window
-2023-05-04 02:12:46 { --- } destructing Validation Layers
-2023-05-04 02:12:46 { ... } destructing Logging
+ { Ctr } destructing Control
+ { 010 } destructing Memory Management
+ { Pi. } destructing Pipelines
+ { #.. } destructing Vulkan Mechanics
+ { [-] } destructing Window
+ { --. } destructing Validation Layers
+ { ... } destructing Logging

@@ -39,12 +39,30 @@ void Window::mouseClick(GLFWwindow* window, int button) {
   static int oldState = GLFW_RELEASE;
   int newState = glfwGetMouseButton(window, button);
 
+  // declare and initialize the timer variable outside the function
+  static double timer = 0.0;
+  static double pressTime = 0.0;
+
+  double xpos, ypos;
+  glfwGetCursorPos(window, &xpos, &ypos);
+  xpos /= displayConfig.width;
+  ypos /= displayConfig.height;
+
   if (oldState == GLFW_PRESS && newState == GLFW_RELEASE) {
-    double xpos, ypos;
-    glfwGetCursorPos(window, &xpos, &ypos);
-    xpos /= displayConfig.width;
-    ypos /= displayConfig.height;
     _log.console("{ in }", "Mouse Click at", xpos, ":", ypos);
+    timer = 0.0;  // reset the timer when the mouse button is released
+  } else if (newState == GLFW_PRESS) {
+    if (timer < 0.2) {
+      if (pressTime == 0.0) {
+        pressTime = glfwGetTime();
+      }
+      timer = glfwGetTime() - pressTime;
+    } else {
+      _log.console("{ in }", "Mouse Down at", xpos, ":", ypos);
+    }
+  } else {
+    pressTime =
+        0.0;  // reset the press time when the mouse button is not pressed
   }
   oldState = newState;
 }

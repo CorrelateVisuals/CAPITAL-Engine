@@ -190,7 +190,7 @@ bool VulkanMechanics::checkDeviceExtensionSupport(
 }
 
 void VulkanMechanics::createLogicalDevice() {
-  _log.console("{ +++ }", "creating Logical Device");
+  _log.console("{ .++ }", "creating Logical Device");
   Queues::FamilyIndices indices = findQueueFamilies(mainDevice.physical);
 
   std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -221,6 +221,9 @@ void VulkanMechanics::createLogicalDevice() {
   createInfo.enabledExtensionCount =
       static_cast<uint32_t>(deviceExtensions.size());
   createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+
+  _log.console("  .....  ",
+               "Enabled Extension Names:", *createInfo.ppEnabledExtensionNames);
 
   if (_validationLayers.enableValidationLayers) {
     createInfo.enabledLayerCount =
@@ -295,7 +298,7 @@ VkExtent2D VulkanMechanics::chooseSwapExtent(
 }
 
 void VulkanMechanics::createSyncObjects() {
-  _log.console("{ || }", "creating Sync Objects");
+  _log.console("{ ||| }", "creating Sync Objects");
 
   syncObjects.imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
   syncObjects.renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -408,8 +411,6 @@ void VulkanMechanics::createSwapChain() {
   createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
   createInfo.presentMode = presentMode;
   createInfo.clipped = VK_TRUE;
-
-  _log.console(&mainDevice.logical, &createInfo.sType, &swapChain.swapChain);
 
   if (vkCreateSwapchainKHR(mainDevice.logical, &createInfo, nullptr,
                            &swapChain.swapChain) != VK_SUCCESS) {

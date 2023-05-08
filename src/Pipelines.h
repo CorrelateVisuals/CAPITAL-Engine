@@ -19,7 +19,6 @@ class Pipelines {
 
  public:
   void createRenderPass();
-
   void createGraphicsPipeline();
   void createComputePipeline();
 
@@ -34,7 +33,7 @@ class MemoryCommands {
   ~MemoryCommands();
 
   struct UniformBufferObject {
-    float deltaTime = 1.0f;
+    long long passedHours;
   };
 
   struct Command {
