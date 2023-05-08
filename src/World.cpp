@@ -36,16 +36,21 @@ World::getAttributeDescriptions() {
 }
 
 std::vector<int> World::setCellsAliveRandomly(int size) {
-  std::vector<int> IDs;
+  std::vector<int> CellIDs;
   srand(static_cast<unsigned int>(
       time(NULL)));  // seed the random number generator
 
-  while (IDs.size() < size) {
-    int ID = rand() % grid.numGridPoints;
-    // check if the ID is not already in IDs
-    if (std::find(IDs.begin(), IDs.end(), ID) == IDs.end()) {
-      IDs.push_back(ID);
+  while (CellIDs.size() < size) {
+    int CellID = rand() % grid.numGridPoints;
+    // check if the CellID is not already in CellIDs
+    if (std::find(CellIDs.begin(), CellIDs.end(), CellID) == CellIDs.end()) {
+      CellIDs.push_back(CellID);
     }
   }
-  return IDs;
+  _log.console("  .....  ", "Alive cells:");
+  for (auto& cellID : CellIDs) {
+    std::cout << cellID << " ";
+  }
+  std::cout << "\n";
+  return CellIDs;
 }

@@ -425,11 +425,6 @@ void MemoryCommands::createShaderStorageBuffers() {
       }
     }
   }
-  _log.console("  .....  ", "Cells:");
-  for (auto& cell : aliveCells) {
-    std::cout << cell << " ";
-  }
-  std::cout << "\n";
 
   VkDeviceSize bufferSize = sizeof(World::Cell) * _world.grid.numGridPoints;
 
@@ -594,8 +589,8 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
                           &descriptor.sets[_mechanics.syncObjects.currentFrame],
                           0, nullptr);
 
-  vkCmdDispatch(commandBuffer, _world.grid.numGridPoints / _world.grid.width, 1,
-                1);
+  vkCmdDispatch(commandBuffer,
+                static_cast<uint32_t>(sqrt(_world.grid.numGridPoints)), 1, 1);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to record compute command buffer!");

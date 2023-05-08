@@ -1,4 +1,4 @@
-23.05.08 17:49:15   { ... } constructing Logging
+23.05.08 17:58:44   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1920 * 1080
@@ -35,8 +35,8 @@
    .....   finding Queue Families
  { >>> } creating Shader Storage Buffers
  { oOo } initializing Cells
-   .....   Cells:
- { & & } creating 2 Descriptor Pools
+   .....   Alive cells:
+23.05.08 17:58:45   { & & } creating 2 Descriptor Pools
  {  &  } creating Compute Descriptor Sets
  { cmd } creating Command Buffers
  { cmd } creating Compute Command Buffers
@@ -44,7 +44,7 @@
  
                     main loop running ..........
 
-23.05.08 17:49:16   
+23.05.08 17:58:46   
                     main loop ....... terminated
  
                     [ Terminating CAPITAL engine ]

@@ -13,8 +13,8 @@ class World {
   ~World();
 
   struct Grid {
-    const int width = 32;
-    const int height = 32;
+    const int width = 100;
+    const int height = width;
     const int numGridPoints = width * height;
     const float gridPointDistance = 2;
     const int numberOfAliveCells = 333;

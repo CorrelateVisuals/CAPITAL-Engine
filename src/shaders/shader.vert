@@ -8,7 +8,7 @@ layout(location = 4) in vec4 printGLSL;
 
 layout(location = 0) out vec3 fragColor;
 
-float size = 0.015f;
+float size = 0.025f;
 vec3 cubeVertices[8] = {
     vec3(-size, -size, -size), vec3(size, -size, -size), vec3(-size, size, -size),
     vec3(size, size, -size),   vec3(-size, -size, size), vec3(size, -size, size),
