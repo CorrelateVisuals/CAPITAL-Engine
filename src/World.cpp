@@ -50,7 +50,7 @@ std::vector<int> World::setCellsAliveRandomly(int size) {
   }
   std::sort(CellIDs.begin(), CellIDs.end());
 
-  _log.console("  .....  ", CellIDs);
+  _log.console(CellIDs);
   return CellIDs;
 }
 
