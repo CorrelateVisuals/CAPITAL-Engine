@@ -120,13 +120,14 @@ void Pipelines::createGraphicsPipeline() {
   vertexInputInfo.sType =
       VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-  auto bindingDescription = World::Cell::getBindingDescription();
-  auto attributeDescriptions = World::Cell::getAttributeDescriptions();
+  auto bindingDescriptions = World::getBindingDescriptions();
+  auto attributeDescriptions = World::getAttributeDescriptions();
 
-  vertexInputInfo.vertexBindingDescriptionCount = 1;
+  vertexInputInfo.vertexBindingDescriptionCount =
+      static_cast<uint32_t>(bindingDescriptions.size());
   vertexInputInfo.vertexAttributeDescriptionCount =
       static_cast<uint32_t>(attributeDescriptions.size());
-  vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+  vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
   vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
   VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
@@ -146,7 +147,7 @@ void Pipelines::createGraphicsPipeline() {
   rasterizer.rasterizerDiscardEnable = VK_FALSE;
   rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
   rasterizer.lineWidth = 1.0f;
-  rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+  rasterizer.cullMode = VK_CULL_MODE_NONE;
   rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
   rasterizer.depthBiasEnable = VK_FALSE;
 
@@ -417,15 +418,15 @@ void MemoryCommands::createShaderStorageBuffers() {
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
         cells[index].alive = {1.0f};
-
-        _log.console("  Cell:", index,
-                     "  set alive at:", cells[index].position[0],
+        _log.console("  .....  ", "Cell:", index,
+                     "  Alive at: ", cells[index].position[0],
                      cells[index].position[1], cells[index].position[2]);
       }
     }
   }
 
-  VkDeviceSize bufferSize = sizeof(World::Cell) * _world.grid.numGridPoints;
+  VkDeviceSize bufferSize =
+      (sizeof(World::Cell) + sizeof(World::Cube)) * _world.grid.numGridPoints;
 
   // Create a staging buffer used to upload data to the gpu
   VkBuffer stagingBuffer;
@@ -641,7 +642,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
       &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],
       offsets);
 
-  vkCmdDraw(commandBuffer, _world.grid.numGridPoints, 1, 0, 0);
+  vkCmdDraw(commandBuffer, _world.grid.numGridPoints, 3, 0, 0);
 
   vkCmdEndRenderPass(commandBuffer);
 

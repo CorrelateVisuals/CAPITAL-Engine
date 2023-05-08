@@ -8,11 +8,23 @@ layout(location = 4) in vec4 printGLSL;
 
 layout(location = 0) out vec3 fragColor;
 
+float triangleSize = 0.01f;
+
+vec2 triangle[3] = {
+    vec2(0.0f, -triangleSize),
+    vec2(triangleSize, triangleSize),
+    vec2(-triangleSize, triangleSize)
+};
+
+
+
 void main() {
 
-    gl_PointSize = printGLSL.x / 25 + 25;
 
-    gl_Position = inPosition.rgba;
+
+   // gl_PointSize = printGLSL.x / 25 + 25;
+    gl_PointSize = 15;
+    gl_Position = inPosition.rgba + vec4(triangle[gl_InstanceIndex], vec2(0.0));
 
     fragColor = vec3(inColor.rgb);
 }
