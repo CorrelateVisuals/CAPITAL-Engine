@@ -18,5 +18,5 @@ void main() { if( inSize.x == -1.0f ){ return; } // Skip all dead cells.
     vec4 drawVertices = inPosition.rgba + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * scaler, vec2(0.0));
     gl_Position = drawVertices; //modelViewProjection() * 
 
-    fragColor = vec3(0.5f) - cubeVertices[ cubeIndices[ gl_VertexIndex ]] + inColor.rgb;
+    fragColor = cubeVertices[ cubeIndices[ gl_VertexIndex ]] + inColor.rgb;
 }

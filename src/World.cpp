@@ -15,8 +15,6 @@ std::vector<VkVertexInputBindingDescription> World::getBindingDescriptions() {
   std::vector<VkVertexInputBindingDescription> bindingDescriptions{};
   bindingDescriptions.push_back(
       {0, sizeof(Cell), VK_VERTEX_INPUT_RATE_INSTANCE});
-  // bindingDescriptions.push_back(
-  //     {1, sizeof(Cube), VK_VERTEX_INPUT_RATE_INSTANCE});
   return bindingDescriptions;
 }
 
@@ -40,7 +38,7 @@ glm::mat4 World::setView() {
 }
 
 glm::mat4 World::setModel() {
-  glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f),
+  glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(45.0f),
                                 glm::vec3(0.0f, 0.0f, 1.0f));
   return model;
 }

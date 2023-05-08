@@ -49,7 +49,7 @@ void Window::mouseClick(GLFWwindow* window, int button) {
   ypos /= displayConfig.height;
 
   if (oldState == GLFW_PRESS && newState == GLFW_RELEASE) {
-    _log.console("{ in }", "Mouse Click at", xpos, ":", ypos);
+    _log.console("{ --> }", "Mouse Click at", xpos, ":", ypos);
     timer = 0.0;  // reset the timer when the mouse button is released
   } else if (newState == GLFW_PRESS) {
     if (timer < 0.2) {
@@ -58,7 +58,7 @@ void Window::mouseClick(GLFWwindow* window, int button) {
       }
       timer = glfwGetTime() - pressTime;
     } else {
-      _log.console("{ in }", "Mouse Down at", xpos, ":", ypos);
+      _log.console("{ --> }", "Mouse Down at", xpos, ":", ypos);
     }
   } else {
     pressTime =

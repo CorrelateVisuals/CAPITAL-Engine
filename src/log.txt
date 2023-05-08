@@ -1,7 +1,7 @@
- 23.05.08 22:22:12 { ... } constructing Logging
+ 23.05.08 22:30:32 { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
- 23.05.08 22:22:13 { [*] } Window initialized with 1080 * 1080
+ { [*] } Window initialized with 1080 * 1080
  { ..# } constructing Vulkan Mechanics
  { .Pi } constructing Pipelines
  { 010 } constructing Memory Management
@@ -12,7 +12,7 @@
 
  { *** } initializing Capital Engine
  { .vk } creating Vulkan Instance
- { [ ] } creating Surface
+ 23.05.08 22:30:33 { [ ] } creating Surface
  { .#. } picking Physical Device
    .....   checking if Physical Device is suitable
    .....   finding Queue Families
@@ -35,16 +35,16 @@
    .....   finding Queue Families
  { >>> } creating Shader Storage Buffers
  { oOo } initializing Cells
-   .....  0 2 3 4 6 12 13 18 19 20 21 22 26 29 32 
-                     .....  36 38 53 59 60 65 66 70 72 73 74 75 76 78 79 
-                     .....  80 82 84 88 89 92 96 102 103 107 108 112 113 122 123 
-                     .....  124 125 126 130 137 141 146 149 151 156 159 160 164 166 168 
-                     .....  177 179 180 184 185 188 189 190 191 193 195 196 198 199 202 
-                     .....  207 211 217 218 219 223 224 226 227 228 230 235 239 242 246 
-                     .....  247 250 252 253 255 256 258 260 263 267 268 271 272 273 275 
-                     .....  276 280 281 283 285 289 290 293 294 295 296 300 301 303 309 
-                     .....  314 316 319 324 328 329 330 333 336 337 338 340 343 346 347 
-                     .....  351 355 356 357 358 361 364 365 369 374 378 380 392 398 399 
+   .....  0 3 6 7 8 9 14 17 18 19 20 21 29 32 33 
+                     .....  34 35 40 41 42 45 48 50 51 55 56 57 58 61 64 
+                     .....  67 70 72 78 85 87 89 99 100 101 102 108 109 112 115 
+                     .....  118 122 124 125 126 128 135 136 137 138 141 142 143 144 145 
+                     .....  146 149 153 157 162 164 166 167 170 174 176 180 181 182 183 
+                     .....  188 189 190 191 192 196 198 199 200 201 203 204 213 215 217 
+                     .....  219 221 224 225 226 233 234 239 240 241 243 247 248 249 251 
+                     .....  252 253 254 255 258 263 264 266 277 284 288 294 295 299 306 
+                     .....  311 316 320 322 324 325 326 329 333 337 338 339 347 352 353 
+                     .....  354 356 363 364 365 367 368 371 372 374 379 384 385 387 395 
  { & & } creating 2 Descriptor Pools
  {  &  } creating Compute Descriptor Sets
  { cmd } creating Command Buffers
@@ -53,7 +53,11 @@
  
                    main loop running ..........
 
- 23.05.08 22:22:22 
+ { --> } Mouse Click at 0.637963 : 0.460185
+ { --> } Mouse Click at 0.651852 : 0.462037
+ { --> } Mouse Click at 0.716667 : 0.440741
+ { --> } Mouse Click at 0.772222 : 0.357407
+ 23.05.08 22:30:35 
                    main loop ....... terminated
  
                    [ Terminating CAPITAL engine ]
