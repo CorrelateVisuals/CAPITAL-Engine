@@ -12,8 +12,8 @@ class Control {
   float simulationSpeed = 10.0f;
 
   struct Grid {
-    const uint32_t numberOfAliveCells = 150;
-    const uint32_t gridDimensions[2] = {20, 20};  // rows, columns
+    const uint32_t numberOfAliveCells = 200;
+    const uint32_t gridDimensions[2] = {100, 100};  // rows, columns
     const float gridPointDistance = 2;
     const uint32_t numGridPoints = gridDimensions[0] * gridDimensions[1];
   } grid;
