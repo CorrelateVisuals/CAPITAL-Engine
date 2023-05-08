@@ -8,19 +8,17 @@ layout(location = 4) in vec4 printGLSL;
 
 layout(location = 0) out vec3 fragColor;
 
-float triangleSize = 0.03f;
-
-vec2 triangle[3] = {
-    vec2(0.0f, -triangleSize),
-    vec2(triangleSize, triangleSize),
-    vec2(-triangleSize, triangleSize)
-};
+float size = 0.015f;
+vec3 cubeVertices[8] = {
+    vec3(-size, -size, -size), vec3(size, -size, -size), vec3(-size, size, -size),
+    vec3(size, size, -size),   vec3(-size, -size, size), vec3(size, -size, size),
+    vec3(-size, size, size),   vec3(size, size, size)};
+int cubeIndices[36] = {
+    0, 2, 3, 0, 3, 1, 4, 5, 7, 4, 7, 6, 1, 3, 7, 1, 7, 5,
+    0, 4, 6, 0, 6, 2, 2, 6, 7, 2, 7, 3, 0, 1, 5, 0, 5, 4 };
 
 void main() {
 
-   // gl_PointSize = printGLSL.x / 25 + 25;
-    gl_PointSize = 15;
-    gl_Position = inPosition.rgba + vec4(triangle[gl_VertexIndex], vec2(0.0));
-
+    gl_Position = inPosition.rgba + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]], vec2(0.0));
     fragColor = vec3(inColor.rgb);
 }

@@ -588,7 +588,8 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
                           &descriptor.sets[_mechanics.syncObjects.currentFrame],
                           0, nullptr);
 
-  vkCmdDispatch(commandBuffer, _world.grid.numGridPoints / 256, 1, 1);
+  vkCmdDispatch(commandBuffer, _world.grid.numGridPoints / _world.grid.width, 1,
+                1);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to record compute command buffer!");
@@ -641,7 +642,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
       &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],
       offsets);
 
-  vkCmdDraw(commandBuffer, 3, _world.grid.numGridPoints, 0, 0);
+  vkCmdDraw(commandBuffer, 36, _world.grid.numGridPoints, 0, 0);
 
   vkCmdEndRenderPass(commandBuffer);
 

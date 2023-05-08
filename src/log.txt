@@ -1,4 +1,4 @@
-23.05.08 16:19:33   { ... } constructing Logging
+23.05.08 17:28:34   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1920 * 1080
@@ -12,7 +12,7 @@
 
  { *** } initializing Capital Engine
  { .vk } creating Vulkan Instance
- { [ ] } creating Surface
+23.05.08 17:28:35   { [ ] } creating Surface
  { .#. } picking Physical Device
    .....   checking if Physical Device is suitable
    .....   finding Queue Families
@@ -35,21 +35,21 @@
    .....   finding Queue Families
  { >>> } creating Shader Storage Buffers
  { oOo } initializing Cells
-   .....   Cell: 451   Alive at:  -0.78125 -0.09375 1
-   .....   Cell: 739   Alive at:  -0.78125 0.46875 1
-   .....   Cell: 803   Alive at:  -0.78125 0.59375 1
-   .....   Cell: 102   Alive at:  -0.59375 -0.78125 1
-   .....   Cell: 167   Alive at:  -0.53125 -0.65625 1
-   .....   Cell: 654   Alive at:  -0.09375 0.28125 1
-   .....   Cell: 303   Alive at:  -0.03125 -0.40625 1
-   .....   Cell: 913   Alive at:  0.09375 0.78125 1
-   .....   Cell: 437   Alive at:  0.34375 -0.15625 1
-   .....   Cell: 726   Alive at:  0.40625 0.40625 1
-   .....   Cell: 790   Alive at:  0.40625 0.53125 1
-   .....   Cell: 729   Alive at:  0.59375 0.40625 1
-   .....   Cell: 953   Alive at:  0.59375 0.84375 1
-   .....   Cell: 250   Alive at:  0.65625 -0.53125 1
-   .....   Cell: 61   Alive at:  0.84375 -0.90625 1
+   .....   Cell: 672   Alive at:  -0.96875 0.34375 1
+   .....   Cell: 577   Alive at:  -0.90625 0.15625 1
+   .....   Cell: 966   Alive at:  -0.59375 0.90625 1
+   .....   Cell: 266   Alive at:  -0.34375 -0.46875 1
+   .....   Cell: 813   Alive at:  -0.15625 0.59375 1
+   .....   Cell: 1011   Alive at:  0.21875 0.96875 1
+   .....   Cell: 279   Alive at:  0.46875 -0.46875 1
+   .....   Cell: 824   Alive at:  0.53125 0.59375 1
+   .....   Cell: 1017   Alive at:  0.59375 0.96875 1
+   .....   Cell: 252   Alive at:  0.78125 -0.53125 1
+   .....   Cell: 349   Alive at:  0.84375 -0.34375 1
+   .....   Cell: 637   Alive at:  0.84375 0.21875 1
+   .....   Cell: 606   Alive at:  0.90625 0.15625 1
+   .....   Cell: 127   Alive at:  0.96875 -0.78125 1
+   .....   Cell: 479   Alive at:  0.96875 -0.09375 1
  { & & } creating 2 Descriptor Pools
  {  &  } creating Compute Descriptor Sets
  { cmd } creating Command Buffers
@@ -58,12 +58,15 @@
  
                     main loop running ..........
 
-23.05.08 16:19:34   { [*] } Window resized to 3840 * 2109
- { <-> } creating Swap Chain
-   .....   querying Swap Chain Support
-   .....   choosing Swap Surface Format
-   .....   choosing Swap Present Mode
-   .....   choosing Swap Extent
-   .....   finding Queue Families
-   .....   creating Image Views
-23.05.08 16:19:38   { in } Mouse Click at 0.536719 : 0.411569
+23.05.08 17:28:41   
+                    main loop ....... terminated
+ 
+                    [ Terminating CAPITAL engine ]
+
+ { Ctr } destructing Control
+ { 010 } destructing Memory Management
+ { Pi. } destructing Pipelines
+ { #.. } destructing Vulkan Mechanics
+ { [-] } destructing Window
+ { --. } destructing Validation Layers
+ { ... } destructing Logging
