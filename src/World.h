@@ -18,6 +18,7 @@ class World {
 
   struct UniformBufferObject {
     int passedHours;  // TODO: 'long long'
+    int gridSize;
 
     alignas(16) glm::mat4 model;
     alignas(16) glm::mat4 view;
@@ -25,12 +26,9 @@ class World {
   };
 
   struct Cell {
-    std::array<float, 4> position;   // xyz
-    std::array<float, 4> color;      // rgba
-    std::array<float, 4> size;       // 1 float
-    std::array<float, 4> gridSize;   // 1 int
-    std::array<float, 4> printGLSL;  // used to write print statements to buffer
-    std::array<float, 4> alive;
+    std::array<float, 4> position;  // xyz pos
+    std::array<float, 4> color;     // rgba
+    std::array<float, 4> size;      // 1 float
   };
 
  public:

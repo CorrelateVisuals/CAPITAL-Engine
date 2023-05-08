@@ -413,15 +413,11 @@ void MemoryCommands::createShaderStorageBuffers() {
       cells[index].position = {offsetX + x * cellWidth,
                                offsetY + y * cellHeight, 1.0f, 1.0f};
       cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
-      cells[index].gridSize = {static_cast<float>(_control.grid.numGridPoints),
-                               0.0f, 0.0f, 0.0f};
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
-        cells[index].alive = {1.0f};
         cells[index].size = {20.0f, 0.0f, 0.0f, 0.0f};
       } else {
-        cells[index].alive = {-1.0f};
-        cells[index].size = {0.0f, 0.0f, 0.0f, 0.0f};
+        cells[index].size = {-1.0f, 0.0f, 0.0f, 0.0f};
       }
     }
   }
@@ -570,6 +566,7 @@ void MemoryCommands::createComputeDescriptorSets() {
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   World::UniformBufferObject ubo{};
   ubo.passedHours = _control.passedSimulationHours;
+  ubo.gridSize = _control.grid.numGridPoints;
 
   ubo.model = _world.setModel();
   ubo.view = _world.setView();

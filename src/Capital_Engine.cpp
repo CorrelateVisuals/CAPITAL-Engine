@@ -25,7 +25,6 @@ void CapitalEngine::mainLoop() {
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
 
-    // Simulation Essentials
     _control.simulateHours();
     drawFrame();
 
