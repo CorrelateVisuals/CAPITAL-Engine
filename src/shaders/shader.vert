@@ -8,7 +8,7 @@ layout(location = 4) in vec4 printGLSL;
 
 layout(location = 0) out vec3 fragColor;
 
-float triangleSize = 0.01f;
+float triangleSize = 0.03f;
 
 vec2 triangle[3] = {
     vec2(0.0f, -triangleSize),
