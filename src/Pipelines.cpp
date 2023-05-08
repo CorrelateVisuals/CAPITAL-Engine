@@ -461,7 +461,7 @@ void MemoryCommands::createShaderStorageBuffers() {
 }
 
 void MemoryCommands::createUniformBuffers() {
-  VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+  VkDeviceSize bufferSize = sizeof(World::UniformBufferObject);
 
   uniform.buffers.resize(MAX_FRAMES_IN_FLIGHT);
   uniform.buffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
@@ -521,7 +521,7 @@ void MemoryCommands::createComputeDescriptorSets() {
     VkDescriptorBufferInfo uniformBufferInfo{};
     uniformBufferInfo.buffer = uniform.buffers[i];
     uniformBufferInfo.offset = 0;
-    uniformBufferInfo.range = sizeof(UniformBufferObject);
+    uniformBufferInfo.range = sizeof(World::UniformBufferObject);
 
     std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
     descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -567,8 +567,14 @@ void MemoryCommands::createComputeDescriptorSets() {
 }
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
-  UniformBufferObject ubo{};
+  World::UniformBufferObject ubo{};
   ubo.passedHours = _control.passedSimulationHours;
+
+  ubo.model = _world.setModel();
+  ubo.view = _world.setView();
+  ubo.proj = _world.setProjection(_mechanics.swapChain.extent);
+  ubo.proj[1][1] *= -1;  // Flips openGl screencoords to Vulkan screencoords
+
   std::memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 

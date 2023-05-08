@@ -8,8 +8,8 @@ class Control {
   Control();
   ~Control();
 
-  long long passedSimulationHours = 0;
-  float simulationSpeed = 100.0f;
+  int passedSimulationHours = 0;  // TODO: 'long long'
+  float simulationSpeed = 10.0f;
   void simulateHours();
 };
 

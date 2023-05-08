@@ -1,7 +1,7 @@
 #version 450
 #extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
 
-const int SQRT_OF_GRID = 100;
+const int SQRT_OF_GRID = 20;
 
 struct Cell {
 	vec4 position;  // float    xy(z)
@@ -13,7 +13,11 @@ struct Cell {
 };
 
 layout (binding = 0) uniform ParameterUBO {
-    int passedHours; //int64_t passedHours;
+    int passedHours; //TODO 'long long' : int64_t passedHours;
+
+    mat4 model;
+    mat4 view;
+    mat4 projection;
 } ubo;
 
 layout(std430, binding = 1) readonly buffer CellSSBOIn {
@@ -26,15 +30,13 @@ layout(std430, binding = 2) buffer CellSSBOOut {
 
 layout (local_size_x = SQRT_OF_GRID, local_size_y = 1, local_size_z = 1) in;
 
-void main()
-{
 
-    uint index = gl_GlobalInvocationID.x;
-    Cell cellIn  = cellsIn[index];
+uint index = gl_GlobalInvocationID.x;
+Cell cellIn  = cellsIn[index];
 
-    if ( cellIn.alive.x == -1.0f){
-        return;
-    }
+void main() { if ( cellIn.alive.x == -1.0f) { return; } // Skip all dead cells.
+
+        mat4 test = ubo.model;
 
     cellOut[index].position = cellIn.position.rgba;
     cellOut[index].color = vec4( 0.5, vec2(0.0), 1.0 );

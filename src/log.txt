@@ -1,7 +1,7 @@
-23.05.08 18:12:43   { ... } constructing Logging
+23.05.08 19:05:02   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
-23.05.08 18:12:44   { [*] } Window initialized with 1920 * 1080
+ { [*] } Window initialized with 1920 * 1080
  { ..# } constructing Vulkan Mechanics
  { .Pi } constructing Pipelines
  { 010 } constructing Memory Management
@@ -21,7 +21,7 @@
  { .++ } creating Logical Device
    .....   finding Queue Families
    .....   Enabled Extension Names: VK_KHR_swapchain
- { <-> } creating Swap Chain
+23.05.08 19:05:03   { <-> } creating Swap Chain
    .....   querying Swap Chain Support
    .....   choosing Swap Surface Format
    .....   choosing Swap Present Mode
@@ -44,8 +44,7 @@
  
                     main loop running ..........
 
-23.05.08 18:12:45   { in } Mouse Click at 0.984896 : 0.0111111
-23.05.08 18:12:46   
+23.05.08 19:05:10   
                     main loop ....... terminated
  
                     [ Terminating CAPITAL engine ]
