@@ -10,7 +10,7 @@ World::World() {
 
 World::~World() {}
 
-std::vector<int> World::setCellAliveByRandom(int size) {
+std::vector<int> World::setCellsAliveRandomly(int size) {
   std::vector<int> IDs;
   srand(static_cast<unsigned int>(
       time(NULL)));  // seed the random number generator

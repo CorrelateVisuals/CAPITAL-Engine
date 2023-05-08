@@ -10,8 +10,9 @@ layout(location = 0) out vec3 fragColor;
 
 void main() {
 
-    //gl_PointSize = inSize.x;
-    gl_PointSize = printGLSL.x / 10;
+    gl_PointSize = printGLSL.x / 25 + 25;
+
     gl_Position = inPosition.rgba;
+
     fragColor = vec3(inColor.rgb);
 }

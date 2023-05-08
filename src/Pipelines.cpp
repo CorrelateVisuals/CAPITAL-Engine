@@ -387,9 +387,9 @@ void MemoryCommands::createComputeCommandBuffers() {
 void MemoryCommands::createShaderStorageBuffers() {
   _log.console("{ >>> }", "creating Shader Storage Buffers");
   // Initiliazation of cells on the grid
-  _log.console("{ cel }", "initializing Cells");
+  _log.console("{ oOo }", "initializing Cells");
   std::vector<World::Cell> cells(_world.grid.numGridPoints);
-  std::vector<int> aliveCells = _world.setCellAliveByRandom(15);
+  std::vector<int> aliveCells = _world.setCellsAliveRandomly(15);
 
   // Grid size
   const int gridWidth = _world.grid.width;
@@ -417,8 +417,9 @@ void MemoryCommands::createShaderStorageBuffers() {
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
         cells[index].alive = {1.0f};
-        _log.console("  .....  ", "Cell:", index, "set alive");
-        _log.console("           ", "at:", cells[index].position[0],
+
+        _log.console("  Cell:", index,
+                     "  set alive at:", cells[index].position[0],
                      cells[index].position[1], cells[index].position[2]);
       }
     }

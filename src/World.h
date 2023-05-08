@@ -50,7 +50,7 @@ class World {
     static VkVertexInputBindingDescription getBindingDescription();
   };
 
-  std::vector<int> setCellAliveByRandom(int size);
+  std::vector<int> setCellsAliveRandomly(int size);
 
   struct Cube {
     std::array<float, 4> position;  // xyz
