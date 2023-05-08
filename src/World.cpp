@@ -1,6 +1,7 @@
 #include "World.h"
 #include "CAPITAL_Engine.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <ctime>
 
@@ -47,11 +48,9 @@ std::vector<int> World::setCellsAliveRandomly(int size) {
       CellIDs.push_back(CellID);
     }
   }
-  _log.console("  .....  ", "Alive cells:");
-  for (auto& cellID : CellIDs) {
-    std::cout << cellID << " ";
-  }
-  std::cout << "\n";
+  std::sort(CellIDs.begin(), CellIDs.end());
+
+  _log.console("  .....  ", CellIDs);
   return CellIDs;
 }
 

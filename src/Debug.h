@@ -6,6 +6,20 @@
 #include <stdexcept>
 #include <vector>
 
+inline std::ostream& operator<<(std::ostream& os, const std::vector<int>& vec) {
+  const int numColumns = 15;
+  static int elementCount = 0;
+  for (const auto& element : vec) {
+    if (elementCount % numColumns == 0 && elementCount != 0) {
+      os << "\n                      .....  ";
+      elementCount = 0;
+    }
+    os << element << " ";
+    elementCount++;
+  }
+  return os;
+}
+
 class Logging {
  public:
   Logging();
@@ -15,8 +29,8 @@ class Logging {
 
   std::string previousTime = "";
 
-  template <class... Ts>
-  void console(Ts&&... inputs) {
+  template <class T, class... Ts>
+  void console(const T& first, const Ts&... inputs) {
     int i = 0;
     if (!logFile.is_open()) {
       std::cerr << "!!! Could not open logFile for writing !!!" << std::endl;
@@ -30,15 +44,37 @@ class Logging {
     } else {
       std::cout << "                   ";
     }
-    (
-        [&] {
-          ++i;
-          std::cerr << " " << inputs;
-          logFile << " " << inputs;
-        }(),
-        ...);
-    std::cerr << std::endl;
-    logFile << std::endl;
+
+    // If the first input is a vector, handle it separately
+    if constexpr (std::is_same_v<T, std::vector<int>>) {
+      const int numColumns = 15;
+      static int elementCount = 0;
+      for (const auto& element : first) {
+        if (elementCount % numColumns == 0 && elementCount != 0) {
+          std::cout << "\n                      .....  ";
+          logFile << "\n                      .....  ";
+          elementCount = 0;
+        }
+        std::cout << element << " ";
+        logFile << element << " ";
+        elementCount++;
+      }
+      std::cout << "\n";
+      logFile << "\n";
+    } else {
+      // Handle all other inputs normally
+      std::cerr << " " << first;
+      logFile << " " << first;
+      (
+          [&] {
+            ++i;
+            std::cerr << " " << inputs;
+            logFile << " " << inputs;
+          }(),
+          ...);
+      std::cerr << std::endl;
+      logFile << std::endl;
+    }
     previousTime = currentTime;
   }
 

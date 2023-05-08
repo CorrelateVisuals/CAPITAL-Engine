@@ -21,7 +21,7 @@ class World {
     const int height = width;
     const int numGridPoints = width * height;
     const float gridPointDistance = 2;
-    const int numberOfAliveCells = 100;
+    const int numberOfAliveCells = 300;
   } grid;
 
   struct UniformBufferObject {
@@ -43,6 +43,7 @@ class World {
 
  public:
   std::vector<int> setCellsAliveRandomly(int size);
+
   static std::vector<VkVertexInputAttributeDescription>
   getAttributeDescriptions();
   static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
