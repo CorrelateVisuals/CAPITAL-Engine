@@ -9,18 +9,18 @@ class Control {
   Control();
   ~Control();
 
-  int passedSimulationHours = 0;  // TODO: 'long long'
   float simulationSpeed = 10.0f;
 
   struct Grid {
-    const int width = 20;
-    const int height = width;
-    const int numGridPoints = width * height;
+    const int numberOfAliveCells = 150;
+    const std::array<int, 2> gridDimensions = {20, 20};
+    const int numGridPoints = gridDimensions[0] * gridDimensions[1];
     const float gridPointDistance = 2;
-    const int numberOfAliveCells = 300;
   } grid;
 
  public:
+  int passedSimulationHours = 0;  // TODO: 'long long'
+
   std::vector<int> setCellsAliveRandomly(int size);
   void simulateHours();
 };

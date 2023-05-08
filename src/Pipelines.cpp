@@ -394,8 +394,8 @@ void MemoryCommands::createShaderStorageBuffers() {
       _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
 
   // Grid size
-  const int gridWidth = _control.grid.width;
-  const int gridHeight = _control.grid.height;
+  const int gridWidth = _control.grid.gridDimensions[0];
+  const int gridHeight = _control.grid.gridDimensions[1];
   const float gridPointDistance = _control.grid.gridPointDistance;
   // Grid cell size
   const float cellWidth = gridPointDistance / gridWidth;
