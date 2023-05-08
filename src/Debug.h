@@ -24,8 +24,8 @@ class Logging {
     std::string currentTime = returnDateAndTime();
 
     if (currentTime != previousTime) {
-      std::cout << returnDateAndTime();
-      logFile << returnDateAndTime();
+      std::cout << " " << returnDateAndTime();
+      logFile << " " << returnDateAndTime();
     } else {
       std::cout << std::string(numColumns + 3, ' ');
     }
@@ -33,12 +33,12 @@ class Logging {
     // If the first input is a vector, handle it separately
     if constexpr (std::is_same_v<T, std::vector<int>>) {
       static int elementCount = 0;
-      std::cout << "  .....  ";
-      logFile << "  .....  ";
+      std::cout << "   .....  ";
+      logFile << "   .....  ";
       for (const auto& element : first) {
         if (elementCount % numColumns == 0 && elementCount != 0) {
-          std::cout << "\n" << std::string(numColumns + 3, ' ') << "  .....  ";
-          logFile << "\n" << std::string(numColumns + 3, ' ') << "  .....  ";
+          std::cout << "\n" << std::string(numColumns + 3, ' ') << "   .....  ";
+          logFile << "\n" << std::string(numColumns + 3, ' ') << "   .....  ";
           elementCount = 0;
         }
         std::cout << element << ' ';
