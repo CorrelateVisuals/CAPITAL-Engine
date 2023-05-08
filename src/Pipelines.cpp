@@ -477,7 +477,7 @@ void MemoryCommands::createUniformBuffers() {
 
 void MemoryCommands::createDescriptorPool() {
   const int numPools = 2;
-  _log.console("{ & & }", "creating", numPools, "Descriptor Pools");
+  _log.console("{ des }", "creating", numPools, "Descriptor Pools");
   std::array<VkDescriptorPoolSize, 2> poolSizes{};
   poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
@@ -499,7 +499,7 @@ void MemoryCommands::createDescriptorPool() {
 }
 
 void MemoryCommands::createComputeDescriptorSets() {
-  _log.console("{  &  }", "creating Compute Descriptor Sets");
+  _log.console("{ des }", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptor.setLayout);
   VkDescriptorSetAllocateInfo allocInfo{};
