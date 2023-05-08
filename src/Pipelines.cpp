@@ -425,8 +425,7 @@ void MemoryCommands::createShaderStorageBuffers() {
     }
   }
 
-  VkDeviceSize bufferSize =
-      (sizeof(World::Cell) + sizeof(World::Cube)) * _world.grid.numGridPoints;
+  VkDeviceSize bufferSize = sizeof(World::Cell) * _world.grid.numGridPoints;
 
   // Create a staging buffer used to upload data to the gpu
   VkBuffer stagingBuffer;

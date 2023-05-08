@@ -28,10 +28,7 @@ class World {
     std::array<float, 4> alive;
   };
 
-  struct Cube {
-    std::array<float, 4> position;  // xyz
-  };
-  inline static const std::vector<Cube> cubeVertices = {
+  inline static const std::vector<Cell> cubeVertices = {
       {-1.0f, -1.0f, -1.0f}, {1.0f, -1.0f, -1.0f}, {-1.0f, 1.0f, -1.0f},
       {1.0f, 1.0f, -1.0f},   {-1.0f, -1.0f, 1.0f}, {1.0f, -1.0f, 1.0f},
       {-1.0f, 1.0f, 1.0f},   {1.0f, 1.0f, 1.0f}};
