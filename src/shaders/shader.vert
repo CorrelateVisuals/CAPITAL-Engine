@@ -16,15 +16,11 @@ vec2 triangle[3] = {
     vec2(-triangleSize, triangleSize)
 };
 
-
-
 void main() {
-
-
 
    // gl_PointSize = printGLSL.x / 25 + 25;
     gl_PointSize = 15;
-    gl_Position = inPosition.rgba + vec4(triangle[gl_InstanceIndex], vec2(0.0));
+    gl_Position = inPosition.rgba + vec4(triangle[gl_VertexIndex], vec2(0.0));
 
     fragColor = vec3(inColor.rgb);
 }

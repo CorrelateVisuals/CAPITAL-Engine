@@ -12,7 +12,8 @@ World::~World() {}
 
 std::vector<VkVertexInputBindingDescription> World::getBindingDescriptions() {
   std::vector<VkVertexInputBindingDescription> bindingDescriptions{};
-  bindingDescriptions.push_back({0, sizeof(Cell), VK_VERTEX_INPUT_RATE_VERTEX});
+  bindingDescriptions.push_back(
+      {0, sizeof(Cell), VK_VERTEX_INPUT_RATE_INSTANCE});
   // bindingDescriptions.push_back(
   //     {1, sizeof(Cube), VK_VERTEX_INPUT_RATE_INSTANCE});
   return bindingDescriptions;

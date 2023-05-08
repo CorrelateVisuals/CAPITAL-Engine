@@ -641,7 +641,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
       &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],
       offsets);
 
-  vkCmdDraw(commandBuffer, _world.grid.numGridPoints, 3, 0, 0);
+  vkCmdDraw(commandBuffer, 3, _world.grid.numGridPoints, 0, 0);
 
   vkCmdEndRenderPass(commandBuffer);
 

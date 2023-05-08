@@ -1,7 +1,7 @@
-23.05.08 13:08:57   { ... } constructing Logging
+23.05.08 16:17:54   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
-23.05.08 13:08:58   { [*] } Window initialized with 1920 * 1080
+23.05.08 16:17:55   { [*] } Window initialized with 1920 * 1080
  { ..# } constructing Vulkan Mechanics
  { .Pi } constructing Pipelines
  { 010 } constructing Memory Management
@@ -35,21 +35,21 @@
    .....   finding Queue Families
  { >>> } creating Shader Storage Buffers
  { oOo } initializing Cells
-   .....   Cell: 417   Alive at:  -0.90625 -0.15625 1
-   .....   Cell: 4   Alive at:  -0.71875 -0.96875 1
-   .....   Cell: 325   Alive at:  -0.65625 -0.34375 1
-   .....   Cell: 102   Alive at:  -0.59375 -0.78125 1
-   .....   Cell: 934   Alive at:  -0.59375 0.84375 1
-   .....   Cell: 747   Alive at:  -0.28125 0.46875 1
-   .....   Cell: 173   Alive at:  -0.15625 -0.65625 1
-   .....   Cell: 592   Alive at:  0.03125 0.15625 1
-   .....   Cell: 944   Alive at:  0.03125 0.84375 1
-   .....   Cell: 886   Alive at:  0.40625 0.71875 1
-   .....   Cell: 375   Alive at:  0.46875 -0.28125 1
-   .....   Cell: 536   Alive at:  0.53125 0.03125 1
-   .....   Cell: 122   Alive at:  0.65625 -0.78125 1
-   .....   Cell: 571   Alive at:  0.71875 0.09375 1
-   .....   Cell: 572   Alive at:  0.78125 0.09375 1
+   .....   Cell: 513   Alive at:  -0.90625 0.03125 1
+   .....   Cell: 162   Alive at:  -0.84375 -0.65625 1
+   .....   Cell: 483   Alive at:  -0.78125 -0.03125 1
+   .....   Cell: 134   Alive at:  -0.59375 -0.71875 1
+   .....   Cell: 454   Alive at:  -0.59375 -0.09375 1
+   .....   Cell: 518   Alive at:  -0.59375 0.03125 1
+   .....   Cell: 870   Alive at:  -0.59375 0.71875 1
+   .....   Cell: 12   Alive at:  -0.21875 -0.96875 1
+   .....   Cell: 48   Alive at:  0.03125 -0.90625 1
+   .....   Cell: 785   Alive at:  0.09375 0.53125 1
+   .....   Cell: 850   Alive at:  0.15625 0.65625 1
+   .....   Cell: 216   Alive at:  0.53125 -0.59375 1
+   .....   Cell: 537   Alive at:  0.59375 0.03125 1
+   .....   Cell: 892   Alive at:  0.78125 0.71875 1
+   .....   Cell: 317   Alive at:  0.84375 -0.40625 1
  { & & } creating 2 Descriptor Pools
  {  &  } creating Compute Descriptor Sets
  { cmd } creating Command Buffers
@@ -58,7 +58,7 @@
  
                     main loop running ..........
 
-23.05.08 13:09:10   
+23.05.08 16:18:03   
                     main loop ....... terminated
  
                     [ Terminating CAPITAL engine ]
