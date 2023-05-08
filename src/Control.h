@@ -12,9 +12,9 @@ class Control {
   float simulationSpeed = 10.0f;
 
   struct Grid {
-    const int numberOfAliveCells = 150;
-    const std::array<int, 2> gridDimensions = {20, 20};
-    const int numGridPoints = gridDimensions[0] * gridDimensions[1];
+    const uint32_t numberOfAliveCells = 150;
+    const uint32_t gridDimensions[2] = {20, 20};  // rows, columns
+    const uint32_t numGridPoints = gridDimensions[0] * gridDimensions[1];
     const float gridPointDistance = 2;
   } grid;
 
@@ -28,7 +28,7 @@ class Control {
 struct DisplayConfig {
  public:
   const char* windowTitle = "CAPITAL Engine";
-  uint32_t width = 1920;
+  uint32_t width = 1080;
   uint32_t height = 1080;
 };
 inline DisplayConfig displayConfig;

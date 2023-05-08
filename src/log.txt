@@ -1,14 +1,14 @@
- 23.05.08 22:02:57 { ... } constructing Logging
+ 23.05.08 22:11:29 { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
- 23.05.08 22:02:58 { [*] } Window initialized with 1920 * 1080
+ 23.05.08 22:11:30 { [*] } Window initialized with 1080 * 1080
  { ..# } constructing Vulkan Mechanics
  { .Pi } constructing Pipelines
  { 010 } constructing Memory Management
  { Ctr } constructing Control
  { (:) } constructing World
  
-                    [ Starting CAPITAL engine ]
+                   [ Starting CAPITAL engine ]
 
  { *** } initializing Capital Engine
  { .vk } creating Vulkan Instance
@@ -35,28 +35,28 @@
    .....   finding Queue Families
  { >>> } creating Shader Storage Buffers
  { oOo } initializing Cells
-   .....  0 3 6 10 11 16 18 21 25 28 30 33 44 50 51 
-                     .....  55 60 61 63 64 66 67 68 70 73 74 77 80 82 83 
-                     .....  84 85 90 92 93 94 98 105 106 107 110 111 112 114 115 
-                     .....  116 121 122 124 125 128 133 134 135 138 143 144 148 149 150 
-                     .....  157 160 165 168 172 173 176 179 183 189 190 191 192 194 195 
-                     .....  199 200 203 207 208 209 212 216 220 221 224 227 229 230 232 
-                     .....  233 234 241 246 249 255 256 261 262 264 266 269 271 272 275 
-                     .....  276 279 280 283 284 287 288 294 295 296 297 299 300 302 305 
-                     .....  306 308 312 314 319 320 323 324 329 330 331 332 338 339 340 
-                     .....  341 343 344 356 358 359 360 361 363 365 371 373 377 393 396 
+   .....  2 3 5 9 11 17 19 21 25 30 31 32 35 48 49 
+                     .....  53 56 58 60 62 64 69 72 74 75 77 78 83 84 86 
+                     .....  87 89 90 91 92 93 95 96 98 99 101 104 106 115 118 
+                     .....  121 122 126 128 129 131 133 137 141 144 145 147 148 150 154 
+                     .....  157 159 163 167 172 176 177 180 184 190 192 195 203 204 206 
+                     .....  208 209 210 211 214 215 217 219 221 223 224 226 230 231 238 
+                     .....  249 254 259 260 262 263 265 269 270 275 277 279 283 289 295 
+                     .....  297 298 301 303 304 305 308 310 313 316 318 319 322 323 325 
+                     .....  327 328 332 336 338 339 341 343 345 346 347 356 358 360 363 
+                     .....  365 368 369 370 373 374 376 378 381 382 391 393 394 396 397 
  { & & } creating 2 Descriptor Pools
  {  &  } creating Compute Descriptor Sets
  { cmd } creating Command Buffers
  { cmd } creating Compute Command Buffers
  { ||| } creating Sync Objects
  
-                    main loop running ..........
+                   main loop running ..........
 
- 23.05.08 22:02:59 
-                    main loop ....... terminated
+ 23.05.08 22:11:31 
+                   main loop ....... terminated
  
-                    [ Terminating CAPITAL engine ]
+                   [ Terminating CAPITAL engine ]
 
  { Ctr } destructing Control
  { 010 } destructing Memory Management
