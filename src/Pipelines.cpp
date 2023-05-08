@@ -390,7 +390,8 @@ void MemoryCommands::createShaderStorageBuffers() {
   // Initiliazation of cells on the grid
   _log.console("{ oOo }", "initializing Cells");
   std::vector<World::Cell> cells(_world.grid.numGridPoints);
-  std::vector<int> aliveCells = _world.setCellsAliveRandomly(15);
+  std::vector<int> aliveCells =
+      _world.setCellsAliveRandomly(_world.grid.numberOfAliveCells);
 
   // Grid size
   const int gridWidth = _world.grid.width;
@@ -412,18 +413,23 @@ void MemoryCommands::createShaderStorageBuffers() {
       cells[index].position = {offsetX + x * cellWidth,
                                offsetY + y * cellHeight, 1.0f, 1.0f};
       cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
-      cells[index].size = {20.0f, 0.0f, 0.0f, 0.0f};
       cells[index].gridSize = {static_cast<float>(_world.grid.numGridPoints),
                                0.0f, 0.0f, 0.0f};
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
         cells[index].alive = {1.0f};
-        _log.console("  .....  ", "Cell:", index,
-                     "  Alive at: ", cells[index].position[0],
-                     cells[index].position[1], cells[index].position[2]);
+        cells[index].size = {20.0f, 0.0f, 0.0f, 0.0f};
+      } else {
+        cells[index].alive = {-1.0f};
+        cells[index].size = {0.0f, 0.0f, 0.0f, 0.0f};
       }
     }
   }
+  _log.console("  .....  ", "Cells:");
+  for (auto& cell : aliveCells) {
+    std::cout << cell << " ";
+  }
+  std::cout << "\n";
 
   VkDeviceSize bufferSize = sizeof(World::Cell) * _world.grid.numGridPoints;
 

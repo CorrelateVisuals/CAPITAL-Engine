@@ -19,6 +19,10 @@ int cubeIndices[36] = {
 
 void main() {
 
+    if( inSize.x == 0.0f ){
+        return;
+    }
+
     gl_Position = inPosition.rgba + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]], vec2(0.0));
     fragColor = vec3(inColor.rgb);
 }

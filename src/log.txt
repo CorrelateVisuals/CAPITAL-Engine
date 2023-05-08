@@ -1,4 +1,4 @@
-23.05.08 17:28:34   { ... } constructing Logging
+23.05.08 17:49:15   { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1920 * 1080
@@ -12,7 +12,7 @@
 
  { *** } initializing Capital Engine
  { .vk } creating Vulkan Instance
-23.05.08 17:28:35   { [ ] } creating Surface
+ { [ ] } creating Surface
  { .#. } picking Physical Device
    .....   checking if Physical Device is suitable
    .....   finding Queue Families
@@ -35,21 +35,7 @@
    .....   finding Queue Families
  { >>> } creating Shader Storage Buffers
  { oOo } initializing Cells
-   .....   Cell: 672   Alive at:  -0.96875 0.34375 1
-   .....   Cell: 577   Alive at:  -0.90625 0.15625 1
-   .....   Cell: 966   Alive at:  -0.59375 0.90625 1
-   .....   Cell: 266   Alive at:  -0.34375 -0.46875 1
-   .....   Cell: 813   Alive at:  -0.15625 0.59375 1
-   .....   Cell: 1011   Alive at:  0.21875 0.96875 1
-   .....   Cell: 279   Alive at:  0.46875 -0.46875 1
-   .....   Cell: 824   Alive at:  0.53125 0.59375 1
-   .....   Cell: 1017   Alive at:  0.59375 0.96875 1
-   .....   Cell: 252   Alive at:  0.78125 -0.53125 1
-   .....   Cell: 349   Alive at:  0.84375 -0.34375 1
-   .....   Cell: 637   Alive at:  0.84375 0.21875 1
-   .....   Cell: 606   Alive at:  0.90625 0.15625 1
-   .....   Cell: 127   Alive at:  0.96875 -0.78125 1
-   .....   Cell: 479   Alive at:  0.96875 -0.09375 1
+   .....   Cells:
  { & & } creating 2 Descriptor Pools
  {  &  } creating Compute Descriptor Sets
  { cmd } creating Command Buffers
@@ -58,7 +44,7 @@
  
                     main loop running ..........
 
-23.05.08 17:28:41   
+23.05.08 17:49:16   
                     main loop ....... terminated
  
                     [ Terminating CAPITAL engine ]
