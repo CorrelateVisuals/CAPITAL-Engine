@@ -2,6 +2,7 @@
 
 #include <array>
 #include <string>
+#include <vector>
 
 class Control {
  public:
@@ -10,6 +11,17 @@ class Control {
 
   int passedSimulationHours = 0;  // TODO: 'long long'
   float simulationSpeed = 10.0f;
+
+  struct Grid {
+    const int width = 20;
+    const int height = width;
+    const int numGridPoints = width * height;
+    const float gridPointDistance = 2;
+    const int numberOfAliveCells = 300;
+  } grid;
+
+ public:
+  std::vector<int> setCellsAliveRandomly(int size);
   void simulateHours();
 };
 

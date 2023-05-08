@@ -36,24 +36,6 @@ World::getAttributeDescriptions() {
   return attributeDescriptions;
 }
 
-std::vector<int> World::setCellsAliveRandomly(int size) {
-  std::vector<int> CellIDs;
-  srand(static_cast<unsigned int>(
-      time(NULL)));  // seed the random number generator
-
-  while (CellIDs.size() < size) {
-    int CellID = rand() % grid.numGridPoints;
-    // check if the CellID is not already in CellIDs
-    if (std::find(CellIDs.begin(), CellIDs.end(), CellID) == CellIDs.end()) {
-      CellIDs.push_back(CellID);
-    }
-  }
-  std::sort(CellIDs.begin(), CellIDs.end());
-
-  _log.console(CellIDs);
-  return CellIDs;
-}
-
 glm::mat4 World::setView() {
   glm::mat4 view =
       glm::lookAt(glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f),

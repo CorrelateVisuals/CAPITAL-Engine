@@ -389,14 +389,14 @@ void MemoryCommands::createShaderStorageBuffers() {
   _log.console("{ >>> }", "creating Shader Storage Buffers");
   // Initiliazation of cells on the grid
   _log.console("{ oOo }", "initializing Cells");
-  std::vector<World::Cell> cells(_world.grid.numGridPoints);
+  std::vector<World::Cell> cells(_control.grid.numGridPoints);
   std::vector<int> aliveCells =
-      _world.setCellsAliveRandomly(_world.grid.numberOfAliveCells);
+      _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
 
   // Grid size
-  const int gridWidth = _world.grid.width;
-  const int gridHeight = _world.grid.height;
-  const float gridPointDistance = _world.grid.gridPointDistance;
+  const int gridWidth = _control.grid.width;
+  const int gridHeight = _control.grid.height;
+  const float gridPointDistance = _control.grid.gridPointDistance;
   // Grid cell size
   const float cellWidth = gridPointDistance / gridWidth;
   const float cellHeight = gridPointDistance / gridHeight;
@@ -413,7 +413,7 @@ void MemoryCommands::createShaderStorageBuffers() {
       cells[index].position = {offsetX + x * cellWidth,
                                offsetY + y * cellHeight, 1.0f, 1.0f};
       cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
-      cells[index].gridSize = {static_cast<float>(_world.grid.numGridPoints),
+      cells[index].gridSize = {static_cast<float>(_control.grid.numGridPoints),
                                0.0f, 0.0f, 0.0f};
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
@@ -425,8 +425,9 @@ void MemoryCommands::createShaderStorageBuffers() {
       }
     }
   }
+  _log.console(aliveCells);
 
-  VkDeviceSize bufferSize = sizeof(World::Cell) * _world.grid.numGridPoints;
+  VkDeviceSize bufferSize = sizeof(World::Cell) * _control.grid.numGridPoints;
 
   // Create a staging buffer used to upload data to the gpu
   VkBuffer stagingBuffer;
@@ -537,7 +538,7 @@ void MemoryCommands::createComputeDescriptorSets() {
         shaderStorage.buffers[(i - 1) % MAX_FRAMES_IN_FLIGHT];
     storageBufferInfoLastFrame.offset = 0;
     storageBufferInfoLastFrame.range =
-        sizeof(World::Cell) * _world.grid.numGridPoints;
+        sizeof(World::Cell) * _control.grid.numGridPoints;
 
     descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[1].dstSet = descriptor.sets[i];
@@ -551,7 +552,7 @@ void MemoryCommands::createComputeDescriptorSets() {
     storageBufferInfoCurrentFrame.buffer = shaderStorage.buffers[i];
     storageBufferInfoCurrentFrame.offset = 0;
     storageBufferInfoCurrentFrame.range =
-        sizeof(World::Cell) * _world.grid.numGridPoints;
+        sizeof(World::Cell) * _control.grid.numGridPoints;
 
     descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[2].dstSet = descriptor.sets[i];
@@ -596,7 +597,7 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
                           0, nullptr);
 
   vkCmdDispatch(commandBuffer,
-                static_cast<uint32_t>(sqrt(_world.grid.numGridPoints)), 1, 1);
+                static_cast<uint32_t>(sqrt(_control.grid.numGridPoints)), 1, 1);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to record compute command buffer!");
@@ -649,7 +650,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
       &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],
       offsets);
 
-  vkCmdDraw(commandBuffer, 36, _world.grid.numGridPoints, 0, 0);
+  vkCmdDraw(commandBuffer, 36, _control.grid.numGridPoints, 0, 0);
 
   vkCmdEndRenderPass(commandBuffer);
 

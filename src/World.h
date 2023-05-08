@@ -16,14 +16,6 @@ class World {
   World();
   ~World();
 
-  struct Grid {
-    const int width = 20;
-    const int height = width;
-    const int numGridPoints = width * height;
-    const float gridPointDistance = 2;
-    const int numberOfAliveCells = 300;
-  } grid;
-
   struct UniformBufferObject {
     int passedHours;  // TODO: 'long long'
 
@@ -42,8 +34,6 @@ class World {
   };
 
  public:
-  std::vector<int> setCellsAliveRandomly(int size);
-
   static std::vector<VkVertexInputAttributeDescription>
   getAttributeDescriptions();
   static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
