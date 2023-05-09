@@ -389,14 +389,14 @@ void MemoryCommands::createShaderStorageBuffers() {
   _log.console("{ >>> }", "creating Shader Storage Buffers");
   // Initiliazation of cells on the grid
   _log.console("{ oOo }", "initializing Cells");
-  std::vector<World::Cell> cells(_world.grid.numGridPoints);
+  std::vector<World::Cell> cells(_control.grid.numGridPoints);
   std::vector<int> aliveCells =
-      _world.setCellsAliveRandomly(_world.grid.numberOfAliveCells);
+      _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
 
   // Grid size
-  const int gridWidth = _world.grid.width;
-  const int gridHeight = _world.grid.height;
-  const float gridPointDistance = _world.grid.gridPointDistance;
+  const int gridWidth = _control.grid.gridDimensions[0];
+  const int gridHeight = _control.grid.gridDimensions[1];
+  const float gridPointDistance = _control.grid.gridPointDistance;
   // Grid cell size
   const float cellWidth = gridPointDistance / gridWidth;
   const float cellHeight = gridPointDistance / gridHeight;
@@ -413,20 +413,17 @@ void MemoryCommands::createShaderStorageBuffers() {
       cells[index].position = {offsetX + x * cellWidth,
                                offsetY + y * cellHeight, 1.0f, 1.0f};
       cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
-      cells[index].gridSize = {static_cast<float>(_world.grid.numGridPoints),
-                               0.0f, 0.0f, 0.0f};
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
-        cells[index].alive = {1.0f};
         cells[index].size = {20.0f, 0.0f, 0.0f, 0.0f};
       } else {
-        cells[index].alive = {-1.0f};
-        cells[index].size = {0.0f, 0.0f, 0.0f, 0.0f};
+        cells[index].size = {-1.0f, 0.0f, 0.0f, 0.0f};
       }
     }
   }
+  _log.console(aliveCells);
 
-  VkDeviceSize bufferSize = sizeof(World::Cell) * _world.grid.numGridPoints;
+  VkDeviceSize bufferSize = sizeof(World::Cell) * _control.grid.numGridPoints;
 
   // Create a staging buffer used to upload data to the gpu
   VkBuffer stagingBuffer;
@@ -461,7 +458,7 @@ void MemoryCommands::createShaderStorageBuffers() {
 }
 
 void MemoryCommands::createUniformBuffers() {
-  VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+  VkDeviceSize bufferSize = sizeof(World::UniformBufferObject);
 
   uniform.buffers.resize(MAX_FRAMES_IN_FLIGHT);
   uniform.buffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
@@ -480,7 +477,7 @@ void MemoryCommands::createUniformBuffers() {
 
 void MemoryCommands::createDescriptorPool() {
   const int numPools = 2;
-  _log.console("{ & & }", "creating", numPools, "Descriptor Pools");
+  _log.console("{ des }", "creating", numPools, "Descriptor Pools");
   std::array<VkDescriptorPoolSize, 2> poolSizes{};
   poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
@@ -502,7 +499,7 @@ void MemoryCommands::createDescriptorPool() {
 }
 
 void MemoryCommands::createComputeDescriptorSets() {
-  _log.console("{  &  }", "creating Compute Descriptor Sets");
+  _log.console("{ des }", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptor.setLayout);
   VkDescriptorSetAllocateInfo allocInfo{};
@@ -521,7 +518,7 @@ void MemoryCommands::createComputeDescriptorSets() {
     VkDescriptorBufferInfo uniformBufferInfo{};
     uniformBufferInfo.buffer = uniform.buffers[i];
     uniformBufferInfo.offset = 0;
-    uniformBufferInfo.range = sizeof(UniformBufferObject);
+    uniformBufferInfo.range = sizeof(World::UniformBufferObject);
 
     std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
     descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -537,7 +534,7 @@ void MemoryCommands::createComputeDescriptorSets() {
         shaderStorage.buffers[(i - 1) % MAX_FRAMES_IN_FLIGHT];
     storageBufferInfoLastFrame.offset = 0;
     storageBufferInfoLastFrame.range =
-        sizeof(World::Cell) * _world.grid.numGridPoints;
+        sizeof(World::Cell) * _control.grid.numGridPoints;
 
     descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[1].dstSet = descriptor.sets[i];
@@ -551,7 +548,7 @@ void MemoryCommands::createComputeDescriptorSets() {
     storageBufferInfoCurrentFrame.buffer = shaderStorage.buffers[i];
     storageBufferInfoCurrentFrame.offset = 0;
     storageBufferInfoCurrentFrame.range =
-        sizeof(World::Cell) * _world.grid.numGridPoints;
+        sizeof(World::Cell) * _control.grid.numGridPoints;
 
     descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[2].dstSet = descriptor.sets[i];
@@ -567,8 +564,15 @@ void MemoryCommands::createComputeDescriptorSets() {
 }
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
-  UniformBufferObject ubo{};
+  World::UniformBufferObject ubo{};
   ubo.passedHours = _control.passedSimulationHours;
+  ubo.gridSize = _control.grid.numGridPoints;
+
+  ubo.model = _world.setModel();
+  ubo.view = _world.setView();
+  ubo.proj = _world.setProjection(_mechanics.swapChain.extent);
+  ubo.proj[1][1] *= -1;  // Flips openGl screencoords to Vulkan screencoords
+
   std::memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 
@@ -590,7 +594,7 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
                           0, nullptr);
 
   vkCmdDispatch(commandBuffer,
-                static_cast<uint32_t>(sqrt(_world.grid.numGridPoints)), 1, 1);
+                static_cast<uint32_t>(sqrt(_control.grid.numGridPoints)), 1, 1);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to record compute command buffer!");
@@ -643,7 +647,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
       &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],
       offsets);
 
-  vkCmdDraw(commandBuffer, 36, _world.grid.numGridPoints, 0, 0);
+  vkCmdDraw(commandBuffer, 36, _control.grid.numGridPoints, 0, 0);
 
   vkCmdEndRenderPass(commandBuffer);
 

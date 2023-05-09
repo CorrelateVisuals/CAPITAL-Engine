@@ -26,3 +26,19 @@ void Control::simulateHours() {
     lastTime = currentTime;
   }
 }
+
+std::vector<int> Control::setCellsAliveRandomly(int size) {
+  std::vector<int> CellIDs;
+  srand(static_cast<unsigned int>(
+      time(NULL)));  // seed the random number generator
+
+  while (CellIDs.size() < size) {
+    int CellID = rand() % _control.grid.numGridPoints;
+    // check if the CellID is not already in CellIDs
+    if (std::find(CellIDs.begin(), CellIDs.end(), CellID) == CellIDs.end()) {
+      CellIDs.push_back(CellID);
+    }
+  }
+  std::sort(CellIDs.begin(), CellIDs.end());
+  return CellIDs;
+}

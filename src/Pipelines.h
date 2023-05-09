@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 class Pipelines {
  public:
   Pipelines();
@@ -31,10 +33,6 @@ class MemoryCommands {
  public:
   MemoryCommands();
   ~MemoryCommands();
-
-  struct UniformBufferObject {
-    long long passedHours;
-  };
 
   struct Command {
     VkCommandPool pool;

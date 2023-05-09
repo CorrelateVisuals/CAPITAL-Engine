@@ -1,14 +1,14 @@
-23.05.08 18:12:43   { ... } constructing Logging
+ 23.05.09 14:40:23 { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
-23.05.08 18:12:44   { [*] } Window initialized with 1920 * 1080
+ { [*] } Window initialized with 1080 * 1080
  { ..# } constructing Vulkan Mechanics
  { .Pi } constructing Pipelines
  { 010 } constructing Memory Management
  { Ctr } constructing Control
  { (:) } constructing World
  
-                    [ Starting CAPITAL engine ]
+                   [ Starting CAPITAL engine ]
 
  { *** } initializing Capital Engine
  { .vk } creating Vulkan Instance
@@ -35,20 +35,32 @@
    .....   finding Queue Families
  { >>> } creating Shader Storage Buffers
  { oOo } initializing Cells
-   .....   Alive cells:
- { & & } creating 2 Descriptor Pools
- {  &  } creating Compute Descriptor Sets
+   .....  7 32 103 131 258 279 296 384 452 459 468 572 606 610 624 
+                     .....  654 670 706 834 894 962 1028 1083 1117 1155 1163 1174 1223 1258 1273 
+                     .....  1436 1455 1469 1558 1568 1575 1587 1669 1752 1762 1809 1859 1936 1969 1989 
+                     .....  2040 2048 2054 2236 2267 2270 2303 2343 2406 2549 2555 2635 2647 2658 2683 
+                     .....  2692 2750 2805 2829 2844 2868 2913 3019 3063 3076 3109 3121 3175 3263 3283 
+                     .....  3312 3322 3345 3402 3462 3487 3509 3551 3624 3698 3722 3752 3824 3925 3928 
+                     .....  3935 3952 3967 4053 4138 4145 4177 4215 4272 4446 4512 4684 4749 4777 4868 
+                     .....  4948 4953 5051 5106 5126 5128 5145 5165 5225 5232 5247 5335 5368 5399 5407 
+                     .....  5515 5572 5695 5700 5706 5711 5775 5787 5797 5871 5951 5971 6008 6088 6186 
+                     .....  6193 6226 6358 6398 6428 6544 6550 6627 6690 6700 6806 6897 6909 6919 6924 
+                     .....  7014 7019 7030 7061 7086 7287 7366 7380 7447 7477 7504 7539 7543 7599 7683 
+                     .....  7698 7709 7759 7814 7834 8025 8164 8168 8244 8256 8290 8313 8396 8553 8654 
+                     .....  8701 8767 8809 8845 8915 8948 9005 9150 9171 9384 9479 9627 9646 9660 9711 
+                     .....  9758 9810 9873 9877 9924 
+ { des } creating 2 Descriptor Pools
+ { des } creating Compute Descriptor Sets
  { cmd } creating Command Buffers
  { cmd } creating Compute Command Buffers
  { ||| } creating Sync Objects
  
-                    main loop running ..........
+                   main loop running ..........
 
-23.05.08 18:12:45   { in } Mouse Click at 0.984896 : 0.0111111
-23.05.08 18:12:46   
-                    main loop ....... terminated
+ 23.05.09 14:40:49 
+                   main loop ....... terminated
  
-                    [ Terminating CAPITAL engine ]
+                   [ Terminating CAPITAL engine ]
 
  { Ctr } destructing Control
  { 010 } destructing Memory Management

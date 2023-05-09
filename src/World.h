@@ -1,6 +1,10 @@
 #pragma once
 #include <vulkan/vulkan.h>
+
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <array>
 #include <vector>
@@ -12,26 +16,27 @@ class World {
   World();
   ~World();
 
-  struct Grid {
-    const int width = 100;
-    const int height = width;
-    const int numGridPoints = width * height;
-    const float gridPointDistance = 2;
-    const int numberOfAliveCells = 100;
-  } grid;
+  struct UniformBufferObject {
+    int passedHours;  // TODO: 'long long'
+    int gridSize;
+
+    alignas(16) glm::mat4 model;
+    alignas(16) glm::mat4 view;
+    alignas(16) glm::mat4 proj;
+  };
 
   struct Cell {
-    std::array<float, 4> position;   // xyz
-    std::array<float, 4> color;      // rgba
-    std::array<float, 4> size;       // 1 float
-    std::array<float, 4> gridSize;   // 1 int
-    std::array<float, 4> printGLSL;  // used to write print statements to buffer
-    std::array<float, 4> alive;
+    std::array<float, 4> position;  // xyz pos
+    std::array<float, 4> color;     // rgba
+    std::array<float, 4> size;      // 1 float
   };
 
  public:
-  std::vector<int> setCellsAliveRandomly(int size);
   static std::vector<VkVertexInputAttributeDescription>
   getAttributeDescriptions();
   static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
+
+  glm::mat4 setModel();
+  glm::mat4 setView();
+  glm::mat4 setProjection(VkExtent2D& swapChainExtent);
 };

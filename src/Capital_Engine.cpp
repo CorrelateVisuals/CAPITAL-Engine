@@ -7,13 +7,13 @@
 #include "Window.h"
 
 CapitalEngine::CapitalEngine() {
-  _log.console("\n                    [", "Starting CAPITAL engine", "]\n");
+  _log.console("\n                   [", "Starting CAPITAL engine", "]\n");
 
   initVulkan();
 }
 
 CapitalEngine::~CapitalEngine() {
-  _log.console("\n                    [", "Terminating CAPITAL engine", "]\n");
+  _log.console("\n                   [", "Terminating CAPITAL engine", "]\n");
 }
 
 Global::~Global() {
@@ -21,18 +21,17 @@ Global::~Global() {
 }
 
 void CapitalEngine::mainLoop() {
-  _log.console("\n                   ", "main loop running ..........\n");
+  _log.console("\n                  ", "main loop running ..........\n");
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
 
-    // Simulation Essentials
     _control.simulateHours();
     drawFrame();
 
     _window.mouseClick(_window.window, GLFW_MOUSE_BUTTON_LEFT);
   }
   vkDeviceWaitIdle(_mechanics.mainDevice.logical);
-  _log.console("\n                   ", "main loop", "....... terminated");
+  _log.console("\n                  ", "main loop", "....... terminated");
 }
 
 void CapitalEngine::initVulkan() {
