@@ -299,7 +299,8 @@ VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
   return shaderModule;
 }
 
-MemoryCommands::MemoryCommands() {
+MemoryCommands::MemoryCommands()
+    : command{}, uniform{}, shaderStorage{}, descriptor{} {
   _log.console("{ 010 }", "constructing Memory Management");
 }
 
