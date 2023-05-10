@@ -14,7 +14,7 @@ class Logging {
   struct Style {
     std::string bulletLeader = "        -";
     std::string indentSize = "                 ";
-    static constexpr int numColumns = 15;
+    static constexpr int numColumns = 14;
   } style;
 
   template <class T, class... Ts>
@@ -26,12 +26,12 @@ class Logging {
     }
 
     std::string currentTime = returnDateAndTime();
-
+    int numColumnsOffset = 4;
     if (currentTime != previousTime) {
       std::cout << " " << returnDateAndTime();
       logFile << " " << returnDateAndTime();
     } else {
-      std::cout << std::string(style.numColumns + 3, ' ');
+      std::cout << std::string(style.numColumns + numColumnsOffset, ' ');
     }
 
     // If the first input is a vector, handle it separately
@@ -42,10 +42,10 @@ class Logging {
       for (const auto& element : first) {
         if (elementCount % style.numColumns == 0 && elementCount != 0) {
           std::cout << "\n"
-                    << std::string(style.numColumns + 4, ' ')
+                    << std::string(style.numColumns + numColumnsOffset, ' ')
                     << style.bulletLeader << " ";
           logFile << "\n"
-                  << std::string(style.numColumns + 4, ' ')
+                  << std::string(style.numColumns + numColumnsOffset, ' ')
                   << style.bulletLeader << " ";
           elementCount = 0;
         }
