@@ -41,10 +41,10 @@ class Logging {
       logFile << " " << style.bulletLeader << " ";
       for (const auto& element : first) {
         if (elementCount % style.numColumns == 0 && elementCount != 0) {
-          std::cout << "\n"
+          std::cout << "\n "
                     << std::string(style.numColumns + numColumnsOffset, ' ')
                     << style.bulletLeader << " ";
-          logFile << "\n"
+          logFile << "\n "
                   << std::string(style.numColumns + numColumnsOffset, ' ')
                   << style.bulletLeader << " ";
           elementCount = 0;
@@ -71,6 +71,9 @@ class Logging {
     }
     previousTime = currentTime;
   }
+
+ public:
+  std::string getBufferUsageString(VkBufferUsageFlags usage);
 
  private:
   std::ofstream logFile;

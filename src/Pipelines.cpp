@@ -10,14 +10,15 @@
 #include "World.h"
 
 Pipelines::Pipelines() : graphics{}, compute{} {
-  _log.console("{ .Pi }", "constructing Pipelines");
+  _log.console("{ Pip }", "constructing Pipelines");
 }
 
 Pipelines::~Pipelines() {
-  _log.console("{ Pi. }", "destructing Pipelines");
+  _log.console("{ Pip }", "destructing Pipelines");
 }
 
 void Pipelines::createRenderPass() {
+  _log.console("{ []< }", "creating Render Pass");
   VkAttachmentDescription colorAttachment{};
   colorAttachment.format = _mechanics.swapChain.imageFormat;
   colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -95,6 +96,7 @@ void MemoryCommands::createComputeDescriptorSetLayout() {
 }
 
 void Pipelines::createGraphicsPipeline() {
+  _log.console("{ Pip }", "creating Graphics Pipeline");
   auto vertShaderCode = readShaderFile("shaders/vert.spv");
   auto fragShaderCode = readShaderFile("shaders/frag.spv");
 
@@ -249,6 +251,7 @@ std::vector<char> Pipelines::readShaderFile(const std::string& filename) {
 }
 
 void Pipelines::createComputePipeline() {
+  _log.console("{ Pip }", "creating Compute Pipeline");
   auto computeShaderCode = readShaderFile("shaders/comp.spv");
 
   VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
@@ -311,6 +314,7 @@ MemoryCommands::~MemoryCommands() {
 }
 
 void MemoryCommands::createFramebuffers() {
+  _log.console("{ [/] }", "creating Frame Buffers");
   _mechanics.swapChain.framebuffers.resize(
       _mechanics.swapChain.imageViews.size());
 
@@ -389,9 +393,9 @@ void MemoryCommands::createComputeCommandBuffers() {
 }
 
 void MemoryCommands::createShaderStorageBuffers() {
-  _log.console("{ >>> }", "creating Shader Storage Buffers");
+  _log.console("{ buf }", "creating Shader Storage Buffers");
   // Initiliazation of cells on the grid
-  _log.console("{ oOo }", "initializing Cells");
+  _log.console(_log.style.bulletLeader, "initializing Cells");
   std::vector<World::Cell> cells(_control.grid.numGridPoints);
   std::vector<int> aliveCells =
       _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
@@ -461,6 +465,7 @@ void MemoryCommands::createShaderStorageBuffers() {
 }
 
 void MemoryCommands::createUniformBuffers() {
+  _log.console("{ buf }", "creating Uniform Buffers");
   VkDeviceSize bufferSize = sizeof(World::UniformBufferObject);
 
   uniform.buffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -727,6 +732,10 @@ void MemoryCommands::createBuffer(VkDeviceSize size,
   bufferInfo.size = size;
   bufferInfo.usage = usage;
   bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+  _log.console("{ buf }",
+               "creating Buffer:", _log.getBufferUsageString(bufferInfo.usage));
+  _log.console(_log.style.bulletLeader, "size:", bufferInfo.size);
 
   if (vkCreateBuffer(_mechanics.mainDevice.logical, &bufferInfo, nullptr,
                      &buffer) != VK_SUCCESS) {

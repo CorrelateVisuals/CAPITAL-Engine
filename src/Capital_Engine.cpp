@@ -49,7 +49,7 @@ void CapitalEngine::initVulkan() {
   _mechanics.createImageViews();
 
   _pipelines.createRenderPass();
-  _memCommands.createVertexDescriptorSetLayout();
+  //_memCommands.createVertexDescriptorSetLayout();
   _memCommands.createComputeDescriptorSetLayout();
   _pipelines.createGraphicsPipeline();
   _pipelines.createComputePipeline();

@@ -1,9 +1,9 @@
- 23.05.10 20:03:41 { ... } constructing Logging
+ 23.05.10 21:59:18 { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
  { ..# } constructing Vulkan Mechanics
- { .Pi } constructing Pipelines
+ { Pip } constructing Pipelines
  { 010 } constructing Memory Management
  { Ctr } constructing Control
  { (:) } constructing World
@@ -17,7 +17,7 @@
                            - Engine Name Version: CAPITAL engine 
                            - Engine Version: 1 
                            - API Version: 1.3
- { [ ] } creating Surface
+ 23.05.10 21:59:19 { [ ] } creating Surface
  { .#. } picking Physical Device
          - checking if Physical Device is suitable
          - finding Queue Families
@@ -26,37 +26,38 @@
  { .++ } creating Logical Device
          - finding Queue Families
          - Enabled Extension Names: VK_KHR_swapchain
- 23.05.10 20:03:42 { <-> } creating Swap Chain
+ { <-> } creating Swap Chain
          - querying Swap Chain Support
          - choosing Swap Surface Format
          - choosing Swap Present Mode
          - choosing Swap Extent
          - finding Queue Families
          - creating Image Views
- { set } creating Vertex Descriptor Set Layout
+ { []< } creating Render Pass
  { set } creating Compute Descriptor Set Layout
+ { Pip } creating Graphics Pipeline
          - creating Shader Module
          - creating Shader Module
+ { Pip } creating Compute Pipeline
          - creating Shader Module
+ { [/] } creating Frame Buffers
  { cmd } creating Command Pool
          - finding Queue Families
- { >>> } creating Shader Storage Buffers
- { oOo } initializing Cells
-         - 2 3 36 78 90 126 179 182 239 273 294 387 390 399 
-                          - 477 498 574 600 663 726 754 765 830 847 895 909 973 998 
-                          - 1039 1066 1092 1096 1143 1149 1172 1188 1235 1242 1246 1279 1295 1739 
-                          - 1754 1773 1794 1812 1824 1835 1857 1879 1953 2013 2067 2121 2147 2179 
-                          - 2215 2282 2332 2349 2396 2463 2501 2521 2577 2593 2597 2663 2748 2874 
-                          - 2905 2914 2945 2977 2985 3051 3166 3349 3537 3553 3564 3570 3584 3591 
-                          - 3671 3672 3901 3903 3906 3911 3918 3939 3959 3991 4072 4117 4194 4210 
-                          - 4303 4317 4410 4440 4457 4460 4513 4559 4799 4833 4869 4949 4980 4986 
-                          - 5042 5151 5176 5202 5287 5290 5298 5432 5461 5478 5673 5752 5760 5784 
-                          - 5795 5811 5822 5873 5936 5945 5957 6050 6137 6142 6212 6223 6227 6321 
-                          - 6398 6502 6515 6652 6833 6897 6933 6939 6985 7051 7073 7129 7187 7203 
-                          - 7210 7231 7243 7291 7381 7492 7574 7728 7806 7813 7814 7825 7859 8149 
-                          - 8263 8313 8358 8448 8480 8499 8581 8585 8704 8832 8877 8922 8944 8975 
-                          - 9043 9064 9134 9336 9412 9467 9485 9521 9551 9658 9672 9695 9765 9805 
-                          - 9827 9861 9888 9919 
+ { buf } creating Shader Storage Buffers
+         - initializing Cells
+         - 201 549 585 883 1077 1233 1942 2057 2495 4157 4234 5980 6428 6576 
+                           - 7528 7546 8462 8615 9099 9521 
+ { buf } creating Buffer: TRANSFER_SRC
+         - size: 480000
+ { buf } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
+         - size: 480000
+ { buf } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
+         - size: 480000
+ { buf } creating Uniform Buffers
+ { buf } creating Buffer: UNIFORM_BUFFER
+         - size: 208
+ { buf } creating Buffer: UNIFORM_BUFFER
+         - size: 208
  { set } creating 2 Descriptor Pools
  { set } creating Compute Descriptor Sets
  { cmd } creating Command Buffers
@@ -72,7 +73,7 @@
 
  { Ctr } destructing Control
  { 010 } destructing Memory Management
- { Pi. } destructing Pipelines
+ { Pip } destructing Pipelines
  { #.. } destructing Vulkan Mechanics
  { [-] } destructing Window
  { --. } destructing Validation Layers

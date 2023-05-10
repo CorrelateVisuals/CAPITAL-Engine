@@ -111,3 +111,42 @@ std::string Logging::returnDateAndTime() {
   strftime(nowStr, 20, "%y.%m.%d %H:%M:%S", &timeInfo);
   return std::string(nowStr);
 }
+
+std::string Logging::getBufferUsageString(VkBufferUsageFlags usage) {
+  std::string result;
+
+  if (usage & VK_BUFFER_USAGE_TRANSFER_SRC_BIT) {
+    result += "TRANSFER_SRC | ";
+  }
+  if (usage & VK_BUFFER_USAGE_TRANSFER_DST_BIT) {
+    result += "TRANSFER_DST | ";
+  }
+  if (usage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT) {
+    result += "UNIFORM_TEXEL_BUFFER | ";
+  }
+  if (usage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT) {
+    result += "STORAGE_TEXEL_BUFFER | ";
+  }
+  if (usage & VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT) {
+    result += "UNIFORM_BUFFER | ";
+  }
+  if (usage & VK_BUFFER_USAGE_STORAGE_BUFFER_BIT) {
+    result += "STORAGE_BUFFER | ";
+  }
+  if (usage & VK_BUFFER_USAGE_INDEX_BUFFER_BIT) {
+    result += "INDEX_BUFFER | ";
+  }
+  if (usage & VK_BUFFER_USAGE_VERTEX_BUFFER_BIT) {
+    result += "VERTEX_BUFFER | ";
+  }
+  if (usage & VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT) {
+    result += "INDIRECT_BUFFER | ";
+  }
+
+  // Remove the trailing " | " if there is one.
+  if (!result.empty()) {
+    result.erase(result.length() - 3);
+  }
+
+  return result;
+}
