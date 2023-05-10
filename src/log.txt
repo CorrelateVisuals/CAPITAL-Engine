@@ -1,4 +1,4 @@
- 23.05.10 21:59:18 { ... } constructing Logging
+ 23.05.10 22:11:37 { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
@@ -12,12 +12,12 @@
 
  { *** } initializing Capital Engine
  { .vk } creating Vulkan Instance
-         - Application name: Human CAPITAL 
-                           - Application Version :  4194304 
+         - Application name: CAPITAL 
+                           - Application Version: 4194304 
                            - Engine Name Version: CAPITAL engine 
                            - Engine Version: 1 
                            - API Version: 1.3
- 23.05.10 21:59:19 { [ ] } creating Surface
+ { [ ] } creating Surface
  { .#. } picking Physical Device
          - checking if Physical Device is suitable
          - finding Queue Families
@@ -43,21 +43,21 @@
  { [/] } creating Frame Buffers
  { cmd } creating Command Pool
          - finding Queue Families
- { buf } creating Shader Storage Buffers
+ { BUF } creating Shader Storage Buffers
          - initializing Cells
-         - 201 549 585 883 1077 1233 1942 2057 2495 4157 4234 5980 6428 6576 
-                           - 7528 7546 8462 8615 9099 9521 
- { buf } creating Buffer: TRANSFER_SRC
-         - size: 480000
- { buf } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
-         - size: 480000
- { buf } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
-         - size: 480000
- { buf } creating Uniform Buffers
- { buf } creating Buffer: UNIFORM_BUFFER
-         - size: 208
- { buf } creating Buffer: UNIFORM_BUFFER
-         - size: 208
+         - 14 92 122 148 527 2725 2908 3172 3192 3293 4069 4306 6109 6314 
+                           - 6454 6785 7335 7764 8168 8616 
+ { ... } creating Buffer: TRANSFER_SRC
+         - 480000 bytes
+ { ... } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
+         - 480000 bytes
+ { ... } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
+         - 480000 bytes
+ { BUF } creating Uniform Buffers
+ { ... } creating Buffer: UNIFORM_BUFFER
+         - 208 bytes
+ { ... } creating Buffer: UNIFORM_BUFFER
+         - 208 bytes
  { set } creating 2 Descriptor Pools
  { set } creating Compute Descriptor Sets
  { cmd } creating Command Buffers
@@ -66,7 +66,7 @@
  
                    { Main Loop } running ..........
 
- 
+ 23.05.10 22:11:38 
                    { Main Loop } ....... terminated
  
                    [ Terminating CAPITAL engine ]

@@ -289,7 +289,7 @@ void Pipelines::createComputePipeline() {
 }
 
 VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
-  _log.console(_log.style.bulletLeader, "creating Shader Module");
+  _log.console(_log.style.dashLeader, "creating Shader Module");
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   createInfo.codeSize = code.size();
@@ -393,9 +393,9 @@ void MemoryCommands::createComputeCommandBuffers() {
 }
 
 void MemoryCommands::createShaderStorageBuffers() {
-  _log.console("{ buf }", "creating Shader Storage Buffers");
+  _log.console("{ BUF }", "creating Shader Storage Buffers");
   // Initiliazation of cells on the grid
-  _log.console(_log.style.bulletLeader, "initializing Cells");
+  _log.console(_log.style.dashLeader, "initializing Cells");
   std::vector<World::Cell> cells(_control.grid.numGridPoints);
   std::vector<int> aliveCells =
       _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
@@ -465,7 +465,7 @@ void MemoryCommands::createShaderStorageBuffers() {
 }
 
 void MemoryCommands::createUniformBuffers() {
-  _log.console("{ buf }", "creating Uniform Buffers");
+  _log.console("{ BUF }", "creating Uniform Buffers");
   VkDeviceSize bufferSize = sizeof(World::UniformBufferObject);
 
   uniform.buffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -733,9 +733,9 @@ void MemoryCommands::createBuffer(VkDeviceSize size,
   bufferInfo.usage = usage;
   bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-  _log.console("{ buf }",
+  _log.console("{ ... }",
                "creating Buffer:", _log.getBufferUsageString(bufferInfo.usage));
-  _log.console(_log.style.bulletLeader, "size:", bufferInfo.size);
+  _log.console(_log.style.dashLeader, bufferInfo.size, "bytes");
 
   if (vkCreateBuffer(_mechanics.mainDevice.logical, &bufferInfo, nullptr,
                      &buffer) != VK_SUCCESS) {
