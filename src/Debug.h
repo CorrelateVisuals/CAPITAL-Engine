@@ -12,7 +12,7 @@ class Logging {
   ~Logging();
 
   struct Style {
-    std::string dashLeader = "        -";
+    std::string charLeader = "        :";
     std::string indentSize = "                 ";
     static constexpr int numColumns = 14;
   } style;
@@ -37,16 +37,16 @@ class Logging {
     // If the first input is a vector, handle it separately
     if constexpr (std::is_same_v<T, std::vector<int>>) {
       static int elementCount = 0;
-      std::cout << " " << style.dashLeader << " ";
-      logFile << " " << style.dashLeader << " ";
+      std::cout << " " << style.charLeader << " ";
+      logFile << " " << style.charLeader << " ";
       for (const auto& element : first) {
         if (elementCount % style.numColumns == 0 && elementCount != 0) {
           std::cout << "\n "
                     << std::string(style.numColumns + numColumnsOffset, ' ')
-                    << style.dashLeader << " ";
+                    << style.charLeader << " ";
           logFile << "\n "
                   << std::string(style.numColumns + numColumnsOffset, ' ')
-                  << style.dashLeader << " ";
+                  << style.charLeader << " ";
           elementCount = 0;
         }
         std::cout << element << ' ';

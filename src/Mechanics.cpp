@@ -36,13 +36,13 @@ void VulkanMechanics::createInstance() {
   appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
   appInfo.apiVersion = VK_API_VERSION_1_3;
   _log.console(
-      _log.style.dashLeader, "Application name:", appInfo.pApplicationName,
-      "\n", _log.style.indentSize, _log.style.dashLeader,
+      _log.style.charLeader, "Application name:", appInfo.pApplicationName,
+      "\n", _log.style.indentSize, _log.style.charLeader,
       "Application Version:", appInfo.applicationVersion, "\n",
-      _log.style.indentSize, _log.style.dashLeader,
+      _log.style.indentSize, _log.style.charLeader,
       "Engine Name Version:", appInfo.pEngineName, "\n", _log.style.indentSize,
-      _log.style.dashLeader, "Engine Version:", appInfo.engineVersion, "\n",
-      _log.style.indentSize, _log.style.dashLeader, "API Version:", 1.3);
+      _log.style.charLeader, "Engine Version:", appInfo.engineVersion, "\n",
+      _log.style.indentSize, _log.style.charLeader, "API Version:", 1.3);
 
   VkInstanceCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -105,7 +105,7 @@ void VulkanMechanics::pickPhysicalDevice() {
 
 VulkanMechanics::Queues::FamilyIndices VulkanMechanics::findQueueFamilies(
     VkPhysicalDevice physicalDevice) {
-  _log.console(_log.style.dashLeader, "finding Queue Families");
+  _log.console(_log.style.charLeader, "finding Queue Families");
 
   VulkanMechanics::Queues::FamilyIndices indices;
 
@@ -144,7 +144,7 @@ VulkanMechanics::Queues::FamilyIndices VulkanMechanics::findQueueFamilies(
 
 VulkanMechanics::SwapChain::SupportDetails
 VulkanMechanics::querySwapChainSupport(VkPhysicalDevice physicalDevice) {
-  _log.console(_log.style.dashLeader, "querying Swap Chain Support");
+  _log.console(_log.style.charLeader, "querying Swap Chain Support");
   {
     SwapChain::SupportDetails details;
 
@@ -178,7 +178,7 @@ VulkanMechanics::querySwapChainSupport(VkPhysicalDevice physicalDevice) {
 
 bool VulkanMechanics::checkDeviceExtensionSupport(
     VkPhysicalDevice physicalDevice) {
-  _log.console(_log.style.dashLeader, "checking Device Extension Support");
+  _log.console(_log.style.charLeader, "checking Device Extension Support");
   uint32_t extensionCount;
   vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount,
                                        nullptr);
@@ -230,7 +230,7 @@ void VulkanMechanics::createLogicalDevice() {
       static_cast<uint32_t>(deviceExtensions.size());
   createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-  _log.console(_log.style.dashLeader,
+  _log.console(_log.style.charLeader,
                "Enabled Extension Names:", *createInfo.ppEnabledExtensionNames);
 
   if (_validationLayers.enableValidationLayers) {
@@ -256,7 +256,7 @@ void VulkanMechanics::createLogicalDevice() {
 
 VkSurfaceFormatKHR VulkanMechanics::chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR>& availableFormats) {
-  _log.console(_log.style.dashLeader, "choosing Swap Surface Format");
+  _log.console(_log.style.charLeader, "choosing Swap Surface Format");
 
   for (const auto& availableFormat : availableFormats) {
     if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
@@ -270,7 +270,7 @@ VkSurfaceFormatKHR VulkanMechanics::chooseSwapSurfaceFormat(
 
 VkPresentModeKHR VulkanMechanics::chooseSwapPresentMode(
     const std::vector<VkPresentModeKHR>& availablePresentModes) {
-  _log.console(_log.style.dashLeader, "choosing Swap Present Mode");
+  _log.console(_log.style.charLeader, "choosing Swap Present Mode");
   for (const auto& availablePresentMode : availablePresentModes) {
     if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
       return availablePresentMode;
@@ -282,7 +282,7 @@ VkPresentModeKHR VulkanMechanics::chooseSwapPresentMode(
 
 VkExtent2D VulkanMechanics::chooseSwapExtent(
     const VkSurfaceCapabilitiesKHR& capabilities) {
-  _log.console(_log.style.dashLeader, "choosing Swap Extent");
+  _log.console(_log.style.charLeader, "choosing Swap Extent");
 
   if (capabilities.currentExtent.width !=
       std::numeric_limits<uint32_t>::max()) {
@@ -358,7 +358,7 @@ void VulkanMechanics::cleanupSwapChain() {
 }
 
 bool VulkanMechanics::isDeviceSuitable(VkPhysicalDevice physicalDevice) {
-  _log.console(_log.style.dashLeader,
+  _log.console(_log.style.charLeader,
                "checking if Physical Device is suitable");
 
   Queues::FamilyIndices indices = findQueueFamilies(physicalDevice);
@@ -469,7 +469,7 @@ std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
 }
 
 void VulkanMechanics::createImageViews() {
-  _log.console(_log.style.dashLeader, "creating Image Views");
+  _log.console(_log.style.charLeader, "creating Image Views");
   swapChain.imageViews.resize(swapChain.images.size());
 
   for (size_t i = 0; i < swapChain.images.size(); i++) {
