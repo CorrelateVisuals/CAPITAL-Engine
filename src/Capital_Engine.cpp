@@ -49,7 +49,6 @@ void CapitalEngine::initVulkan() {
   _mechanics.createImageViews();
 
   _pipelines.createRenderPass();
-  //_memCommands.createVertexDescriptorSetLayout();
   _memCommands.createComputeDescriptorSetLayout();
   _pipelines.createGraphicsPipeline();
   _pipelines.createComputePipeline();
@@ -60,7 +59,6 @@ void CapitalEngine::initVulkan() {
 
   _memCommands.createUniformBuffers();
   _memCommands.createDescriptorPool();
-  //_memCommands.createVertexDescriptorSets();
   _memCommands.createComputeDescriptorSets();
 
   _memCommands.createCommandBuffers();
@@ -198,8 +196,6 @@ void CapitalEngine::drawFrame() {
 }
 
 void Global::cleanup() {
-  _log.console("{ cleanup }");
-
   _mechanics.cleanupSwapChain();
 
   vkDestroyPipeline(_mechanics.mainDevice.logical, _pipelines.graphics.pipeline,

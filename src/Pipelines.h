@@ -54,9 +54,7 @@ class MemoryCommands {
   struct Descriptor {
     VkDescriptorPool pool;
     std::vector<VkDescriptorSet> sets;
-    std::vector<VkDescriptorSet> vertexSets;
     VkDescriptorSetLayout setLayout;
-    VkDescriptorSetLayout vertexSetLayout;
   } descriptor;
 
  public:
@@ -78,9 +76,6 @@ class MemoryCommands {
 
   void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);
   void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
-
-  void createVertexDescriptorSetLayout();
-  void createVertexDescriptorSets();
 
  private:
   void createBuffer(VkDeviceSize size,

@@ -1,4 +1,4 @@
- 23.05.10 22:34:42 { ... } constructing Logging
+ 23.05.10 22:44:07 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
@@ -26,7 +26,7 @@
  { +++ } creating Logical Device
          - finding Queue Families
          - Enabled Extension Names: VK_KHR_swapchain
- 23.05.10 22:34:43 { <-> } creating Swap Chain
+ { <-> } creating Swap Chain
          - querying Swap Chain Support
          - choosing Swap Surface Format
          - choosing Swap Present Mode
@@ -45,8 +45,8 @@
          - finding Queue Families
  { BUF } creating Shader Storage Buffers
          - initializing Cells
-         - 324 1630 1827 2142 2344 2409 4455 5555 5970 6937 7029 7142 7255 7320 
-                           - 7820 7865 8161 8333 8937 9030 
+         - 104 212 1307 1506 1581 2849 3480 3901 4016 4259 4693 4974 6354 6358 
+                           - 6749 7528 7886 9038 9661 9828 
  { ... } creating Buffer: TRANSFER_SRC
          - 480000 bytes
  { ... } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
@@ -66,7 +66,23 @@
  
                    { Main Loop } running ..........
 
- 
+ 23.05.10 22:44:08 { --> } Mouse Click at 0.542593 : 0.475926
+ { --> } Mouse Click at 0.366667 : 0.482407
+ 23.05.10 22:44:09 { --> } Mouse Click at 0.0796296 : 0.163889
+ { --> } Mouse Click at 0.0564815 : 0.125
+ { --> } Mouse Click at 0.12963 : 0.125
+ 23.05.10 22:44:10 { --> } Mouse Click at 0.131481 : 0.125
+ { --> } Mouse Click at 0.69537 : 0.340741
+ 23.05.10 22:44:11 { [*] } Window resized to 2056 * 1080
+ { <-> } creating Swap Chain
+         - querying Swap Chain Support
+         - choosing Swap Surface Format
+         - choosing Swap Present Mode
+         - choosing Swap Extent
+         - finding Queue Families
+         - creating Image Views
+ { [/] } creating Frame Buffers
+ 23.05.10 22:44:12 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...
