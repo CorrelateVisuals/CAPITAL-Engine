@@ -23,7 +23,8 @@ Global::~Global() {
 }
 
 void CapitalEngine::mainLoop() {
-  _log.console("\n", _log.style.indentSize, "main loop running ..........\n");
+  _log.console("\n", _log.style.indentSize,
+               "{ Main Loop } running ..........\n");
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
 
@@ -33,7 +34,8 @@ void CapitalEngine::mainLoop() {
     _window.mouseClick(_window.window, GLFW_MOUSE_BUTTON_LEFT);
   }
   vkDeviceWaitIdle(_mechanics.mainDevice.logical);
-  _log.console("\n", _log.style.indentSize, "main loop", "....... terminated");
+  _log.console("\n", _log.style.indentSize, "{ Main Loop }",
+               "....... terminated");
 }
 
 void CapitalEngine::initVulkan() {
