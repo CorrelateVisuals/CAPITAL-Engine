@@ -1,4 +1,4 @@
- 23.05.10 22:11:37 { ... } constructing Logging
+ 23.05.10 22:15:30 { ... } constructing Logging
  { .-- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
@@ -8,11 +8,11 @@
  { Ctr } constructing Control
  { (:) } constructing World
  
-                   [ Starting CAPITAL engine ]
+                   [ CAPITAL engine ] starting...
 
  { *** } initializing Capital Engine
  { .vk } creating Vulkan Instance
-         - Application name: CAPITAL 
+ 23.05.10 22:15:31         - Application name: CAPITAL 
                            - Application Version: 4194304 
                            - Engine Name Version: CAPITAL engine 
                            - Engine Version: 1 
@@ -45,8 +45,8 @@
          - finding Queue Families
  { BUF } creating Shader Storage Buffers
          - initializing Cells
-         - 14 92 122 148 527 2725 2908 3172 3192 3293 4069 4306 6109 6314 
-                           - 6454 6785 7335 7764 8168 8616 
+         - 572 1724 2005 4029 4057 4058 4738 4743 5246 5420 5858 5922 6034 6054 
+                           - 6316 6621 7180 7941 9607 9639 
  { ... } creating Buffer: TRANSFER_SRC
          - 480000 bytes
  { ... } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
@@ -66,10 +66,10 @@
  
                    { Main Loop } running ..........
 
- 23.05.10 22:11:38 
+ 
                    { Main Loop } ....... terminated
  
-                   [ Terminating CAPITAL engine ]
+                   [ CAPITAL engine ] terminating...
 
  { Ctr } destructing Control
  { 010 } destructing Memory Management

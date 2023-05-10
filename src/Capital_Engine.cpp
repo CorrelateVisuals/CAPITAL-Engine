@@ -7,15 +7,15 @@
 #include "Window.h"
 
 CapitalEngine::CapitalEngine() {
-  _log.console("\n", _log.style.indentSize, "[", "Starting CAPITAL engine",
-               "]\n");
+  _log.console("\n", _log.style.indentSize, "[ CAPITAL engine ]",
+               "starting...\n");
 
   initVulkan();
 }
 
 CapitalEngine::~CapitalEngine() {
-  _log.console("\n", _log.style.indentSize, "[", "Terminating CAPITAL engine",
-               "]\n");
+  _log.console("\n", _log.style.indentSize, "[ CAPITAL engine ]",
+               "terminating...\n");
 }
 
 Global::~Global() {
