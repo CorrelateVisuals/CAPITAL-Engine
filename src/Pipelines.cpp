@@ -10,14 +10,15 @@
 #include "World.h"
 
 Pipelines::Pipelines() : graphics{}, compute{} {
-  _log.console("{ .Pi }", "constructing Pipelines");
+  _log.console("{ PIP }", "constructing Pipelines");
 }
 
 Pipelines::~Pipelines() {
-  _log.console("{ Pi. }", "destructing Pipelines");
+  _log.console("{ PIP }", "destructing Pipelines");
 }
 
 void Pipelines::createRenderPass() {
+  _log.console("{ []< }", "creating Render Pass");
   VkAttachmentDescription colorAttachment{};
   colorAttachment.format = _mechanics.swapChain.imageFormat;
   colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -61,6 +62,8 @@ void Pipelines::createRenderPass() {
 }
 
 void MemoryCommands::createComputeDescriptorSetLayout() {
+  _log.console("{ DES }", "creating Compute Descriptor Set Layout");
+
   std::array<VkDescriptorSetLayoutBinding, 3> layoutBindings{};
   layoutBindings[0].binding = 0;
   layoutBindings[0].descriptorCount = 1;
@@ -93,6 +96,7 @@ void MemoryCommands::createComputeDescriptorSetLayout() {
 }
 
 void Pipelines::createGraphicsPipeline() {
+  _log.console("{ PIP }", "creating Graphics Pipeline");
   auto vertShaderCode = readShaderFile("shaders/vert.spv");
   auto fragShaderCode = readShaderFile("shaders/frag.spv");
 
@@ -247,6 +251,7 @@ std::vector<char> Pipelines::readShaderFile(const std::string& filename) {
 }
 
 void Pipelines::createComputePipeline() {
+  _log.console("{ PIP }", "creating Compute Pipeline");
   auto computeShaderCode = readShaderFile("shaders/comp.spv");
 
   VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
@@ -284,7 +289,7 @@ void Pipelines::createComputePipeline() {
 }
 
 VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
-  _log.console("  .....  ", "creating Shader Module");
+  _log.console(_log.style.dashLeader, "creating Shader Module");
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   createInfo.codeSize = code.size();
@@ -299,7 +304,8 @@ VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
   return shaderModule;
 }
 
-MemoryCommands::MemoryCommands() {
+MemoryCommands::MemoryCommands()
+    : command{}, uniform{}, shaderStorage{}, descriptor{} {
   _log.console("{ 010 }", "constructing Memory Management");
 }
 
@@ -308,6 +314,7 @@ MemoryCommands::~MemoryCommands() {
 }
 
 void MemoryCommands::createFramebuffers() {
+  _log.console("{ [/] }", "creating Frame Buffers");
   _mechanics.swapChain.framebuffers.resize(
       _mechanics.swapChain.imageViews.size());
 
@@ -334,7 +341,7 @@ void MemoryCommands::createFramebuffers() {
 }
 
 void MemoryCommands::createCommandPool() {
-  _log.console("{ cmd }", "creating Command Pool");
+  _log.console("{ CMD }", "creating Command Pool");
 
   VulkanMechanics::Queues::FamilyIndices queueFamilyIndices =
       _mechanics.findQueueFamilies(_mechanics.mainDevice.physical);
@@ -352,7 +359,7 @@ void MemoryCommands::createCommandPool() {
 }
 
 void MemoryCommands::createCommandBuffers() {
-  _log.console("{ cmd }", "creating Command Buffers");
+  _log.console("{ CMD }", "creating Command Buffers");
 
   command.graphicBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -369,7 +376,7 @@ void MemoryCommands::createCommandBuffers() {
 }
 
 void MemoryCommands::createComputeCommandBuffers() {
-  _log.console("{ cmd }", "creating Compute Command Buffers");
+  _log.console("{ CMD }", "creating Compute Command Buffers");
 
   command.computeBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -386,9 +393,9 @@ void MemoryCommands::createComputeCommandBuffers() {
 }
 
 void MemoryCommands::createShaderStorageBuffers() {
-  _log.console("{ >>> }", "creating Shader Storage Buffers");
+  _log.console("{ BUF }", "creating Shader Storage Buffers");
   // Initiliazation of cells on the grid
-  _log.console("{ oOo }", "initializing Cells");
+  _log.console(_log.style.dashLeader, "initializing Cells");
   std::vector<World::Cell> cells(_control.grid.numGridPoints);
   std::vector<int> aliveCells =
       _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
@@ -458,6 +465,7 @@ void MemoryCommands::createShaderStorageBuffers() {
 }
 
 void MemoryCommands::createUniformBuffers() {
+  _log.console("{ BUF }", "creating Uniform Buffers");
   VkDeviceSize bufferSize = sizeof(World::UniformBufferObject);
 
   uniform.buffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -477,8 +485,8 @@ void MemoryCommands::createUniformBuffers() {
 
 void MemoryCommands::createDescriptorPool() {
   const int numPools = 2;
-  _log.console("{ des }", "creating", numPools, "Descriptor Pools");
-  std::array<VkDescriptorPoolSize, 2> poolSizes{};
+  _log.console("{ DES }", "creating", numPools, "Descriptor Pools");
+  std::array<VkDescriptorPoolSize, numPools> poolSizes{};
   poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
@@ -488,7 +496,7 @@ void MemoryCommands::createDescriptorPool() {
 
   VkDescriptorPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-  poolInfo.poolSizeCount = 2;
+  poolInfo.poolSizeCount = numPools;
   poolInfo.pPoolSizes = poolSizes.data();
   poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
@@ -499,7 +507,7 @@ void MemoryCommands::createDescriptorPool() {
 }
 
 void MemoryCommands::createComputeDescriptorSets() {
-  _log.console("{ des }", "creating Compute Descriptor Sets");
+  _log.console("{ DES }", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptor.setLayout);
   VkDescriptorSetAllocateInfo allocInfo{};
@@ -666,6 +674,10 @@ void MemoryCommands::createBuffer(VkDeviceSize size,
   bufferInfo.size = size;
   bufferInfo.usage = usage;
   bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+  _log.console("{ ... }",
+               "creating Buffer:", _log.getBufferUsageString(bufferInfo.usage));
+  _log.console(_log.style.dashLeader, bufferInfo.size, "bytes");
 
   if (vkCreateBuffer(_mechanics.mainDevice.logical, &bufferInfo, nullptr,
                      &buffer) != VK_SUCCESS) {

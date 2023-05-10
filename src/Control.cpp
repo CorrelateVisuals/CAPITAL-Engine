@@ -6,11 +6,11 @@
 #include "World.h"
 
 Control::Control() {
-  _log.console("{ Ctr }", "constructing Control");
+  _log.console("{ CTR }", "constructing Control");
 }
 
 Control::~Control() {
-  _log.console("{ Ctr }", "destructing Control");
+  _log.console("{ CTR }", "destructing Control");
 }
 
 void Control::simulateHours() {

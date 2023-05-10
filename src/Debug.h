@@ -11,7 +11,11 @@ class Logging {
   Logging();
   ~Logging();
 
-  static constexpr int numColumns = 15;
+  struct Style {
+    std::string dashLeader = "        -";
+    std::string indentSize = "                 ";
+    static constexpr int numColumns = 14;
+  } style;
 
   template <class T, class... Ts>
   void console(const T& first, const Ts&... inputs) {
@@ -22,23 +26,27 @@ class Logging {
     }
 
     std::string currentTime = returnDateAndTime();
-
+    int numColumnsOffset = 4;
     if (currentTime != previousTime) {
       std::cout << " " << returnDateAndTime();
       logFile << " " << returnDateAndTime();
     } else {
-      std::cout << std::string(numColumns + 3, ' ');
+      std::cout << std::string(style.numColumns + numColumnsOffset, ' ');
     }
 
     // If the first input is a vector, handle it separately
     if constexpr (std::is_same_v<T, std::vector<int>>) {
       static int elementCount = 0;
-      std::cout << "   .....  ";
-      logFile << "   .....  ";
+      std::cout << " " << style.dashLeader << " ";
+      logFile << " " << style.dashLeader << " ";
       for (const auto& element : first) {
-        if (elementCount % numColumns == 0 && elementCount != 0) {
-          std::cout << "\n" << std::string(numColumns + 3, ' ') << "   .....  ";
-          logFile << "\n" << std::string(numColumns + 3, ' ') << "   .....  ";
+        if (elementCount % style.numColumns == 0 && elementCount != 0) {
+          std::cout << "\n "
+                    << std::string(style.numColumns + numColumnsOffset, ' ')
+                    << style.dashLeader << " ";
+          logFile << "\n "
+                  << std::string(style.numColumns + numColumnsOffset, ' ')
+                  << style.dashLeader << " ";
           elementCount = 0;
         }
         std::cout << element << ' ';
@@ -63,6 +71,9 @@ class Logging {
     }
     previousTime = currentTime;
   }
+
+ public:
+  std::string getBufferUsageString(VkBufferUsageFlags usage);
 
  private:
   std::ofstream logFile;
