@@ -14,15 +14,15 @@
 #include "World.h"
 
 VulkanMechanics::VulkanMechanics() {
-  _log.console("{ ..# }", "constructing Vulkan Mechanics");
+  _log.console("{ #?# }", "constructing Vulkan Mechanics");
 }
 
 VulkanMechanics::~VulkanMechanics() {
-  _log.console("{ #.. }", "destructing Vulkan Mechanics");
+  _log.console("{ #?# }", "destructing Vulkan Mechanics");
 }
 
 void VulkanMechanics::createInstance() {
-  _log.console("{ .vk }", "creating Vulkan Instance");
+  _log.console("{ VKI }", "creating Vulkan Instance");
   if (_validationLayers.enableValidationLayers &&
       !_validationLayers.checkValidationLayerSupport()) {
     throw std::runtime_error("validation layers requested, but not available!");
@@ -31,7 +31,7 @@ void VulkanMechanics::createInstance() {
   VkApplicationInfo appInfo{};
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
   appInfo.pApplicationName = "CAPITAL";
-  appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+  appInfo.applicationVersion = VK_MAKE_VERSION(0, 0, 1);
   appInfo.pEngineName = "CAPITAL engine";
   appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
   appInfo.apiVersion = VK_API_VERSION_1_3;
@@ -80,7 +80,7 @@ void VulkanMechanics::createSurface() {
 }
 
 void VulkanMechanics::pickPhysicalDevice() {
-  _log.console("{ .#. }", "picking Physical Device");
+  _log.console("{ ### }", "picking Physical Device");
   uint32_t deviceCount = 0;
   vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
@@ -198,7 +198,7 @@ bool VulkanMechanics::checkDeviceExtensionSupport(
 }
 
 void VulkanMechanics::createLogicalDevice() {
-  _log.console("{ .++ }", "creating Logical Device");
+  _log.console("{ +++ }", "creating Logical Device");
   Queues::FamilyIndices indices = findQueueFamilies(mainDevice.physical);
 
   std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;

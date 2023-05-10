@@ -1,32 +1,32 @@
- 23.05.10 22:15:30 { ... } constructing Logging
- { .-- } constructing Validation Layers
+ 23.05.10 22:34:42 { ... } constructing Logging
+ { --- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
- { ..# } constructing Vulkan Mechanics
- { Pip } constructing Pipelines
+ { #?# } constructing Vulkan Mechanics
+ { PIP } constructing Pipelines
  { 010 } constructing Memory Management
- { Ctr } constructing Control
+ { CTR } constructing Control
  { (:) } constructing World
  
                    [ CAPITAL engine ] starting...
 
  { *** } initializing Capital Engine
- { .vk } creating Vulkan Instance
- 23.05.10 22:15:31         - Application name: CAPITAL 
-                           - Application Version: 4194304 
+ { VKI } creating Vulkan Instance
+         - Application name: CAPITAL 
+                           - Application Version: 1 
                            - Engine Name Version: CAPITAL engine 
                            - Engine Version: 1 
                            - API Version: 1.3
  { [ ] } creating Surface
- { .#. } picking Physical Device
+ { ### } picking Physical Device
          - checking if Physical Device is suitable
          - finding Queue Families
          - checking Device Extension Support
          - querying Swap Chain Support
- { .++ } creating Logical Device
+ { +++ } creating Logical Device
          - finding Queue Families
          - Enabled Extension Names: VK_KHR_swapchain
- { <-> } creating Swap Chain
+ 23.05.10 22:34:43 { <-> } creating Swap Chain
          - querying Swap Chain Support
          - choosing Swap Surface Format
          - choosing Swap Present Mode
@@ -34,19 +34,19 @@
          - finding Queue Families
          - creating Image Views
  { []< } creating Render Pass
- { set } creating Compute Descriptor Set Layout
- { Pip } creating Graphics Pipeline
+ { DES } creating Compute Descriptor Set Layout
+ { PIP } creating Graphics Pipeline
          - creating Shader Module
          - creating Shader Module
- { Pip } creating Compute Pipeline
+ { PIP } creating Compute Pipeline
          - creating Shader Module
  { [/] } creating Frame Buffers
- { cmd } creating Command Pool
+ { CMD } creating Command Pool
          - finding Queue Families
  { BUF } creating Shader Storage Buffers
          - initializing Cells
-         - 572 1724 2005 4029 4057 4058 4738 4743 5246 5420 5858 5922 6034 6054 
-                           - 6316 6621 7180 7941 9607 9639 
+         - 324 1630 1827 2142 2344 2409 4455 5555 5970 6937 7029 7142 7255 7320 
+                           - 7820 7865 8161 8333 8937 9030 
  { ... } creating Buffer: TRANSFER_SRC
          - 480000 bytes
  { ... } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
@@ -58,10 +58,10 @@
          - 208 bytes
  { ... } creating Buffer: UNIFORM_BUFFER
          - 208 bytes
- { set } creating 2 Descriptor Pools
- { set } creating Compute Descriptor Sets
- { cmd } creating Command Buffers
- { cmd } creating Compute Command Buffers
+ { DES } creating 2 Descriptor Pools
+ { DES } creating Compute Descriptor Sets
+ { CMD } creating Command Buffers
+ { CMD } creating Compute Command Buffers
  { ||| } creating Sync Objects
  
                    { Main Loop } running ..........
@@ -71,10 +71,10 @@
  
                    [ CAPITAL engine ] terminating...
 
- { Ctr } destructing Control
+ { CTR } destructing Control
  { 010 } destructing Memory Management
- { Pip } destructing Pipelines
- { #.. } destructing Vulkan Mechanics
+ { PIP } destructing Pipelines
+ { #?# } destructing Vulkan Mechanics
  { [-] } destructing Window
- { --. } destructing Validation Layers
+ { --- } destructing Validation Layers
  { ... } destructing Logging

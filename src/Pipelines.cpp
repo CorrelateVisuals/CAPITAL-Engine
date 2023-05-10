@@ -10,11 +10,11 @@
 #include "World.h"
 
 Pipelines::Pipelines() : graphics{}, compute{} {
-  _log.console("{ Pip }", "constructing Pipelines");
+  _log.console("{ PIP }", "constructing Pipelines");
 }
 
 Pipelines::~Pipelines() {
-  _log.console("{ Pip }", "destructing Pipelines");
+  _log.console("{ PIP }", "destructing Pipelines");
 }
 
 void Pipelines::createRenderPass() {
@@ -62,7 +62,7 @@ void Pipelines::createRenderPass() {
 }
 
 void MemoryCommands::createComputeDescriptorSetLayout() {
-  _log.console("{ set }", "creating Compute Descriptor Set Layout");
+  _log.console("{ DES }", "creating Compute Descriptor Set Layout");
 
   std::array<VkDescriptorSetLayoutBinding, 3> layoutBindings{};
   layoutBindings[0].binding = 0;
@@ -96,7 +96,7 @@ void MemoryCommands::createComputeDescriptorSetLayout() {
 }
 
 void Pipelines::createGraphicsPipeline() {
-  _log.console("{ Pip }", "creating Graphics Pipeline");
+  _log.console("{ PIP }", "creating Graphics Pipeline");
   auto vertShaderCode = readShaderFile("shaders/vert.spv");
   auto fragShaderCode = readShaderFile("shaders/frag.spv");
 
@@ -251,7 +251,7 @@ std::vector<char> Pipelines::readShaderFile(const std::string& filename) {
 }
 
 void Pipelines::createComputePipeline() {
-  _log.console("{ Pip }", "creating Compute Pipeline");
+  _log.console("{ PIP }", "creating Compute Pipeline");
   auto computeShaderCode = readShaderFile("shaders/comp.spv");
 
   VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
@@ -341,7 +341,7 @@ void MemoryCommands::createFramebuffers() {
 }
 
 void MemoryCommands::createCommandPool() {
-  _log.console("{ cmd }", "creating Command Pool");
+  _log.console("{ CMD }", "creating Command Pool");
 
   VulkanMechanics::Queues::FamilyIndices queueFamilyIndices =
       _mechanics.findQueueFamilies(_mechanics.mainDevice.physical);
@@ -359,7 +359,7 @@ void MemoryCommands::createCommandPool() {
 }
 
 void MemoryCommands::createCommandBuffers() {
-  _log.console("{ cmd }", "creating Command Buffers");
+  _log.console("{ CMD }", "creating Command Buffers");
 
   command.graphicBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -376,7 +376,7 @@ void MemoryCommands::createCommandBuffers() {
 }
 
 void MemoryCommands::createComputeCommandBuffers() {
-  _log.console("{ cmd }", "creating Compute Command Buffers");
+  _log.console("{ CMD }", "creating Compute Command Buffers");
 
   command.computeBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -485,7 +485,7 @@ void MemoryCommands::createUniformBuffers() {
 
 void MemoryCommands::createDescriptorPool() {
   const int numPools = 2;
-  _log.console("{ set }", "creating", numPools, "Descriptor Pools");
+  _log.console("{ DES }", "creating", numPools, "Descriptor Pools");
   std::array<VkDescriptorPoolSize, numPools> poolSizes{};
   poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
@@ -507,7 +507,7 @@ void MemoryCommands::createDescriptorPool() {
 }
 
 void MemoryCommands::createVertexDescriptorSets() {
-  _log.console("{ set }", "creating Vertex Descriptor Sets");
+  _log.console("{ DES }", "creating Vertex Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptor.vertexSetLayout);
   VkDescriptorSetAllocateInfo allocInfo{};
@@ -544,7 +544,7 @@ void MemoryCommands::createVertexDescriptorSets() {
 }
 
 void MemoryCommands::createComputeDescriptorSets() {
-  _log.console("{ set }", "creating Compute Descriptor Sets");
+  _log.console("{ DES }", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptor.setLayout);
   VkDescriptorSetAllocateInfo allocInfo{};
@@ -702,7 +702,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
 }
 
 void MemoryCommands::createVertexDescriptorSetLayout() {
-  _log.console("{ set }", "creating Vertex Descriptor Set Layout");
+  _log.console("{ DES }", "creating Vertex Descriptor Set Layout");
   VkDescriptorSetLayoutBinding uboLayoutBinding{};
   uboLayoutBinding.binding = 0;
   uboLayoutBinding.descriptorCount = 1;

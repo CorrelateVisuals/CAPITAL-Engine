@@ -17,11 +17,11 @@ Logging::~Logging() {
 
 ValidationLayers::ValidationLayers()
     : debugMessenger{}, validationLayers{"VK_LAYER_KHRONOS_validation"} {
-  _log.console("{ .-- }", "constructing Validation Layers");
+  _log.console("{ --- }", "constructing Validation Layers");
 }
 
 ValidationLayers::~ValidationLayers() {
-  _log.console("{ --. }", "destructing Validation Layers");
+  _log.console("{ --- }", "destructing Validation Layers");
 }
 
 void ValidationLayers::logValidationMessage(const std::string& string,
