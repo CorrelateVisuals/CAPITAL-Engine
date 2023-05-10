@@ -11,7 +11,11 @@ class Logging {
   Logging();
   ~Logging();
 
-  static constexpr int numColumns = 15;
+  struct Style {
+    std::string bulletLeader = "        -";
+    std::string indentSize = "                 ";
+    static constexpr int numColumns = 15;
+  } style;
 
   template <class T, class... Ts>
   void console(const T& first, const Ts&... inputs) {
@@ -27,18 +31,22 @@ class Logging {
       std::cout << " " << returnDateAndTime();
       logFile << " " << returnDateAndTime();
     } else {
-      std::cout << std::string(numColumns + 3, ' ');
+      std::cout << std::string(style.numColumns + 3, ' ');
     }
 
     // If the first input is a vector, handle it separately
     if constexpr (std::is_same_v<T, std::vector<int>>) {
       static int elementCount = 0;
-      std::cout << "   .....  ";
-      logFile << "   .....  ";
+      std::cout << " " << style.bulletLeader << " ";
+      logFile << " " << style.bulletLeader << " ";
       for (const auto& element : first) {
-        if (elementCount % numColumns == 0 && elementCount != 0) {
-          std::cout << "\n" << std::string(numColumns + 3, ' ') << "   .....  ";
-          logFile << "\n" << std::string(numColumns + 3, ' ') << "   .....  ";
+        if (elementCount % style.numColumns == 0 && elementCount != 0) {
+          std::cout << "\n"
+                    << std::string(style.numColumns + 4, ' ')
+                    << style.bulletLeader << " ";
+          logFile << "\n"
+                  << std::string(style.numColumns + 4, ' ')
+                  << style.bulletLeader << " ";
           elementCount = 0;
         }
         std::cout << element << ' ';

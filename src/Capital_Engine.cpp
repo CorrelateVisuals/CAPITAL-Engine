@@ -7,13 +7,15 @@
 #include "Window.h"
 
 CapitalEngine::CapitalEngine() {
-  _log.console("\n                   [", "Starting CAPITAL engine", "]\n");
+  _log.console("\n", _log.style.indentSize, "[", "Starting CAPITAL engine",
+               "]\n");
 
   initVulkan();
 }
 
 CapitalEngine::~CapitalEngine() {
-  _log.console("\n                   [", "Terminating CAPITAL engine", "]\n");
+  _log.console("\n", _log.style.indentSize, "[", "Terminating CAPITAL engine",
+               "]\n");
 }
 
 Global::~Global() {
@@ -21,7 +23,8 @@ Global::~Global() {
 }
 
 void CapitalEngine::mainLoop() {
-  _log.console("\n                  ", "main loop running ..........\n");
+  _log.console("\n", _log.style.indentSize,
+               "{ Main Loop } running ..........\n");
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
 
@@ -31,7 +34,8 @@ void CapitalEngine::mainLoop() {
     _window.mouseClick(_window.window, GLFW_MOUSE_BUTTON_LEFT);
   }
   vkDeviceWaitIdle(_mechanics.mainDevice.logical);
-  _log.console("\n                  ", "main loop", "....... terminated");
+  _log.console("\n", _log.style.indentSize, "{ Main Loop }",
+               "....... terminated");
 }
 
 void CapitalEngine::initVulkan() {
@@ -45,6 +49,7 @@ void CapitalEngine::initVulkan() {
   _mechanics.createImageViews();
 
   _pipelines.createRenderPass();
+  _memCommands.createVertexDescriptorSetLayout();
   _memCommands.createComputeDescriptorSetLayout();
   _pipelines.createGraphicsPipeline();
   _pipelines.createComputePipeline();
@@ -55,6 +60,7 @@ void CapitalEngine::initVulkan() {
 
   _memCommands.createUniformBuffers();
   _memCommands.createDescriptorPool();
+  //_memCommands.createVertexDescriptorSets();
   _memCommands.createComputeDescriptorSets();
 
   _memCommands.createCommandBuffers();

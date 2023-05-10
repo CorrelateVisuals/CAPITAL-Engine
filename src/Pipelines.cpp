@@ -61,6 +61,8 @@ void Pipelines::createRenderPass() {
 }
 
 void MemoryCommands::createComputeDescriptorSetLayout() {
+  _log.console("{ set }", "creating Compute Descriptor Set Layout");
+
   std::array<VkDescriptorSetLayoutBinding, 3> layoutBindings{};
   layoutBindings[0].binding = 0;
   layoutBindings[0].descriptorCount = 1;
@@ -284,7 +286,7 @@ void Pipelines::createComputePipeline() {
 }
 
 VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
-  _log.console("  .....  ", "creating Shader Module");
+  _log.console(_log.style.bulletLeader, "creating Shader Module");
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   createInfo.codeSize = code.size();
@@ -478,8 +480,8 @@ void MemoryCommands::createUniformBuffers() {
 
 void MemoryCommands::createDescriptorPool() {
   const int numPools = 2;
-  _log.console("{ des }", "creating", numPools, "Descriptor Pools");
-  std::array<VkDescriptorPoolSize, 2> poolSizes{};
+  _log.console("{ set }", "creating", numPools, "Descriptor Pools");
+  std::array<VkDescriptorPoolSize, numPools> poolSizes{};
   poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
@@ -489,7 +491,7 @@ void MemoryCommands::createDescriptorPool() {
 
   VkDescriptorPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-  poolInfo.poolSizeCount = 2;
+  poolInfo.poolSizeCount = numPools;
   poolInfo.pPoolSizes = poolSizes.data();
   poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
@@ -499,8 +501,45 @@ void MemoryCommands::createDescriptorPool() {
   }
 }
 
+void MemoryCommands::createVertexDescriptorSets() {
+  _log.console("{ set }", "creating Vertex Descriptor Sets");
+  std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
+                                             descriptor.vertexSetLayout);
+  VkDescriptorSetAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+  allocInfo.descriptorPool = descriptor.pool;
+  allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+  allocInfo.pSetLayouts = layouts.data();
+
+  descriptor.sets.resize(MAX_FRAMES_IN_FLIGHT);
+
+  if (vkAllocateDescriptorSets(_mechanics.mainDevice.logical, &allocInfo,
+                               descriptor.vertexSets.data()) != VK_SUCCESS) {
+    throw std::runtime_error("failed to allocate descriptor sets!");
+  }
+
+  for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+    VkDescriptorBufferInfo bufferInfo{};
+    bufferInfo.buffer = uniform.buffers[i];
+    bufferInfo.offset = 0;
+    bufferInfo.range = sizeof(World::UniformBufferObject);
+
+    VkWriteDescriptorSet descriptorWrite{};
+    descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrite.dstSet = descriptor.vertexSets[i];
+    descriptorWrite.dstBinding = 0;
+    descriptorWrite.dstArrayElement = 0;
+    descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrite.descriptorCount = 1;
+    descriptorWrite.pBufferInfo = &bufferInfo;
+
+    vkUpdateDescriptorSets(_mechanics.mainDevice.logical, 1, &descriptorWrite,
+                           0, nullptr);
+  }
+}
+
 void MemoryCommands::createComputeDescriptorSets() {
-  _log.console("{ des }", "creating Compute Descriptor Sets");
+  _log.console("{ set }", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptor.setLayout);
   VkDescriptorSetAllocateInfo allocInfo{};
@@ -654,6 +693,27 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to record command buffer!");
+  }
+}
+
+void MemoryCommands::createVertexDescriptorSetLayout() {
+  _log.console("{ set }", "creating Vertex Descriptor Set Layout");
+  VkDescriptorSetLayoutBinding uboLayoutBinding{};
+  uboLayoutBinding.binding = 0;
+  uboLayoutBinding.descriptorCount = 1;
+  uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+  uboLayoutBinding.pImmutableSamplers = nullptr;
+  uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+  VkDescriptorSetLayoutCreateInfo layoutInfo{};
+  layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+  layoutInfo.bindingCount = 1;
+  layoutInfo.pBindings = &uboLayoutBinding;
+
+  if (vkCreateDescriptorSetLayout(
+          _mechanics.mainDevice.logical, &layoutInfo, nullptr,
+          &_memCommands.descriptor.vertexSetLayout) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create descriptor set layout!");
   }
 }
 
