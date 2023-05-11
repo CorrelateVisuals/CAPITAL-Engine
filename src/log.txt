@@ -1,7 +1,7 @@
- 23.05.10 22:54:23 { ... } constructing Logging
+ 23.05.11 00:33:30 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
- 23.05.10 22:54:24 { [*] } Window initialized with 1080 * 1080
+ { [*] } Window initialized with 1080 * 1080
  { #?# } constructing Vulkan Mechanics
  { PIP } constructing Pipelines
  { 010 } constructing Memory Management
@@ -17,7 +17,7 @@
                            : Engine Name Version: CAPITAL engine 
                            : Engine Version: 1 
                            : API Version: 1.3
- { [ ] } creating Surface
+ 23.05.11 00:33:31 { [ ] } creating Surface
  { ### } picking Physical Device
          : checking if Physical Device is suitable
          : finding Queue Families
@@ -34,7 +34,7 @@
          : finding Queue Families
          : creating Image Views
  { []< } creating Render Pass
- { DES } creating Compute Descriptor Set Layout
+ 23.05.11 00:33:33 { DES } creating Compute Descriptor Set Layout
  { PIP } creating Graphics Pipeline
          : creating Shader Module
          : creating Shader Module
@@ -45,8 +45,8 @@
          : finding Queue Families
  { BUF } creating Shader Storage Buffers
          : initializing Cells
-         : 514 517 1078 1305 1344 1441 1676 1800 2250 2465 2513 3373 3552 3555 
-                           : 4160 4468 5258 5315 9174 9816 
+         : 627 683 741 968 1006 1103 1416 1870 2419 2634 3868 4048 5307 6147 
+                           : 8722 8838 9172 9416 9491 9582 
  { ... } creating Buffer: TRANSFER_SRC
          : 480000 bytes
  { ... } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
@@ -66,7 +66,19 @@
  
                    { Main Loop } running ..........
 
- 23.05.10 22:54:25 
+ 23.05.11 00:33:37 { [*] } Window resized to 3840 * 2109
+ { <-> } creating Swap Chain
+         : querying Swap Chain Support
+         : choosing Swap Surface Format
+         : choosing Swap Present Mode
+         : choosing Swap Extent
+         : finding Queue Families
+         : creating Image Views
+ { [/] } creating Frame Buffers
+ 23.05.11 00:33:38 { --> } Mouse Click at 0.440625 : 0.466572
+ { --> } Mouse Click at 0.382292 : 0.438596
+ 23.05.11 00:33:39 { --> } Mouse Click at 0.382292 : 0.438596
+ 23.05.11 00:33:41 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...

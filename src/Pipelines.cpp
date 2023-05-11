@@ -69,7 +69,8 @@ void MemoryCommands::createComputeDescriptorSetLayout() {
   layoutBindings[0].descriptorCount = 1;
   layoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   layoutBindings[0].pImmutableSamplers = nullptr;
-  layoutBindings[0].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+  layoutBindings[0].stageFlags =
+      VK_SHADER_STAGE_COMPUTE_BIT | VK_SHADER_STAGE_VERTEX_BIT;
 
   layoutBindings[1].binding = 1;
   layoutBindings[1].descriptorCount = 1;
@@ -196,8 +197,8 @@ void Pipelines::createGraphicsPipeline() {
 
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-  pipelineLayoutInfo.setLayoutCount = 0;
-  pipelineLayoutInfo.pSetLayouts = nullptr;
+  pipelineLayoutInfo.setLayoutCount = 1;
+  pipelineLayoutInfo.pSetLayouts = &_memCommands.descriptor.setLayout;
 
   if (vkCreatePipelineLayout(_mechanics.mainDevice.logical, &pipelineLayoutInfo,
                              nullptr, &graphics.pipelineLayout) != VK_SUCCESS) {
@@ -654,6 +655,11 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
       commandBuffer, 0, 1,
       &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],
       offsets);
+
+  vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                          _pipelines.graphics.pipelineLayout, 0, 1,
+                          &descriptor.sets[_mechanics.syncObjects.currentFrame],
+                          0, nullptr);
 
   vkCmdDraw(commandBuffer, 36, _control.grid.numGridPoints, 0, 0);
 

@@ -1,8 +1,20 @@
 #version 450
+#extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
 
 layout(location = 0) in vec4 inPosition;
 layout(location = 1) in vec4 inColor;
 layout(location = 2) in vec4 inSize;
+
+layout (binding = 0) uniform ParameterUBO {
+    int passedHours; //TODO 'long long' : int64_t passedHours;
+    int gridSize;
+
+    mat4 model;
+    mat4 view;
+    mat4 projection;
+} ubo;
+
+mat4 modelViewProjection(){ mat4 mvp = ubo.projection * ubo.view * ubo.model; return mvp; }
 
 float scaler = 0.025f;
 vec3 cubeVertices[8] = {
@@ -15,8 +27,10 @@ layout(location = 0) out vec3 fragColor;
 
 void main() { if( inSize.x == -1.0f ){ return; } // Skip all dead cells.
 
+    mat4 tempModel = ubo.model;
+
     vec4 drawVertices = inPosition.rgba + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * scaler, vec2(0.0));
-    gl_Position = drawVertices; //modelViewProjection() * 
+    gl_Position = modelViewProjection() * drawVertices;  
 
     fragColor = cubeVertices[ cubeIndices[ gl_VertexIndex ]] + inColor.rgb;
 }
