@@ -35,6 +35,18 @@ void Window::windowResize(GLFWwindow* window, int width, int height) {
   _log.console("{ [*] }", "Window resized to", width, "*", height);
 }
 
+void Window::getMouseButtonTypePressed() {
+  const int mouseButtonTypes[] = {GLFW_MOUSE_BUTTON_LEFT,
+                                  GLFW_MOUSE_BUTTON_MIDDLE,
+                                  GLFW_MOUSE_BUTTON_RIGHT};
+  for (const auto& mouseButtonType : mouseButtonTypes) {
+    if (glfwGetMouseButton(_window.window, mouseButtonType) == GLFW_PRESS) {
+      mouse.buttonType = mouseButtonType;
+      return;
+    }
+  }
+}
+
 void Window::mouseClick(GLFWwindow* window, int button) {
   static int oldState = GLFW_RELEASE;
   int newState = glfwGetMouseButton(window, button);
@@ -49,8 +61,12 @@ void Window::mouseClick(GLFWwindow* window, int button) {
   ypos /= displayConfig.height;
 
   if (oldState == GLFW_PRESS && newState == GLFW_RELEASE) {
-    _log.console("{ --> }", "Mouse Click at", xpos, ":", ypos);
-    timer = 0.0;  // reset the timer when the mouse button is released
+    if ((oldState == GLFW_PRESS) && (newState == GLFW_RELEASE)) {
+      _log.console(button);
+      _log.console("{ --> }", "Mouse Click at", xpos, ":", ypos);
+      timer = 0.0;
+    }
+
   } else if (newState == GLFW_PRESS) {
     if (timer < 0.2) {
       if (pressTime == 0.0) {
@@ -59,7 +75,7 @@ void Window::mouseClick(GLFWwindow* window, int button) {
       timer = glfwGetTime() - pressTime;
     } else {
       _log.console("{ --> }", "Mouse Down at", xpos, ":", ypos);
-      mousePosition = {xpos, ypos};
+      mouse.leftCoords = {xpos, ypos};
     }
   } else {
     pressTime =

@@ -11,9 +11,16 @@ class Window {
   GLFWwindow* window;
   bool framebufferResized;
 
-  std::array<double, 2> mousePosition = {0.5, 0.5};
+  struct MousePositions {
+    int buttonType = -1;
+    std::array<double, 2> leftCoords = {0.5, 0.5};
+    std::array<double, 2> middleCoords = {0.5, 0.5};
+    std::array<double, 2> rightCoords = {0.5, 0.5};
+  } mouse;
 
   void initWindow();
+
+  void getMouseButtonTypePressed();
   void mouseClick(GLFWwindow* window, int button);
 
  private:

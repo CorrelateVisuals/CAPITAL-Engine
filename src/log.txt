@@ -1,4 +1,4 @@
- 23.05.11 14:22:11 { ... } constructing Logging
+ 23.05.11 16:38:49 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
@@ -26,7 +26,7 @@
  { +++ } creating Logical Device
          : finding Queue Families
          : Enabled Extension Names: VK_KHR_swapchain
- 23.05.11 14:22:12 { <-> } creating Swap Chain
+ { <-> } creating Swap Chain
          : querying Swap Chain Support
          : choosing Swap Surface Format
          : choosing Swap Present Mode
@@ -74,7 +74,7 @@
                            : 364 365 366 367 368 369 370 371 372 373 374 375 376 377 
                            : 378 379 380 381 382 383 384 385 386 387 388 389 390 391 
                            : 392 393 394 395 396 397 398 399 
- { ... } creating Buffer: TRANSFER_SRC
+ 23.05.11 16:38:50 { ... } creating Buffer: TRANSFER_SRC
          : 19200 bytes
  { ... } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
          : 19200 bytes
@@ -93,7 +93,265 @@
  
                    { Main Loop } running ..........
 
- 23.05.11 14:22:13 
+ 0
+ { --> } Mouse Click at 0.542593 : 0.553704
+ 0
+ { --> } Mouse Click at 0.780556 : 0.592593
+ 23.05.11 16:38:51 0
+ { --> } Mouse Click at 0.683333 : 0.568519
+ 1
+ { --> } Mouse Click at 0.513889 : 0.514815
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ 23.05.11 16:38:52 { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ { --> } Mouse Down at 0.631481 : 0.411111
+ 0
+ { --> } Mouse Click at 0.631481 : 0.411111
+ 0
+ { --> } Mouse Click at 0.515741 : 0.300926
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ 23.05.11 16:38:53 { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ { --> } Mouse Down at 0.533333 : 0.439815
+ 2
+ { --> } Mouse Click at 0.533333 : 0.439815
+ 1
+ { --> } Mouse Click at 0.660185 : 0.35463
+ 1
+ { --> } Mouse Click at 0.425926 : 0.50463
+ 1
+ { --> } Mouse Click at 0.382407 : 0.511111
+ 1
+ { --> } Mouse Click at 0.417593 : 0.492593
+ 23.05.11 16:38:54 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...
