@@ -77,7 +77,7 @@ void Window::mouseClick(GLFWwindow* window, int button) {
           timer = 0.0;
           break;
         case GLFW_PRESS:
-          if (timer < 0.2) {
+          if (timer < mouse.pressDelayDuration) {
             if (pressTime == 0.0) {
               pressTime = glfwGetTime();
             }
@@ -104,8 +104,7 @@ void Window::mouseClick(GLFWwindow* window, int button) {
       if (newState == GLFW_PRESS) {
         pressTime = glfwGetTime();
       } else {
-        pressTime =
-            0.0;  // reset the press time when the mouse button is not pressed
+        pressTime = 0.0;
       }
       break;
   }

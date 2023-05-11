@@ -11,8 +11,9 @@ class Window {
   GLFWwindow* window;
   bool framebufferResized;
 
-  struct MousePositions {
+  struct Mouse {
     int buttonType = -1;
+    float pressDelayDuration = 0.12f;
     std::array<double, 2> leftCoords = {0, 0};
     std::array<double, 2> middleCoords = {0, 0};
     std::array<double, 2> rightCoords = {0, 0};
