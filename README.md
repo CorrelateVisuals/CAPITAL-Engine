@@ -5,6 +5,7 @@ Based on the tutorial series by Sascha Willems.
 https://vulkan-tutorial.com/Introduction
 
 External Libraries
+
 	// C++ Additional Include Directories
 	$(SolutionDir)..\Libraries\glfw-3.3.8\include
 	$(SolutionDir)..\Libraries\glm
