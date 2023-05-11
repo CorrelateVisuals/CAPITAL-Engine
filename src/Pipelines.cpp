@@ -10,14 +10,15 @@
 #include "World.h"
 
 Pipelines::Pipelines() : graphics{}, compute{} {
-  _log.console("{ .Pi }", "constructing Pipelines");
+  _log.console("{ PIP }", "constructing Pipelines");
 }
 
 Pipelines::~Pipelines() {
-  _log.console("{ Pi. }", "destructing Pipelines");
+  _log.console("{ PIP }", "destructing Pipelines");
 }
 
 void Pipelines::createRenderPass() {
+  _log.console("{ []< }", "creating Render Pass");
   VkAttachmentDescription colorAttachment{};
   colorAttachment.format = _mechanics.swapChain.imageFormat;
   colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -61,12 +62,15 @@ void Pipelines::createRenderPass() {
 }
 
 void MemoryCommands::createComputeDescriptorSetLayout() {
+  _log.console("{ DES }", "creating Compute Descriptor Set Layout");
+
   std::array<VkDescriptorSetLayoutBinding, 3> layoutBindings{};
   layoutBindings[0].binding = 0;
   layoutBindings[0].descriptorCount = 1;
   layoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   layoutBindings[0].pImmutableSamplers = nullptr;
-  layoutBindings[0].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+  layoutBindings[0].stageFlags =
+      VK_SHADER_STAGE_COMPUTE_BIT | VK_SHADER_STAGE_VERTEX_BIT;
 
   layoutBindings[1].binding = 1;
   layoutBindings[1].descriptorCount = 1;
@@ -93,6 +97,7 @@ void MemoryCommands::createComputeDescriptorSetLayout() {
 }
 
 void Pipelines::createGraphicsPipeline() {
+  _log.console("{ PIP }", "creating Graphics Pipeline");
   auto vertShaderCode = readShaderFile("shaders/vert.spv");
   auto fragShaderCode = readShaderFile("shaders/frag.spv");
 
@@ -120,19 +125,20 @@ void Pipelines::createGraphicsPipeline() {
   vertexInputInfo.sType =
       VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-  auto bindingDescription = World::Cell::getBindingDescription();
-  auto attributeDescriptions = World::Cell::getAttributeDescriptions();
+  auto bindingDescriptions = World::getBindingDescriptions();
+  auto attributeDescriptions = World::getAttributeDescriptions();
 
-  vertexInputInfo.vertexBindingDescriptionCount = 1;
+  vertexInputInfo.vertexBindingDescriptionCount =
+      static_cast<uint32_t>(bindingDescriptions.size());
   vertexInputInfo.vertexAttributeDescriptionCount =
       static_cast<uint32_t>(attributeDescriptions.size());
-  vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+  vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
   vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
   VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
   inputAssembly.sType =
       VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
   inputAssembly.primitiveRestartEnable = VK_FALSE;
 
   VkPipelineViewportStateCreateInfo viewportState{};
@@ -146,7 +152,7 @@ void Pipelines::createGraphicsPipeline() {
   rasterizer.rasterizerDiscardEnable = VK_FALSE;
   rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
   rasterizer.lineWidth = 1.0f;
-  rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+  rasterizer.cullMode = VK_CULL_MODE_NONE;
   rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
   rasterizer.depthBiasEnable = VK_FALSE;
 
@@ -191,8 +197,8 @@ void Pipelines::createGraphicsPipeline() {
 
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-  pipelineLayoutInfo.setLayoutCount = 0;
-  pipelineLayoutInfo.pSetLayouts = nullptr;
+  pipelineLayoutInfo.setLayoutCount = 1;
+  pipelineLayoutInfo.pSetLayouts = &_memCommands.descriptor.setLayout;
 
   if (vkCreatePipelineLayout(_mechanics.mainDevice.logical, &pipelineLayoutInfo,
                              nullptr, &graphics.pipelineLayout) != VK_SUCCESS) {
@@ -246,6 +252,7 @@ std::vector<char> Pipelines::readShaderFile(const std::string& filename) {
 }
 
 void Pipelines::createComputePipeline() {
+  _log.console("{ PIP }", "creating Compute Pipeline");
   auto computeShaderCode = readShaderFile("shaders/comp.spv");
 
   VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
@@ -283,7 +290,7 @@ void Pipelines::createComputePipeline() {
 }
 
 VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
-  _log.console("  .....  ", "creating Shader Module");
+  _log.console(_log.style.charLeader, "creating Shader Module");
   VkShaderModuleCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   createInfo.codeSize = code.size();
@@ -298,7 +305,8 @@ VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
   return shaderModule;
 }
 
-MemoryCommands::MemoryCommands() {
+MemoryCommands::MemoryCommands()
+    : command{}, uniform{}, shaderStorage{}, descriptor{} {
   _log.console("{ 010 }", "constructing Memory Management");
 }
 
@@ -307,6 +315,7 @@ MemoryCommands::~MemoryCommands() {
 }
 
 void MemoryCommands::createFramebuffers() {
+  _log.console("{ [/] }", "creating Frame Buffers");
   _mechanics.swapChain.framebuffers.resize(
       _mechanics.swapChain.imageViews.size());
 
@@ -333,7 +342,7 @@ void MemoryCommands::createFramebuffers() {
 }
 
 void MemoryCommands::createCommandPool() {
-  _log.console("{ cmd }", "creating Command Pool");
+  _log.console("{ CMD }", "creating Command Pool");
 
   VulkanMechanics::Queues::FamilyIndices queueFamilyIndices =
       _mechanics.findQueueFamilies(_mechanics.mainDevice.physical);
@@ -351,7 +360,7 @@ void MemoryCommands::createCommandPool() {
 }
 
 void MemoryCommands::createCommandBuffers() {
-  _log.console("{ cmd }", "creating Command Buffers");
+  _log.console("{ CMD }", "creating Command Buffers");
 
   command.graphicBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -368,7 +377,7 @@ void MemoryCommands::createCommandBuffers() {
 }
 
 void MemoryCommands::createComputeCommandBuffers() {
-  _log.console("{ cmd }", "creating Compute Command Buffers");
+  _log.console("{ CMD }", "creating Compute Command Buffers");
 
   command.computeBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -385,16 +394,17 @@ void MemoryCommands::createComputeCommandBuffers() {
 }
 
 void MemoryCommands::createShaderStorageBuffers() {
-  _log.console("{ >>> }", "creating Shader Storage Buffers");
+  _log.console("{ BUF }", "creating Shader Storage Buffers");
   // Initiliazation of cells on the grid
-  _log.console("{ oOo }", "initializing Cells");
-  std::vector<World::Cell> cells(_world.grid.numGridPoints);
-  std::vector<int> aliveCells = _world.setCellsAliveRandomly(15);
+  _log.console(_log.style.charLeader, "initializing Cells");
+  std::vector<World::Cell> cells(_control.grid.numGridPoints);
+  std::vector<int> aliveCells =
+      _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
 
   // Grid size
-  const int gridWidth = _world.grid.width;
-  const int gridHeight = _world.grid.height;
-  const float gridPointDistance = _world.grid.gridPointDistance;
+  const int gridWidth = _control.grid.gridDimensions[0];
+  const int gridHeight = _control.grid.gridDimensions[1];
+  const float gridPointDistance = _control.grid.gridPointDistance;
   // Grid cell size
   const float cellWidth = gridPointDistance / gridWidth;
   const float cellHeight = gridPointDistance / gridHeight;
@@ -409,23 +419,20 @@ void MemoryCommands::createShaderStorageBuffers() {
     for (int y = 0; y < gridHeight; y++) {
       int index = x + y * gridWidth;
       cells[index].position = {offsetX + x * cellWidth,
-                               offsetY + y * cellHeight, 1.0f, 1.0f};
-      cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
-      cells[index].size = {20.0f, 0.0f, 0.0f, 0.0f};
-      cells[index].gridSize = {static_cast<float>(_world.grid.numGridPoints),
-                               0.0f, 0.0f, 0.0f};
+                               offsetY + y * cellHeight,
+                               _control.getRandomFloat(0.0, 0.3), 1.0f};
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
-        cells[index].alive = {1.0f};
-
-        _log.console("  Cell:", index,
-                     "  set alive at:", cells[index].position[0],
-                     cells[index].position[1], cells[index].position[2]);
+        cells[index].size = {_control.cellGeo.size, 0.0f, 0.0f, 0.0f};
+        cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
+      } else {
+        cells[index].size = {-1.0f, -1.0f, -1.0f, -1.0f};
       }
     }
   }
+  _log.console(aliveCells);
 
-  VkDeviceSize bufferSize = sizeof(World::Cell) * _world.grid.numGridPoints;
+  VkDeviceSize bufferSize = sizeof(World::Cell) * _control.grid.numGridPoints;
 
   // Create a staging buffer used to upload data to the gpu
   VkBuffer stagingBuffer;
@@ -460,7 +467,8 @@ void MemoryCommands::createShaderStorageBuffers() {
 }
 
 void MemoryCommands::createUniformBuffers() {
-  VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+  _log.console("{ BUF }", "creating Uniform Buffers");
+  VkDeviceSize bufferSize = sizeof(World::UniformBufferObject);
 
   uniform.buffers.resize(MAX_FRAMES_IN_FLIGHT);
   uniform.buffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
@@ -479,8 +487,8 @@ void MemoryCommands::createUniformBuffers() {
 
 void MemoryCommands::createDescriptorPool() {
   const int numPools = 2;
-  _log.console("{ & & }", "creating", numPools, "Descriptor Pools");
-  std::array<VkDescriptorPoolSize, 2> poolSizes{};
+  _log.console("{ DES }", "creating", numPools, "Descriptor Pools");
+  std::array<VkDescriptorPoolSize, numPools> poolSizes{};
   poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
   poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
@@ -490,7 +498,7 @@ void MemoryCommands::createDescriptorPool() {
 
   VkDescriptorPoolCreateInfo poolInfo{};
   poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-  poolInfo.poolSizeCount = 2;
+  poolInfo.poolSizeCount = numPools;
   poolInfo.pPoolSizes = poolSizes.data();
   poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
@@ -501,7 +509,7 @@ void MemoryCommands::createDescriptorPool() {
 }
 
 void MemoryCommands::createComputeDescriptorSets() {
-  _log.console("{  &  }", "creating Compute Descriptor Sets");
+  _log.console("{ DES }", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptor.setLayout);
   VkDescriptorSetAllocateInfo allocInfo{};
@@ -520,7 +528,7 @@ void MemoryCommands::createComputeDescriptorSets() {
     VkDescriptorBufferInfo uniformBufferInfo{};
     uniformBufferInfo.buffer = uniform.buffers[i];
     uniformBufferInfo.offset = 0;
-    uniformBufferInfo.range = sizeof(UniformBufferObject);
+    uniformBufferInfo.range = sizeof(World::UniformBufferObject);
 
     std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
     descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -536,7 +544,7 @@ void MemoryCommands::createComputeDescriptorSets() {
         shaderStorage.buffers[(i - 1) % MAX_FRAMES_IN_FLIGHT];
     storageBufferInfoLastFrame.offset = 0;
     storageBufferInfoLastFrame.range =
-        sizeof(World::Cell) * _world.grid.numGridPoints;
+        sizeof(World::Cell) * _control.grid.numGridPoints;
 
     descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[1].dstSet = descriptor.sets[i];
@@ -550,7 +558,7 @@ void MemoryCommands::createComputeDescriptorSets() {
     storageBufferInfoCurrentFrame.buffer = shaderStorage.buffers[i];
     storageBufferInfoCurrentFrame.offset = 0;
     storageBufferInfoCurrentFrame.range =
-        sizeof(World::Cell) * _world.grid.numGridPoints;
+        sizeof(World::Cell) * _control.grid.numGridPoints;
 
     descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[2].dstSet = descriptor.sets[i];
@@ -566,8 +574,14 @@ void MemoryCommands::createComputeDescriptorSets() {
 }
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
-  UniformBufferObject ubo{};
+  World::UniformBufferObject ubo{};
   ubo.passedHours = _control.passedSimulationHours;
+  ubo.gridSize = _control.grid.numGridPoints;
+
+  ubo.model = _world.setModel();
+  ubo.view = _world.setView();
+  ubo.proj = _world.setProjection(_mechanics.swapChain.extent);
+
   std::memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 
@@ -588,7 +602,8 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
                           &descriptor.sets[_mechanics.syncObjects.currentFrame],
                           0, nullptr);
 
-  vkCmdDispatch(commandBuffer, _world.grid.numGridPoints / 256, 1, 1);
+  vkCmdDispatch(commandBuffer,
+                static_cast<uint32_t>(sqrt(_control.grid.numGridPoints)), 1, 1);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to record compute command buffer!");
@@ -641,7 +656,12 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
       &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],
       offsets);
 
-  vkCmdDraw(commandBuffer, _world.grid.numGridPoints, 1, 0, 0);
+  vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                          _pipelines.graphics.pipelineLayout, 0, 1,
+                          &descriptor.sets[_mechanics.syncObjects.currentFrame],
+                          0, nullptr);
+
+  vkCmdDraw(commandBuffer, 36, _control.grid.numGridPoints, 0, 0);
 
   vkCmdEndRenderPass(commandBuffer);
 
@@ -660,6 +680,10 @@ void MemoryCommands::createBuffer(VkDeviceSize size,
   bufferInfo.size = size;
   bufferInfo.usage = usage;
   bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+  _log.console("{ ... }",
+               "creating Buffer:", _log.getBufferUsageString(bufferInfo.usage));
+  _log.console(_log.style.charLeader, bufferInfo.size, "bytes");
 
   if (vkCreateBuffer(_mechanics.mainDevice.logical, &bufferInfo, nullptr,
                      &buffer) != VK_SUCCESS) {

@@ -7,13 +7,15 @@
 #include "Window.h"
 
 CapitalEngine::CapitalEngine() {
-  _log.console("\n                    [", "Starting CAPITAL engine", "]\n");
+  _log.console("\n", _log.style.indentSize, "[ CAPITAL engine ]",
+               "starting...\n");
 
   initVulkan();
 }
 
 CapitalEngine::~CapitalEngine() {
-  _log.console("\n                    [", "Terminating CAPITAL engine", "]\n");
+  _log.console("\n", _log.style.indentSize, "[ CAPITAL engine ]",
+               "terminating...\n");
 }
 
 Global::~Global() {
@@ -21,18 +23,19 @@ Global::~Global() {
 }
 
 void CapitalEngine::mainLoop() {
-  _log.console("\n                   ", "main loop running ..........\n");
+  _log.console("\n", _log.style.indentSize,
+               "{ Main Loop } running ..........\n");
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
 
-    // Simulation Essentials
     _control.simulateHours();
     drawFrame();
 
     _window.mouseClick(_window.window, GLFW_MOUSE_BUTTON_LEFT);
   }
   vkDeviceWaitIdle(_mechanics.mainDevice.logical);
-  _log.console("\n                   ", "main loop", "....... terminated");
+  _log.console("\n", _log.style.indentSize, "{ Main Loop }",
+               "....... terminated");
 }
 
 void CapitalEngine::initVulkan() {
@@ -193,8 +196,6 @@ void CapitalEngine::drawFrame() {
 }
 
 void Global::cleanup() {
-  _log.console("{ cleanup }");
-
   _mechanics.cleanupSwapChain();
 
   vkDestroyPipeline(_mechanics.mainDevice.logical, _pipelines.graphics.pipeline,

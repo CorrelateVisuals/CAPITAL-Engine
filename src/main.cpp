@@ -11,7 +11,7 @@ int main() {
     _log.console(e.what());
     return EXIT_FAILURE;
   } catch (...) {
-    _log.console("!!!!!!!!!", "unknown error caught in main()");
+    _log.console("unknown error caught in main()");
   }
   return EXIT_SUCCESS;
 }

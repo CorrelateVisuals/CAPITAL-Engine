@@ -11,38 +11,74 @@ class Logging {
   Logging();
   ~Logging();
 
-  std::ofstream logFile;
+  struct Style {
+    std::string charLeader = "        :";
+    std::string indentSize = "                 ";
+    static constexpr int numColumns = 14;
+  } style;
 
-  std::string previousTime = "";
-
-  template <class... Ts>
-  void console(Ts&&... inputs) {
+  template <class T, class... Ts>
+  void console(const T& first, const Ts&... inputs) {
     int i = 0;
     if (!logFile.is_open()) {
       std::cerr << "!!! Could not open logFile for writing !!!" << std::endl;
       return;
     }
-    std::string currentTime = returnDateAndTime();
 
+    std::string currentTime = returnDateAndTime();
+    int numColumnsOffset = 4;
     if (currentTime != previousTime) {
-      std::cout << returnDateAndTime();
-      logFile << returnDateAndTime();
+      std::cout << " " << returnDateAndTime();
+      logFile << " " << returnDateAndTime();
     } else {
-      std::cout << "                   ";
+      std::cout << std::string(style.numColumns + numColumnsOffset, ' ');
     }
-    (
-        [&] {
-          ++i;
-          std::cerr << " " << inputs;
-          logFile << " " << inputs;
-        }(),
-        ...);
-    std::cerr << std::endl;
-    logFile << std::endl;
+
+    // If the first input is a vector, handle it separately
+    if constexpr (std::is_same_v<T, std::vector<int>>) {
+      static int elementCount = 0;
+      std::cout << " " << style.charLeader << " ";
+      logFile << " " << style.charLeader << " ";
+      for (const auto& element : first) {
+        if (elementCount % style.numColumns == 0 && elementCount != 0) {
+          std::cout << "\n "
+                    << std::string(style.numColumns + numColumnsOffset, ' ')
+                    << style.charLeader << " ";
+          logFile << "\n "
+                  << std::string(style.numColumns + numColumnsOffset, ' ')
+                  << style.charLeader << " ";
+          elementCount = 0;
+        }
+        std::cout << element << ' ';
+        logFile << element << ' ';
+        elementCount++;
+      }
+      std::cout << '\n';
+      logFile << '\n';
+    } else {
+      // Handle all other inputs normally
+      std::cerr << ' ' << first;
+      logFile << ' ' << first;
+      (
+          [&] {
+            ++i;
+            std::cerr << ' ' << inputs;
+            logFile << ' ' << inputs;
+          }(),
+          ...);
+      std::cerr << '\n';
+      logFile << '\n';
+    }
     previousTime = currentTime;
   }
 
+ public:
+  std::string getBufferUsageString(VkBufferUsageFlags usage);
+
  private:
+  std::ofstream logFile;
+  std::string previousTime = "";
+
   std::string returnDateAndTime();
 };
 

@@ -2,21 +2,38 @@
 
 #include <array>
 #include <string>
+#include <vector>
 
 class Control {
  public:
   Control();
   ~Control();
 
-  long long passedSimulationHours = 0;
-  float simulationSpeed = 50.0f;
+  float simulationSpeed = 10.0f;
+
+  struct cellGeo {
+    float size = 0.04f;
+  } cellGeo;
+
+  struct Grid {
+    const uint32_t numberOfAliveCells = 400;
+    const uint32_t gridDimensions[2] = {20, 20};  // rows, columns
+    const float gridPointDistance = 2.5;
+    const uint32_t numGridPoints = gridDimensions[0] * gridDimensions[1];
+  } grid;
+
+ public:
+  int passedSimulationHours = 0;  // TODO: 'long long'
+
+  std::vector<int> setCellsAliveRandomly(int size);
   void simulateHours();
+  float getRandomFloat(float min, float max);
 };
 
 struct DisplayConfig {
  public:
   const char* windowTitle = "CAPITAL Engine";
-  uint32_t width = 1920;
+  uint32_t width = 1080;
   uint32_t height = 1080;
 };
 inline DisplayConfig displayConfig;
