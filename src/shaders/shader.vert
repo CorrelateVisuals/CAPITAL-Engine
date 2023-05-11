@@ -12,11 +12,8 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 model;
     mat4 view;
     mat4 projection;
-
     vec4 lightning;
-
 } ubo;
-float scaler = inSize.x;
 vec3 cubeVertices[8] = {vec3(-0.5f, -0.5f,-0.5f),   // 0
                         vec3(0.5f, -0.5f, -0.5f),   // 1
                         vec3(-0.5f, 0.5f, -0.5f),   // 2
@@ -31,11 +28,11 @@ vec3 cubeNormals[6] = { vec3( 0.0f, 0.0f,-1.0f),    // front
                         vec3( 1.0f, 0.0f, 0.0f),    // right
                         vec3( 0.0f, 1.0f, 0.0f),    // top
                         vec3( 0.0f,-1.0f, 0.0f)};   // bottom
-int cubeIndices[] = {   0, 1, 2, 3, 6, 7, 4, 5,     // front and back faces
+int cubeIndices[25] = {   0, 1, 2, 3, 6, 7, 4, 5,     // front and back faces
                         2, 6, 0, 4, 1, 5, 3, 7,     // connecting strips
                         2, 3, 6, 7, 4, 5, 0, 1,     // top and bottom faces
                         2 };                        // degenerate triangle to start new strip
-vec4 constructCube(){ vec4 cube = inPosition.rgba + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * scaler, vec2(0.0)); return cube; }
+vec4 constructCube(){ vec4 cube = inPosition.rgba + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); return cube; }
 mat4 modelViewProjection(){ mat4 mvp = ubo.projection * ubo.view * ubo.model; return mvp; }
 float phongLightning ( vec4 directionAndIntensity ) {
     int index = gl_VertexIndex / 4; 

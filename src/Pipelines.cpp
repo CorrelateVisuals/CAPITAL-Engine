@@ -390,7 +390,7 @@ MemoryCommands::~MemoryCommands() {
 }
 
 void MemoryCommands::createFramebuffers() {
-  _log.console("{ [/] }", "creating Frame Buffers");
+  _log.console("{ BUF }", "creating Frame Buffers");
 
   _mechanics.swapChain.framebuffers.resize(
       _mechanics.swapChain.imageViews.size());
@@ -495,7 +495,7 @@ void MemoryCommands::createShaderStorageBuffers() {
       int index = x + y * gridWidth;
       cells[index].position = {offsetX + x * cellWidth,
                                offsetY + y * cellHeight,
-                               _control.getRandomFloat(0.0, 0.3), 1.0f};
+                               _control.getRandomFloat(0.0f, 0.3f), 1.0f};
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
         cells[index].size = {_control.grid.cellSize, 0.0f, 0.0f, 0.0f};
@@ -703,7 +703,7 @@ void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   uniformObject.model = _world.setModel();
   uniformObject.view = _world.setView();
   uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
-  uniformObject.lightDirection = {0.0, 1.0, 1.0, 0.2};
+  uniformObject.lightDirection = {0.0f, 1.0f, 1.0f, 0.2f};
 
   std::memcpy(uniform.buffersMapped[currentImage], &uniformObject,
               sizeof(uniformObject));

@@ -1,4 +1,4 @@
- 23.05.11 13:54:19 { ... } constructing Logging
+ 23.05.11 14:22:11 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
@@ -26,7 +26,7 @@
  { +++ } creating Logical Device
          : finding Queue Families
          : Enabled Extension Names: VK_KHR_swapchain
- { <-> } creating Swap Chain
+ 23.05.11 14:22:12 { <-> } creating Swap Chain
          : querying Swap Chain Support
          : choosing Swap Surface Format
          : choosing Swap Present Mode
@@ -42,7 +42,7 @@
          : creating Shader Module
  { CMD } creating Command Pool
          : finding Queue Families
- { [/] } creating Frame Buffers
+ { BUF } creating Frame Buffers
  { BUF } creating Shader Storage Buffers
          : initializing Cells
          : 0 1 2 3 4 5 6 7 8 9 10 11 12 13 
@@ -93,7 +93,7 @@
  
                    { Main Loop } running ..........
 
- 23.05.11 13:54:21 
+ 23.05.11 14:22:13 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...
