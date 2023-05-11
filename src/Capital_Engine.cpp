@@ -31,7 +31,7 @@ void CapitalEngine::mainLoop() {
     _control.simulateHours();
     drawFrame();
 
-    _window.getMouseButtonTypePressed();
+    _window.getMouseButtonType();
     _window.mouseClick(_window.window, _window.mouse.buttonType);
   }
   vkDeviceWaitIdle(_mechanics.mainDevice.logical);

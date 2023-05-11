@@ -35,7 +35,7 @@ void Window::windowResize(GLFWwindow* window, int width, int height) {
   _log.console("{ [*] }", "Window resized to", width, "*", height);
 }
 
-void Window::getMouseButtonTypePressed() {
+void Window::getMouseButtonType() {
   const int mouseButtonTypes[] = {GLFW_MOUSE_BUTTON_LEFT,
                                   GLFW_MOUSE_BUTTON_MIDDLE,
                                   GLFW_MOUSE_BUTTON_RIGHT};

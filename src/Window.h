@@ -21,7 +21,7 @@ class Window {
 
   void initWindow();
 
-  void getMouseButtonTypePressed();
+  void getMouseButtonType();
   void mouseClick(GLFWwindow* window, int button);
 
  private:

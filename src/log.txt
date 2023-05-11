@@ -1,4 +1,4 @@
- 23.05.11 19:18:58 { ... } constructing Logging
+ 23.05.11 19:21:24 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
@@ -17,7 +17,7 @@
                            : Engine Name Version: CAPITAL Engine 
                            : Engine Version: 1 
                            : API Version: 1.3
- 23.05.11 19:18:59 { [ ] } creating Surface
+ 23.05.11 19:21:25 { [ ] } creating Surface
  { ### } picking Physical Device
          : checking if Physical Device is suitable
          : finding Queue Families
@@ -93,7 +93,22 @@
  
                    { Main Loop } running ..........
 
- 23.05.11 19:19:00 { [*] } Window resized to 3840 * 2109
+ { --> } Left Mouse Button clicked at 0.575 : 0.497222
+ { --> } Right Mouse Button clicked at 0.592593 : 0.62963
+ { --> } Left Mouse Button down at 0.659259 : 0.530556
+ { --> } Left Mouse Button down at 0.659259 : 0.530556
+ { --> } Left Mouse Button down at 0.659259 : 0.530556
+ { --> } Left Mouse Button down at 0.663889 : 0.519444
+ { --> } Left Mouse Button down at 0.663889 : 0.519444
+ { --> } Left Mouse Button down at 0.663889 : 0.519444
+ { --> } Left Mouse Button down at 0.663889 : 0.519444
+ { --> } Left Mouse Button down at 0.663889 : 0.509259
+ { --> } Left Mouse Button down at 0.663889 : 0.509259
+ { --> } Left Mouse Button clicked at 0.663889 : 0.499074
+ 23.05.11 19:21:26 { --> } Right Mouse Button clicked at 0.657407 : 0.487963
+ { --> } Left Mouse Button clicked at 0.552778 : 0.487963
+ { --> } Middle Mouse Button clicked at 0.621296 : 0.316667
+ 23.05.11 19:21:27 { [*] } Window resized to 2025 * 1080
  { <-> } creating Swap Chain
          : querying Swap Chain Support
          : choosing Swap Surface Format
@@ -102,7 +117,7 @@
          : finding Queue Families
          : creating Image Views
  { BUF } creating Frame Buffers
- 23.05.11 19:19:10 
+ 23.05.11 19:21:28 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...
