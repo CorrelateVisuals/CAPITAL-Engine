@@ -37,8 +37,8 @@ std::vector<int> Control::setCellsAliveRandomly(int size) {
   std::vector<int> CellIDs;
 
   while (CellIDs.size() < size) {
-    int CellID =
-        static_cast<int>(getRandomFloat(0, 1) * _control.grid.numGridPoints);
+    int CellID = static_cast<int>(getRandomFloat(0, 1) *
+                                  _control.grid.numberOfGridPoints);
     // check if the CellID is not already in CellIDs
     if (std::find(CellIDs.begin(), CellIDs.end(), CellID) == CellIDs.end()) {
       CellIDs.push_back(CellID);
