@@ -1,5 +1,5 @@
-#include <time.h>
 #include <chrono>
+#include <random>
 
 #include "CAPITAL_Engine.h"
 #include "Control.h"
@@ -27,13 +27,18 @@ void Control::simulateHours() {
   }
 }
 
+float Control::getRandomFloat(float min, float max) {
+  static std::mt19937 rng(std::random_device{}());
+  static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+  return dist(rng) * (max - min) + min;
+}
+
 std::vector<int> Control::setCellsAliveRandomly(int size) {
   std::vector<int> CellIDs;
-  srand(static_cast<unsigned int>(
-      time(NULL)));  // seed the random number generator
 
   while (CellIDs.size() < size) {
-    int CellID = rand() % _control.grid.numGridPoints;
+    int CellID =
+        static_cast<int>(getRandomFloat(0, 1) * _control.grid.numGridPoints);
     // check if the CellID is not already in CellIDs
     if (std::find(CellIDs.begin(), CellIDs.end(), CellID) == CellIDs.end()) {
       CellIDs.push_back(CellID);

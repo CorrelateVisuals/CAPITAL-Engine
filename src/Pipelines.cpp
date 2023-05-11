@@ -419,13 +419,14 @@ void MemoryCommands::createShaderStorageBuffers() {
     for (int y = 0; y < gridHeight; y++) {
       int index = x + y * gridWidth;
       cells[index].position = {offsetX + x * cellWidth,
-                               offsetY + y * cellHeight, 1.0f, 1.0f};
-      cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
+                               offsetY + y * cellHeight,
+                               _control.getRandomFloat(0.0, 0.3), 1.0f};
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
         cells[index].size = {_control.cellGeo.size, 0.0f, 0.0f, 0.0f};
+        cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
       } else {
-        cells[index].size = {-1.0f, 0.0f, 0.0f, 0.0f};
+        cells[index].size = {-1.0f, -1.0f, -1.0f, -1.0f};
       }
     }
   }

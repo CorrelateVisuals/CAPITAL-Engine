@@ -1,7 +1,7 @@
- 23.05.11 01:36:52 { ... } constructing Logging
+ 23.05.11 02:22:17 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
- 23.05.11 01:36:53 { [*] } Window initialized with 1080 * 1080
+ { [*] } Window initialized with 1080 * 1080
  { #?# } constructing Vulkan Mechanics
  { PIP } constructing Pipelines
  { 010 } constructing Memory Management
@@ -17,7 +17,7 @@
                            : Engine Name Version: CAPITAL Engine 
                            : Engine Version: 1 
                            : API Version: 1.3
- { [ ] } creating Surface
+ 23.05.11 02:22:18 { [ ] } creating Surface
  { ### } picking Physical Device
          : checking if Physical Device is suitable
          : finding Queue Families
@@ -93,7 +93,7 @@
  
                    { Main Loop } running ..........
 
- 23.05.11 01:36:56 
+ 23.05.11 02:22:20 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...

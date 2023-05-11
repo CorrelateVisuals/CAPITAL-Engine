@@ -8,7 +8,7 @@ layout(location = 2) in vec4 inSize;
 layout (binding = 0) uniform ParameterUBO {
     int passedHours; //TODO 'long long' : int64_t passedHours;
     int gridSize;
-
+    
     mat4 model;
     mat4 view;
     mat4 projection;

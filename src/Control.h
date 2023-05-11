@@ -27,6 +27,7 @@ class Control {
 
   std::vector<int> setCellsAliveRandomly(int size);
   void simulateHours();
+  float getRandomFloat(float min, float max);
 };
 
 struct DisplayConfig {
