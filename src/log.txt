@@ -1,4 +1,4 @@
- 23.05.11 10:46:56 { ... } constructing Logging
+ 23.05.11 13:31:48 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
@@ -26,7 +26,7 @@
  { +++ } creating Logical Device
          : finding Queue Families
          : Enabled Extension Names: VK_KHR_swapchain
- { <-> } creating Swap Chain
+ 23.05.11 13:31:49 { <-> } creating Swap Chain
          : querying Swap Chain Support
          : choosing Swap Surface Format
          : choosing Swap Present Mode
@@ -93,8 +93,7 @@
  
                    { Main Loop } running ..........
 
- 23.05.11 10:46:57 { --> } Mouse Click at 0.992593 : 0.473148
- 23.05.11 10:46:58 { [*] } Window resized to 1305 * 1080
+ 23.05.11 13:31:50 { [*] } Window resized to 3840 * 2109
  { <-> } creating Swap Chain
          : querying Swap Chain Support
          : choosing Swap Surface Format
@@ -103,16 +102,7 @@
          : finding Queue Families
          : creating Image Views
  { [/] } creating Frame Buffers
- 23.05.11 10:46:59 { [*] } Window resized to 1905 * 1080
- { <-> } creating Swap Chain
-         : querying Swap Chain Support
-         : choosing Swap Surface Format
-         : choosing Swap Present Mode
-         : choosing Swap Extent
-         : finding Queue Families
-         : creating Image Views
- { [/] } creating Frame Buffers
- 23.05.11 10:47:00 
+ 23.05.11 13:32:03 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...

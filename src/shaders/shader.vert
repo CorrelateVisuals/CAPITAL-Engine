@@ -13,27 +13,40 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 view;
     mat4 projection;
 } ubo;
-
 mat4 modelViewProjection(){ mat4 mvp = ubo.projection * ubo.view * ubo.model; return mvp; }
 
 float scaler = inSize.x;
-vec3 cubeVertices[8] = { vec3(-1.0f, -1.0f, -1.0f), vec3(1.0f, -1.0f, -1.0f), vec3(-1.0f, 1.0f, -1.0f), vec3(1.0f, 1.0f, -1.0f),   
-                         vec3(-1.0f, -1.0f, 1.0f),  vec3(1.0f, -1.0f, 1.0f),  vec3(-1.0f, 1.0f, 1.0f),  vec3(1.0f, 1.0f, 1.0f)};
-int cubeIndices[36] = { 0, 2, 3, 0, 3, 1, 4, 5, 7, 4, 7, 6, 1, 3, 7, 1, 7, 5,
-                        0, 4, 6, 0, 6, 2, 2, 6, 7, 2, 7, 3, 0, 1, 5, 0, 5, 4 };
-vec3 cubeNormals[8] = { vec3(0, 0, 0), vec3(1, 0, 0), vec3(0, 1, 0), vec3(1, 1, 0),
-                        vec3(0, 0, 1), vec3(1, 0, 1), vec3(0, 1, 1), vec3(1, 1, 1)};
+vec3 cubeVertices[8] = {vec3(-0.5f, -0.5f,-0.5f),   // 0
+                        vec3(0.5f, -0.5f, -0.5f),   // 1
+                        vec3(-0.5f, 0.5f, -0.5f),   // 2
+                        vec3(0.5f,  0.5f, -0.5f),   // 3
+                        vec3(-0.5f,-0.5f,  0.5f),   // 4
+                        vec3(0.5f, -0.5f,  0.5f),   // 5
+                        vec3(-0.5f, 0.5f,  0.5f),   // 6
+                        vec3(0.5f,  0.5f,  0.5f)};  // 7
+vec3 cubeNormals[6] = { vec3( 0.0f, 0.0f,-1.0f),    // front
+                        vec3( 0.0f, 0.0f, 1.0f),    // back
+                        vec3(-1.0f, 0.0f, 0.0f),    // left
+                        vec3( 1.0f, 0.0f, 0.0f),    // right
+                        vec3( 0.0f, 1.0f, 0.0f),    // top
+                        vec3( 0.0f,-1.0f, 0.0f)};   // bottom
+int cubeIndices[] = {   0, 1, 2, 3, 6, 7, 4, 5,     // front and back faces
+                        2, 6, 0, 4, 1, 5, 3, 7,     // connecting strips
+                        2, 3, 6, 7, 4, 5, 0, 1,     // top and bottom faces
+                        2 };                        // degenerate triangle to start new strip
 vec4 constructCube(){ vec4 cube = inPosition.rgba + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * scaler, vec2(0.0));
                       return cube; }
 
-vec3 lightDirection = {1.0f, 1.0f, 0.0f};
-float ambient = 0.02f;
+
+vec3 lightDirection = {0.0f, 1.0f, 1.0f};
+float ambient = 0.2f;
 float setLightIntensity(){
     mat3 normalMatrix = transpose(inverse(mat3(ubo.model)));
-    vec3 normalWorldSpace = normalize(normalMatrix * cubeNormals[ cubeIndices[ gl_VertexIndex ]]);
+    vec3 normalWorldSpace = normalize(normalMatrix * cubeNormals[ gl_VertexIndex/4 ]);
     float lightIntensity = ambient + max(dot(normalWorldSpace, normalize(lightDirection)), 0);
     return lightIntensity;
 }
+
 
 layout(location = 0) out vec3 fragColor;
 

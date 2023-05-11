@@ -11,11 +11,8 @@ class Control {
 
   float simulationSpeed = 10.0f;
 
-  struct cellGeo {
-    float size = 0.04f;
-  } cellGeo;
-
   struct Grid {
+    float cellSize = 0.15f;
     const uint32_t numberOfAliveCells = 400;
     const uint32_t gridDimensions[2] = {20, 20};  // rows, columns
     const float gridPointDistance = 3.5;

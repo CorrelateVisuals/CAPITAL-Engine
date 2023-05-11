@@ -171,7 +171,7 @@ void Pipelines::createGraphicsPipeline() {
   VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
   inputAssembly.sType =
       VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
   inputAssembly.primitiveRestartEnable = VK_FALSE;
 
   VkPipelineViewportStateCreateInfo viewportState{};
@@ -498,7 +498,7 @@ void MemoryCommands::createShaderStorageBuffers() {
                                _control.getRandomFloat(0.0, 0.3), 1.0f};
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
-        cells[index].size = {_control.cellGeo.size, 0.0f, 0.0f, 0.0f};
+        cells[index].size = {_control.grid.cellSize, 0.0f, 0.0f, 0.0f};
         cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
       } else {
         cells[index].size = {-1.0f, -1.0f, -1.0f, -1.0f};
