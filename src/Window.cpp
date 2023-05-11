@@ -50,36 +50,64 @@ void Window::getMouseButtonTypePressed() {
 void Window::mouseClick(GLFWwindow* window, int button) {
   static int oldState = GLFW_RELEASE;
   int newState = glfwGetMouseButton(window, button);
-
-  // declare and initialize the timer variable outside the function
   static double timer = 0.0;
   static double pressTime = 0.0;
-
   double xpos, ypos;
   glfwGetCursorPos(window, &xpos, &ypos);
   xpos /= displayConfig.width;
   ypos /= displayConfig.height;
 
-  if (oldState == GLFW_PRESS && newState == GLFW_RELEASE) {
-    if ((oldState == GLFW_PRESS) && (newState == GLFW_RELEASE)) {
-      _log.console(button);
-      _log.console("{ --> }", "Mouse Click at", xpos, ":", ypos);
-      timer = 0.0;
-    }
-
-  } else if (newState == GLFW_PRESS) {
-    if (timer < 0.2) {
-      if (pressTime == 0.0) {
-        pressTime = glfwGetTime();
+  switch (oldState) {
+    case GLFW_PRESS:
+      switch (newState) {
+        case GLFW_RELEASE:
+          if (button == GLFW_MOUSE_BUTTON_LEFT) {
+            mouse.leftCoords = {xpos, ypos};
+            _log.console("{ --> }", "Left Mouse Button clicked at", xpos, ":",
+                         ypos);
+          } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+            mouse.middleCoords = {xpos, ypos};
+            _log.console("{ --> }", "Middle Mouse Button clicked at", xpos, ":",
+                         ypos);
+          } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+            mouse.rightCoords = {xpos, ypos};
+            _log.console("{ --> }", "Right Mouse Button clicked at", xpos, ":",
+                         ypos);
+          }
+          timer = 0.0;
+          break;
+        case GLFW_PRESS:
+          if (timer < 0.2) {
+            if (pressTime == 0.0) {
+              pressTime = glfwGetTime();
+            }
+            timer = glfwGetTime() - pressTime;
+          } else {
+            if (button == GLFW_MOUSE_BUTTON_LEFT) {
+              mouse.leftCoords = {xpos, ypos};
+              _log.console("{ --> }", "Left Mouse Button down at", xpos, ":",
+                           ypos);
+            } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+              mouse.middleCoords = {xpos, ypos};
+              _log.console("{ --> }", "Middle Mouse Button down at", xpos, ":",
+                           ypos);
+            } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+              mouse.rightCoords = {xpos, ypos};
+              _log.console("{ --> }", "Right Mouse Button down at", xpos, ":",
+                           ypos);
+            }
+          }
+          break;
       }
-      timer = glfwGetTime() - pressTime;
-    } else {
-      _log.console("{ --> }", "Mouse Down at", xpos, ":", ypos);
-      mouse.leftCoords = {xpos, ypos};
-    }
-  } else {
-    pressTime =
-        0.0;  // reset the press time when the mouse button is not pressed
+      break;
+    case GLFW_RELEASE:
+      if (newState == GLFW_PRESS) {
+        pressTime = glfwGetTime();
+      } else {
+        pressTime =
+            0.0;  // reset the press time when the mouse button is not pressed
+      }
+      break;
   }
   oldState = newState;
 }
