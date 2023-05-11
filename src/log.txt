@@ -1,4 +1,4 @@
- 23.05.11 13:31:48 { ... } constructing Logging
+ 23.05.11 13:37:25 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
@@ -26,13 +26,13 @@
  { +++ } creating Logical Device
          : finding Queue Families
          : Enabled Extension Names: VK_KHR_swapchain
- 23.05.11 13:31:49 { <-> } creating Swap Chain
+ { <-> } creating Swap Chain
          : querying Swap Chain Support
          : choosing Swap Surface Format
          : choosing Swap Present Mode
          : choosing Swap Extent
          : finding Queue Families
-         : creating Image Views
+ 23.05.11 13:37:26         : creating Image Views
  { []< } creating Render Pass
  { DES } creating Compute Descriptor Set Layout
  { PIP } creating Graphics Pipeline
@@ -93,7 +93,7 @@
  
                    { Main Loop } running ..........
 
- 23.05.11 13:31:50 { [*] } Window resized to 3840 * 2109
+ { [*] } Window resized to 3840 * 2109
  { <-> } creating Swap Chain
          : querying Swap Chain Support
          : choosing Swap Surface Format
@@ -102,7 +102,10 @@
          : finding Queue Families
          : creating Image Views
  { [/] } creating Frame Buffers
- 23.05.11 13:32:03 
+ 23.05.11 13:37:27 { --> } Mouse Click at 0.378906 : 0.480797
+ { --> } Mouse Click at 0.548177 : 0.422949
+ 23.05.11 13:37:28 { --> } Mouse Click at 0.788802 : 0.289237
+ 23.05.11 13:37:35 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...

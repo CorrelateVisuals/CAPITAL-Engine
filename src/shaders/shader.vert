@@ -38,12 +38,15 @@ vec4 constructCube(){ vec4 cube = inPosition.rgba + vec4( cubeVertices[ cubeIndi
                       return cube; }
 
 
-vec3 lightDirection = {0.0f, 1.0f, 1.0f};
+vec3 lightDirection = vec3(0.0f, 1.0f, 1.0f);
 float ambient = 0.2f;
-float setLightIntensity(){
+
+float setLightIntensity() {
+    int index = gl_VertexIndex / 4; 
+    vec3 normalWorldSpace = cubeNormals[index];
     mat3 normalMatrix = transpose(inverse(mat3(ubo.model)));
-    vec3 normalWorldSpace = normalize(normalMatrix * cubeNormals[ gl_VertexIndex/4 ]);
-    float lightIntensity = ambient + max(dot(normalWorldSpace, normalize(lightDirection)), 0);
+    normalWorldSpace = normalize(normalMatrix * normalWorldSpace);
+    float lightIntensity = ambient + max(dot(normalWorldSpace, normalize(lightDirection)), 0.0f);
     return lightIntensity;
 }
 
