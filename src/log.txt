@@ -1,4 +1,4 @@
- 23.05.11 13:37:25 { ... } constructing Logging
+ 23.05.11 13:54:19 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
@@ -32,7 +32,7 @@
          : choosing Swap Present Mode
          : choosing Swap Extent
          : finding Queue Families
- 23.05.11 13:37:26         : creating Image Views
+         : creating Image Views
  { []< } creating Render Pass
  { DES } creating Compute Descriptor Set Layout
  { PIP } creating Graphics Pipeline
@@ -82,9 +82,9 @@
          : 19200 bytes
  { BUF } creating Uniform Buffers
  { ... } creating Buffer: UNIFORM_BUFFER
-         : 208 bytes
+         : 224 bytes
  { ... } creating Buffer: UNIFORM_BUFFER
-         : 208 bytes
+         : 224 bytes
  { DES } creating 2 Descriptor Pools
  { DES } creating Compute Descriptor Sets
  { CMD } creating Command Buffers
@@ -93,19 +93,7 @@
  
                    { Main Loop } running ..........
 
- { [*] } Window resized to 3840 * 2109
- { <-> } creating Swap Chain
-         : querying Swap Chain Support
-         : choosing Swap Surface Format
-         : choosing Swap Present Mode
-         : choosing Swap Extent
-         : finding Queue Families
-         : creating Image Views
- { [/] } creating Frame Buffers
- 23.05.11 13:37:27 { --> } Mouse Click at 0.378906 : 0.480797
- { --> } Mouse Click at 0.548177 : 0.422949
- 23.05.11 13:37:28 { --> } Mouse Click at 0.788802 : 0.289237
- 23.05.11 13:37:35 
+ 23.05.11 13:54:21 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...

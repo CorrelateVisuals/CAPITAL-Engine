@@ -703,6 +703,7 @@ void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   uniformObject.model = _world.setModel();
   uniformObject.view = _world.setView();
   uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
+  uniformObject.lightDirection = {0.0, 1.0, 1.0, 0.2};
 
   std::memcpy(uniform.buffersMapped[currentImage], &uniformObject,
               sizeof(uniformObject));

@@ -19,10 +19,10 @@ class World {
   struct UniformBufferObject {
     int passedHours;  // TODO: 'long long'
     int gridSize;
-
     alignas(16) glm::mat4 model;
     alignas(16) glm::mat4 view;
     alignas(16) glm::mat4 proj;
+    std::array<float, 4> lightDirection;
   };
 
   struct Cell {
