@@ -423,7 +423,7 @@ void MemoryCommands::createShaderStorageBuffers() {
       cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
-        cells[index].size = {20.0f, 0.0f, 0.0f, 0.0f};
+        cells[index].size = {_control.cellGeo.size, 0.0f, 0.0f, 0.0f};
       } else {
         cells[index].size = {-1.0f, 0.0f, 0.0f, 0.0f};
       }

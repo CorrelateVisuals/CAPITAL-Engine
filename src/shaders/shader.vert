@@ -16,7 +16,7 @@ layout (binding = 0) uniform ParameterUBO {
 
 mat4 modelViewProjection(){ mat4 mvp = ubo.projection * ubo.view * ubo.model; return mvp; }
 
-float scaler = 0.025f;
+float scaler = inSize.x;
 vec3 cubeVertices[8] = {
     vec3(-1.0f, -1.0f, -1.0f), vec3(1.0f, -1.0f, -1.0f), vec3(-1.0f, 1.0f, -1.0f), vec3(1.0f, 1.0f, -1.0f),   
     vec3(-1.0f, -1.0f, 1.0f),  vec3(1.0f, -1.0f, 1.0f),  vec3(-1.0f, 1.0f, 1.0f),  vec3(1.0f, 1.0f, 1.0f)};
