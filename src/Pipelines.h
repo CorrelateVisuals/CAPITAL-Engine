@@ -19,12 +19,26 @@ class Pipelines {
 
   VkRenderPass renderPass;
 
+  struct Depth {
+    VkImage image;
+    VkDeviceMemory imageMemory;
+    VkImageView imageView;
+  } depth;
+
  public:
+  void createDepthResources();
   void createRenderPass();
+
   void createGraphicsPipeline();
   void createComputePipeline();
 
  private:
+  VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
+                               VkImageTiling tiling,
+                               VkFormatFeatureFlags features);
+  VkFormat findDepthFormat();
+  bool hasStencilComponent(VkFormat format);
+
   static std::vector<char> readShaderFile(const std::string& filename);
   VkShaderModule createShaderModule(const std::vector<char>& code);
 };
@@ -76,6 +90,15 @@ class MemoryCommands {
 
   void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);
   void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+  void createImage(uint32_t width,
+                   uint32_t height,
+                   VkFormat format,
+                   VkImageTiling tiling,
+                   VkImageUsageFlags usage,
+                   VkMemoryPropertyFlags properties,
+                   VkImage& image,
+                   VkDeviceMemory& imageMemory);
 
  private:
   void createBuffer(VkDeviceSize size,

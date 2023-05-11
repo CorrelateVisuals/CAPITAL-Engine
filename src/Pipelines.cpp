@@ -17,6 +17,18 @@ Pipelines::~Pipelines() {
   _log.console("{ PIP }", "destructing Pipelines");
 }
 
+void Pipelines::createDepthResources() {
+  VkFormat depthFormat = findDepthFormat();
+
+  _memCommands.createImage(
+      _mechanics.swapChain.extent.width, _mechanics.swapChain.extent.height,
+      depthFormat, VK_IMAGE_TILING_OPTIMAL,
+      VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depth.image, depth.imageMemory);
+  depth.imageView = _mechanics.createImageView(depth.image, depthFormat,
+                                               VK_IMAGE_ASPECT_DEPTH_BIT);
+}
+
 void Pipelines::createRenderPass() {
   _log.console("{ []< }", "creating Render Pass");
   VkAttachmentDescription colorAttachment{};
@@ -29,27 +41,48 @@ void Pipelines::createRenderPass() {
   colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
   colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
+  VkAttachmentDescription depthAttachment{};
+  depthAttachment.format = findDepthFormat();
+  depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+  depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+  depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  depthAttachment.finalLayout =
+      VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
   VkAttachmentReference colorAttachmentRef{};
   colorAttachmentRef.attachment = 0;
   colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+  VkAttachmentReference depthAttachmentRef{};
+  depthAttachmentRef.attachment = 1;
+  depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
   VkSubpassDescription subpass{};
   subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
   subpass.colorAttachmentCount = 1;
   subpass.pColorAttachments = &colorAttachmentRef;
+  subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
   VkSubpassDependency dependency{};
   dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
   dependency.dstSubpass = 0;
-  dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+  dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |
+                            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
   dependency.srcAccessMask = 0;
-  dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-  dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+  dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |
+                            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+  dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT |
+                             VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
+  std::array<VkAttachmentDescription, 2> attachments = {colorAttachment,
+                                                        depthAttachment};
   VkRenderPassCreateInfo renderPassInfo{};
   renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-  renderPassInfo.attachmentCount = 1;
-  renderPassInfo.pAttachments = &colorAttachment;
+  renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+  renderPassInfo.pAttachments = attachments.data();
   renderPassInfo.subpassCount = 1;
   renderPassInfo.pSubpasses = &subpass;
   renderPassInfo.dependencyCount = 1;
@@ -162,6 +195,15 @@ void Pipelines::createGraphicsPipeline() {
   multisampling.sampleShadingEnable = VK_FALSE;
   multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
+  VkPipelineDepthStencilStateCreateInfo depthStencil{};
+  depthStencil.sType =
+      VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+  depthStencil.depthTestEnable = VK_TRUE;
+  depthStencil.depthWriteEnable = VK_TRUE;
+  depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+  depthStencil.depthBoundsTestEnable = VK_FALSE;
+  depthStencil.stencilTestEnable = VK_FALSE;
+
   VkPipelineColorBlendAttachmentState colorBlendAttachment{};
   colorBlendAttachment.colorWriteMask =
       VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
@@ -214,6 +256,7 @@ void Pipelines::createGraphicsPipeline() {
   pipelineInfo.pViewportState = &viewportState;
   pipelineInfo.pRasterizationState = &rasterizer;
   pipelineInfo.pMultisampleState = &multisampling;
+  pipelineInfo.pDepthStencilState = &depthStencil;
   pipelineInfo.pColorBlendState = &colorBlending;
   pipelineInfo.pDynamicState = &dynamicState;
   pipelineInfo.layout = graphics.pipelineLayout;
@@ -231,6 +274,38 @@ void Pipelines::createGraphicsPipeline() {
                         nullptr);
   vkDestroyShaderModule(_mechanics.mainDevice.logical, vertShaderModule,
                         nullptr);
+}
+
+VkFormat Pipelines::findSupportedFormat(const std::vector<VkFormat>& candidates,
+                                        VkImageTiling tiling,
+                                        VkFormatFeatureFlags features) {
+  for (VkFormat format : candidates) {
+    VkFormatProperties props;
+    vkGetPhysicalDeviceFormatProperties(_mechanics.mainDevice.physical, format,
+                                        &props);
+
+    if (tiling == VK_IMAGE_TILING_LINEAR &&
+        (props.linearTilingFeatures & features) == features) {
+      return format;
+    } else if (tiling == VK_IMAGE_TILING_OPTIMAL &&
+               (props.optimalTilingFeatures & features) == features) {
+      return format;
+    }
+  }
+
+  throw std::runtime_error("failed to find supported format!");
+}
+
+VkFormat Pipelines::findDepthFormat() {
+  return findSupportedFormat(
+      {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT,
+       VK_FORMAT_D24_UNORM_S8_UINT},
+      VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+}
+
+bool Pipelines::hasStencilComponent(VkFormat format) {
+  return format == VK_FORMAT_D32_SFLOAT_S8_UINT ||
+         format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
 
 std::vector<char> Pipelines::readShaderFile(const std::string& filename) {
@@ -316,13 +391,13 @@ MemoryCommands::~MemoryCommands() {
 
 void MemoryCommands::createFramebuffers() {
   _log.console("{ [/] }", "creating Frame Buffers");
+
   _mechanics.swapChain.framebuffers.resize(
       _mechanics.swapChain.imageViews.size());
 
   for (size_t i = 0; i < _mechanics.swapChain.imageViews.size(); i++) {
-    std::array<VkImageView, 1> attachments = {
-        _mechanics.swapChain.imageViews[i]};
-    // add depth stencil here
+    std::array<VkImageView, 2> attachments = {
+        _mechanics.swapChain.imageViews[i], _pipelines.depth.imageView};
 
     VkFramebufferCreateInfo framebufferInfo{};
     framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -397,7 +472,7 @@ void MemoryCommands::createShaderStorageBuffers() {
   _log.console("{ BUF }", "creating Shader Storage Buffers");
   // Initiliazation of cells on the grid
   _log.console(_log.style.charLeader, "initializing Cells");
-  std::vector<World::Cell> cells(_control.grid.numGridPoints);
+  std::vector<World::Cell> cells(_control.grid.numberOfGridPoints);
   std::vector<int> aliveCells =
       _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
 
@@ -432,7 +507,8 @@ void MemoryCommands::createShaderStorageBuffers() {
   }
   _log.console(aliveCells);
 
-  VkDeviceSize bufferSize = sizeof(World::Cell) * _control.grid.numGridPoints;
+  VkDeviceSize bufferSize =
+      sizeof(World::Cell) * _control.grid.numberOfGridPoints;
 
   // Create a staging buffer used to upload data to the gpu
   VkBuffer stagingBuffer;
@@ -508,6 +584,52 @@ void MemoryCommands::createDescriptorPool() {
   }
 }
 
+void MemoryCommands::createImage(uint32_t width,
+                                 uint32_t height,
+                                 VkFormat format,
+                                 VkImageTiling tiling,
+                                 VkImageUsageFlags usage,
+                                 VkMemoryPropertyFlags properties,
+                                 VkImage& image,
+                                 VkDeviceMemory& imageMemory) {
+  VkImageCreateInfo imageInfo{};
+  imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+  imageInfo.imageType = VK_IMAGE_TYPE_2D;
+  imageInfo.extent.width = width;
+  imageInfo.extent.height = height;
+  imageInfo.extent.depth = 1;
+  imageInfo.mipLevels = 1;
+  imageInfo.arrayLayers = 1;
+  imageInfo.format = format;
+  imageInfo.tiling = tiling;
+  imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  imageInfo.usage = usage;
+  imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+  imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+  if (vkCreateImage(_mechanics.mainDevice.logical, &imageInfo, nullptr,
+                    &image) != VK_SUCCESS) {
+    throw std::runtime_error("failed to create image!");
+  }
+
+  VkMemoryRequirements memRequirements;
+  vkGetImageMemoryRequirements(_mechanics.mainDevice.logical, image,
+                               &memRequirements);
+
+  VkMemoryAllocateInfo allocInfo{};
+  allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+  allocInfo.allocationSize = memRequirements.size;
+  allocInfo.memoryTypeIndex =
+      findMemoryType(memRequirements.memoryTypeBits, properties);
+
+  if (vkAllocateMemory(_mechanics.mainDevice.logical, &allocInfo, nullptr,
+                       &imageMemory) != VK_SUCCESS) {
+    throw std::runtime_error("failed to allocate image memory!");
+  }
+
+  vkBindImageMemory(_mechanics.mainDevice.logical, image, imageMemory, 0);
+}
+
 void MemoryCommands::createComputeDescriptorSets() {
   _log.console("{ DES }", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
@@ -544,7 +666,7 @@ void MemoryCommands::createComputeDescriptorSets() {
         shaderStorage.buffers[(i - 1) % MAX_FRAMES_IN_FLIGHT];
     storageBufferInfoLastFrame.offset = 0;
     storageBufferInfoLastFrame.range =
-        sizeof(World::Cell) * _control.grid.numGridPoints;
+        sizeof(World::Cell) * _control.grid.numberOfGridPoints;
 
     descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[1].dstSet = descriptor.sets[i];
@@ -558,7 +680,7 @@ void MemoryCommands::createComputeDescriptorSets() {
     storageBufferInfoCurrentFrame.buffer = shaderStorage.buffers[i];
     storageBufferInfoCurrentFrame.offset = 0;
     storageBufferInfoCurrentFrame.range =
-        sizeof(World::Cell) * _control.grid.numGridPoints;
+        sizeof(World::Cell) * _control.grid.numberOfGridPoints;
 
     descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[2].dstSet = descriptor.sets[i];
@@ -574,15 +696,16 @@ void MemoryCommands::createComputeDescriptorSets() {
 }
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
-  World::UniformBufferObject ubo{};
-  ubo.passedHours = _control.passedSimulationHours;
-  ubo.gridSize = _control.grid.numGridPoints;
+  World::UniformBufferObject uniformObject{};
+  uniformObject.passedHours = _control.passedSimulationHours;
+  uniformObject.gridSize = _control.grid.numberOfGridPoints;
 
-  ubo.model = _world.setModel();
-  ubo.view = _world.setView();
-  ubo.proj = _world.setProjection(_mechanics.swapChain.extent);
+  uniformObject.model = _world.setModel();
+  uniformObject.view = _world.setView();
+  uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
 
-  std::memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
+  std::memcpy(uniform.buffersMapped[currentImage], &uniformObject,
+              sizeof(uniformObject));
 }
 
 void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
@@ -603,7 +726,8 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
                           0, nullptr);
 
   vkCmdDispatch(commandBuffer,
-                static_cast<uint32_t>(sqrt(_control.grid.numGridPoints)), 1, 1);
+                static_cast<uint32_t>(sqrt(_control.grid.numberOfGridPoints)),
+                1, 1);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to record compute command buffer!");
@@ -626,9 +750,12 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
   renderPassInfo.renderArea.offset = {0, 0};
   renderPassInfo.renderArea.extent = _mechanics.swapChain.extent;
 
-  VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
-  renderPassInfo.clearValueCount = 1;
-  renderPassInfo.pClearValues = &clearColor;
+  std::array<VkClearValue, 2> clearValues{};
+  clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
+  clearValues[1].depthStencil = {1.0f, 0};
+
+  renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+  renderPassInfo.pClearValues = clearValues.data();
 
   vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
                        VK_SUBPASS_CONTENTS_INLINE);
@@ -661,7 +788,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
                           &descriptor.sets[_mechanics.syncObjects.currentFrame],
                           0, nullptr);
 
-  vkCmdDraw(commandBuffer, 36, _control.grid.numGridPoints, 0, 0);
+  vkCmdDraw(commandBuffer, 36, _control.grid.numberOfGridPoints, 0, 0);
 
   vkCmdEndRenderPass(commandBuffer);
 

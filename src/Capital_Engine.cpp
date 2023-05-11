@@ -53,10 +53,11 @@ void CapitalEngine::initVulkan() {
   _pipelines.createGraphicsPipeline();
   _pipelines.createComputePipeline();
 
-  _memCommands.createFramebuffers();
   _memCommands.createCommandPool();
-  _memCommands.createShaderStorageBuffers();
+  _pipelines.createDepthResources();
+  _memCommands.createFramebuffers();
 
+  _memCommands.createShaderStorageBuffers();
   _memCommands.createUniformBuffers();
   _memCommands.createDescriptorPool();
   _memCommands.createComputeDescriptorSets();
