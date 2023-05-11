@@ -32,13 +32,13 @@ World::getAttributeDescriptions() {
 
 glm::mat4 World::setView() {
   glm::mat4 view =
-      glm::lookAt(glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-                  glm::vec3(0.0f, 0.0f, 1.0f));
+      glm::lookAt(glm::vec3(0.0f, 0.0f, 3.5f), glm::vec3(0.0f, 0.0f, 0.0f),
+                  glm::vec3(0.0f, -1.0f, 0.0f));
   return view;
 }
 
 glm::mat4 World::setModel() {
-  glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(45.0f),
+  glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f),
                                 glm::vec3(0.0f, 0.0f, 1.0f));
   return model;
 }
@@ -47,5 +47,9 @@ glm::mat4 World::setProjection(VkExtent2D& swapChainExtent) {
   glm::mat4 projection = glm::perspective(
       glm::radians(60.0f),
       swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
+
+  projection[1][1] *= -1;  // flip y axis
+  projection[0][0] *= -1;  // flip x axis
+
   return projection;
 };

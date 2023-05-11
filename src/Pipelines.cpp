@@ -580,7 +580,6 @@ void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   ubo.model = _world.setModel();
   ubo.view = _world.setView();
   ubo.proj = _world.setProjection(_mechanics.swapChain.extent);
-  ubo.proj[1][1] *= -1;  // Flips openGl screencoords to Vulkan screencoords
 
   std::memcpy(uniform.buffersMapped[currentImage], &ubo, sizeof(ubo));
 }
