@@ -12,11 +12,11 @@ class Window {
   bool framebufferResized;
 
   struct Mouse {
-    int buttonType = -1;
+    int buttonType = parameterOff;
     float pressDelayDuration = 0.12f;
-    std::array<double, 2> leftCoords = {0, 0};
-    std::array<double, 2> middleCoords = {0, 0};
-    std::array<double, 2> rightCoords = {0, 0};
+    std::array<double, 2> leftCoords = {parameterOff, parameterOff};
+    std::array<double, 2> middleCoords = {parameterOff, parameterOff};
+    std::array<double, 2> rightCoords = {parameterOff, parameterOff};
   } mouse;
 
   void initWindow();

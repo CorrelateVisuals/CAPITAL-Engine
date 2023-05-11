@@ -501,7 +501,8 @@ void MemoryCommands::createShaderStorageBuffers() {
         cells[index].size = {_control.grid.cellSize, 0.0f, 0.0f, 0.0f};
         cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
       } else {
-        cells[index].size = {-1.0f, -1.0f, -1.0f, -1.0f};
+        cells[index].size = {parameterOff, parameterOff, parameterOff,
+                             parameterOff};
       }
     }
   }
