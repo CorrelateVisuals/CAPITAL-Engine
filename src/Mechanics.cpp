@@ -32,7 +32,7 @@ void VulkanMechanics::createInstance() {
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
   appInfo.pApplicationName = "CAPITAL";
   appInfo.applicationVersion = VK_MAKE_VERSION(0, 0, 1);
-  appInfo.pEngineName = "CAPITAL engine";
+  appInfo.pEngineName = "CAPITAL Engine";
   appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
   appInfo.apiVersion = VK_API_VERSION_1_3;
   _log.console(
