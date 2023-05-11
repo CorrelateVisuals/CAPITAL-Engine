@@ -1,7 +1,7 @@
- 23.05.11 01:25:01 { ... } constructing Logging
+ 23.05.11 01:35:17 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
- { [*] } Window initialized with 1080 * 1080
+ 23.05.11 01:35:18 { [*] } Window initialized with 1080 * 1080
  { #?# } constructing Vulkan Mechanics
  { PIP } constructing Pipelines
  { 010 } constructing Memory Management
@@ -93,7 +93,7 @@
  
                    { Main Loop } running ..........
 
- 23.05.11 01:25:05 
+ 23.05.11 01:35:20 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...

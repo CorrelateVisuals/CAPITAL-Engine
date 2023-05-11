@@ -59,6 +59,7 @@ void Window::mouseClick(GLFWwindow* window, int button) {
       timer = glfwGetTime() - pressTime;
     } else {
       _log.console("{ --> }", "Mouse Down at", xpos, ":", ypos);
+      mousePosition = {xpos, ypos};
     }
   } else {
     pressTime =
