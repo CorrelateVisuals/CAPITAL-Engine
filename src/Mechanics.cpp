@@ -6,7 +6,7 @@
 #include <set>
 #include <stdexcept>
 
-#include "CAPITAL_Engine.h"
+#include "CapitalEngine.h"
 #include "Control.h"
 #include "Mechanics.h"
 #include "Pipelines.h"

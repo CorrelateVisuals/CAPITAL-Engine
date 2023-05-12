@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-#include "CAPITAL_Engine.h"
+#include "CapitalEngine.h"
 
 int main() {
   try {

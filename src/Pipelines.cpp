@@ -4,7 +4,7 @@
 #include <cstring>
 #include <random>
 
-#include "CAPITAL_Engine.h"
+#include "CapitalEngine.h"
 #include "Mechanics.h"
 #include "Pipelines.h"
 #include "World.h"

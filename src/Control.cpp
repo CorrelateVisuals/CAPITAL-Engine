@@ -1,7 +1,7 @@
 #include <chrono>
 #include <random>
 
-#include "CAPITAL_Engine.h"
+#include "CapitalEngine.h"
 #include "Control.h"
 #include "World.h"
 

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "CAPITAL_Engine.h"
+#include "CapitalEngine.h"
 #include "Control.h"
 #include "Window.h"
 
