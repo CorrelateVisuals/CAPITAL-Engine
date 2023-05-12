@@ -34,25 +34,34 @@ Cell cellIn  = cellsIn[index];
 
 void main() { if ( cellIn.size.x == -1.0f) { return; } // Skip all dead cells.
 
-    mat4 test = ubo.model;
+    int loopHours = ubo.passedHours % 400;
 
     cellOut[index].position = cellIn.position.rgba;
     cellOut[index].color = vec4( 0.5, vec2(0.0), 1.0 );
 
     // Walking rows from down to up
-    int blockStart = (ubo.passedHours / SQRT_OF_GRID) * SQRT_OF_GRID; // start index of the block
+    int blockStart = (loopHours / SQRT_OF_GRID) * SQRT_OF_GRID; // start index of the block
     int blockEnd = blockStart + SQRT_OF_GRID; // end index of the block
-    int indexInBlock = ubo.passedHours % SQRT_OF_GRID; // index within the block
+    int indexInBlock = loopHours % SQRT_OF_GRID; // index within the block
     // check if the current index is within the block
     if (index >= blockStart && index < blockEnd) { cellOut[index].color = vec4(0.0, 0.0, 1.0, 1.0); }
 
+     // Color all walked pixels green
+    if( index < loopHours) { cellOut[index].color = vec4(0.0, 1.0, 0.0, 1); }
     // Walking pixel white, from left top to corner right
-    if( index == ubo.passedHours){ cellOut[index].color = vec4(1.0); }
-    // Color all walked pixels green
-    if( index < ubo.passedHours) { cellOut[index].color = vec4(0.0, 0.5, 0.0, 1); }
+    if( index == loopHours){ 
+        cellOut[index].color = vec4(1.0); 
+        cellOut[index + 1].color = vec4(0.5);
+        cellOut[index - 1].color = vec4(0.5); 
+        cellOut[index - SQRT_OF_GRID] .color = vec4(0.5);
+        cellOut[index + SQRT_OF_GRID].color = vec4(0.5); 
+    }
+
+
 
     // Walking pixel inverse
-    if( int( ubo.gridSize.x ) - ubo.passedHours - int(1) == int(index)){ 
+    if( int( ubo.gridSize.x ) - loopHours - int(1) == int(index)){ 
         cellOut[index].color = vec4(0.0, vec3(1.0));
     }
+
 }

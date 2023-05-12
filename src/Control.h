@@ -11,7 +11,7 @@ class Control {
   Control();
   ~Control();
 
-  float simulationSpeed = 10.0f;
+  float simulationSpeed = 100.0f;
 
   struct Grid {
     float cellSize = 0.15f;

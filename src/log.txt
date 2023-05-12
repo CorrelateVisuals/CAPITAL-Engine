@@ -1,7 +1,7 @@
- 23.05.11 20:51:24 { ... } constructing Logging
+ 23.05.12 14:06:37 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
- 23.05.11 20:51:25 { [*] } Window initialized with 1080 * 1080
+ { [*] } Window initialized with 1080 * 1080
  { #?# } constructing Vulkan Mechanics
  { PIP } constructing Pipelines
  { 010 } constructing Memory Management
@@ -26,7 +26,7 @@
  { +++ } creating Logical Device
          : finding Queue Families
          : Enabled Extension Names: VK_KHR_swapchain
- 23.05.11 20:51:26 { <-> } creating Swap Chain
+ 23.05.12 14:06:38 { <-> } creating Swap Chain
          : querying Swap Chain Support
          : choosing Swap Surface Format
          : choosing Swap Present Mode
@@ -74,7 +74,7 @@
                            : 364 365 366 367 368 369 370 371 372 373 374 375 376 377 
                            : 378 379 380 381 382 383 384 385 386 387 388 389 390 391 
                            : 392 393 394 395 396 397 398 399 
- 23.05.11 20:51:27 { ... } creating Buffer: TRANSFER_SRC
+ { ... } creating Buffer: TRANSFER_SRC
          : 19200 bytes
  { ... } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
          : 19200 bytes
@@ -93,95 +93,7 @@
  
                    { Main Loop } running ..........
 
- { --> } Left Mouse Button clicked at 0.700926 : 0.388889
- 23.05.11 20:51:28 { --> } Left Mouse Button clicked at 0.886111 : 0.388889
- { --> } Left Mouse Button clicked at 0.885185 : 0.37963
- 23.05.11 20:51:29 { --> } Right Mouse Button clicked at 0.885185 : 0.37963
- { --> } Left Mouse Button clicked at 0.885185 : 0.37963
- 23.05.11 20:51:30 { --> } Right Mouse Button clicked at 0.885185 : 0.37963
- 23.05.11 20:51:31 { --> } Right Mouse Button clicked at 0.885185 : 0.37963
- 23.05.11 20:51:32 { --> } Right Mouse Button clicked at 0.885185 : 0.37963
- 23.05.11 20:51:33 { --> } Left Mouse Button down at 0.455556 : 0.161111
- { --> } Left Mouse Button down at 0.447222 : 0.150926
- { --> } Left Mouse Button down at 0.44537 : 0.147222
- { --> } Left Mouse Button down at 0.44537 : 0.146296
- { --> } Left Mouse Button down at 0.44537 : 0.146296
- { --> } Left Mouse Button down at 0.44537 : 0.146296
- { --> } Left Mouse Button down at 0.44537 : 0.146296
- { --> } Left Mouse Button down at 0.44537 : 0.146296
- { --> } Left Mouse Button clicked at 0.44537 : 0.146296
- 23.05.11 20:51:37 { --> } Left Mouse Button clicked at 0.661111 : 0.0361111
- 23.05.11 20:51:40 { --> } Left Mouse Button down at 0.539815 : 0.308333
- { --> } Left Mouse Button down at 0.539815 : 0.308333
- { --> } Left Mouse Button clicked at 0.539815 : 0.308333
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button clicked at 0.539815 : 0.305556
- 23.05.11 20:51:41 { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button clicked at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.305556
- { --> } Left Mouse Button clicked at 0.539815 : 0.305556
- 23.05.11 20:51:42 { --> } Right Mouse Button clicked at 0.539815 : 0.305556
- { --> } Right Mouse Button clicked at 0.539815 : 0.305556
- 23.05.11 20:51:43 { --> } Right Mouse Button clicked at 0.539815 : 0.305556
- { --> } Left Mouse Button down at 0.539815 : 0.301852
- { --> } Left Mouse Button down at 0.541667 : 0.288889
- { --> } Left Mouse Button down at 0.548148 : 0.27963
- { --> } Left Mouse Button down at 0.564815 : 0.265741
- { --> } Left Mouse Button down at 0.584259 : 0.256481
- { --> } Left Mouse Button down at 0.62037 : 0.244444
- { --> } Left Mouse Button down at 0.641667 : 0.238889
- { --> } Left Mouse Button down at 0.676852 : 0.228704
- { --> } Left Mouse Button down at 0.69537 : 0.226852
- { --> } Left Mouse Button down at 0.712037 : 0.226852
- { --> } Left Mouse Button down at 0.724074 : 0.234259
- { --> } Left Mouse Button down at 0.730556 : 0.246296
- { --> } Left Mouse Button down at 0.733333 : 0.253704
- { --> } Left Mouse Button down at 0.736111 : 0.268519
- { --> } Left Mouse Button down at 0.737963 : 0.277778
- { --> } Left Mouse Button down at 0.737963 : 0.293519
- { --> } Left Mouse Button down at 0.737963 : 0.30463
- { --> } Left Mouse Button down at 0.734259 : 0.312037
- 23.05.11 20:51:44 { --> } Left Mouse Button down at 0.731481 : 0.319444
- { --> } Left Mouse Button down at 0.724074 : 0.324074
- { --> } Left Mouse Button down at 0.696296 : 0.331481
- { --> } Left Mouse Button down at 0.662963 : 0.331481
- { --> } Left Mouse Button down at 0.637963 : 0.331481
- { --> } Left Mouse Button down at 0.608333 : 0.331481
- { --> } Left Mouse Button down at 0.532407 : 0.326852
- { --> } Left Mouse Button down at 0.484259 : 0.32037
- { --> } Left Mouse Button down at 0.441667 : 0.299074
- { --> } Left Mouse Button down at 0.415741 : 0.268519
- { --> } Left Mouse Button down at 0.409259 : 0.256481
- { --> } Left Mouse Button clicked at 0.405556 : 0.246296
- 23.05.11 20:51:45 
+ 23.05.12 14:07:03 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...
