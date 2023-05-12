@@ -10,7 +10,7 @@
 /// - Remove the vertex, index and normal data from vertex shader to c++
 ///
 /// FEATURES: ADDITIONS
-/// - Dear ImGui
+/// - Dear ImGui (for runtime settings, graph data and economic encyclopedia)
 /// - Multisampling
 /// - Renderpicking: Adding screenspace position to vertex ID, to click on
 /// objects and return their IDs. A Vulkan attachment is needed for this
