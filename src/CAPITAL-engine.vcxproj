@@ -159,7 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CAPITAL_Engine.cpp" />
+    <ClCompile Include="CapitalEngine.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="main.cpp" />
@@ -171,7 +171,7 @@
   <ItemGroup>
     <ClInclude Include="Control.h" />
     <ClInclude Include="Debug.h" />
-    <ClInclude Include="CAPITAL_Engine.h" />
+    <ClInclude Include="CapitalEngine.h" />
     <ClInclude Include="Pipelines.h" />
     <ClInclude Include="Mechanics.h" />
     <ClInclude Include="TODO.h" />
