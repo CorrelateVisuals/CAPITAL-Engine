@@ -1,7 +1,7 @@
- 23.05.12 19:10:33 { ... } constructing Logging
+ 23.05.12 20:47:36 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
- { [*] } Window initialized with 1080 * 1080
+ 23.05.12 20:47:37 { [*] } Window initialized with 1080 * 1080
  { #?# } constructing Vulkan Mechanics
  { PIP } constructing Pipelines
  { 010 } constructing Memory Management
@@ -32,7 +32,7 @@
          : choosing Swap Present Mode
          : choosing Swap Extent
          : finding Queue Families
- 23.05.12 19:10:34         : creating Image Views
+         : creating Image Views
  { []< } creating Render Pass
  { DES } creating Compute Descriptor Set Layout
  { PIP } creating Graphics Pipeline
@@ -93,7 +93,16 @@
  
                    { Main Loop } running ..........
 
- 23.05.12 19:10:35 
+ 23.05.12 20:47:40 { [*] } Window resized to 3840 * 2109
+ { <-> } creating Swap Chain
+         : querying Swap Chain Support
+         : choosing Swap Surface Format
+         : choosing Swap Present Mode
+         : choosing Swap Extent
+         : finding Queue Families
+         : creating Image Views
+ { BUF } creating Frame Buffers
+ 23.05.12 20:47:42 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...
