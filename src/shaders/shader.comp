@@ -2,11 +2,13 @@
 #extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
 
 const int SQRT_OF_GRID = 20;
+layout (local_size_x = SQRT_OF_GRID, local_size_y = 1, local_size_z = 1) in;
 
 struct Cell {
 	vec4 position;  // float    xy(z)
     vec4 color;     // float    rgba
     vec4 size;      // float    x
+    vec4 endOfTurn; // bool     pqrwt
 };
 
 layout (binding = 0) uniform ParameterUBO {
@@ -18,26 +20,25 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 projection;
 } ubo;
 
-layout(std430, binding = 1) readonly buffer CellSSBOIn {
-   Cell cellsIn[ ];
-};
-
-layout(std430, binding = 2) buffer CellSSBOOut {
-   Cell cellOut[ ];
-};
-
-layout (local_size_x = SQRT_OF_GRID, local_size_y = 1, local_size_z = 1) in;
-
+layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellsIn[ ]; };
+layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
 uint index = gl_GlobalInvocationID.x;
 Cell cellIn  = cellsIn[index];
+int loopHours = ubo.passedHours % 400;
 
-void main() { if ( cellIn.size.x == -1.0f) { return; } // Skip all dead cells.
+vec4 grey1 = vec4(0.1);
+vec4 grey2 = vec4(0.8);
 
-    int loopHours = ubo.passedHours % 400;
+void main() { 
+    if ( cellIn.size.x == -1.0f) { 
+        return; // Skip all dead cells.
+    }
+
+    cellOut[index].color = vec4( 0.5, vec2(0.0), 1.0 );
+    cellIn.endOfTurn = vec4(int(false));
 
     cellOut[index].position = cellIn.position.rgba;
-    cellOut[index].color = vec4( 0.5, vec2(0.0), 1.0 );
 
     if (index == loopHours) {
         int range = 4;
@@ -52,12 +53,23 @@ void main() { if ( cellIn.size.x == -1.0f) { return; } // Skip all dead cells.
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
                 int neighborIndex = y * gridSize + x;
-                cellOut[neighborIndex].color = vec4(0.5);
+
+                if (neighborIndex == index) {
+                    cellOut[neighborIndex].color = vec4(1.0, 0.0, 1.0, 1.0);
+                } else if (cellsIn[neighborIndex].endOfTurn == vec4(int(true))) {
+                    cellOut[neighborIndex].color = grey2;
+                    cellOut[neighborIndex].endOfTurn = vec4(int(true));
+                } else {
+                    cellOut[neighborIndex].color = grey1;
+                    cellOut[neighborIndex].endOfTurn = vec4(int(true));
+                }
             }
         }
-        cellOut[index].color = vec4(1.0, 0.0, 1.0, 1.0);
+        
+        cellOut[index].endOfTurn = vec4(int(true));
     }
 }
+
 
     // // Walking rows from down to up
     // int blockStart = (loopHours / SQRT_OF_GRID) * SQRT_OF_GRID; // start index of the block
