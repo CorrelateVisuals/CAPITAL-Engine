@@ -1,34 +1,25 @@
 #pragma once
-/// <TO DO>
-/// Add the option to turn a Cell on/off
+/// <TO DO> ///////////////////////////////////////////////////////////////////
 ///
-/// Adding 'long long' to shader with the right extension on the Vulkan side
+/// FIXES
+/// - Adding 'long long' data type to shader, with enabling the right extension
+/// on the Vulkan side
+/// - Correct the scaling of the compute row in relation to the grid size.
+/// Currently sqrt() of one of the grid dimensions is used to do so and manually
+/// this value has to be set in the compute shader
+/// - Remove the vertex, index and normal data from vertex shader to c++
 ///
-/// Adding screenspace position to vertex ID, to click on objects and return
-/// their IDs
+/// FEATURES: ADDITIONS
+/// - Add Dear ImGui
+/// - Add multisampling
+/// - Adding screenspace position to vertex ID, to click on objects and return
+/// their IDs (renderpicking). A Vulkan attachment is needed for this.
 ///
-/// Adding vertices and indices to instance cubes instead of grid points
-/// Adding model, view, projection matrices
-///
-/// Adding camera movement connected to the mouse
-///
-/// Moving one cell to another, than replacing the moving cell with another
-/// object (adding trading rules, trade with best neightbour, richest, furthest,
-/// closest)
-///
-/// Add multisampling
-///
-/// Add depth stenciling
-///
-/// Add gui
-///
-/// Add other objects on same grid
-///
-/// Add lightning (point lightning)
-///
-/// Add other geometry (landscape grid + y height, and other objects)
+/// FEATURES: GEOMETRY
+/// - Moving geometry between cells
+/// - Add base terrain (landscape grid with height)
 ///		- Add landownership vinroy effect (camera that films cones that
 ///		  overlap, as texture on landscape)
 ///
 ///
-/// </TO DO>
+/// </TO DO> ///////////////////////////////////////////////////////////////////
