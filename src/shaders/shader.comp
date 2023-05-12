@@ -48,14 +48,31 @@ void main() { if ( cellIn.size.x == -1.0f) { return; } // Skip all dead cells.
 
      // Color all walked pixels green
     if( index < loopHours) { cellOut[index].color = vec4(0.0, 1.0, 0.0, 1); }
+    
     // Walking pixel white, from left top to corner right
-    if( index == loopHours){ 
-        cellOut[index].color = vec4(1.0); 
-        cellOut[index + 1].color = vec4(0.5);
-        cellOut[index - 1].color = vec4(0.5); 
-        cellOut[index - SQRT_OF_GRID] .color = vec4(0.5);
-        cellOut[index + SQRT_OF_GRID].color = vec4(0.5); 
+    // And pixel neighbours
+if (index == loopHours) {
+    int range = 4;
+    int gridSize = 20;
+    int indexX = int(index) % gridSize;
+    int indexY = int(index) / gridSize;
+    int startX = max(indexX - range, 0);
+    int endX = min(indexX + range, gridSize - 1);
+    int startY = max(indexY - range, 0);
+    int endY = min(indexY + range, gridSize - 1);
+
+    for (int x = startX; x <= endX; x++) {
+        for (int y = startY; y <= endY; y++) {
+            int neighborIndex = y * gridSize + x;
+            cellOut[neighborIndex].color = vec4(0.5);
+        }
     }
+    cellOut[index].color = vec4(1.0);
+}
+
+
+
+
 
 
 
