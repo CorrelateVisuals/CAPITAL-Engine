@@ -1,4 +1,4 @@
- 23.05.12 16:16:15 { ... } constructing Logging
+ 23.05.12 17:30:54 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
@@ -26,7 +26,7 @@
  { +++ } creating Logical Device
          : finding Queue Families
          : Enabled Extension Names: VK_KHR_swapchain
- { <-> } creating Swap Chain
+ 23.05.12 17:30:55 { <-> } creating Swap Chain
          : querying Swap Chain Support
          : choosing Swap Surface Format
          : choosing Swap Present Mode
@@ -74,4 +74,44 @@
                            : 364 365 366 367 368 369 370 371 372 373 374 375 376 377 
                            : 378 379 380 381 382 383 384 385 386 387 388 389 390 391 
                            : 392 393 394 395 396 397 398 399 
- { ... } creating Buffer: TRANSFER_SR
+ { ... } creating Buffer: TRANSFER_SRC
+         : 19200 bytes
+ { ... } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
+         : 19200 bytes
+ { ... } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
+         : 19200 bytes
+ { BUF } creating Uniform Buffers
+ { ... } creating Buffer: UNIFORM_BUFFER
+         : 224 bytes
+ { ... } creating Buffer: UNIFORM_BUFFER
+         : 224 bytes
+ { DES } creating 2 Descriptor Pools
+ { DES } creating Compute Descriptor Sets
+ { CMD } creating Command Buffers
+ { CMD } creating Compute Command Buffers
+ { ||| } creating Sync Objects
+ 
+                   { Main Loop } running ..........
+
+ 23.05.12 17:30:56 { [*] } Window resized to 3840 * 2109
+ { <-> } creating Swap Chain
+         : querying Swap Chain Support
+         : choosing Swap Surface Format
+         : choosing Swap Present Mode
+         : choosing Swap Extent
+         : finding Queue Families
+         : creating Image Views
+ { BUF } creating Frame Buffers
+ 23.05.12 17:32:03 { --> } Left Mouse Button clicked at 0.986198 : 0.00379327
+ 23.05.12 17:32:04 
+                   { Main Loop } ....... terminated
+ 
+                   [ CAPITAL engine ] terminating...
+
+ { CTR } destructing Control
+ { 010 } destructing Memory Management
+ { PIP } destructing Pipelines
+ { #?# } destructing Vulkan Mechanics
+ { [-] } destructing Window
+ { --- } destructing Validation Layers
+ { ... } destructing Logging
