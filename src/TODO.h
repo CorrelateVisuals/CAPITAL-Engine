@@ -8,6 +8,8 @@
 /// Currently sqrt() of one of the grid dimensions is used to do so and manually
 /// this value has to be set in the compute shader
 /// - Remove the vertex, index and normal data from vertex shader to c++
+/// - Optimization and bug fixes
+/// - Ensure WINDOWS and LINUX compatibility
 ///
 /// FEATURES: ADDITIONS
 /// - Dear ImGui (for runtime settings, graph data and economic encyclopedia)
