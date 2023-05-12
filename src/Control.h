@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+constexpr int parameterOff = -1;
+
 class Control {
  public:
   Control();
