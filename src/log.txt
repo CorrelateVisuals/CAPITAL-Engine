@@ -1,4 +1,4 @@
- 23.05.12 14:06:37 { ... } constructing Logging
+ 23.05.12 15:07:22 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
  { [*] } Window initialized with 1080 * 1080
@@ -26,7 +26,7 @@
  { +++ } creating Logical Device
          : finding Queue Families
          : Enabled Extension Names: VK_KHR_swapchain
- 23.05.12 14:06:38 { <-> } creating Swap Chain
+ 23.05.12 15:07:23 { <-> } creating Swap Chain
          : querying Swap Chain Support
          : choosing Swap Surface Format
          : choosing Swap Present Mode
@@ -93,15 +93,3 @@
  
                    { Main Loop } running ..........
 
- 23.05.12 14:07:03 
-                   { Main Loop } ....... terminated
- 
-                   [ CAPITAL engine ] terminating...
-
- { CTR } destructing Control
- { 010 } destructing Memory Management
- { PIP } destructing Pipelines
- { #?# } destructing Vulkan Mechanics
- { [-] } destructing Window
- { --- } destructing Validation Layers
- { ... } destructing Logging
