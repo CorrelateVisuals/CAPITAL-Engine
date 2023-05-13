@@ -25,19 +25,15 @@ uint index = gl_GlobalInvocationID.x;
 Cell cellIn  = cellsIn[index];
 int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 
-vec4 grey1 = vec4(0.1);
-vec4 grey2 = vec4(0.8);
+vec4 grey1 = vec4(0.8);
+vec4 grey2 = vec4(0.1);
 
 void main() {if (cellIn.size.x == -1.0f) { return; }// Skip all dead cells.
-    
+    cellOut[index].position = cellIn.position.xyzw;
     // Default color is red.
     cellOut[index].color = vec4(1.0, 0.0, 0.0, 1.0);
-    cellOut[index].position = cellIn.position.rgba;
-
     // If the current cell was colored in a previous frame, set the color to grey2.
-    if (cellIn.endOfTurn == vec4(int(true))) {
-        cellOut[index].color = grey2;
-    }
+    if (cellIn.endOfTurn == vec4(int(true))) { cellOut[index].color = grey2; }
 
     // If it's time to color the current cell and its neighbors.
     if (index == loopHours) {
@@ -50,20 +46,19 @@ void main() {if (cellIn.size.x == -1.0f) { return; }// Skip all dead cells.
         int startY = max(indexY - range, 0);
         int endY = min(indexY + range, SQRT_OF_GRID - 1);
 
-        // Color the current cell and its neighbors.
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
                 int neighborIndex = y * SQRT_OF_GRID + x;
-                if (neighborIndex == index) {   // color cell
-                    cellOut[neighborIndex].color = vec4(0.0, 0.0, 1.0, 1.0);
-                } else {  // if not already colored
-                        cellOut[neighborIndex].color = grey1;
-                        cellOut[neighborIndex].endOfTurn = vec4(int(true));
-                    }
+                if (neighborIndex != index) {                       // If not current cell, color neighbours
+                    cellOut[neighborIndex].color = grey1;
+                    cellOut[neighborIndex].endOfTurn = vec4(int(true));
                 }
             }
         }
-    } 
+    }
+    cellOut[loopHours].color = vec4(0.0, 0.0, 1.0, 1.0);            // Color current cell
+
+} 
 
 
 
