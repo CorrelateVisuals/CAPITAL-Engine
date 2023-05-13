@@ -32,11 +32,14 @@ class World {
   };
 
  public:
-  static std::vector<VkVertexInputAttributeDescription>
-  getAttributeDescriptions();
-  static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
+  // Animation
+  UniformBufferObject updateUniforms();
 
   glm::mat4 setModel();
   glm::mat4 setView();
   glm::mat4 setProjection(VkExtent2D& swapChainExtent);
+
+  static std::vector<VkVertexInputAttributeDescription>
+  getAttributeDescriptions();
+  static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
 };

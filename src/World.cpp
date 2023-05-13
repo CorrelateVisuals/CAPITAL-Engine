@@ -37,6 +37,15 @@ glm::mat4 World::setView() {
   return view;
 }
 
+World::UniformBufferObject World::updateUniforms() {
+  UniformBufferObject uniformObject{};
+  uniformObject.passedHours = _control.passedSimulationHours;
+  uniformObject.model = _world.setModel();
+  uniformObject.view = _world.setView();
+  uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
+  uniformObject.lightDirection = {0.0f, 1.0f, 1.0f, 0.2f};
+  return uniformObject;
+}
 glm::mat4 World::setModel() {
   glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f),
                                 glm::vec3(0.0f, 0.0f, 1.0f));

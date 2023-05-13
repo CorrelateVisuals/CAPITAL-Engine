@@ -42,7 +42,7 @@ void main() {if (cellIn.size.x == -1.0f) { return; }// Skip all dead cells.
     // If it's time to color the current cell and its neighbors.
     if (index == loopHours) {
         int range = 4;
-        int gridSize = 20;
+        int gridSize = SQRT_OF_GRID;
         int indexX = int(index) % SQRT_OF_GRID;
         int indexY = int(index) / SQRT_OF_GRID;
         int startX = max(indexX - range, 0);

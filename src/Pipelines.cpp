@@ -697,13 +697,7 @@ void MemoryCommands::createComputeDescriptorSets() {
 }
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
-  World::UniformBufferObject uniformObject{};
-  uniformObject.passedHours = _control.passedSimulationHours;
-  uniformObject.model = _world.setModel();
-  uniformObject.view = _world.setView();
-  uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
-  uniformObject.lightDirection = {0.0f, 1.0f, 1.0f, 0.2f};
-
+  World::UniformBufferObject uniformObject = _world.updateUniforms();
   std::memcpy(uniform.buffersMapped[currentImage], &uniformObject,
               sizeof(uniformObject));
 }
