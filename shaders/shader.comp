@@ -28,7 +28,7 @@ int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 vec4 grey1 = vec4(0.8);
 vec4 grey2 = vec4(0.1);
 
-void main() { if (cellIn.size.x == -1.0f) { return; } // Skip all dead cells.
+void main() { if(cellIn.size.x == -1.0f) { return; };
 
     cellOut[index].position = cellIn.position.xyzw;
     cellOut[index].color = vec4( 1.0, 0.0, 0.0, 1.0 );
@@ -57,7 +57,9 @@ void main() { if (cellIn.size.x == -1.0f) { return; } // Skip all dead cells.
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
                 int neighborIndex = y * SQRT_OF_GRID + x;
-                if (neighborIndex != index) { // If not current cell, color neighbors.
+                Cell neighborCell = cellsIn[neighborIndex];
+                
+                if (neighborCell.size.x != -1.0f && neighborIndex != index) { // If not dead cell and not current cell, color neighbor.
                     cellOut[neighborIndex].color = grey1;
                     cellOut[neighborIndex].endOfTurn = vec4(int(true));
                     cellOut[neighborIndex].size = vec4(0.15);
