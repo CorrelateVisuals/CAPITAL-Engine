@@ -13,6 +13,8 @@
 /// - Remove the vertex, index and normal data from vertex shader to c++
 /// - Optimization and bug fixes
 /// - Ensure WINDOWS and LINUX compatibility
+/// - Revise the _log.console() function (with the use of overload functions)
+/// - Format runtime errors to right style format
 ///
 /// [ FEATURES: ADDITIONS ]
 /// - Dear ImGui (for runtime settings, graph data and economic encyclopedia)
