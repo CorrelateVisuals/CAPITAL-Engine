@@ -24,7 +24,7 @@ class Control {
  public:
   // Initialization
   float getRandomFloat(float min, float max);
-  std::vector<int> setCellsAliveRandomly(int size);
+  std::vector<int> setCellsAliveRandomly(size_t size);
 
   // Animation
   double lowFrequencyOsciallator();

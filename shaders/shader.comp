@@ -30,15 +30,12 @@ vec4 grey2 = vec4(0.1);
 
 void main() { if (cellIn.size.x == -1.0f) { return; } // Skip all dead cells.
 
-<<<<<<< HEAD
-    cellOut[index].position = cellIn.position.xyzw;
-    // Default color is red and size is 0.1.
-    cellOut[index].color = vec4(1.0, 0.0, 0.0, 1.0);
-    cellOut[index].size = vec4(0.1);
-=======
+    // cellOut[index].position = cellIn.position.xyzw;
+    // // Default color is red and size is 0.1.
+    // cellOut[index].color = vec4(1.0, 0.0, 0.0, 1.0);
+    // cellOut[index].size = vec4(0.1);
     cellOut[index].position = cellIn.position.rgba;
     cellOut[index].color = vec4( 1.0, vec2(0.0), 1.0 );
->>>>>>> 61f971d (updated to work on windows)
 
     // If the current cell was colored in a previous frame, set the color to grey2 and size to 0.3.
     if (cellIn.endOfTurn == vec4(int(true))) { 
