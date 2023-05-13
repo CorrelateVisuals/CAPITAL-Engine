@@ -45,7 +45,7 @@ void main() { if(cellIn.size.x == -1.0f) { return; };
         cellOut[loopHours].color = vec4(0.0, 0.0, 1.0, 1.0);
         cellOut[loopHours].size = vec4(0.2);
 
-        int range = 4;
+        int range = 1;
         int gridSize = SQRT_OF_GRID;
         int indexX = int(index) % SQRT_OF_GRID;
         int indexY = int(index) / SQRT_OF_GRID;
@@ -57,9 +57,9 @@ void main() { if(cellIn.size.x == -1.0f) { return; };
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
                 int neighborIndex = y * SQRT_OF_GRID + x;
-                Cell neighborCell = cellsIn[neighborIndex];
                 
-                if (neighborCell.size.x != -1.0f && neighborIndex != index) { // If not dead cell and not current cell, color neighbor.
+                
+                if (cellsIn[neighborIndex].size.x != -1.0f && neighborIndex != index) { // If not dead cell and not current cell, color neighbor.
                     cellOut[neighborIndex].color = grey1;
                     cellOut[neighborIndex].endOfTurn = vec4(int(true));
                     cellOut[neighborIndex].size = vec4(0.15);
