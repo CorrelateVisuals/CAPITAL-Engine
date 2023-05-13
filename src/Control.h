@@ -11,8 +11,6 @@ class Control {
   Control();
   ~Control();
 
-  float simulationSpeed = 10.0f;
-
   struct Grid {
     float cellSize = 0.15f;
     const uint32_t numberOfAliveCells = 400;
@@ -21,14 +19,20 @@ class Control {
     const uint32_t numberOfGridPoints = gridDimensions[0] * gridDimensions[1];
   } grid;
 
+  float simulationSpeed = 10.0f;
+
  public:
-  int passedSimulationHours = 0;  // TODO: 'long long'
-
-  double lowFrequencyOsciallator();
-
-  std::vector<int> setCellsAliveRandomly(int size);
-  void simulateHours();
+  // Initialization
   float getRandomFloat(float min, float max);
+  std::vector<int> setCellsAliveRandomly(int size);
+
+  // Animation
+  double lowFrequencyOsciallator();
+  void simulateHours();
+
+ public:
+  // Globally accessible variables
+  int passedSimulationHours = 0;  // TODO: 'long long'
 };
 
 struct DisplayConfig {
