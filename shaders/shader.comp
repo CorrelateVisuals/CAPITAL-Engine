@@ -45,7 +45,7 @@ void main() { if(cellIn.size.x == -1.0f) { return; };
         cellOut[loopHours].color = vec4(0.0, 0.0, 1.0, 1.0);
         cellOut[loopHours].size = vec4(0.2);
 
-        int range = 1;
+        int range = 2;
         int gridSize = SQRT_OF_GRID;
         int indexX = int(index) % SQRT_OF_GRID;
         int indexY = int(index) / SQRT_OF_GRID;
