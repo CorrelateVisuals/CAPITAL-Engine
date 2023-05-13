@@ -28,15 +28,30 @@ int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 vec4 grey1 = vec4(0.8);
 vec4 grey2 = vec4(0.1);
 
-void main() {if (cellIn.size.x == -1.0f) { return; }// Skip all dead cells.
+void main() {
+    if (cellIn.size.x == -1.0f) { 
+        return;
+    } // Skip all dead cells.
+
     cellOut[index].position = cellIn.position.xyzw;
-    // Default color is red.
+
+    // Default color is red and size is 0.5.
     cellOut[index].color = vec4(1.0, 0.0, 0.0, 1.0);
-    // If the current cell was colored in a previous frame, set the color to grey2.
-    if (cellIn.endOfTurn == vec4(int(true))) { cellOut[index].color = grey2; }
+    cellOut[index].size = vec4(0.1);
+
+    // If the current cell was colored in a previous frame, set the color to grey2 and size to 0.3.
+    if (cellIn.endOfTurn == vec4(int(true))) { 
+        cellOut[index].color = grey2; 
+        cellOut[index].size = vec4(0.1);
+    }
 
     // If it's time to color the current cell and its neighbors.
     if (index == loopHours) {
+
+        // Color and size the current cell.
+        cellOut[loopHours].color = vec4(0.0, 0.0, 1.0, 1.0);
+        cellOut[loopHours].size = vec4(0.3);
+
         int range = 4;
         int gridSize = SQRT_OF_GRID;
         int indexX = int(index) % SQRT_OF_GRID;
@@ -49,16 +64,15 @@ void main() {if (cellIn.size.x == -1.0f) { return; }// Skip all dead cells.
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
                 int neighborIndex = y * SQRT_OF_GRID + x;
-                if (neighborIndex != index) {                       // If not current cell, color neighbours
+                if (neighborIndex != index) { // If not current cell, color neighbors.
                     cellOut[neighborIndex].color = grey1;
                     cellOut[neighborIndex].endOfTurn = vec4(int(true));
+                    cellOut[neighborIndex].size = vec4(0.2);
                 }
             }
         }
     }
-    cellOut[loopHours].color = vec4(0.0, 0.0, 1.0, 1.0);            // Color current cell
-
-} 
+}
 
 
 
