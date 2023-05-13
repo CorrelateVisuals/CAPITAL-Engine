@@ -19,7 +19,7 @@ void Window::initWindow() {
   glfwInit();
   glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
   window = glfwCreateWindow(displayConfig.width, displayConfig.height,
-                            displayConfig.windowTitle, nullptr, nullptr);
+                            displayConfig.projectTitle, nullptr, nullptr);
 
   glfwSetWindowUserPointer(window, this);
   glfwSetFramebufferSizeCallback(window, windowResize);
