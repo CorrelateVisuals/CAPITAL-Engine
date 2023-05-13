@@ -58,8 +58,7 @@ void main() {if (cellIn.size.x == -1.0f) { return; }// Skip all dead cells.
                 int neighborIndex = y * gridSize + x;
                 if (neighborIndex == index) {   // color cell
                     cellOut[neighborIndex].color = vec4(0.0, 0.0, 1.0, 1.0);
-                } else {                        // color neighbors
-                    if (cellIn[neighborIndex].color != grey1) {  // if not already colored
+                } else {  // if not already colored
                         cellOut[neighborIndex].color = grey1;
                         cellOut[neighborIndex].endOfTurn = vec4(int(true));
                     }
@@ -67,7 +66,7 @@ void main() {if (cellIn.size.x == -1.0f) { return; }// Skip all dead cells.
             }
         }
     } 
-}
+
 
 
 
