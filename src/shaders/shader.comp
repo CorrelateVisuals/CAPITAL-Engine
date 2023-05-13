@@ -23,7 +23,7 @@ layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
 uint index = gl_GlobalInvocationID.x;
 Cell cellIn  = cellsIn[index];
-int loopHours = ubo.passedHours % 400;
+int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 
 vec4 grey1 = vec4(0.1);
 vec4 grey2 = vec4(0.8);
