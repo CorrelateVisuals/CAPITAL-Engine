@@ -443,7 +443,8 @@ void MemoryCommands::createCommandBuffers() {
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
   allocInfo.commandPool = command.pool;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-  allocInfo.commandBufferCount = static_cast<uint32_t>(command.graphicBuffers.size());
+  allocInfo.commandBufferCount =
+      static_cast<uint32_t>(command.graphicBuffers.size());
 
   if (vkAllocateCommandBuffers(_mechanics.mainDevice.logical, &allocInfo,
                                command.graphicBuffers.data()) != VK_SUCCESS) {
@@ -460,7 +461,8 @@ void MemoryCommands::createComputeCommandBuffers() {
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
   allocInfo.commandPool = command.pool;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-  allocInfo.commandBufferCount = static_cast<uint32_t>(command.computeBuffers.size());
+  allocInfo.commandBufferCount =
+      static_cast<uint32_t>(command.computeBuffers.size());
 
   if (vkAllocateCommandBuffers(_mechanics.mainDevice.logical, &allocInfo,
                                command.computeBuffers.data()) != VK_SUCCESS) {
@@ -530,7 +532,7 @@ void MemoryCommands::createShaderStorageBuffers() {
 
   // Copy initial Cell data to all storage buffers
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-    createBuffer(static_cast<float>(bufferSize),
+    createBuffer(static_cast<VkDeviceSize>(bufferSize),
                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
                      VK_BUFFER_USAGE_VERTEX_BUFFER_BIT |
                      VK_BUFFER_USAGE_TRANSFER_DST_BIT,
