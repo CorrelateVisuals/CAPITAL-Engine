@@ -5,7 +5,7 @@ project(${PROJECT_NAME})
 message("==== Projectname: ${PROJECT_NAME}")
 
 set(CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wpedantic \
-    -Winit-self -Wno-unused -Wshadow \
+    -Wold-style-cast -Winit-self -Wno-unused -Wshadow \
     -Wno-parentheses -Wlogical-op -Wredundant-decls \
     -Wcast-align -Wsign-promo -Wmissing-include-dirs \
     -Woverloaded-virtual -Wctor-dtor-privacy ") 
