@@ -28,14 +28,10 @@ int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 vec4 grey1 = vec4(0.8);
 vec4 grey2 = vec4(0.1);
 
-void main() {
-    if (cellIn.size.x == -1.0f) { 
-        return;
-    } // Skip all dead cells.
+void main() { if (cellIn.size.x == -1.0f) { return; } // Skip all dead cells.
 
     cellOut[index].position = cellIn.position.xyzw;
-
-    // Default color is red and size is 0.5.
+    // Default color is red and size is 0.1.
     cellOut[index].color = vec4(1.0, 0.0, 0.0, 1.0);
     cellOut[index].size = vec4(0.1);
 
@@ -44,10 +40,8 @@ void main() {
         cellOut[index].color = grey2; 
         cellOut[index].size = vec4(0.1);
     }
-
-    // If it's time to color the current cell and its neighbors.
+    
     if (index == loopHours) {
-
         // Color and size the current cell.
         cellOut[loopHours].color = vec4(0.0, 0.0, 1.0, 1.0);
         cellOut[loopHours].size = vec4(0.2);
