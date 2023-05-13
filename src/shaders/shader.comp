@@ -50,7 +50,7 @@ void main() {
 
         // Color and size the current cell.
         cellOut[loopHours].color = vec4(0.0, 0.0, 1.0, 1.0);
-        cellOut[loopHours].size = vec4(0.3);
+        cellOut[loopHours].size = vec4(0.2);
 
         int range = 4;
         int gridSize = SQRT_OF_GRID;
@@ -67,7 +67,7 @@ void main() {
                 if (neighborIndex != index) { // If not current cell, color neighbors.
                     cellOut[neighborIndex].color = grey1;
                     cellOut[neighborIndex].endOfTurn = vec4(int(true));
-                    cellOut[neighborIndex].size = vec4(0.2);
+                    cellOut[neighborIndex].size = vec4(0.15);
                 }
             }
         }
