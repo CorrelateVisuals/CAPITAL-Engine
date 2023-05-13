@@ -13,8 +13,6 @@ struct Cell {
 
 layout (binding = 0) uniform ParameterUBO {
     int passedHours; //TODO 'long long' : int64_t passedHours;
-    int gridSize;
-
     mat4 model;
     mat4 view;
     mat4 projection;
@@ -45,17 +43,17 @@ void main() {if (cellIn.size.x == -1.0f) { return; }// Skip all dead cells.
     if (index == loopHours) {
         int range = 4;
         int gridSize = 20;
-        int indexX = int(index) % gridSize;
-        int indexY = int(index) / gridSize;
+        int indexX = int(index) % SQRT_OF_GRID;
+        int indexY = int(index) / SQRT_OF_GRID;
         int startX = max(indexX - range, 0);
-        int endX = min(indexX + range, gridSize - 1);
+        int endX = min(indexX + range, SQRT_OF_GRID - 1);
         int startY = max(indexY - range, 0);
-        int endY = min(indexY + range, gridSize - 1);
+        int endY = min(indexY + range, SQRT_OF_GRID - 1);
 
         // Color the current cell and its neighbors.
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
-                int neighborIndex = y * gridSize + x;
+                int neighborIndex = y * SQRT_OF_GRID + x;
                 if (neighborIndex == index) {   // color cell
                     cellOut[neighborIndex].color = vec4(0.0, 0.0, 1.0, 1.0);
                 } else {  // if not already colored

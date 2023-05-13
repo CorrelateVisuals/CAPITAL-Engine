@@ -699,8 +699,6 @@ void MemoryCommands::createComputeDescriptorSets() {
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   World::UniformBufferObject uniformObject{};
   uniformObject.passedHours = _control.passedSimulationHours;
-  uniformObject.gridSize = _control.grid.numberOfGridPoints;
-
   uniformObject.model = _world.setModel();
   uniformObject.view = _world.setView();
   uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
