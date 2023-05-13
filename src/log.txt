@@ -1,13 +1,13 @@
- 23.05.13 12:29:34 { ... } constructing Logging
+ 23.05.13 12:51:07 { ... } constructing Logging
  { --- } constructing Validation Layers
  { [X] } constructing Window
- { [*] } Window initialized with 1080 * 1080
+ 23.05.13 12:51:08 { [*] } Window initialized with 1080 * 1080
  { #?# } constructing Vulkan Mechanics
  { PIP } constructing Pipelines
  { 010 } constructing Memory Management
  { CTR } constructing Control
  { (:) } constructing World
- 23.05.13 12:29:35 
+ 
                    [ CAPITAL engine ] starting...
 
  { *** } initializing Capital Engine
@@ -45,14 +45,14 @@
  { BUF } creating Frame Buffers
  { BUF } creating Shader Storage Buffers
          : initializing Cells
-         : 2 4 12 13 16 17 26 27 34 35 36 37 39 44 
-                           : 46 50 51 54 60 67 70 71 72 75 83 86 89 92 
-                           : 105 109 113 114 116 117 122 125 130 140 141 144 145 146 
-                           : 153 166 167 173 178 179 180 190 192 195 202 207 214 217 
-                           : 218 219 220 224 228 231 232 233 234 236 247 256 262 264 
-                           : 269 270 276 277 279 281 285 286 288 307 310 311 314 318 
-                           : 322 330 331 338 343 361 369 374 381 385 387 389 390 392 
-                           : 397 398 
+         : 0 3 8 11 12 19 29 30 32 36 48 49 56 61 
+                           : 73 74 78 79 87 91 93 101 104 105 108 109 110 112 
+                           : 117 119 120 122 124 129 132 133 134 142 143 144 145 150 
+                           : 152 154 156 162 170 172 177 179 184 185 190 196 207 211 
+                           : 214 215 218 227 237 238 244 258 259 262 264 266 270 271 
+                           : 274 277 286 288 289 293 295 301 304 306 312 313 316 322 
+                           : 327 329 330 333 342 344 358 359 365 374 375 380 384 387 
+                           : 389 396 
  { ... } creating Buffer: TRANSFER_SRC
          : 25600 bytes
  { ... } creating Buffer: TRANSFER_DST | STORAGE_BUFFER | VERTEX_BUFFER
@@ -72,7 +72,7 @@
  
                    { Main Loop } running ..........
 
- 23.05.13 12:29:36 
+ 23.05.13 12:51:09 
                    { Main Loop } ....... terminated
  
                    [ CAPITAL engine ] terminating...

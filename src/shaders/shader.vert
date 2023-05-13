@@ -36,7 +36,7 @@ vec4 constructCube(){ vec4 cube = inPosition.rgba + vec4( cubeVertices[ cubeIndi
 mat4 modelViewProjection(){ mat4 mvp = ubo.projection * ubo.view * ubo.model; return mvp; }
 float phongLightning ( vec4 directionAndIntensity ) {
     int index = gl_VertexIndex / 4; 
-    mat3 normalMatrix = transpose(inverse(mat3(ubo.model)));
+    mat3 normalMatrix = mat3(ubo.model);
     vec3 normalWorldSpace = normalize(normalMatrix * cubeNormals[index]);
     float lightIntensity = directionAndIntensity.w + max(dot(normalWorldSpace, normalize(directionAndIntensity.xyz)), 0.0f);
     return lightIntensity; }
