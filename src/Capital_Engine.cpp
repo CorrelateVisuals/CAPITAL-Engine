@@ -28,6 +28,8 @@ void CapitalEngine::mainLoop() {
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
 
+    _log.console(_control.lowFrequencyOsciallator());
+
     _control.simulateHours();
     drawFrame();
 

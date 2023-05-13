@@ -24,6 +24,8 @@ class Control {
  public:
   int passedSimulationHours = 0;  // TODO: 'long long'
 
+  double lowFrequencyOsciallator();
+
   std::vector<int> setCellsAliveRandomly(int size);
   void simulateHours();
   float getRandomFloat(float min, float max);
