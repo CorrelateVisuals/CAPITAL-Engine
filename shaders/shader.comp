@@ -2,7 +2,7 @@
 #extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
 
 const int SQRT_OF_GRID = 20;
-layout (local_size_x = SQRT_OF_GRID, local_size_y = 1, local_size_z = 1) in;
+layout (local_size_x = SQRT_OF_GRID, local_size_y = SQRT_OF_GRID, local_size_z = 1) in;
 
 struct Cell {
 	vec4 position;  // float    xy(z)
@@ -47,36 +47,53 @@ int countNumberOfNeighbours(int range){
     return numberOfNeighbours; }
 
 
-void main() {
-    if (cellIn[index].endOfTurn.x == ubo.passedHours) { 
-        cellOut = cellIn;
-     } 
-    else {    
 
+void main() {
+    if ( index == loopHours ){
+        cellOut = cellIn;
+
+        bool cellIsAlive = cellIn[index].color.a == int(true);
         cellOut[index].position = cellIn[index].position.xyzw;
         int numNeighbours = countNumberOfNeighbours(1);
-        bool cellIsAlive = cellIn[index].color.a == int(true);
 
-        if (numNeighbours >= 3) {
-            // Cell survives or gets born
-            vec3 green = vec3(0.0, 1.0, 0.0);
-            cellOut[index].color = vec4( green.rgb, int(true) );
-            cellOut[index].size = vec4( 0.15 );
-        };
-/*        if (numNeighbours < 2 || numNeighbours > 3) {
+        if (numNeighbours < 2 || numNeighbours > 3) {
             // Cell dies due to underpopulation or overpopulation
             cellOut[index].color = vec4(vec3(0.0), int(false));
             cellOut[index].size = vec4(0.0);
-        } */
-        // else {
-        //     // Cell is dead and stays dead
-        //     vec3 blue = vec3(0.0, 0.0, 1.0);
-        //     cellOut[index].color = vec4( blue.rgb, int(false) );
-        //     cellOut[index].size = vec4(0.0);
-        // };
-        cellOut[index].endOfTurn.x = ubo.passedHours;       
+        } else if (numNeighbours == 3 || (cellIsAlive && numNeighbours == 2)) {
+            // Cell survives or gets born
+            vec3 green = vec3(0.0, 1.0, 0.0);
+            cellOut[index].color = vec4( green.rgb, int(true) );
+            cellOut[index].size = vec4(0.15);
+        } else {
+            // Cell is dead and stays dead
+            vec3 blue = vec3(0.0, 0.0, 1.0);
+            cellOut[index].color = vec4( blue.rgb, int(false) );
+            cellOut[index].size = vec4(0.0);
+        };
     }
+
 }
+
+
+
+// void main() {
+//     if ( index == loopHours ){
+//         cellOut = cellIn;
+
+//         cellOut[index].position = cellIn[index].position.xyzw;
+//         int numNeighbours = countNumberOfNeighbours(1);
+
+//         if (numNeighbours >= 4) {
+//             // Cell survives or gets born
+//             vec3 green = vec3(0.0, 1.0, 0.0);
+//             cellOut[index].color = vec4( green.rgb, int(true) );
+//             cellOut[index].size = vec4( 0.15 );
+//         }
+//     }
+
+// }
+
 
 
 

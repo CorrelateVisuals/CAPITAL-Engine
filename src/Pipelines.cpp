@@ -722,9 +722,8 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
                           &descriptor.sets[_mechanics.syncObjects.currentFrame],
                           0, nullptr);
 
-  vkCmdDispatch(commandBuffer,
-                static_cast<uint32_t>(sqrt(_control.grid.numberOfGridPoints)),
-                1, 1);
+  vkCmdDispatch(commandBuffer, _control.grid.gridDimensions[0],
+                _control.grid.gridDimensions[1], 1);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to record compute command buffer!");
