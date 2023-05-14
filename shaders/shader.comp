@@ -48,11 +48,9 @@ if (cellIn[neighborIndex].color.a == int(true) && neighborIndex != index) {
     return numberOfNeighbours;
 }
 
-shared uint previousPassedHours;
 void main() {
-    uint now = uint(ubo.passedHours);
-    if (index == loopHours){
-    if (previousPassedHours != now) {
+    int now = ubo.passedHours;
+    if (cellIn[index].endOfTurn.x == now) { return; } else {    
         cellOut[index].position = cellIn[index].position.xyzw;
         int numNeighbours = countNumberOfNeighbours(1);
         bool cellIsAlive = cellIn[index].color.a == int(true);
@@ -72,10 +70,7 @@ void main() {
             cellOut[index].color = vec4( blue.rgb, int(false) );
             cellOut[index].size = vec4(0.0);
         };
-        previousPassedHours = now;        
-    }}
-    else {
-        return;
+        cellOut[index].endOfTurn.x = now;       
     }
 }
 
