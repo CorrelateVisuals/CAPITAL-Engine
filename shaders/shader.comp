@@ -28,21 +28,9 @@ int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 vec4 grey1 = vec4(0.8);
 vec4 grey2 = vec4(0.1);
 
-void main() { if(previousPassedHours == ubo.passedHours) { return; };
-
-    cellOut[index].position = cellIn[index].position.xyzw;
-    cellOut[index].color = vec4( 1.0, 0.0, 0.0, 1.0 );
-
-    if (cellOut[index].endOfTurn.a == int(true)) { 
-        cellOut[index].color = cellOut[index].endOfTurn; 
-    }
-
-   //cellOut[index].endOfTurn.a = int(false);
-    
-    if (index == loopHours) {
+int countNumberOfNeighbours(int range){
         int numberOfNeighbours = -1;
 
-        int range = 1;
         int gridSize = SQRT_OF_GRID;
         int indexX = int(index) % SQRT_OF_GRID;
         int indexY = int(index) / SQRT_OF_GRID;
@@ -54,21 +42,34 @@ void main() { if(previousPassedHours == ubo.passedHours) { return; };
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
                 int neighborIndex = y * SQRT_OF_GRID + x;
-
                 if(cellIn[neighborIndex].size.x != -1.0f && neighborIndex != index){
                     numberOfNeighbours ++;
                 }
             }
         }
-        if (numberOfNeighbours > 1.0f){
+
+    return numberOfNeighbours;
+}
+
+void main() { if(previousPassedHours == ubo.passedHours) { return; };
+
+    cellOut[index].position = cellIn[index].position.xyzw;
+    int numNeighbours = countNumberOfNeighbours(1);
+    int numNeighboursNeeded = 3;
+
+    cellOut[index].color = vec4(vec3(cellIn[index].color.rgb), int(false));
+
+
+    if (index == loopHours) {
+
+        if (numNeighbours > numNeighboursNeeded){
             vec3 green = vec3(0.0, 1.0, 0.0);
             cellOut[index].color = vec4( green.rgb, int(true) );
-            cellOut[index].endOfTurn = cellOut[index].color;
             cellOut[index].size = vec4(0.1);
         } else {
             vec3 blue = vec3(0.0, 0.0, 1.0);
-            cellOut[index].color = vec4( blue.rgb, int(true) );
-            cellOut[index].endOfTurn = cellOut[index].color;
+            cellOut[index].color = vec4( blue.rgb, int(false) );
+            cellOut[index].size = vec4(0.0);
         };
     }
 }
