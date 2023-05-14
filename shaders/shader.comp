@@ -51,6 +51,7 @@ if (cellIn[neighborIndex].color.a == int(true) && neighborIndex != index) {
 shared uint previousPassedHours;
 void main() {
     uint now = uint(ubo.passedHours);
+    if (index == loopHours){
     if (previousPassedHours != now) {
         cellOut[index].position = cellIn[index].position.xyzw;
         int numNeighbours = countNumberOfNeighbours(1);
@@ -72,7 +73,7 @@ void main() {
             cellOut[index].size = vec4(0.0);
         };
         previousPassedHours = now;        
-    }
+    }}
     else {
         return;
     }
