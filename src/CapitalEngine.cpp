@@ -31,6 +31,8 @@ void CapitalEngine::mainLoop() {
     _control.simulateHours();
     drawFrame();
 
+    _log.console(_control.passedSimulationHours);
+
     _window.getMouseButtonType();
     _window.mouseClick(_window.window, _window.mouse.buttonType);
   }

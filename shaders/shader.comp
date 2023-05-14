@@ -17,7 +17,6 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 view;
     mat4 projection;
 } ubo;
-int previousPassedHours = -1;
 
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
@@ -49,13 +48,15 @@ if (cellIn[neighborIndex].color.a == int(true) && neighborIndex != index) {
     return numberOfNeighbours;
 }
 
-void main() { if(previousPassedHours == ubo.passedHours) { return; };
+shared uint previousPassedHours;
+void main() {
+    uint now = uint(ubo.passedHours);
+    if (previousPassedHours == now) { return; } else 
+    {    
+        cellOut[index].position = cellIn[index].position.xyzw;
+        int numNeighbours = countNumberOfNeighbours(1);
+        bool cellIsAlive = cellIn[index].color.a == int(true);
 
-    cellOut[index].position = cellIn[index].position.xyzw;
-    int numNeighbours = countNumberOfNeighbours(1);
-    bool cellIsAlive = cellIn[index].color.a == int(true);
-
-    if (index == loopHours) {
         if (numNeighbours < 2 || numNeighbours > 3) {
             // Cell dies due to underpopulation or overpopulation
             cellOut[index].color = vec4(vec3(0.0), int(false));
@@ -71,9 +72,9 @@ void main() { if(previousPassedHours == ubo.passedHours) { return; };
             cellOut[index].color = vec4( blue.rgb, int(false) );
             cellOut[index].size = vec4(0.0);
         };
-    };
+        previousPassedHours = now;        
+    }
 }
-
 
 
 
