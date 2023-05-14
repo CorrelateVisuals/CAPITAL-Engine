@@ -48,9 +48,45 @@ if (cellIn[neighborIndex].color.a == int(true) && neighborIndex != index) {
     return numberOfNeighbours;
 }
 
+
 void main() {
-    int now = ubo.passedHours;
-    if (cellIn[index].endOfTurn.x == now) { return; } else {    
+    if (cellIn[index].endOfTurn.x == ubo.passedHours) { 
+    return; } 
+    else {    
+
+        cellOut[index].position = cellIn[index].position.xyzw;
+        int numNeighbours = countNumberOfNeighbours(1);
+        bool cellIsAlive = cellIn[index].color.a == int(true);
+
+        int cellLoopCompleted = 0;
+        if (numNeighbours >= 3 && cellLoopCompleted != 1) {
+            // Cell survives or gets born
+            vec3 green = vec3(0.0, 1.0, 0.0);
+            cellOut[index].color = vec4( green.rgb, int(true) );
+            cellOut[index].size = vec4(0.15);
+            cellLoopCompleted ++;
+        }
+        cellLoopCompleted ++;
+/*        if (numNeighbours < 2 || numNeighbours > 3) {
+            // Cell dies due to underpopulation or overpopulation
+            cellOut[index].color = vec4(vec3(0.0), int(false));
+            cellOut[index].size = vec4(0.0);
+        } */
+        // else {
+        //     // Cell is dead and stays dead
+        //     vec3 blue = vec3(0.0, 0.0, 1.0);
+        //     cellOut[index].color = vec4( blue.rgb, int(false) );
+        //     cellOut[index].size = vec4(0.0);
+        // };
+         cellOut[index].endOfTurn.x = ubo.passedHours;       
+    }
+}
+
+
+
+
+/*void main() {
+    if (cellIn[index].endOfTurn.x == ubo.passedHours) { return; } else {    
         cellOut[index].position = cellIn[index].position.xyzw;
         int numNeighbours = countNumberOfNeighbours(1);
         bool cellIsAlive = cellIn[index].color.a == int(true);
@@ -70,14 +106,9 @@ void main() {
             cellOut[index].color = vec4( blue.rgb, int(false) );
             cellOut[index].size = vec4(0.0);
         };
-        cellOut[index].endOfTurn.x = now;       
+        cellOut[index].endOfTurn.x = ubo.passedHours;       
     }
-}
-
-
-
-
-
+}*/
 
 
 
