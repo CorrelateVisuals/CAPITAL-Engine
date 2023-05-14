@@ -17,35 +17,32 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 view;
     mat4 projection;
 } ubo;
+int previousPassedHours = -1;
 
-layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellsIn[ ]; };
+layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
 uint index = gl_GlobalInvocationID.x;
-Cell cellIn  = cellsIn[index];
 int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 
 vec4 grey1 = vec4(0.8);
 vec4 grey2 = vec4(0.1);
 
-void main() { if(cellIn.size.x == -1.0f) { return; };
+void main() { if(previousPassedHours == ubo.passedHours) { return; };
 
-    cellOut[index].position = cellIn.position.xyzw;
+    cellOut[index].position = cellIn[index].position.xyzw;
     cellOut[index].color = vec4( 1.0, 0.0, 0.0, 1.0 );
-    cellOut[index].size = vec4(0.1);
 
-    // If the current cell was colored in a previous frame, set the color to grey2 and size to 0.3.
-    if (cellIn.endOfTurn == vec4(int(true))) { 
-        cellOut[index].color = grey2; 
-        cellOut[index].size = vec4(0.1);
+    if (cellOut[index].endOfTurn.a == int(true)) { 
+        cellOut[index].color = cellOut[index].endOfTurn; 
     }
+
+   //cellOut[index].endOfTurn.a = int(false);
     
     if (index == loopHours) {
-        // Color and size the current cell.
-        cellOut[loopHours].color = vec4(0.0, 0.0, 1.0, 1.0);
-        cellOut[loopHours].size = vec4(0.2);
+        int numberOfNeighbours = -1;
 
-        int range = 2;
+        int range = 1;
         int gridSize = SQRT_OF_GRID;
         int indexX = int(index) % SQRT_OF_GRID;
         int indexY = int(index) / SQRT_OF_GRID;
@@ -57,15 +54,22 @@ void main() { if(cellIn.size.x == -1.0f) { return; };
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
                 int neighborIndex = y * SQRT_OF_GRID + x;
-                
-                
-                if (cellsIn[neighborIndex].size.x != -1.0f && neighborIndex != index) { // If not dead cell and not current cell, color neighbor.
-                    cellOut[neighborIndex].color = grey1;
-                    cellOut[neighborIndex].endOfTurn = vec4(int(true));
-                    cellOut[neighborIndex].size = vec4(0.15);
+
+                if(cellIn[neighborIndex].size.x != -1.0f && neighborIndex != index){
+                    numberOfNeighbours ++;
                 }
             }
         }
+        if (numberOfNeighbours > 1.0f){
+            vec3 green = vec3(0.0, 1.0, 0.0);
+            cellOut[index].color = vec4( green.rgb, int(true) );
+            cellOut[index].endOfTurn = cellOut[index].color;
+            cellOut[index].size = vec4(0.1);
+        } else {
+            vec3 blue = vec3(0.0, 0.0, 1.0);
+            cellOut[index].color = vec4( blue.rgb, int(true) );
+            cellOut[index].endOfTurn = cellOut[index].color;
+        };
     }
 }
 

@@ -13,13 +13,13 @@ class Control {
 
   struct Grid {
     float cellSize = 0.15f;
-    const uint32_t numberOfAliveCells = 400;
+    const uint32_t numberOfAliveCells = 30;
     const uint32_t gridDimensions[2] = {20, 20};  // rows, columns
     const float gridPointDistance = 3.5;
     const uint32_t numberOfGridPoints = gridDimensions[0] * gridDimensions[1];
   } grid;
 
-  float simulationSpeed = 10.0f;
+  float simulationSpeed = 50.0f;
 
  public:
   // Initialization
