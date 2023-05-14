@@ -505,6 +505,7 @@ void MemoryCommands::createShaderStorageBuffers() {
       } else {
         cells[index].size = {parameterOff, parameterOff, parameterOff,
                              parameterOff};
+        cells[index].color = {1.0f, 0.0f, 0.0f, 0.0f};
       }
     }
   }
