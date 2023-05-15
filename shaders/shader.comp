@@ -51,21 +51,27 @@ int countNumberOfNeighbours(int range){
     return numberOfNeighbours; 
 }
 
-void main() { if (index != loopHours) { cellOut[index] = cellIn[index]; return; };
-
-    cellOut[index].position = cellIn[index].position.xyzw;
-    int numNeighbours = countNumberOfNeighbours(1);
-
-    if (numNeighbours < 2 || numNeighbours > 3) {
-        // Cell dies due to underpopulation or overpopulation
-        cellOut[index].color = black;
-    } else if (numNeighbours == 3 || (cellOut[index].color == green && numNeighbours == 2)) {
-        // Cell survives or gets born
-        cellOut[index].color = green;
+void main() { 
+    if (cellIn[index].endOfTurn == vec4(loopHours)) { 
+        cellOut[index] = cellIn[index]; 
+        return; 
     } else {
-        // Cell is dead and stays dead
-        cellOut[index].color = black;
-    };
+
+        cellOut[index].position = cellIn[index].position.xyzw;
+        int numNeighbours = countNumberOfNeighbours(1);
+
+        if (numNeighbours < 2 || numNeighbours > 3) {
+            // Cell dies due to underpopulation or overpopulation
+            cellOut[index].color = black;
+        } else if (numNeighbours == 3 || (cellOut[index].color == green && numNeighbours == 2)) {
+            // Cell survives or gets born
+            cellOut[index].color = green;
+        } else {
+            // Cell is dead and stays dead
+            cellOut[index].color = black;
+        };
+    }; 
+    cellOut[index].endOfTurn = vec4(loopHours);
 }
 
 
