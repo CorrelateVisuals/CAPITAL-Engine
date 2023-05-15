@@ -4,7 +4,7 @@
 #include <cstring>
 #include <random>
 
-#include "CAPITAL_Engine.h"
+#include "CapitalEngine.h"
 #include "Mechanics.h"
 #include "Pipelines.h"
 #include "World.h"
@@ -315,7 +315,7 @@ std::vector<char> Pipelines::readShaderFile(const std::string& filename) {
     throw std::runtime_error("failed to open file!");
   }
 
-  size_t fileSize = (size_t)file.tellg();
+  size_t fileSize = static_cast<size_t>(file.tellg());
   std::vector<char> buffer(fileSize);
 
   file.seekg(0);
@@ -443,7 +443,8 @@ void MemoryCommands::createCommandBuffers() {
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
   allocInfo.commandPool = command.pool;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-  allocInfo.commandBufferCount = (uint32_t)command.graphicBuffers.size();
+  allocInfo.commandBufferCount =
+      static_cast<uint32_t>(command.graphicBuffers.size());
 
   if (vkAllocateCommandBuffers(_mechanics.mainDevice.logical, &allocInfo,
                                command.graphicBuffers.data()) != VK_SUCCESS) {
@@ -460,7 +461,8 @@ void MemoryCommands::createComputeCommandBuffers() {
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
   allocInfo.commandPool = command.pool;
   allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-  allocInfo.commandBufferCount = (uint32_t)command.computeBuffers.size();
+  allocInfo.commandBufferCount =
+      static_cast<uint32_t>(command.computeBuffers.size());
 
   if (vkAllocateCommandBuffers(_mechanics.mainDevice.logical, &allocInfo,
                                command.computeBuffers.data()) != VK_SUCCESS) {
@@ -498,11 +500,13 @@ void MemoryCommands::createShaderStorageBuffers() {
                                _control.getRandomFloat(0.0f, 0.3f), 1.0f};
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
-        cells[index].size = {_control.grid.cellSize, 0.0f, 0.0f, 0.0f};
+        cells[index].size = {_control.grid.cellSize, _control.grid.cellSize,
+                             _control.grid.cellSize, _control.grid.cellSize};
         cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
       } else {
-        cells[index].size = {parameterOff, parameterOff, parameterOff,
-                             parameterOff};
+        cells[index].size = {_control.grid.cellSize, _control.grid.cellSize,
+                             _control.grid.cellSize, _control.grid.cellSize};
+        cells[index].color = {1.0f, 0.0f, 0.0f, 0.0f};
       }
     }
   }
@@ -522,7 +526,7 @@ void MemoryCommands::createShaderStorageBuffers() {
   void* data;
   vkMapMemory(_mechanics.mainDevice.logical, stagingBufferMemory, 0, bufferSize,
               0, &data);
-  std::memcpy(data, cells.data(), (size_t)bufferSize);
+  std::memcpy(data, cells.data(), static_cast<size_t>(bufferSize));
   vkUnmapMemory(_mechanics.mainDevice.logical, stagingBufferMemory);
 
   shaderStorage.buffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -530,7 +534,7 @@ void MemoryCommands::createShaderStorageBuffers() {
 
   // Copy initial Cell data to all storage buffers
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-    createBuffer(bufferSize,
+    createBuffer(static_cast<VkDeviceSize>(bufferSize),
                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
                      VK_BUFFER_USAGE_VERTEX_BUFFER_BIT |
                      VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -697,15 +701,7 @@ void MemoryCommands::createComputeDescriptorSets() {
 }
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
-  World::UniformBufferObject uniformObject{};
-  uniformObject.passedHours = _control.passedSimulationHours;
-  uniformObject.gridSize = _control.grid.numberOfGridPoints;
-
-  uniformObject.model = _world.setModel();
-  uniformObject.view = _world.setView();
-  uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
-  uniformObject.lightDirection = {0.0f, 1.0f, 1.0f, 0.2f};
-
+  World::UniformBufferObject uniformObject = _world.updateUniforms();
   std::memcpy(uniform.buffersMapped[currentImage], &uniformObject,
               sizeof(uniformObject));
 }
@@ -727,9 +723,8 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
                           &descriptor.sets[_mechanics.syncObjects.currentFrame],
                           0, nullptr);
 
-  vkCmdDispatch(commandBuffer,
-                static_cast<uint32_t>(sqrt(_control.grid.numberOfGridPoints)),
-                1, 1);
+  vkCmdDispatch(commandBuffer, _control.grid.gridDimensions[0],
+                _control.grid.gridDimensions[1], 1);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to record compute command buffer!");
@@ -768,8 +763,8 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
   VkViewport viewport{};
   viewport.x = 0.0f;
   viewport.y = 0.0f;
-  viewport.width = (float)_mechanics.swapChain.extent.width;
-  viewport.height = (float)_mechanics.swapChain.extent.height;
+  viewport.width = static_cast<float>(_mechanics.swapChain.extent.width);
+  viewport.height = static_cast<float>(_mechanics.swapChain.extent.height);
   viewport.minDepth = 0.0f;
   viewport.maxDepth = 1.0f;
   vkCmdSetViewport(commandBuffer, 0, 1, &viewport);

@@ -1,7 +1,6 @@
 # Folders
 x64/
 
-
 # Prerequisites
 *.d
 
@@ -55,6 +54,9 @@ x64/
 *.exe
 *.out
 *.app
+
+# Logging
+log.txt
 
 # CMake
 CMakeLists.txt.user

@@ -1,9 +1,11 @@
 #include <chrono>
 #include <random>
 
-#include "CAPITAL_Engine.h"
+#include "CapitalEngine.h"
 #include "Control.h"
 #include "World.h"
+
+constexpr double PI = 3.14159265358979323846;
 
 Control::Control() {
   _log.console("{ CTR }", "constructing Control");
@@ -33,7 +35,20 @@ float Control::getRandomFloat(float min, float max) {
   return dist(rng) * (max - min) + min;
 }
 
-std::vector<int> Control::setCellsAliveRandomly(int size) {
+double Control::lowFrequencyOsciallator() {
+  using namespace std::chrono;
+  static const auto start_time = high_resolution_clock::now();
+  const auto time_elapsed =
+      duration_cast<milliseconds>(high_resolution_clock::now() - start_time)
+          .count();
+  const double period = 1000.0;             // time period in milliseconds
+  const double frequency = 100.0 / period;  // frequency in Hz
+  const double angle =
+      time_elapsed * frequency * 2 * PI / 1000.0;  // angle in radians
+  return 0.5 * (1 + sin(angle));  // lowFrequencyOsciallators between 0 and 1
+}
+
+std::vector<int> Control::setCellsAliveRandomly(size_t size) {
   std::vector<int> CellIDs;
 
   while (CellIDs.size() < size) {

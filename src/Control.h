@@ -11,27 +11,33 @@ class Control {
   Control();
   ~Control();
 
-  float simulationSpeed = 10.0f;
-
   struct Grid {
     float cellSize = 0.15f;
-    const uint32_t numberOfAliveCells = 400;
+    const uint32_t numberOfAliveCells = 160;
     const uint32_t gridDimensions[2] = {20, 20};  // rows, columns
     const float gridPointDistance = 3.5;
     const uint32_t numberOfGridPoints = gridDimensions[0] * gridDimensions[1];
   } grid;
 
- public:
-  int passedSimulationHours = 0;  // TODO: 'long long'
+  float simulationSpeed = 5.0f;
 
-  std::vector<int> setCellsAliveRandomly(int size);
-  void simulateHours();
+ public:
+  // Initialization
   float getRandomFloat(float min, float max);
+  std::vector<int> setCellsAliveRandomly(size_t size);
+
+  // Animation
+  double lowFrequencyOsciallator();
+  void simulateHours();
+
+ public:
+  // Globally accessible variables
+  int passedSimulationHours = 0;  // TODO: 'long long'
 };
 
 struct DisplayConfig {
  public:
-  const char* windowTitle = "CAPITAL Engine";
+  const char* projectTitle = "CAPITAL Engine";
   uint32_t width = 1080;
   uint32_t height = 1080;
 };

@@ -4,7 +4,7 @@
 #include <set>
 #include <string>
 
-#include "CAPITAL_Engine.h"
+#include "CapitalEngine.h"
 
 Logging::Logging()
     : logFile("log.txt", std::ofstream::out | std::ofstream::trunc) {
@@ -106,9 +106,17 @@ std::string Logging::returnDateAndTime() {
   auto now = std::chrono::system_clock::now();
   std::time_t nowC = std::chrono::system_clock::to_time_t(now);
   std::tm timeInfo;
+
+#ifdef __linux__ 
+  char nowStr[20] = "---";
+#elif _WIN32
   gmtime_s(&timeInfo, &nowC);
   char nowStr[20];
   strftime(nowStr, 20, "%y.%m.%d %H:%M:%S", &timeInfo);
+#else
+
+#endif
+
   return std::string(nowStr);
 }
 

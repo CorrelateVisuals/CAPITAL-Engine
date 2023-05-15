@@ -6,7 +6,7 @@
 #include <set>
 #include <stdexcept>
 
-#include "CAPITAL_Engine.h"
+#include "CapitalEngine.h"
 #include "Control.h"
 #include "Mechanics.h"
 #include "Pipelines.h"
@@ -32,7 +32,7 @@ void VulkanMechanics::createInstance() {
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
   appInfo.pApplicationName = "CAPITAL";
   appInfo.applicationVersion = VK_MAKE_VERSION(0, 0, 1);
-  appInfo.pEngineName = "CAPITAL Engine";
+  appInfo.pEngineName = displayConfig.projectTitle;
   appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
   appInfo.apiVersion = VK_API_VERSION_1_3;
   _log.console(
