@@ -3,25 +3,15 @@
 
 const int SQRT_OF_GRID = 20;
 layout (local_size_x = SQRT_OF_GRID, local_size_y = SQRT_OF_GRID, local_size_z = 1) in;
-
-struct Cell {
-	vec4 position;  // float    xy(z)
-    vec4 color;     // float    rgba
-    vec4 size;      // float    x
-    vec4 endOfTurn; // bool     pqrwt
-} cell;
-
 layout (binding = 0) uniform ParameterUBO {
     int passedHours; //TODO 'long long' : int64_t passedHours;
     mat4 model;
     mat4 view;
     mat4 projection;
 } ubo;
-int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 
-layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
-layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 uint index = gl_GlobalInvocationID.x;
+int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 
 vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
 vec4 green = vec4(0.0, 1.0, 0.0, 1.0); 
@@ -30,6 +20,16 @@ vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
 vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
 vec4 on = vec4(0.15);
 vec4 off = vec4(-1.0);
+vec4 now = vec4(loopHours);
+
+struct Cell {
+    vec4 position;  // float    xy(z)
+    vec4 color;     // float    rgba
+    vec4 size;      // float    x
+    vec4 endOfTurn; // bool     pqrwt
+} cell;
+layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
+layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
 int countNumberOfNeighbours(int range){
         int numberOfNeighbours = 0;
@@ -52,35 +52,30 @@ int countNumberOfNeighbours(int range){
     return numberOfNeighbours; 
 }
 
-void simulationloop(out Cell c){
-        cellOut[index].position = cellIn[index].position.xyzw;
-        int numNeighbours = countNumberOfNeighbours(1);
+void simulationLoop(out Cell c){
+    vec4 pos = cellIn[index].position.xyzw;
+    int numNeighbours = countNumberOfNeighbours(1);
 
-        // Cell dies due to underpopulation or overpopulation
-        if (numNeighbours < 2 || numNeighbours > 3) {
-            c.color = black;
-            c.size = off;
-        // Cell survives or gets born
-        } else if (numNeighbours == 3 || (cellOut[index].color == green && numNeighbours == 2)) {
-            c.color = green;
-            c.size = on;
-        // Cell is dead and stays dead
-        } else {
-            c.color = black;
-            c.size = off;
-        };
+    if (numNeighbours < 2 || numNeighbours > 3) {
+        c = Cell(pos, black, off, now);
+    } else if (numNeighbours == 3 || (cellOut[index].color == green && numNeighbours == 2)) {
+        c = Cell(pos, green, on, now);
+    } else {
+        c = Cell(pos, black, off, now);
+    };
 }
 
 void main() {  
-
-    if (cellIn[index].endOfTurn == vec4(loopHours)) 
-        { cellOut[index] = cellIn[index]; return; 
-    
+    if (cellIn[index].endOfTurn == vec4(loopHours)) { 
+        cellOut[index] = cellIn[index]; 
+        return; 
     } else { 
-        simulationloop(cell);
 
-        cellOut[index].color = cell.color;
-        cellOut[index].size = cell.size;
-        cellOut[index].endOfTurn = vec4(loopHours);
+        simulationLoop(cell);
+
+        cellOut[index].position     = cell.position;
+        cellOut[index].color        = cell.color;
+        cellOut[index].size         = cell.size;
+        cellOut[index].endOfTurn    = cell.endOfTurn;
     }; 
 }
