@@ -27,12 +27,12 @@ struct Cell {
     vec4 color;     // float    rgba
     vec4 size;      // float    x
     vec4 endOfTurn; // bool     pqrwt
-} cell;
+} cells;
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
-int adjacentCells(int range){
-        int adjacentCells = 0;
+int neighbourCellsInRange(int range){
+        int neighbourCellsInRange = 0;
         int gridSize = SQRT_OF_GRID;
         int indexX = int(index) % SQRT_OF_GRID;
         int indexY = int(index) / SQRT_OF_GRID;
@@ -42,24 +42,24 @@ int adjacentCells(int range){
         int endY = min(indexY + range, SQRT_OF_GRID - 1);
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
-                int neighborIndex = y * SQRT_OF_GRID + x;
-                if (cellIn[neighborIndex].color == blue && neighborIndex != index
-                    || cellIn[neighborIndex].color == green && neighborIndex != index) {
-                    adjacentCells++;
+                int neighbourIndex = y * SQRT_OF_GRID + x;
+                if (cellIn[neighbourIndex].color == blue && neighbourIndex != index
+                    || cellIn[neighbourIndex].color == green && neighbourIndex != index) {
+                    neighbourCellsInRange++;
                 }
             }
         }
-    return adjacentCells; 
+    return neighbourCellsInRange; 
 }
 
-void simulationLoop(out Cell cell){
+void simulate(out Cell cell){
     vec4 pos = cellIn[index].position.xyzw;
-    int numCells = adjacentCells(1);
+    int neighbours = neighbourCellsInRange(1);
 
-    if (numCells < 2 || numCells > 3) {
-        cell = Cell(pos, black, off, now);
-    } else if (numCells == 3 || (cellOut[index].color == green && numCells == 2)) {
+    if (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) {
         cell = Cell(pos, green, on, now);
+    } else if (neighbours < 2) {
+        cell = Cell(pos, black, off, now);
     } else {
         cell = Cell(pos, black, off, now);
     };
@@ -71,11 +71,51 @@ void main() {
         return; 
     } else { 
 
-        simulationLoop(cell);
+        simulate(cells);
 
-        cellOut[index].position     = cell.position;
-        cellOut[index].color        = cell.color;
-        cellOut[index].size         = cell.size;
-        cellOut[index].endOfTurn    = cell.endOfTurn;
+        cellOut[index].position     = cells.position;
+        cellOut[index].color        = cells.color;
+        cellOut[index].size         = cells.size;
+        cellOut[index].endOfTurn    = cells.endOfTurn;
     }; 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// void simulate(out Cell cell){
+//     vec4 pos = cellIn[index].position.xyzw;
+//     int neighbours = neighbourCellsInRange(1);
+
+//     if (neighbours < 2 || neighbours > 3) {
+//         cell = Cell(pos, black, off, now);
+//     } else if (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) {
+//         cell = Cell(pos, green, on, now);
+//     } else {
+//         cell = Cell(pos, black, off, now);
+//     };
+// }
+
+// void main() {  
+//     if (cellIn[index].endOfTurn == vec4(loopHours)) { 
+//         cellOut[index] = cellIn[index]; 
+//         return; 
+//     } else { 
+
+//         simulate(cells);
+
+//         cellOut[index].position     = cells.position;
+//         cellOut[index].color        = cells.color;
+//         cellOut[index].size         = cells.size;
+//         cellOut[index].endOfTurn    = cells.endOfTurn;
+//     }; 
+// }
