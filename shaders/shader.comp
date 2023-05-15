@@ -31,8 +31,8 @@ struct Cell {
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
-int countNumberOfNeighbours(int range){
-        int numberOfNeighbours = 0;
+int adjacentCells(int range){
+        int adjacentCells = 0;
         int gridSize = SQRT_OF_GRID;
         int indexX = int(index) % SQRT_OF_GRID;
         int indexY = int(index) / SQRT_OF_GRID;
@@ -45,23 +45,23 @@ int countNumberOfNeighbours(int range){
                 int neighborIndex = y * SQRT_OF_GRID + x;
                 if (cellIn[neighborIndex].color == blue && neighborIndex != index
                     || cellIn[neighborIndex].color == green && neighborIndex != index) {
-                    numberOfNeighbours++;
+                    adjacentCells++;
                 }
             }
         }
-    return numberOfNeighbours; 
+    return adjacentCells; 
 }
 
-void simulationLoop(out Cell c){
+void simulationLoop(out Cell cell){
     vec4 pos = cellIn[index].position.xyzw;
-    int numNeighbours = countNumberOfNeighbours(1);
+    int numCells = adjacentCells(1);
 
-    if (numNeighbours < 2 || numNeighbours > 3) {
-        c = Cell(pos, black, off, now);
-    } else if (numNeighbours == 3 || (cellOut[index].color == green && numNeighbours == 2)) {
-        c = Cell(pos, green, on, now);
+    if (numCells < 2 || numCells > 3) {
+        cell = Cell(pos, black, off, now);
+    } else if (numCells == 3 || (cellOut[index].color == green && numCells == 2)) {
+        cell = Cell(pos, green, on, now);
     } else {
-        c = Cell(pos, black, off, now);
+        cell = Cell(pos, black, off, now);
     };
 }
 
