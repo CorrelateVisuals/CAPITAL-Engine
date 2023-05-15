@@ -9,7 +9,7 @@ struct Cell {
     vec4 color;     // float    rgba
     vec4 size;      // float    x
     vec4 endOfTurn; // bool     pqrwt
-};
+} cell;
 
 layout (binding = 0) uniform ParameterUBO {
     int passedHours; //TODO 'long long' : int64_t passedHours;
@@ -52,10 +52,7 @@ int countNumberOfNeighbours(int range){
     return numberOfNeighbours; 
 }
 
-void main() {  
-    if (cellIn[index].endOfTurn == vec4(loopHours)) { cellOut[index] = cellIn[index]; return; }
-    else { Cell c;
-
+void simulationloop(out Cell c){
         cellOut[index].position = cellIn[index].position.xyzw;
         int numNeighbours = countNumberOfNeighbours(1);
 
@@ -72,8 +69,18 @@ void main() {
             c.color = black;
             c.size = off;
         };
-        cellOut[index].color = c.color;
-        cellOut[index].size = c.size;
+}
+
+void main() {  
+
+    if (cellIn[index].endOfTurn == vec4(loopHours)) 
+        { cellOut[index] = cellIn[index]; return; 
+    
+    } else { 
+        simulationloop(cell);
+
+        cellOut[index].color = cell.color;
+        cellOut[index].size = cell.size;
         cellOut[index].endOfTurn = vec4(loopHours);
     }; 
 }
