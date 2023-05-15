@@ -17,12 +17,11 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 view;
     mat4 projection;
 } ubo;
+int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
-
 uint index = gl_GlobalInvocationID.x;
-int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 
 vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
 vec4 green = vec4(0.0, 1.0, 0.0, 1.0); 
@@ -53,84 +52,28 @@ int countNumberOfNeighbours(int range){
     return numberOfNeighbours; 
 }
 
-void main() { 
-    if (cellIn[index].endOfTurn == vec4(loopHours)) { 
-        cellOut[index] = cellIn[index]; 
-        return; 
-    } else {
+void main() {  
+    if (cellIn[index].endOfTurn == vec4(loopHours)) { cellOut[index] = cellIn[index]; return; }
+    else { Cell c;
+
         cellOut[index].position = cellIn[index].position.xyzw;
         int numNeighbours = countNumberOfNeighbours(1);
 
+        // Cell dies due to underpopulation or overpopulation
         if (numNeighbours < 2 || numNeighbours > 3) {
-            // Cell dies due to underpopulation or overpopulation
-            cellOut[index].color = black;
-            cellOut[index].size = off;
+            c.color = black;
+            c.size = off;
+        // Cell survives or gets born
         } else if (numNeighbours == 3 || (cellOut[index].color == green && numNeighbours == 2)) {
-            // Cell survives or gets born
-            cellOut[index].color = green;
-            cellOut[index].size = on;
+            c.color = green;
+            c.size = on;
+        // Cell is dead and stays dead
         } else {
-            // Cell is dead and stays dead
-            cellOut[index].color = black;
-            cellOut[index].size = off;
+            c.color = black;
+            c.size = off;
         };
+        cellOut[index].color = c.color;
+        cellOut[index].size = c.size;
+        cellOut[index].endOfTurn = vec4(loopHours);
     }; 
-    cellOut[index].endOfTurn = vec4(loopHours);
 }
-
-
-
-// void main() {
-//     if ( index == loopHours ){
-//         cellOut = cellIn;
-//         cellOut[index].position = cellIn[index].position.xyzw;
-//         int numNeighbours = countNumberOfNeighbours(1);
-//         if (numNeighbours >= 4) {
-//             // Cell survives or gets born
-//             vec3 green = vec3(0.0, 1.0, 0.0);
-//             cellOut[index].color = vec4( green.rgb, int(true) );
-//             cellOut[index].size = vec4( 0.15 );
-//         }
-//     }
-
-// }
-
-/*void main() {
-    if (cellIn[index].endOfTurn.x == ubo.passedHours) { return; } else {    
-        cellOut[index].position = cellIn[index].position.xyzw;
-        int numNeighbours = countNumberOfNeighbours(1);
-        bool cellIsAlive = cellIn[index].color.a == int(true);
-
-        if (numNeighbours < 2 || numNeighbours > 3) {
-            // Cell dies due to underpopulation or overpopulation
-            cellOut[index].color = vec4(vec3(0.0), int(false));
-            cellOut[index].size = vec4(0.0);
-        } else if (numNeighbours == 3 || (cellIsAlive && numNeighbours == 2)) {
-            // Cell survives or gets born
-            vec3 green = vec3(0.0, 1.0, 0.0);
-            cellOut[index].color = vec4( green.rgb, int(true) );
-            cellOut[index].size = vec4(0.15);
-        } else {
-            // Cell is dead and stays dead
-            vec3 blue = vec3(0.0, 0.0, 1.0);
-            cellOut[index].color = vec4( blue.rgb, int(false) );
-            cellOut[index].size = vec4(0.0);
-        };
-        cellOut[index].endOfTurn.x = ubo.passedHours;       
-    }
-}*/
-
-    // // Walking rows from down to up
-    // int blockStart = (loopHours / SQRT_OF_GRID) * SQRT_OF_GRID; // start index of the block
-    // int blockEnd = blockStart + SQRT_OF_GRID; // end index of the block
-    // int indexInBlock = loopHours % SQRT_OF_GRID; // index within the block
-    // // check if the current index is within the block
-    // if (index >= blockStart && index < blockEnd) { cellOut[index].color = vec4(0.0, 0.0, 1.0, 1.0); }
-
-    //  // Color all walked pixels green
-    // if( index < loopHours) { cellOut[index].color = vec4(0.0, 1.0, 0.0, 1); }
-
-    //     // Walking pixel inverse
-    // if( int( ubo.gridSize.x ) - loopHours - int(1) == int(index)){ 
-    //     cellOut[index].color = vec4(0.0, vec3(1.0));
-    // }
