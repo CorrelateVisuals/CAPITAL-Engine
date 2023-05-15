@@ -51,6 +51,7 @@ bool shouldRun = true;
 
 void main() {
     if (index != loopHours || shouldRun == false) {
+        cellOut = cellIn;
         return; 
     }
     bool cellIsAlive = cellIn[index].color.a == int(true);
@@ -78,6 +79,7 @@ void main() {
 
         shouldRun = false;
     };
+
 }
 
 
