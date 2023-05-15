@@ -66,11 +66,12 @@ void simulate(out Cell cell){
 }
 
 void main() {  
+
     if (cellIn[index].endOfTurn == vec4(loopHours)) { 
         cellOut[index] = cellIn[index]; 
         return; 
     } else { 
-
+        
         simulate(cells);
 
         cellOut[index].position     = cells.position;
