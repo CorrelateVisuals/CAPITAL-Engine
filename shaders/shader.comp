@@ -50,31 +50,35 @@ int countNumberOfNeighbours(int range){
 bool shouldRun = true;
 
 void main() {
-    if (index != loopHours) {
+    if (index != loopHours || shouldRun == false) {
         return; 
     }
+    bool cellIsAlive = cellIn[index].color.a == int(true);
+    cellOut[index].position = cellIn[index].position.xyzw;
+    int numNeighbours = countNumberOfNeighbours(1);
 
-        bool cellIsAlive = cellIn[index].color.a == int(true);
-        cellOut[index].position = cellIn[index].position.xyzw;
-        int numNeighbours = countNumberOfNeighbours(1);
+    if (numNeighbours < 2 || numNeighbours > 3) {
+        // Cell dies due to underpopulation or overpopulation
+        cellOut[index].color = vec4(vec3(0.0), int(false));
+        cellOut[index].size = vec4(0.0);
 
-        if (numNeighbours < 2 || numNeighbours > 3) {
-            // Cell dies due to underpopulation or overpopulation
-            cellOut[index].color = vec4(vec3(0.0), int(false));
-            cellOut[index].size = vec4(0.0);
-        } else if (numNeighbours == 3 || (cellIsAlive && numNeighbours == 2)) {
-            // Cell survives or gets born
-            vec3 green = vec3(0.0, 1.0, 0.0);
-            cellOut[index].color = vec4(green.rgb, int(true));
-            cellOut[index].size = vec4(0.15);
-        } else {
-            // Cell is dead and stays dead
-            vec3 blue = vec3(0.0, 0.0, 1.0);
-            cellOut[index].color = vec4(blue.rgb, int(false));
-            cellOut[index].size = vec4(0.0);
-        };
         shouldRun = false;
-    }
+    } else if (numNeighbours == 3 || (cellIsAlive && numNeighbours == 2)) {
+        // Cell survives or gets born
+        vec3 green = vec3(0.0, 1.0, 0.0);
+        cellOut[index].color = vec4(green.rgb, int(true));
+        cellOut[index].size = vec4(0.15);
+
+        shouldRun = false;
+    } else {
+        // Cell is dead and stays dead
+        vec3 blue = vec3(0.0, 0.0, 1.0);
+        cellOut[index].color = vec4(blue.rgb, int(false));
+        cellOut[index].size = vec4(0.0);
+
+        shouldRun = false;
+    };
+}
 
 
 
