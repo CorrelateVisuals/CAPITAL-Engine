@@ -29,6 +29,8 @@ vec4 green = vec4(0.0, 1.0, 0.0, 1.0);
 vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
 vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
 vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
+vec4 on = vec4(0.15);
+vec4 off = vec4(-1.0);
 
 int countNumberOfNeighbours(int range){
         int numberOfNeighbours = 0;
@@ -56,19 +58,21 @@ void main() {
         cellOut[index] = cellIn[index]; 
         return; 
     } else {
-
         cellOut[index].position = cellIn[index].position.xyzw;
         int numNeighbours = countNumberOfNeighbours(1);
 
         if (numNeighbours < 2 || numNeighbours > 3) {
             // Cell dies due to underpopulation or overpopulation
             cellOut[index].color = black;
+            cellOut[index].size = off;
         } else if (numNeighbours == 3 || (cellOut[index].color == green && numNeighbours == 2)) {
             // Cell survives or gets born
             cellOut[index].color = green;
+            cellOut[index].size = on;
         } else {
             // Cell is dead and stays dead
             cellOut[index].color = black;
+            cellOut[index].size = off;
         };
     }; 
     cellOut[index].endOfTurn = vec4(loopHours);

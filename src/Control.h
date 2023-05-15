@@ -19,7 +19,7 @@ class Control {
     const uint32_t numberOfGridPoints = gridDimensions[0] * gridDimensions[1];
   } grid;
 
-  float simulationSpeed = 1.0f;
+  float simulationSpeed = 5.0f;
 
  public:
   // Initialization
