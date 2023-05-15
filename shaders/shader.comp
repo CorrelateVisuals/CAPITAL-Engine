@@ -24,8 +24,11 @@ layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 uint index = gl_GlobalInvocationID.x;
 int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 
-vec4 grey1 = vec4(0.8);
-vec4 grey2 = vec4(0.1);
+vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
+vec4 green = vec4(0.0, 1.0, 0.0, 1.0); 
+vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
+vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
+vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
 
 int countNumberOfNeighbours(int range){
         int numberOfNeighbours = 0;
@@ -39,41 +42,30 @@ int countNumberOfNeighbours(int range){
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
                 int neighborIndex = y * SQRT_OF_GRID + x;
-                if (cellIn[neighborIndex].color.a == int(true) && neighborIndex != index) {
+                if (cellIn[neighborIndex].color == blue && neighborIndex != index
+                    || cellIn[neighborIndex].color == green && neighborIndex != index) {
                     numberOfNeighbours++;
                 }
             }
         }
-    return numberOfNeighbours; }
+    return numberOfNeighbours; 
+}
 
+void main() { if (index != loopHours) { cellOut[index] = cellIn[index]; return; };
 
-bool shouldRun = true;
-
-void main() {
-    if (index != loopHours || shouldRun == false) {
-        cellOut[index] = cellIn[index];
-        return; 
-    }
-    bool cellIsAlive = cellIn[index].color.a == int(true);
     cellOut[index].position = cellIn[index].position.xyzw;
     int numNeighbours = countNumberOfNeighbours(1);
 
     if (numNeighbours < 2 || numNeighbours > 3) {
         // Cell dies due to underpopulation or overpopulation
-        cellOut[index].color = vec4(vec3(0.0), int(false));
-        cellOut[index].size = vec4(0.0);
-    } else if (numNeighbours == 3 || (cellIsAlive && numNeighbours == 2)) {
+        cellOut[index].color = black;
+    } else if (numNeighbours == 3 || (cellOut[index].color == green && numNeighbours == 2)) {
         // Cell survives or gets born
-        vec3 green = vec3(0.0, 1.0, 0.0);
-        cellOut[index].color = vec4(green.rgb, int(true));
-        cellOut[index].size = vec4(0.15);
+        cellOut[index].color = green;
     } else {
         // Cell is dead and stays dead
-        vec3 blue = vec3(0.0, 0.0, 1.0);
-        cellOut[index].color = vec4(blue.rgb, int(false));
-        cellOut[index].size = vec4(0.0);
+        cellOut[index].color = black;
     };
-
 }
 
 
@@ -81,10 +73,8 @@ void main() {
 // void main() {
 //     if ( index == loopHours ){
 //         cellOut = cellIn;
-
 //         cellOut[index].position = cellIn[index].position.xyzw;
 //         int numNeighbours = countNumberOfNeighbours(1);
-
 //         if (numNeighbours >= 4) {
 //             // Cell survives or gets born
 //             vec3 green = vec3(0.0, 1.0, 0.0);
@@ -94,10 +84,6 @@ void main() {
 //     }
 
 // }
-
-
-
-
 
 /*void main() {
     if (cellIn[index].endOfTurn.x == ubo.passedHours) { return; } else {    
@@ -123,8 +109,6 @@ void main() {
         cellOut[index].endOfTurn.x = ubo.passedHours;       
     }
 }*/
-
-
 
     // // Walking rows from down to up
     // int blockStart = (loopHours / SQRT_OF_GRID) * SQRT_OF_GRID; // start index of the block

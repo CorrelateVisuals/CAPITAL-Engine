@@ -500,11 +500,12 @@ void MemoryCommands::createShaderStorageBuffers() {
                                _control.getRandomFloat(0.0f, 0.3f), 1.0f};
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
-        cells[index].size = {_control.grid.cellSize, 0.0f, 0.0f, 0.0f};
+        cells[index].size = {_control.grid.cellSize, _control.grid.cellSize,
+                             _control.grid.cellSize, _control.grid.cellSize};
         cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
       } else {
-        cells[index].size = {parameterOff, parameterOff, parameterOff,
-                             parameterOff};
+        cells[index].size = {_control.grid.cellSize, _control.grid.cellSize,
+                             _control.grid.cellSize, _control.grid.cellSize};
         cells[index].color = {1.0f, 0.0f, 0.0f, 0.0f};
       }
     }
