@@ -25,18 +25,18 @@ Global::~Global() {
 void CapitalEngine::mainLoop() {
   _log.console("\n", _log.style.indentSize,
                "{ Main Loop } running ..........\n");
+
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
-
     _control.simulateHours();
     drawFrame();
 
     _window.getMouseButtonType();
     _window.mouseClick(_window.window, _window.mouse.buttonType);
   }
+
   vkDeviceWaitIdle(_mechanics.mainDevice.logical);
-  _log.console("\n", _log.style.indentSize, "{ Main Loop }",
-               "....... terminated");
+  _log.console("\n", _log.style.indentSize, "{ Main Loop } ....... terminated");
 }
 
 void CapitalEngine::initVulkan() {
