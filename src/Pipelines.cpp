@@ -17,6 +17,15 @@ Pipelines::~Pipelines() {
   _log.console("{ PIP }", "destructing Pipelines");
 }
 
+MemoryCommands::MemoryCommands()
+    : command{}, uniform{}, shaderStorage{}, descriptor{} {
+  _log.console("{ 010 }", "constructing Memory Management");
+}
+
+MemoryCommands::~MemoryCommands() {
+  _log.console("{ 010 }", "destructing Memory Management");
+}
+
 void Pipelines::createDepthResources() {
   VkFormat depthFormat = findDepthFormat();
 
@@ -378,15 +387,6 @@ VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
   }
 
   return shaderModule;
-}
-
-MemoryCommands::MemoryCommands()
-    : command{}, uniform{}, shaderStorage{}, descriptor{} {
-  _log.console("{ 010 }", "constructing Memory Management");
-}
-
-MemoryCommands::~MemoryCommands() {
-  _log.console("{ 010 }", "destructing Memory Management");
 }
 
 void MemoryCommands::createFramebuffers() {
