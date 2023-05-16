@@ -28,11 +28,11 @@ void CapitalEngine::mainLoop() {
 
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
-    _control.simulateHours();
-    drawFrame();
-
     _window.getMouseButtonType();
     _window.mouseClick(_window.window, _window.mouse.buttonType);
+
+    _control.simulateHours();
+    drawFrame();
   }
 
   vkDeviceWaitIdle(_mechanics.mainDevice.logical);
