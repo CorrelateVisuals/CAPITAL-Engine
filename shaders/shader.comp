@@ -52,18 +52,31 @@ int neighbourCellsInRange(int range){
     return neighbourCellsInRange; 
 }
 
+
+
 void simulate(out Cell cell){
     vec4 pos = cellIn[index].position.xyzw;
     int neighbours = neighbourCellsInRange(1);
 
-    if (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) {
+    vec4 dimBlue        = vec4(blue * vec4(vec3(0.3), 1.0f));
+    bool initiliazed    = cellIn[index].color == blue;
+    bool alive          = bool(all(greaterThan(cellIn[index].color, dimBlue - 0.1)));
+    vec4 addLastColor   = cellIn[index].color + vec4(0.1);
+
+    if ( initiliazed )  { cell = Cell(pos, dimBlue, on, now); }
+    if ( alive )        { cell = Cell(pos, addLastColor, on, now); } 
+    else if (false)     { cell = Cell(pos, black, off, now); } 
+    else                { cell = Cell(pos, red, off, now); }
+}
+
+/*    if (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) {
         cell = Cell(pos, green, on, now);
     } else if (neighbours < 2) {
         cell = Cell(pos, black, off, now);
     } else {
         cell = Cell(pos, black, off, now);
-    };
-}
+    };*/
+
 
 void main() {  
 
@@ -71,7 +84,7 @@ void main() {
         cellOut[index] = cellIn[index]; 
         return; 
     } else { 
-        
+
         simulate(cells);
 
         cellOut[index].position     = cells.position;

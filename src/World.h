@@ -31,7 +31,7 @@ class World {
   };
 
  public:
-  // Animation
+  std::vector<World::Cell> initializeCells();
   UniformBufferObject updateUniforms();
 
   glm::mat4 setModel();

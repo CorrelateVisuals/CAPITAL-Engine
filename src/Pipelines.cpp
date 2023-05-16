@@ -472,45 +472,8 @@ void MemoryCommands::createComputeCommandBuffers() {
 
 void MemoryCommands::createShaderStorageBuffers() {
   _log.console("{ BUF }", "creating Shader Storage Buffers");
-  // Initiliazation of cells on the grid
-  _log.console(_log.style.charLeader, "initializing Cells");
-  std::vector<World::Cell> cells(_control.grid.numberOfGridPoints);
-  std::vector<int> aliveCells =
-      _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
 
-  // Grid size
-  const int gridWidth = _control.grid.gridDimensions[0];
-  const int gridHeight = _control.grid.gridDimensions[1];
-  const float gridPointDistance = _control.grid.gridPointDistance;
-  // Grid cell size
-  const float cellWidth = gridPointDistance / gridWidth;
-  const float cellHeight = gridPointDistance / gridHeight;
-  // Cell position offset
-  const float remainingWidth = 2.0f - gridPointDistance;
-  const float remainingHeight = 2.0f - gridPointDistance;
-  const float offsetX = -1.0f + remainingWidth / 2.0f + cellWidth / 2.0f;
-  const float offsetY = -1.0f + remainingHeight / 2.0f + cellHeight / 2.0f;
-
-  // Initialize cells on grid
-  for (int x = 0; x < gridWidth; x++) {
-    for (int y = 0; y < gridHeight; y++) {
-      int index = x + y * gridWidth;
-      cells[index].position = {offsetX + x * cellWidth,
-                               offsetY + y * cellHeight,
-                               _control.getRandomFloat(0.0f, 0.3f), 1.0f};
-      if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
-          aliveCells.end()) {
-        cells[index].size = {_control.grid.cellSize, _control.grid.cellSize,
-                             _control.grid.cellSize, _control.grid.cellSize};
-        cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
-      } else {
-        cells[index].size = {_control.grid.cellSize, _control.grid.cellSize,
-                             _control.grid.cellSize, _control.grid.cellSize};
-        cells[index].color = {1.0f, 0.0f, 0.0f, 0.0f};
-      }
-    }
-  }
-  _log.console(aliveCells);
+  std::vector<World::Cell> cells = _world.initializeCells();
 
   VkDeviceSize bufferSize =
       sizeof(World::Cell) * _control.grid.numberOfGridPoints;
