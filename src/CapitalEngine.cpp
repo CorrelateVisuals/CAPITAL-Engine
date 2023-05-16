@@ -70,9 +70,6 @@ void CapitalEngine::initVulkan() {
 }
 
 void CapitalEngine::drawFrame() {
-  VkSubmitInfo submitInfo{};
-  submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
   // Compute submission
   vkWaitForFences(
       _mechanics.mainDevice.logical, 1,
@@ -89,25 +86,27 @@ void CapitalEngine::drawFrame() {
 
   vkResetCommandBuffer(
       _memCommands.command.computeBuffers[_mechanics.syncObjects.currentFrame],
-      /*VkCommandBufferResetFlagBits*/ 0);
+      0);
   _memCommands.recordComputeCommandBuffer(
       _memCommands.command.computeBuffers[_mechanics.syncObjects.currentFrame]);
 
-  submitInfo.commandBufferCount = 1;
-  submitInfo.pCommandBuffers =
+  VkSubmitInfo computeSubmitInfo{};
+  computeSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+  computeSubmitInfo.commandBufferCount = 1;
+  computeSubmitInfo.pCommandBuffers =
       &_memCommands.command.computeBuffers[_mechanics.syncObjects.currentFrame];
-  submitInfo.signalSemaphoreCount = 1;
-  submitInfo.pSignalSemaphores =
+  computeSubmitInfo.signalSemaphoreCount = 1;
+  computeSubmitInfo.pSignalSemaphores =
       &_mechanics.syncObjects
            .computeFinishedSemaphores[_mechanics.syncObjects.currentFrame];
 
   if (vkQueueSubmit(
-          _mechanics.queues.compute, 1, &submitInfo,
+          _mechanics.queues.compute, 1, &computeSubmitInfo,
           _mechanics.syncObjects
               .computeInFlightFences[_mechanics.syncObjects.currentFrame]) !=
       VK_SUCCESS) {
     throw std::runtime_error("failed to submit compute command buffer!");
-  };
+  }
 
   // Graphics submission
   vkWaitForFences(_mechanics.mainDevice.logical, 1,
@@ -135,7 +134,7 @@ void CapitalEngine::drawFrame() {
 
   vkResetCommandBuffer(
       _memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame],
-      /*VkCommandBufferResetFlagBits*/ 0);
+      0);
   _memCommands.recordCommandBuffer(
       _memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame],
       imageIndex);
@@ -148,21 +147,21 @@ void CapitalEngine::drawFrame() {
   VkPipelineStageFlags waitStages[] = {
       VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
       VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
-  submitInfo = {};
-  submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-  submitInfo.waitSemaphoreCount = 2;
-  submitInfo.pWaitSemaphores = waitSemaphores;
-  submitInfo.pWaitDstStageMask = waitStages;
-  submitInfo.commandBufferCount = 1;
-  submitInfo.pCommandBuffers =
+  VkSubmitInfo graphicsSubmitInfo{};
+  graphicsSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+  graphicsSubmitInfo.waitSemaphoreCount = 2;
+  graphicsSubmitInfo.pWaitSemaphores = waitSemaphores;
+  graphicsSubmitInfo.pWaitDstStageMask = waitStages;
+  graphicsSubmitInfo.commandBufferCount = 1;
+  graphicsSubmitInfo.pCommandBuffers =
       &_memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame];
-  submitInfo.signalSemaphoreCount = 1;
-  submitInfo.pSignalSemaphores =
+  graphicsSubmitInfo.signalSemaphoreCount = 1;
+  graphicsSubmitInfo.pSignalSemaphores =
       &_mechanics.syncObjects
            .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame];
 
-  if (vkQueueSubmit(_mechanics.queues.graphics, 1, &submitInfo,
+  if (vkQueueSubmit(_mechanics.queues.graphics, 1, &graphicsSubmitInfo,
                     _mechanics.syncObjects
                         .inFlightFences[_mechanics.syncObjects.currentFrame]) !=
       VK_SUCCESS) {
@@ -171,16 +170,13 @@ void CapitalEngine::drawFrame() {
 
   VkPresentInfoKHR presentInfo{};
   presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-
   presentInfo.waitSemaphoreCount = 1;
   presentInfo.pWaitSemaphores =
       &_mechanics.syncObjects
            .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame];
-
   VkSwapchainKHR swapChains[] = {_mechanics.swapChain.swapChain};
   presentInfo.swapchainCount = 1;
   presentInfo.pSwapchains = swapChains;
-
   presentInfo.pImageIndices = &imageIndex;
 
   result = vkQueuePresentKHR(_mechanics.queues.present, &presentInfo);
