@@ -47,13 +47,13 @@ void Window::getMouseButtonType() {
   }
 }
 
-void Window::mouseClick(GLFWwindow* window, int button) {
+void Window::mouseClick(GLFWwindow* win, int button) {
   static int oldState = GLFW_RELEASE;
-  int newState = glfwGetMouseButton(window, button);
+  int newState = glfwGetMouseButton(win, button);
   static double timer = 0.0;
   static double pressTime = 0.0;
   double xpos, ypos;
-  glfwGetCursorPos(window, &xpos, &ypos);
+  glfwGetCursorPos(win, &xpos, &ypos);
   xpos /= displayConfig.width;
   ypos /= displayConfig.height;
 

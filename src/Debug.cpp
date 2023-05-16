@@ -107,7 +107,7 @@ std::string Logging::returnDateAndTime() {
   std::time_t nowC = std::chrono::system_clock::to_time_t(now);
   std::tm timeInfo;
 
-#ifdef __linux__ 
+#ifdef __linux__
   char nowStr[20] = "---";
 #elif _WIN32
   gmtime_s(&timeInfo, &nowC);
