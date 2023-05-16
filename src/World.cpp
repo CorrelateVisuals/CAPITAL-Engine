@@ -70,12 +70,10 @@ std::vector<World::Cell> World::initializeCells() {
       std::array<float, 4> pos = {offsetX + x * cellWidth,
                                   offsetY + y * cellHeight,
                                   _control.getRandomFloat(0.0f, 0.3f), 1.0f};
-
       World::Cell initializedCell{pos, blue, size, alive};
       World::Cell uninitializedCell{pos, red, size, dead};
 
-      if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
-          aliveCells.end()) {
+      if (isIndexAlive(aliveCells, index)) {
         cells[index] = initializedCell;
       } else {
         cells[index] = uninitializedCell;
@@ -85,6 +83,11 @@ std::vector<World::Cell> World::initializeCells() {
   _log.console(aliveCells);
 
   return cells;
+}
+
+bool World::isIndexAlive(const std::vector<int>& aliveCells, int index) {
+  return std::find(aliveCells.begin(), aliveCells.end(), index) !=
+         aliveCells.end();
 }
 
 World::UniformBufferObject World::updateUniforms() {

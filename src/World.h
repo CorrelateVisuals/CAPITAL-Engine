@@ -32,6 +32,8 @@ class World {
 
  public:
   std::vector<World::Cell> initializeCells();
+  bool isIndexAlive(const std::vector<int>& aliveCells, int index);
+
   UniformBufferObject updateUniforms();
 
   glm::mat4 setModel();
