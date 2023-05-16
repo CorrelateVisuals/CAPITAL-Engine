@@ -43,8 +43,10 @@ float phongLightning ( vec4 directionAndIntensity ) {
 
 layout(location = 0) out vec3 fragColor;
 
-void main() { if( inSize.x == -1.0f ){ return; } // Skip all dead cells.
+void main() { 
     
-    gl_Position = modelViewProjection() * constructCube();  
-    fragColor =  phongLightning(ubo.lightning.xyzw) * inColor.rgb;
+    if( inSize.x == -1.0f ){ return; } else {
+        gl_Position = modelViewProjection() * constructCube();  
+        fragColor =  phongLightning(ubo.lightning.xyzw) * inColor.rgb;
+    }    
 }
