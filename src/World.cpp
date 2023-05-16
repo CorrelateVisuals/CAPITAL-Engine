@@ -67,17 +67,18 @@ std::vector<World::Cell> World::initializeCells() {
   for (int x = 0; x < gridWidth; x++) {
     for (int y = 0; y < gridHeight; y++) {
       int index = x + y * gridWidth;
-      std::array<float, 4> pos = {offsetX + x * cellWidth,
-                                  offsetY + y * cellHeight,
-                                  _control.getRandomFloat(0.0f, 0.3f), 0.0f};
-      World::Cell initializedCell{pos, blue, size, alive};
-      World::Cell uninitializedCell{pos, red, size, dead};
+      float rowOffset = offsetX + x * cellWidth;
+      float columnOffset = offsetY + y * cellHeight;
+      float randomHeight = _control.getRandomFloat(0.0f, 0.3f);
+      std::array<float, 4> pos = {rowOffset, columnOffset, randomHeight, 0.0f};
 
+      World::Cell cell;
       if (isIndexAlive(aliveCells, index)) {
-        cells[index] = initializedCell;
+        cell = {pos, blue, size, alive};
       } else {
-        cells[index] = uninitializedCell;
+        cell = {pos, red, size, dead};
       }
+      cells[index] = cell;
     }
   }
   _log.console(aliveCells);
