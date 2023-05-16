@@ -13,15 +13,6 @@ layout (binding = 0) uniform ParameterUBO {
 uint index = gl_GlobalInvocationID.x;
 int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
 
-vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
-vec4 green = vec4(0.0, 1.0, 0.0, 1.0); 
-vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
-vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
-vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
-vec4 on = vec4(0.15);
-vec4 off = vec4(-1.0);
-vec4 now = vec4(loopHours);
-
 struct Cell {
     vec4 position;  // float    xy(z)
     vec4 color;     // float    rgba
@@ -30,6 +21,15 @@ struct Cell {
 } cells;
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
+
+vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
+vec4 green = vec4(0.0, 1.0, 0.0, 1.0); 
+vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
+vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
+vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
+
+vec4 nowOn = vec4(loopHours, 0.0, 0.0, 1.0);
+vec4 nowOff = vec4(loopHours, 0.0, 0.0, -1.0);
 
 int neighbourCellsInRange(int range){
         int neighbourCellsInRange = 0;
@@ -52,21 +52,19 @@ int neighbourCellsInRange(int range){
     return neighbourCellsInRange; 
 }
 
-
-
 void simulate(out Cell cell){
     vec4 pos = cellIn[index].position.xyzw;
     int neighbours = neighbourCellsInRange(1);
 
     vec4 dimBlue        = vec4(blue * vec4(vec3(0.3), 1.0f));
-    bool initiliazed    = cellIn[index].color == blue;
-    bool alive          = bool(all(greaterThan(cellIn[index].color, dimBlue - 0.1)));
     vec4 addLastColor   = cellIn[index].color + vec4(0.1);
 
-    if ( initiliazed )  { cell = Cell(pos, dimBlue, on, now); }
-    if ( alive )        { cell = Cell(pos, addLastColor, on, now); } 
-    else if (false)     { cell = Cell(pos, black, off, now); } 
-    else                { cell = Cell(pos, red, off, now); }
+    bool initiliazed    = cellIn[index].endOfTurn.w == 1.0 && cellIn[index].color == blue;
+    bool alive          = cellIn[index].endOfTurn.w == 1.0;
+
+    if ( initiliazed )  { cell = Cell(pos, dimBlue, vec4(0.15), nowOn); }
+    else if ( alive )   { cell = Cell(pos, addLastColor, vec4(0.15), nowOn); }
+    else                { cell = Cell(pos, black, vec4(-1.0), nowOff); }
 }
 
 /*    if (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) {
@@ -80,7 +78,7 @@ void simulate(out Cell cell){
 
 void main() {  
 
-    if (cellIn[index].endOfTurn == vec4(loopHours)) { 
+    if (cellIn[index].endOfTurn.x == loopHours) { 
         cellOut[index] = cellIn[index]; 
         return; 
     } else { 
