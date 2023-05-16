@@ -18,9 +18,7 @@ class Logging {
   } style;
 
   template <class T, class... Ts>
-  void console(const T& first, const Ts&... inputs);
-
- public:
+  void console(const T& first, const Ts&... inputs);:
   std::string getBufferUsageString(VkBufferUsageFlags usage);
 
  private:
