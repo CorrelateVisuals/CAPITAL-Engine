@@ -70,6 +70,7 @@ void VulkanMechanics::createInstance() {
   createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
   createInfo.ppEnabledExtensionNames = extensions.data();
 
+  VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
   if (_validationLayers.enableValidationLayers) {
     createInfo.enabledLayerCount =
         static_cast<uint32_t>(_validationLayers.validationLayers.size());
