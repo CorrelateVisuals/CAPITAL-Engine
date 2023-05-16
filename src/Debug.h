@@ -86,7 +86,8 @@ inline void Logging::console(const T& first, const Ts&... inputs) {
     std::cout << " " << returnDateAndTime();
     logFile << " " << returnDateAndTime();
   } else {
-    std::cout << std::string(style.numColumns + numColumnsOffset, ' ');
+    std::cout << std::string(
+        static_cast<size_t>(style.numColumns) + numColumnsOffset, ' ');
   }
 
   // If the first input is a vector, handle it separately
@@ -97,10 +98,14 @@ inline void Logging::console(const T& first, const Ts&... inputs) {
     for (const auto& element : first) {
       if (elementCount % style.numColumns == 0 && elementCount != 0) {
         std::cout << "\n "
-                  << std::string(style.numColumns + numColumnsOffset, ' ')
+                  << std::string(static_cast<size_t>(style.numColumns) +
+                                     numColumnsOffset,
+                                 ' ')
                   << style.charLeader << " ";
         logFile << "\n "
-                << std::string(style.numColumns + numColumnsOffset, ' ')
+                << std::string(
+                       static_cast<size_t>(style.numColumns) + numColumnsOffset,
+                       ' ')
                 << style.charLeader << " ";
         elementCount = 0;
       }
