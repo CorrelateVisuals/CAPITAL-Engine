@@ -69,7 +69,7 @@ std::vector<World::Cell> World::initializeCells() {
       int index = x + y * gridWidth;
       std::array<float, 4> pos = {offsetX + x * cellWidth,
                                   offsetY + y * cellHeight,
-                                  _control.getRandomFloat(0.0f, 0.3f), 1.0f};
+                                  _control.getRandomFloat(0.0f, 0.3f), 0.0f};
       World::Cell initializedCell{pos, blue, size, alive};
       World::Cell uninitializedCell{pos, red, size, dead};
 
@@ -81,7 +81,6 @@ std::vector<World::Cell> World::initializeCells() {
     }
   }
   _log.console(aliveCells);
-
   return cells;
 }
 
@@ -99,6 +98,7 @@ World::UniformBufferObject World::updateUniforms() {
   uniformObject.lightDirection = {0.0f, 1.0f, 1.0f, 0.2f};
   return uniformObject;
 }
+
 glm::mat4 World::setModel() {
   glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f),
                                 glm::vec3(0.0f, 0.0f, 1.0f));
