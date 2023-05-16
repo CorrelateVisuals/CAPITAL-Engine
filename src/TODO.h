@@ -14,12 +14,14 @@
 /// - Optimization and bug fixes
 /// - Revise the _log.console() function (with the use of overload functions)
 /// - Format runtime errors to right style format
+/// - Adding CPU access to cell Shader data through shaderStorage buffer
 ///
 /// [ FEATURES: ADDITIONS ]
 /// - Dear ImGui (for runtime settings, graph data and economic encyclopedia)
 /// - Multisampling
 /// - Renderpicking: Adding screenspace position to vertex ID, to click on
 /// objects and return their IDs. A Vulkan attachment is needed for this
+/// - Ray-tracing
 ///
 /// [ FEATURES: GEOMETRY ]
 /// - Animating geometry between cells and implementing Touchdesigner fragment
