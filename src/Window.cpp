@@ -39,8 +39,10 @@ void Window::getMouseButtonType() {
   const int mouseButtonTypes[] = {GLFW_MOUSE_BUTTON_LEFT,
                                   GLFW_MOUSE_BUTTON_MIDDLE,
                                   GLFW_MOUSE_BUTTON_RIGHT};
+  int buttonState = GLFW_RELEASE;
   for (const auto& mouseButtonType : mouseButtonTypes) {
-    if (glfwGetMouseButton(_window.window, mouseButtonType) == GLFW_PRESS) {
+    buttonState = glfwGetMouseButton(_window.window, mouseButtonType);
+    if (buttonState == GLFW_PRESS) {
       mouse.buttonType = mouseButtonType;
       return;
     }
