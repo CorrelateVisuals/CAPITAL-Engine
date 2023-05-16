@@ -22,7 +22,7 @@ class Window {
   void initWindow();
 
   void getMouseButtonType();
-  void mouseClick(GLFWwindow* window, int button);
+  void mouseClick(GLFWwindow* win, int button);
 
  private:
   static void windowResize(GLFWwindow* window, int width, int height);
