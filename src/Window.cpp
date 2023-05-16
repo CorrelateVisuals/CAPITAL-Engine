@@ -27,8 +27,8 @@ void Window::initWindow() {
                displayConfig.height);
 }
 
-void Window::windowResize(GLFWwindow* window, int width, int height) {
-  auto app = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+void Window::windowResize(GLFWwindow* win, int width, int height) {
+  auto app = reinterpret_cast<Window*>(glfwGetWindowUserPointer(win));
   app->framebufferResized = true;
   displayConfig.width = width;
   displayConfig.height = height;

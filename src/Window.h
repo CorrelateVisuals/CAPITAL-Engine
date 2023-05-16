@@ -25,5 +25,5 @@ class Window {
   void mouseClick(GLFWwindow* win, int button);
 
  private:
-  static void windowResize(GLFWwindow* window, int width, int height);
+  static void windowResize(GLFWwindow* win, int width, int height);
 };
