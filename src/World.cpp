@@ -72,13 +72,12 @@ std::vector<World::Cell> World::initializeCells() {
       float randomHeight = _control.getRandomFloat(0.0f, 0.3f);
       std::array<float, 4> pos = {rowOffset, columnOffset, randomHeight, 0.0f};
 
-      World::Cell cell;
-      if (isIndexAlive(aliveCells, index)) {
-        cell = {pos, blue, size, alive};
-      } else {
-        cell = {pos, red, size, dead};
-      }
-      cells[index] = cell;
+      std::array<float, 4>& color =
+          isIndexAlive(aliveCells, index) ? blue : red;
+      std::array<float, 4>& state =
+          isIndexAlive(aliveCells, index) ? alive : dead;
+
+      cells[index] = {pos, color, size, state};
     }
   }
   _log.console(aliveCells);
