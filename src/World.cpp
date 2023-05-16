@@ -40,6 +40,13 @@ glm::mat4 World::setView() {
 std::vector<World::Cell> World::initializeCells() {
   _log.console(_log.style.charLeader, "initializing Cells");
   std::vector<World::Cell> cells(_control.grid.numberOfGridPoints);
+
+  std::array<float, 4> red = {1.0, 0.0, 0.0, 1.0};
+  std::array<float, 4> blue = {0.0, 0.0, 1.0, 1.0};
+  std::array<float, 4> alive = {0.0, 0.0, 0.0, 1.0};
+  std::array<float, 4> dead = {0.0, 0.0, 0.0, -1.0};
+  std::array<float, 4> size = {_control.grid.cellSize, _control.grid.cellSize,
+                               _control.grid.cellSize, _control.grid.cellSize};
   std::vector<int> aliveCells =
       _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
 
@@ -60,22 +67,21 @@ std::vector<World::Cell> World::initializeCells() {
   for (int x = 0; x < gridWidth; x++) {
     for (int y = 0; y < gridHeight; y++) {
       int index = x + y * gridWidth;
-      cells[index].position = {offsetX + x * cellWidth,
-                               offsetY + y * cellHeight,
-                               _control.getRandomFloat(0.0f, 0.3f), 1.0f};
+      std::array<float, 4> pos = {offsetX + x * cellWidth,
+                                  offsetY + y * cellHeight,
+                                  _control.getRandomFloat(0.0f, 0.3f), 1.0f};
+
+      World::Cell initializedCell{pos, blue, size, alive};
+      World::Cell uninitializedCell{pos, red, size, dead};
+
       if (std::find(aliveCells.begin(), aliveCells.end(), index) !=
           aliveCells.end()) {
-        cells[index].size = {_control.grid.cellSize, _control.grid.cellSize,
-                             _control.grid.cellSize, _control.grid.cellSize};
-        cells[index].color = {0.0f, 0.0f, 1.0f, 1.0f};
+        cells[index] = initializedCell;
       } else {
-        cells[index].size = {_control.grid.cellSize, _control.grid.cellSize,
-                             _control.grid.cellSize, _control.grid.cellSize};
-        cells[index].color = {1.0f, 0.0f, 0.0f, 01.0f};
+        cells[index] = uninitializedCell;
       }
     }
   }
-
   _log.console(aliveCells);
 
   return cells;
