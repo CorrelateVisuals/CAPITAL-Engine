@@ -24,10 +24,10 @@ class World {
   };
 
   struct Cell {
-    std::array<float, 4> position;   // xyz pos
-    std::array<float, 4> color;      // rgba
-    std::array<float, 4> size;       // 1 float
-    std::array<float, 4> endOfTurn;  // bool
+    std::array<float, 4> position;  // xyz pos
+    std::array<float, 4> color;     // rgba
+    std::array<float, 4> size;      // 1 float
+    std::array<float, 4> states;    // bool
   };
 
  public:

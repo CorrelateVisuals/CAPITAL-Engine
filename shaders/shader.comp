@@ -17,17 +17,21 @@ struct Cell {
     vec4 position;  // float    xy(z)
     vec4 color;     // float    rgba
     vec4 size;      // float    x
-    vec4 endOfTurn; // bool     pqrwt
+    vec4 states; // bool     pqrwt
 } cells;
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
-vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
-vec4 green = vec4(0.0, 1.0, 0.0, 1.0); 
-vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
-vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
-vec4 black = vec4(0.0, 0.0, 0.0, 1.0);
+vec4 red            = vec4(1.0, 0.0, 0.0, 1.0);
+vec4 green          = vec4(0.0, 1.0, 0.0, 1.0); 
+vec4 blue           = vec4(0.0, 0.0, 1.0, 1.0);
+vec4 white          = vec4(1.0, 1.0, 1.0, 1.0);
+vec4 black          = vec4(0.0, 0.0, 0.0, 1.0);
+vec4 dimBlue        = vec4(blue * vec4(vec3(0.3), 1.0f));
+vec4 addLastColor   = cellIn[index].color + vec4(0.1);
 
+vec4 stdSize = vec4(0.15);
+vec4 stdSizeOff = vec4(-1.0);
 vec4 nowOn = vec4(loopHours, 0.0, 0.0, 1.0);
 vec4 nowOff = vec4(loopHours, 0.0, 0.0, -1.0);
 
@@ -55,16 +59,12 @@ int neighbourCellsInRange(int range){
 void simulate(out Cell cell){
     vec4 pos = cellIn[index].position.xyzw;
     int neighbours = neighbourCellsInRange(1);
+    bool initiliazed    = cellIn[index].states.w == 1.0 && cellIn[index].color == blue;
+    bool alive          = cellIn[index].states.w == 1.0;
 
-    vec4 dimBlue        = vec4(blue * vec4(vec3(0.3), 1.0f));
-    vec4 addLastColor   = cellIn[index].color + vec4(0.1);
-
-    bool initiliazed    = cellIn[index].endOfTurn.w == 1.0 && cellIn[index].color == blue;
-    bool alive          = cellIn[index].endOfTurn.w == 1.0;
-
-    if ( initiliazed )  { cell = Cell(pos, dimBlue, vec4(0.15), nowOn); }
-    else if ( alive )   { cell = Cell(pos, addLastColor, vec4(0.15), nowOn); }
-    else                { cell = Cell(pos, black, vec4(-1.0), nowOff); }
+    if ( initiliazed )  { cell = Cell(pos, dimBlue, stdSize, nowOn); }
+    else if ( alive )   { cell = Cell(pos, addLastColor, stdSize, nowOn); }
+    else                { cell = Cell(pos, black, stdSizeOff, nowOff); }
 }
 
 /*    if (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) {
@@ -78,17 +78,17 @@ void simulate(out Cell cell){
 
 void main() {  
 
-    if (cellIn[index].endOfTurn.x == loopHours) { 
+    if (cellIn[index].states.x == loopHours) { 
         cellOut[index] = cellIn[index]; 
         return; 
     } else { 
 
         simulate(cells);
 
-        cellOut[index].position     = cells.position;
-        cellOut[index].color        = cells.color;
-        cellOut[index].size         = cells.size;
-        cellOut[index].endOfTurn    = cells.endOfTurn;
+        cellOut[index].position  = cells.position;
+        cellOut[index].color     = cells.color;
+        cellOut[index].size      = cells.size;
+        cellOut[index].states    = cells.states;
     }; 
 }
 
@@ -118,7 +118,7 @@ void main() {
 // }
 
 // void main() {  
-//     if (cellIn[index].endOfTurn == vec4(loopHours)) { 
+//     if (cellIn[index].states == vec4(loopHours)) { 
 //         cellOut[index] = cellIn[index]; 
 //         return; 
 //     } else { 
@@ -128,6 +128,6 @@ void main() {
 //         cellOut[index].position     = cells.position;
 //         cellOut[index].color        = cells.color;
 //         cellOut[index].size         = cells.size;
-//         cellOut[index].endOfTurn    = cells.endOfTurn;
+//         cellOut[index].states    = cells.states;
 //     }; 
 // }
