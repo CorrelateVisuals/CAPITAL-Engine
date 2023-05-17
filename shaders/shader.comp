@@ -59,7 +59,7 @@ vec4 neighbourCellsInRange(int range){
                 bool neighbourIsRich = cellIn[neighbourIndex].color == blue || cellIn[neighbourIndex].color == green;
                 bool neighbourIsPoor = cellIn[neighbourIndex].color == green;
 
-                if (neighbourIsRich && notSelf ) {
+                if (neighbourIsRich && notSelf) {
 
                     neighbourCellsInRange++;
                 }
@@ -67,6 +67,25 @@ vec4 neighbourCellsInRange(int range){
         }
     return neighbourCellsInRange; 
 }
+
+// vec3 r = vec3(1.0, 0.0, 0.0);  // Red color
+// vec3 g = vec3(0.0, 1.0, 0.0);  // Green color
+// vec3 b = vec3(0.0, 0.0, 1.0);  // Blue color
+
+// vec3 currentR = vec3(0.8, 0.0, 0.0);  // Example current red color
+// vec3 currentG = vec3(0.0, 0.9, 0.0);  // Example current green color
+// vec3 currentB = vec3(0.0, 0.0, 0.7);  // Example current blue color
+
+// // Check if colors are available and replace if higher
+// if (dot(r, currentR) == 0.0 || dot(r, currentR) < dot(r, r)) {
+//     currentR = r;
+// }
+// if (dot(g, currentG) == 0.0 || dot(g, currentG) < dot(g, g)) {
+//     currentG = g;
+// }
+// if (dot(b, currentB) == 0.0 || dot(b, currentB) < dot(b, b)) {
+//     currentB = b;
+// }
 
 void simulate(out Cell cell){
     vec4 pos = cellIn[index].position;
