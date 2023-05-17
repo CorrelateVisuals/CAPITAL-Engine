@@ -35,8 +35,13 @@ vec4 stdSizeOff = vec4(-1.0);
 vec4 nowOn = vec4(loopHours, 0.0, 0.0, 1.0);
 vec4 nowOff = vec4(loopHours, 0.0, 0.0, -1.0);
 
-int neighbourCellsInRange(int range){
-        int neighbourCellsInRange = 0;
+bool isFloatInsideVec4(float value, vec4 vector) {
+    return value >= vector.x && value <= vector.w;
+}
+
+vec4 neighbourCellsInRange(int range){
+        vec4 neighbourCellsInRange = vec4(0);
+
         int gridSize = SQRT_OF_GRID;
         int indexX = int(index) % SQRT_OF_GRID;
         int indexY = int(index) / SQRT_OF_GRID;
@@ -49,8 +54,12 @@ int neighbourCellsInRange(int range){
             for (int y = startY; y <= endY; y++) {
                 int neighbourIndex = y * SQRT_OF_GRID + x;
 
-                if (cellIn[neighbourIndex].color == blue && neighbourIndex != index || 
-                    cellIn[neighbourIndex].color == green && neighbourIndex != index) {
+                bool notSelf = neighbourIndex != index;
+                //bool neighbourIsRich = cellIn[neighbourIndex].color.g < 0.5;
+                bool neighbourIsRich = cellIn[neighbourIndex].color == blue || cellIn[neighbourIndex].color == green;
+                bool neighbourIsPoor = cellIn[neighbourIndex].color == green;
+
+                if (neighbourIsRich && notSelf ) {
 
                     neighbourCellsInRange++;
                 }
@@ -61,7 +70,7 @@ int neighbourCellsInRange(int range){
 
 void simulate(out Cell cell){
     vec4 pos = cellIn[index].position;
-    int neighbours = neighbourCellsInRange(1);
+    int neighbours = int(neighbourCellsInRange(1).x);
 
     bool initiliazed    = cellIn[index].states.w == 1.0 && cellIn[index].color == blue;
 
