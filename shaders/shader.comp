@@ -44,11 +44,14 @@ int neighbourCellsInRange(int range){
         int endX = min(indexX + range, SQRT_OF_GRID - 1);
         int startY = max(indexY - range, 0);
         int endY = min(indexY + range, SQRT_OF_GRID - 1);
+
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
                 int neighbourIndex = y * SQRT_OF_GRID + x;
-                if (cellIn[neighbourIndex].color == blue && neighbourIndex != index
-                    || cellIn[neighbourIndex].color == green && neighbourIndex != index) {
+
+                if (cellIn[neighbourIndex].color == blue && neighbourIndex != index || 
+                    cellIn[neighbourIndex].color == green && neighbourIndex != index) {
+
                     neighbourCellsInRange++;
                 }
             }
