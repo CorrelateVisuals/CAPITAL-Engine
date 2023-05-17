@@ -24,14 +24,16 @@ class World {
   };
 
   struct Cell {
-    std::array<float, 4> position;   // xyz pos
-    std::array<float, 4> color;      // rgba
-    std::array<float, 4> size;       // 1 float
-    std::array<float, 4> endOfTurn;  // bool
+    std::array<float, 4> position;
+    std::array<float, 4> color;
+    std::array<float, 4> size;
+    std::array<float, 4> states;
   };
 
  public:
-  // Animation
+  std::vector<World::Cell> initializeCells();
+  bool isIndexAlive(const std::vector<int>& aliveCells, int index);
+
   UniformBufferObject updateUniforms();
 
   glm::mat4 setModel();

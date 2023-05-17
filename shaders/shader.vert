@@ -1,5 +1,5 @@
 #version 450
-#extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
+//#extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
 
 layout(location = 0) in vec4 inPosition;
 layout(location = 1) in vec4 inColor;
@@ -43,8 +43,10 @@ float phongLightning ( vec4 directionAndIntensity ) {
 
 layout(location = 0) out vec3 fragColor;
 
-void main() { if( inSize.x == -1.0f ){ return; } // Skip all dead cells.
+void main() { 
     
-    gl_Position = modelViewProjection() * constructCube();  
-    fragColor =  phongLightning(ubo.lightning.xyzw) * inColor.rgb;
+    if( inSize.x == -1.0f ){ return; } else {
+        gl_Position = modelViewProjection() * constructCube();  
+        fragColor =  phongLightning(ubo.lightning.xyzw) * inColor.rgb;
+    }    
 }

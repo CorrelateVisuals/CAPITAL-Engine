@@ -42,14 +42,6 @@ class Global {
  private:
   void cleanup();
 };
-// constexpr auto& _log = Global::obj.logging;
-// constexpr auto& _validationLayers = Global::obj.validationLayers;
-// constexpr auto& _window = Global::obj.mainWindow;
-// constexpr auto& _mechanics = Global::obj.vulkanMechanics;
-// constexpr auto& _pipelines = Global::obj.pipelines;
-// constexpr auto& _memCommands = Global::obj.memoryCommands;
-// constexpr auto& _control = Global::obj.control;
-// constexpr auto& _world = Global::obj.world;
 
 static constexpr auto& _log = Global::obj.logging;
 static constexpr auto& _validationLayers = Global::obj.validationLayers;

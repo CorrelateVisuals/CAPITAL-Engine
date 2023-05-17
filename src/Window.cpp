@@ -27,8 +27,8 @@ void Window::initWindow() {
                displayConfig.height);
 }
 
-void Window::windowResize(GLFWwindow* window, int width, int height) {
-  auto app = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+void Window::windowResize(GLFWwindow* win, int width, int height) {
+  auto app = reinterpret_cast<Window*>(glfwGetWindowUserPointer(win));
   app->framebufferResized = true;
   displayConfig.width = width;
   displayConfig.height = height;
@@ -39,21 +39,23 @@ void Window::getMouseButtonType() {
   const int mouseButtonTypes[] = {GLFW_MOUSE_BUTTON_LEFT,
                                   GLFW_MOUSE_BUTTON_MIDDLE,
                                   GLFW_MOUSE_BUTTON_RIGHT};
+  int buttonState = GLFW_RELEASE;
   for (const auto& mouseButtonType : mouseButtonTypes) {
-    if (glfwGetMouseButton(_window.window, mouseButtonType) == GLFW_PRESS) {
+    buttonState = glfwGetMouseButton(_window.window, mouseButtonType);
+    if (buttonState == GLFW_PRESS) {
       mouse.buttonType = mouseButtonType;
       return;
     }
   }
 }
 
-void Window::mouseClick(GLFWwindow* window, int button) {
+void Window::mouseClick(GLFWwindow* win, int button) {
   static int oldState = GLFW_RELEASE;
-  int newState = glfwGetMouseButton(window, button);
+  int newState = glfwGetMouseButton(win, button);
   static double timer = 0.0;
   static double pressTime = 0.0;
   double xpos, ypos;
-  glfwGetCursorPos(window, &xpos, &ypos);
+  glfwGetCursorPos(win, &xpos, &ypos);
   xpos /= displayConfig.width;
   ypos /= displayConfig.height;
 

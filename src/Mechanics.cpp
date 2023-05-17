@@ -13,7 +13,25 @@
 #include "Window.h"
 #include "World.h"
 
-VulkanMechanics::VulkanMechanics() {
+VulkanMechanics::VulkanMechanics()
+    : surface(VK_NULL_HANDLE),
+      instance(VK_NULL_HANDLE),
+      mainDevice{VK_NULL_HANDLE, VK_NULL_HANDLE},
+      deviceExtensions{VK_KHR_SWAPCHAIN_EXTENSION_NAME},
+      queues{VK_NULL_HANDLE,
+             VK_NULL_HANDLE,
+             VK_NULL_HANDLE,
+             {std::nullopt, std::nullopt}},
+      swapChain{
+          VK_NULL_HANDLE,
+          {},
+          VK_FORMAT_UNDEFINED,
+          {},
+          {0, 0},
+          {},
+          {VkSurfaceCapabilitiesKHR{{}, {}, {}, {}, {}, {}, {}, {}, {}, {}},
+           {},
+           {}}} {
   _log.console("{ #?# }", "constructing Vulkan Mechanics");
 }
 

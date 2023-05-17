@@ -37,6 +37,58 @@ glm::mat4 World::setView() {
   return view;
 }
 
+std::vector<World::Cell> World::initializeCells() {
+  _log.console(_log.style.charLeader, "initializing Cells");
+  std::vector<World::Cell> cells(_control.grid.numberOfGridPoints);
+
+  std::array<float, 4> red = {1.0, 0.0, 0.0, 1.0};
+  std::array<float, 4> blue = {0.0, 0.0, 1.0, 1.0};
+  std::array<float, 4> alive = {0.0, 0.0, 0.0, 1.0};
+  std::array<float, 4> dead = {0.0, 0.0, 0.0, -1.0};
+  std::array<float, 4> size = {_control.grid.cellSize, _control.grid.cellSize,
+                               _control.grid.cellSize, _control.grid.cellSize};
+  std::vector<int> aliveCells =
+      _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
+
+  // Grid size
+  const int gridWidth = _control.grid.gridDimensions[0];
+  const int gridHeight = _control.grid.gridDimensions[1];
+  const float gridPointDistance = _control.grid.gridPointDistance;
+  // Grid cell size
+  const float cellWidth = gridPointDistance / gridWidth;
+  const float cellHeight = gridPointDistance / gridHeight;
+  // Cell position offset
+  const float remainingWidth = 2.0f - gridPointDistance;
+  const float remainingHeight = 2.0f - gridPointDistance;
+  const float offsetX = -1.0f + remainingWidth / 2.0f + cellWidth / 2.0f;
+  const float offsetY = -1.0f + remainingHeight / 2.0f + cellHeight / 2.0f;
+
+  // Initialize cells on grid
+  for (int x = 0; x < gridWidth; x++) {
+    for (int y = 0; y < gridHeight; y++) {
+      int index = x + y * gridWidth;
+      float rowOffset = offsetX + x * cellWidth;
+      float columnOffset = offsetY + y * cellHeight;
+      float randomHeight = _control.getRandomFloat(0.0f, 0.3f);
+      std::array<float, 4> pos = {rowOffset, columnOffset, randomHeight, 0.0f};
+
+      bool isAlive = isIndexAlive(aliveCells, index);
+
+      std::array<float, 4>& color = isAlive ? blue : red;
+      std::array<float, 4>& state = isAlive ? alive : dead;
+
+      cells[index] = {pos, color, size, state};
+    }
+  }
+  _log.console(aliveCells);
+  return cells;
+}
+
+bool World::isIndexAlive(const std::vector<int>& aliveCells, int index) {
+  return std::find(aliveCells.begin(), aliveCells.end(), index) !=
+         aliveCells.end();
+}
+
 World::UniformBufferObject World::updateUniforms() {
   UniformBufferObject uniformObject{};
   uniformObject.passedHours = _control.passedSimulationHours;
@@ -46,6 +98,7 @@ World::UniformBufferObject World::updateUniforms() {
   uniformObject.lightDirection = {0.0f, 1.0f, 1.0f, 0.2f};
   return uniformObject;
 }
+
 glm::mat4 World::setModel() {
   glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f),
                                 glm::vec3(0.0f, 0.0f, 1.0f));
