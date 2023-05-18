@@ -26,6 +26,7 @@ layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
 vec4 red            = vec4(1.0, 0.0, 0.0, 1.0);
 vec4 green          = vec4(0.0, 1.0, 0.0, 1.0); 
+vec4 dimGreen       = vec4(0.0, 0.1, 0.0, 1.0);
 vec4 blue           = vec4(0.0, 0.0, 1.0, 1.0);
 vec4 white          = vec4(1.0, 1.0, 1.0, 1.0);
 vec4 black          = vec4(0.0, 0.0, 0.0, 1.0);
@@ -93,9 +94,19 @@ void simulate(out Cell cell){
     vec4 pos = cellIn[index].position;
     int neighbours = int(neighbourCellsInRange(1).x);
 
-    bool initiliazed    = cellIn[index].states.w == 1 && cellIn[index].color == blue;
+    bool cellInitialized    = cellIn[index].states.w == 1 && cellIn[index].color == blue;
 
-    if ( initiliazed )  { cell = Cell(pos, green, stdSize, nowOn); }
+    // const float tolerance = 0.0001f; // Tolerance for floating-point comparisons
+    // if (cellInitialized) { 
+    //     cell = Cell(pos, dimGreen, stdSize, nowOn );
+    // } else if (cellIn[index].color.g > 0.0f && cellIn[index].color.g < 1.0f) {
+    //     cell = Cell(pos, cellIn[index].color + vec4(0.0, 0.1, 0.0, 0.0), stdSize, nowOn);
+    // } else if (abs(cellIn[index].color.g - 1.0f) < tolerance) {
+    //     cell = Cell(pos, green, stdSize, nowOn);
+    // } else { 
+    //     cell = Cell(pos, black, stdSizeOff, nowOff); }
+
+    if ( cellInitialized )  { cell = Cell(pos, green, stdSize, nowOn); }
 
     if (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) { 
         cell = Cell(pos, green, stdSize, nowOn);
