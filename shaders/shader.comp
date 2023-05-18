@@ -41,8 +41,8 @@ ivec4 nowOff = ivec4(loopHours, 0, 0, -1);
 int alive = 1;
 int dead = -1;
 
-ivec4 returnState(int alive, int time, int stage){
-    ivec4 state = ivec4(alive, time, stage, 0);
+ivec4 getState(int alive, int stage){
+    ivec4 state = ivec4(alive, stage, 0, loopHours);
     return state;
 }
 
@@ -83,17 +83,17 @@ void simulate(out Cell cell){
     vec4 pos = cellIn[index].position;
     int neighbours = int(neighbourCellsInRange(1).x);
 
-    bool cellInitialized    = cellIn[index].states.w == 1 && cellIn[index].color == blue;
+    bool cellInitialized    = cellIn[index].states.x == 1 && cellIn[index].color == blue;
 
     const float tolerance = 0.0001f; // Tolerance for floating-point comparisons
     if (cellInitialized) { 
-        cell = Cell(pos, dimGreen, stdSize, nowOn );
+        cell = Cell(pos, dimGreen, stdSize, getState(alive, 0));
     } else if (cellIn[index].color.g > 0.0f && cellIn[index].color.g < 1.0f) {
-        cell = Cell(pos, cellIn[index].color + vec4(0.0, 0.1, 0.0, 0.0), stdSize, nowOn);
+        cell = Cell(pos, cellIn[index].color + vec4(0.0, 0.1, 0.0, 0.0), stdSize, getState(alive, 0));
     } else if (abs(cellIn[index].color.g - 1.0f) < tolerance) {
-        cell = Cell(pos, blue, stdSize, nowOn);
+        cell = Cell(pos, blue, stdSize, getState(alive, 0));
     } else { 
-        cell = Cell(pos, black, stdSizeOff, nowOff); 
+        cell = Cell(pos, black, stdSizeOff, getState(dead, 0)); 
     }
 
     // if ( cellInitialized )  { cell = Cell(pos, green, stdSize, nowOn); }
@@ -109,7 +109,7 @@ void simulate(out Cell cell){
 
 void main() {  
 
-    if (cellIn[index].states.x == loopHours) { 
+    if (cellIn[index].states.w == loopHours) { 
         cellOut[index] = cellIn[index]; 
         return; 
     } else { 

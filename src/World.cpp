@@ -43,8 +43,8 @@ std::vector<World::Cell> World::initializeCells() {
 
   std::array<float, 4> red = {1.0, 0.0, 0.0, 1.0};
   std::array<float, 4> blue = {0.0, 0.0, 1.0, 1.0};
-  std::array<int, 4> alive = {0, 0, 0, 1};
-  std::array<int, 4> dead = {0, 0, 0, -1};
+  std::array<int, 4> alive = {1, 0, 0, 0};
+  std::array<int, 4> dead = {-1, 0, 0, 0};
   std::array<float, 4> size = {_control.grid.cellSize, _control.grid.cellSize,
                                _control.grid.cellSize, _control.grid.cellSize};
   std::vector<int> aliveCells =
