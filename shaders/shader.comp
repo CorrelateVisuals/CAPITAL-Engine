@@ -1,8 +1,9 @@
 #version 450
 //#extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
 
-const int SQRT_OF_GRID = 20;
+const int SQRT_OF_GRID = 30;
 layout (local_size_x = SQRT_OF_GRID, local_size_y = SQRT_OF_GRID, local_size_z = 1) in;
+
 layout (binding = 0) uniform ParameterUBO {
     int passedHours; //TODO 'long long' : int64_t passedHours;
     mat4 model;
@@ -17,8 +18,9 @@ struct Cell {
     vec4 position;  // float    xy(z)
     vec4 color;     // float    rgba
     vec4 size;      // float    x
-    vec4 states; // bool     pqrwt
+    ivec4 states;    // bool     pqrwt
 } cells;
+
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
@@ -30,10 +32,10 @@ vec4 black          = vec4(0.0, 0.0, 0.0, 1.0);
 vec4 dimBlue        = vec4(blue * vec4(vec3(0.3), 1.0f));
 vec4 addLastColor   = cellIn[index].color + vec4(0.1);
 
-vec4 stdSize = vec4(0.15);
+vec4 stdSize = vec4(0.1);
 vec4 stdSizeOff = vec4(-1.0);
-vec4 nowOn = vec4(loopHours, 0.0, 0.0, 1.0);
-vec4 nowOff = vec4(loopHours, 0.0, 0.0, -1.0);
+ivec4 nowOn = ivec4(loopHours, 0, 0, 1);
+ivec4 nowOff = ivec4(loopHours, 0, 0, -1);
 
 bool isFloatInsideVec4(float value, vec4 vector) {
     return value >= vector.x && value <= vector.w;
@@ -91,7 +93,7 @@ void simulate(out Cell cell){
     vec4 pos = cellIn[index].position;
     int neighbours = int(neighbourCellsInRange(1).x);
 
-    bool initiliazed    = cellIn[index].states.w == 1.0 && cellIn[index].color == blue;
+    bool initiliazed    = cellIn[index].states.w == 1 && cellIn[index].color == blue;
 
     if ( initiliazed )  { cell = Cell(pos, green, stdSize, nowOn); }
 

@@ -27,7 +27,7 @@ class World {
     std::array<float, 4> position;
     std::array<float, 4> color;
     std::array<float, 4> size;
-    std::array<float, 4> states;
+    std::array<int, 4> states;
   };
 
  public:
