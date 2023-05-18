@@ -35,13 +35,11 @@ vec4 addLastColor   = cellIn[index].color + vec4(0.1);
 
 vec4 stdSize = vec4(0.1);
 vec4 stdSizeOff = vec4(-1.0);
-ivec4 nowOn = ivec4(loopHours, 0, 0, 1);
-ivec4 nowOff = ivec4(loopHours, 0, 0, -1);
 
 int alive = 1;
 int dead = -1;
 
-ivec4 getState(int alive, int stage){
+ivec4 setState(int alive, int stage){
     ivec4 state = ivec4(alive, stage, 0, loopHours);
     return state;
 }
@@ -87,13 +85,13 @@ void simulate(out Cell cell){
 
     const float tolerance = 0.0001f; // Tolerance for floating-point comparisons
     if (cellInitialized) { 
-        cell = Cell(pos, dimGreen, stdSize, getState(alive, 0));
+        cell = Cell(pos, dimGreen, stdSize, setState(alive, 0));
     } else if (cellIn[index].color.g > 0.0f && cellIn[index].color.g < 1.0f) {
-        cell = Cell(pos, cellIn[index].color + vec4(0.0, 0.1, 0.0, 0.0), stdSize, getState(alive, 0));
+        cell = Cell(pos, cellIn[index].color + vec4(0.0, 0.1, 0.0, 0.0), stdSize, setState(alive, 0));
     } else if (abs(cellIn[index].color.g - 1.0f) < tolerance) {
-        cell = Cell(pos, blue, stdSize, getState(alive, 0));
+        cell = Cell(pos, blue, stdSize, setState(alive, 0));
     } else { 
-        cell = Cell(pos, black, stdSizeOff, getState(dead, 0)); 
+        cell = Cell(pos, black, stdSizeOff, setState(dead, 0)); 
     }
 
     // if ( cellInitialized )  { cell = Cell(pos, green, stdSize, nowOn); }
