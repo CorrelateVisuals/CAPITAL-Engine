@@ -38,6 +38,14 @@ vec4 stdSizeOff = vec4(-1.0);
 ivec4 nowOn = ivec4(loopHours, 0, 0, 1);
 ivec4 nowOff = ivec4(loopHours, 0, 0, -1);
 
+int alive = 1;
+int dead = -1;
+
+ivec4 returnState(int alive, int time, int stage){
+    ivec4 state = ivec4(alive, time, stage, 0);
+    return state;
+}
+
 bool isFloatInsideVec4(float value, vec4 vector) {
     return value >= vector.x && value <= vector.w;
 }
@@ -71,50 +79,32 @@ vec4 neighbourCellsInRange(int range){
     return neighbourCellsInRange; 
 }
 
-// vec3 r = vec3(1.0, 0.0, 0.0);  // Red color
-// vec3 g = vec3(0.0, 1.0, 0.0);  // Green color
-// vec3 b = vec3(0.0, 0.0, 1.0);  // Blue color
-
-// vec3 currentR = vec3(0.8, 0.0, 0.0);  // Example current red color
-// vec3 currentG = vec3(0.0, 0.9, 0.0);  // Example current green color
-// vec3 currentB = vec3(0.0, 0.0, 0.7);  // Example current blue color
-
-// // Check if colors are available and replace if higher
-// if (dot(r, currentR) == 0.0 || dot(r, currentR) < dot(r, r)) {
-//     currentR = r;
-// }
-// if (dot(g, currentG) == 0.0 || dot(g, currentG) < dot(g, g)) {
-//     currentG = g;
-// }
-// if (dot(b, currentB) == 0.0 || dot(b, currentB) < dot(b, b)) {
-//     currentB = b;
-// }
-
 void simulate(out Cell cell){
     vec4 pos = cellIn[index].position;
     int neighbours = int(neighbourCellsInRange(1).x);
 
     bool cellInitialized    = cellIn[index].states.w == 1 && cellIn[index].color == blue;
 
-    // const float tolerance = 0.0001f; // Tolerance for floating-point comparisons
-    // if (cellInitialized) { 
-    //     cell = Cell(pos, dimGreen, stdSize, nowOn );
-    // } else if (cellIn[index].color.g > 0.0f && cellIn[index].color.g < 1.0f) {
-    //     cell = Cell(pos, cellIn[index].color + vec4(0.0, 0.1, 0.0, 0.0), stdSize, nowOn);
-    // } else if (abs(cellIn[index].color.g - 1.0f) < tolerance) {
-    //     cell = Cell(pos, green, stdSize, nowOn);
-    // } else { 
-    //     cell = Cell(pos, black, stdSizeOff, nowOff); }
-
-    if ( cellInitialized )  { cell = Cell(pos, green, stdSize, nowOn); }
-
-    if (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) { 
-        cell = Cell(pos, green, stdSize, nowOn);
-    } else if (neighbours < 2) {
-        cell = Cell(pos, black, stdSizeOff, nowOff);
-    } else {
-        cell = Cell(pos, black, stdSizeOff, nowOff);
+    const float tolerance = 0.0001f; // Tolerance for floating-point comparisons
+    if (cellInitialized) { 
+        cell = Cell(pos, dimGreen, stdSize, nowOn );
+    } else if (cellIn[index].color.g > 0.0f && cellIn[index].color.g < 1.0f) {
+        cell = Cell(pos, cellIn[index].color + vec4(0.0, 0.1, 0.0, 0.0), stdSize, nowOn);
+    } else if (abs(cellIn[index].color.g - 1.0f) < tolerance) {
+        cell = Cell(pos, blue, stdSize, nowOn);
+    } else { 
+        cell = Cell(pos, black, stdSizeOff, nowOff); 
     }
+
+    // if ( cellInitialized )  { cell = Cell(pos, green, stdSize, nowOn); }
+
+    // if (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) { 
+    //     cell = Cell(pos, green, stdSize, nowOn);
+    // } else if (neighbours < 2) {
+    //     cell = Cell(pos, black, stdSizeOff, nowOff);
+    // } else {
+    //     cell = Cell(pos, black, stdSizeOff, nowOff);
+    // }
 }
 
 void main() {  
