@@ -105,9 +105,6 @@ void main() {
 
         simulate(cells);
 
-        cellOut[index].position  = cells.position;
-        cellOut[index].color     = cells.color;
-        cellOut[index].size      = cells.size;
-        cellOut[index].states    = cells.states;
+        cellOut[index] = cells;
     }; 
 }
