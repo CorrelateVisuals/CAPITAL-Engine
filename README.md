@@ -35,12 +35,7 @@ Go to **build** sub-directory:
 ```
 
 The excutable **CapitalEngine** is compiled in the **bin** sub-directory.
-
-Compile the *.spv* files, go to the **shaders** sub-directory:
-
-```bash
-./compile_shaders.sh
-```
+De .spv files in **shaders** sub-directory.
 
 ### Executing
 
