@@ -11,6 +11,17 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 projection;
 } ubo;
 
+struct Cell {
+    vec4 position;  // float    xyz
+    vec4 color;     // float    rgba
+    vec4 size;      // float    x
+    ivec4 states;   // bool     alive, stage, notInUse, ubo.time
+} cells;
+
+layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
+layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
+uint index = gl_GlobalInvocationID.x;
+
 int alive       =  1;
 int dead        = -1;
 vec4 size       = vec4(0.1);
@@ -22,18 +33,6 @@ vec4 blue       = vec4(0.0, 0.0, 1.0, 1.0);
 vec4 white      = vec4(1.0, 1.0, 1.0, 1.0);
 vec4 black      = vec4(0.0, 0.0, 0.0, 1.0);
 vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
-
-struct Cell {
-    vec4 position;  // float    xyz
-    vec4 color;     // float    rgba
-    vec4 size;      // float    x
-    ivec4 states;   // bool     alive, stage, notInUse, ubo.time
-} cells;
-
-layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
-layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
-uint index      = gl_GlobalInvocationID.x;
-
 
 ivec4 setState(int alive, int stage){
     int notInUse = 0;
@@ -80,8 +79,8 @@ void simulate(out Cell cell){
     bool initialized = statesIn.x == alive && colorIn == blue && statesIn.y == 0;
     bool lifeCycle   = colorIn.g > 0.0f && colorIn.g < 1.0f  && statesIn.y == 0;
     bool end         = abs(colorIn.g - 1.0f) < tolerance && statesIn.y == 0;
-    bool condition1  = neighbours == 3 || (statesIn.x == alive && neighbours == 2);
-    bool condition2  = neighbours < 2;
+    bool reproduce  = neighbours == 3 || (statesIn.x == alive && neighbours == 2);
+    bool die  = neighbours < 2;
 
     if ( statesIn.y == 0 ) {
         cell =  initialized ?   Cell(pos, dimGreen, size, setState(alive, 0)) :
@@ -90,8 +89,8 @@ void simulate(out Cell cell){
                                 Cell(pos, black, sizeOff, setState(dead, 1));
 
     } else if ( statesIn.y == 1 ) {
-        cell =  condition1 ?    Cell(pos, green, size, setState(alive, 0)) :
-                condition2 ?    Cell(pos, black, sizeOff, setState(dead, 0)) :
+        cell =  reproduce ?     Cell(pos, green, size, setState(alive, 0)) :
+                die ?           Cell(pos, black, sizeOff, setState(dead, 0)) :
                                 Cell(pos, black, sizeOff, setState(dead, 0));
     }
 }
