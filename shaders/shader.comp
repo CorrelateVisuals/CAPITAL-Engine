@@ -96,14 +96,11 @@ void simulate(out Cell cell){
 }
 
 void main() {  
-
     if (cellIn[index].states.w == ubo.time) { 
         cellOut[index] = cellIn[index]; 
         return; 
     } else { 
-
         simulate(cells);
-
         cellOut[index] = cells;
     }; 
 }
