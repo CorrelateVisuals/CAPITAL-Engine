@@ -11,6 +11,10 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 projection;
 } ubo;
 
+int alive       =  1;
+int dead        = -1;
+vec4 size       = vec4(0.1);
+vec4 sizeOff    = vec4(dead);
 vec4 red        = vec4(1.0, 0.0, 0.0, 1.0);
 vec4 green      = vec4(0.0, 1.0, 0.0, 1.0); 
 vec4 dimGreen   = vec4(0.0, 0.1, 0.0, 1.0);
@@ -28,12 +32,8 @@ struct Cell {
 
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
-
 uint index      = gl_GlobalInvocationID.x;
-vec4 size       = vec4(0.1);
-vec4 sizeOff    = vec4(-1.0);
-int alive       =  1;
-int dead        = -1;
+
 
 ivec4 setState(int alive, int stage){
     int notInUse = 0;
@@ -61,10 +61,9 @@ ivec4 neighbourCellsInRange(int range){
                 int neighbourIndex = y * SQRT_OF_GRID + x;
 
                 bool notSelf = neighbourIndex != index;
-                bool neighbourIsRich = cellIn[neighbourIndex].color == blue || cellIn[neighbourIndex].color == green;
-                bool neighbourIsPoor = cellIn[neighbourIndex].color == green;
+                bool neighbourAlive = cellIn[neighbourIndex].states.x == 1 && cellIn[neighbourIndex].states.y == 1;
 
-                if (neighbourIsRich && notSelf) {
+                if (neighbourAlive && notSelf) {
                     neighbourCellsInRange++;
                 }
             }

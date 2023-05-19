@@ -14,7 +14,7 @@ class Control {
   struct Grid {
     float cellSize = 0.1f;
     const uint32_t numberOfAliveCells = 300;
-    const uint32_t gridDimensions[2] = {30, 30};  // rows, columns
+    const uint32_t gridDimensions[2] = {30, 30};
     const float gridPointDistance = 3.5;
     const uint32_t numberOfGridPoints = gridDimensions[0] * gridDimensions[1];
   } grid;
