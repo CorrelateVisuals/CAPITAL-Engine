@@ -75,16 +75,14 @@ ivec4 neighbourCellsInRange(int range){
 void simulate(out Cell cell){
     vec4 pos = cellIn[index].position;
     int neighbours = neighbourCellsInRange(1).x;
-
     vec4 colorIn = cellIn[index].color;
     ivec4 statesIn = cellIn[index].states;
+
     bool initialized = statesIn.x == 1 && colorIn == blue && statesIn.y == 0;
     bool lifeCycle   = colorIn.g > 0.0f && colorIn.g < 1.0f  && statesIn.y == 0;
     bool end         = abs(colorIn.g - 1.0f) < tolerance && statesIn.y == 0;
-    bool stage1      = statesIn.y == 1;
-
-    bool condition1 = neighbours == 3 || (cellOut[index].color == green && neighbours == 2);
-    bool condition2 = neighbours < 2;
+    bool condition1  = neighbours == 3 || (cellOut[index].color == green && neighbours == 2);
+    bool condition2  = neighbours < 2;
 
     if ( statesIn.y == 0 ) {
         cell =  initialized ?   Cell(pos, dimGreen, size, setState(alive, 0)) :
