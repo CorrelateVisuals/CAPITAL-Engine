@@ -108,7 +108,7 @@ glm::mat4 World::setModel() {
 glm::mat4 World::setProjection(VkExtent2D& swapChainExtent) {
   glm::mat4 projection = glm::perspective(
       glm::radians(60.0f),
-      swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
+      swapChainExtent.width / static_cast<float>(swapChainExtent.height), 0.1f, 10.0f);
 
   projection[1][1] *= -1;  // flip y axis
   projection[0][0] *= -1;  // flip x axis
