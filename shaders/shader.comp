@@ -1,42 +1,53 @@
 #version 450
-//#extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
-
-const int SQRT_OF_GRID = 20;
+                                                //#extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
+const float tolerance  = 0.0001f; 
+const int SQRT_OF_GRID = 30;
 layout (local_size_x = SQRT_OF_GRID, local_size_y = SQRT_OF_GRID, local_size_z = 1) in;
+
 layout (binding = 0) uniform ParameterUBO {
-    int passedHours; //TODO 'long long' : int64_t passedHours;
+    int time;                                   //TODO 'long long' : int64_t passedHours;
     mat4 model;
     mat4 view;
     mat4 projection;
 } ubo;
 
-uint index = gl_GlobalInvocationID.x;
-int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
+vec4 red        = vec4(1.0, 0.0, 0.0, 1.0);
+vec4 green      = vec4(0.0, 1.0, 0.0, 1.0); 
+vec4 dimGreen   = vec4(0.0, 0.1, 0.0, 1.0);
+vec4 blue       = vec4(0.0, 0.0, 1.0, 1.0);
+vec4 white      = vec4(1.0, 1.0, 1.0, 1.0);
+vec4 black      = vec4(0.0, 0.0, 0.0, 1.0);
+vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
 
 struct Cell {
-    vec4 position;  // float    xy(z)
+    vec4 position;  // float    xyz
     vec4 color;     // float    rgba
     vec4 size;      // float    x
-    vec4 states; // bool     pqrwt
+    ivec4 states;   // bool     alive, state, notInUse, ubo.time
 } cells;
+
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
-vec4 red            = vec4(1.0, 0.0, 0.0, 1.0);
-vec4 green          = vec4(0.0, 1.0, 0.0, 1.0); 
-vec4 blue           = vec4(0.0, 0.0, 1.0, 1.0);
-vec4 white          = vec4(1.0, 1.0, 1.0, 1.0);
-vec4 black          = vec4(0.0, 0.0, 0.0, 1.0);
-vec4 dimBlue        = vec4(blue * vec4(vec3(0.3), 1.0f));
-vec4 addLastColor   = cellIn[index].color + vec4(0.1);
+uint index      = gl_GlobalInvocationID.x;
+vec4 size       = vec4(0.1);
+vec4 sizeOff    = vec4(-1.0);
+int alive       =  1;
+int dead        = -1;
 
-vec4 stdSize = vec4(0.15);
-vec4 stdSizeOff = vec4(-1.0);
-vec4 nowOn = vec4(loopHours, 0.0, 0.0, 1.0);
-vec4 nowOff = vec4(loopHours, 0.0, 0.0, -1.0);
+ivec4 setState(int alive, int stage){
+    int notInUse = 0;
+    ivec4 state = ivec4(alive, stage, notInUse, ubo.time);
+    return state;
+}
 
-int neighbourCellsInRange(int range){
-        int neighbourCellsInRange = 0;
+bool isFloatInsideVec4(float value, vec4 vector) {
+    return value >= vector.x && value <= vector.w;
+}
+
+ivec4 neighbourCellsInRange(int range){
+        ivec4 neighbourCellsInRange = ivec4(0);
+
         int gridSize = SQRT_OF_GRID;
         int indexX = int(index) % SQRT_OF_GRID;
         int indexY = int(index) / SQRT_OF_GRID;
@@ -49,9 +60,11 @@ int neighbourCellsInRange(int range){
             for (int y = startY; y <= endY; y++) {
                 int neighbourIndex = y * SQRT_OF_GRID + x;
 
-                if (cellIn[neighbourIndex].color == blue && neighbourIndex != index || 
-                    cellIn[neighbourIndex].color == green && neighbourIndex != index) {
+                bool notSelf = neighbourIndex != index;
+                bool neighbourIsRich = cellIn[neighbourIndex].color == blue || cellIn[neighbourIndex].color == green;
+                bool neighbourIsPoor = cellIn[neighbourIndex].color == green;
 
+                if (neighbourIsRich && notSelf) {
                     neighbourCellsInRange++;
                 }
             }
@@ -61,24 +74,30 @@ int neighbourCellsInRange(int range){
 
 void simulate(out Cell cell){
     vec4 pos = cellIn[index].position;
-    int neighbours = neighbourCellsInRange(1);
+    int neighbours = neighbourCellsInRange(1).x;
 
-    bool initiliazed    = cellIn[index].states.w == 1.0 && cellIn[index].color == blue;
+    vec4 colorIn = cellIn[index].color;
+    ivec4 statesIn = cellIn[index].states;
+    bool initialized = statesIn.x == 1 && colorIn == blue && statesIn.y == 0;
+    bool lifeCycle   = colorIn.g > 0.0f && colorIn.g < 1.0f  && statesIn.y == 0;
+    bool end         = abs(colorIn.g - 1.0f) < tolerance && statesIn.y == 0;
+    bool stage1      = statesIn.y == 1;
 
-    if ( initiliazed )  { cell = Cell(pos, green, stdSize, nowOn); }
+/*    cell =  initialized ?   Cell(pos, dimGreen, size, setState(alive, 0)) :
+            lifeCycle ?     Cell(pos, colorIn + vec4(0.0, 0.1, 0.0, 0.0), size, setState(alive, 0)) :
+            end ?           Cell(pos, blue, size, setState(alive, 1)) :
+            stage1 ?        Cell(pos, red, size, setState(alive, 1)) :
+                            Cell(pos, black, sizeOff, setState(dead, 0));*/
 
-    if (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) { 
-        cell = Cell(pos, green, stdSize, nowOn);
-    } else if (neighbours < 2) {
-        cell = Cell(pos, black, stdSizeOff, nowOff);
-    } else {
-        cell = Cell(pos, black, stdSizeOff, nowOff);
-    }
+    cell = initialized ? Cell(pos, green, size, setState(alive, 0)) :
+           (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) ? Cell(pos, green, size, setState(alive, 0)) :
+           (neighbours < 2) ? Cell(pos, black, sizeOff, setState(dead, 0)) :
+           Cell(pos, black, sizeOff, setState(dead, 0));
 }
 
 void main() {  
 
-    if (cellIn[index].states.x == loopHours) { 
+    if (cellIn[index].states.w == ubo.time) { 
         cellOut[index] = cellIn[index]; 
         return; 
     } else { 
@@ -91,43 +110,3 @@ void main() {
         cellOut[index].states    = cells.states;
     }; 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-// void simulate(out Cell cell){
-//     vec4 pos = cellIn[index].position.xyzw;
-//     int neighbours = neighbourCellsInRange(1);
-
-//     if (neighbours < 2 || neighbours > 3) {
-//         cell = Cell(pos, black, off, now);
-//     } else if (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) {
-//         cell = Cell(pos, green, on, now);
-//     } else {
-//         cell = Cell(pos, black, off, now);
-//     };
-// }
-
-// void main() {  
-//     if (cellIn[index].states == vec4(loopHours)) { 
-//         cellOut[index] = cellIn[index]; 
-//         return; 
-//     } else { 
-
-//         simulate(cells);
-
-//         cellOut[index].position     = cells.position;
-//         cellOut[index].color        = cells.color;
-//         cellOut[index].size         = cells.size;
-//         cellOut[index].states    = cells.states;
-//     }; 
-// }
