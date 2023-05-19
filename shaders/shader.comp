@@ -83,16 +83,20 @@ void simulate(out Cell cell){
     bool end         = abs(colorIn.g - 1.0f) < tolerance && statesIn.y == 0;
     bool stage1      = statesIn.y == 1;
 
-    cell =  initialized ?   Cell(pos, dimGreen, size, setState(alive, 0)) :
-            lifeCycle ?     Cell(pos, colorIn + vec4(0.0, 0.1, 0.0, 0.0), size, setState(alive, 0)) :
-            end ?           Cell(pos, blue, size, setState(alive, 1)) :
-            stage1 ?        Cell(pos, red, size, setState(alive, 1)) :
-                            Cell(pos, black, sizeOff, setState(dead, 0));
 
-/*    cell = initialized ? Cell(pos, green, size, setState(alive, 0)) :
+    if ( statesIn.y == 0) {
+        cell =  initialized ?   Cell(pos, dimGreen, size, setState(alive, 0)) :
+                lifeCycle ?     Cell(pos, colorIn + vec4(0.0, 0.1, 0.0, 0.0), size, setState(alive, 0)) :
+                end ?           Cell(pos, green, size, setState(alive, 1)) :
+                                Cell(pos, black, sizeOff, setState(dead, 1));
+
+    } else if ( statesIn.y == 1 ) {
+        cell = initialized ? Cell(pos, green, size, setState(alive, 0)) :
            (neighbours == 3 || (cellOut[index].color == green && neighbours == 2)) ? Cell(pos, green, size, setState(alive, 0)) :
            (neighbours < 2) ? Cell(pos, black, sizeOff, setState(dead, 0)) :
-           Cell(pos, black, sizeOff, setState(dead, 0));*/
+           Cell(pos, black, sizeOff, setState(dead, 0));
+    }
+
 }
 
 void main() {  
