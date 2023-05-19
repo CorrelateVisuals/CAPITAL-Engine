@@ -81,7 +81,7 @@ void simulate(out Cell cell){
     bool initialized = statesIn.x == 1 && colorIn == blue && statesIn.y == 0;
     bool lifeCycle   = colorIn.g > 0.0f && colorIn.g < 1.0f  && statesIn.y == 0;
     bool end         = abs(colorIn.g - 1.0f) < tolerance && statesIn.y == 0;
-    bool condition1  = neighbours == 3 || (cellOut[index].color == green && neighbours == 2);
+    bool condition1  = neighbours == 3 || (statesIn.x == 1 && neighbours == 2);
     bool condition2  = neighbours < 2;
 
     if ( statesIn.y == 0 ) {
