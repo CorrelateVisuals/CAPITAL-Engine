@@ -1,6 +1,7 @@
 #version 450
 //#extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
 
+const float tolerance  = 0.0001f; 
 const int SQRT_OF_GRID = 30;
 layout (local_size_x = SQRT_OF_GRID, local_size_y = SQRT_OF_GRID, local_size_z = 1) in;
 
@@ -10,9 +11,16 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 view;
     mat4 projection;
 } ubo;
-
-uint index = gl_GlobalInvocationID.x;
 int loopHours = ubo.passedHours % (SQRT_OF_GRID * SQRT_OF_GRID);
+
+vec4 red            = vec4(1.0, 0.0, 0.0, 1.0);
+vec4 green          = vec4(0.0, 1.0, 0.0, 1.0); 
+vec4 dimGreen       = vec4(0.0, 0.1, 0.0, 1.0);
+vec4 blue           = vec4(0.0, 0.0, 1.0, 1.0);
+vec4 white          = vec4(1.0, 1.0, 1.0, 1.0);
+vec4 black          = vec4(0.0, 0.0, 0.0, 1.0);
+vec4 dimBlue        = vec4(0.0, 0.0, 0.1, 1.0);
+
 
 struct Cell {
     vec4 position;  // float    xy(z)
@@ -24,22 +32,15 @@ struct Cell {
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
-vec4 red            = vec4(1.0, 0.0, 0.0, 1.0);
-vec4 green          = vec4(0.0, 1.0, 0.0, 1.0); 
-vec4 dimGreen       = vec4(0.0, 0.1, 0.0, 1.0);
-vec4 blue           = vec4(0.0, 0.0, 1.0, 1.0);
-vec4 white          = vec4(1.0, 1.0, 1.0, 1.0);
-vec4 black          = vec4(0.0, 0.0, 0.0, 1.0);
-vec4 dimBlue        = vec4(blue * vec4(vec3(0.3), 1.0f));
-vec4 addLastColor   = cellIn[index].color + vec4(0.1);
-
+uint index = gl_GlobalInvocationID.x;
 vec4 size = vec4(0.1);
 vec4 sizeOff = vec4(-1.0);
 int alive = 1;
 int dead = -1;
 
 ivec4 setState(int alive, int stage){
-    ivec4 state = ivec4(alive, stage, 0, loopHours);
+    int notInUse = 0;
+    ivec4 state = ivec4(alive, stage, notInUse, loopHours);
     return state;
 }
 
@@ -47,8 +48,8 @@ bool isFloatInsideVec4(float value, vec4 vector) {
     return value >= vector.x && value <= vector.w;
 }
 
-vec4 neighbourCellsInRange(int range){
-        vec4 neighbourCellsInRange = vec4(0);
+ivec4 neighbourCellsInRange(int range){
+        ivec4 neighbourCellsInRange = ivec4(0);
 
         int gridSize = SQRT_OF_GRID;
         int indexX = int(index) % SQRT_OF_GRID;
@@ -68,7 +69,6 @@ vec4 neighbourCellsInRange(int range){
                 bool neighbourIsPoor = cellIn[neighbourIndex].color == green;
 
                 if (neighbourIsRich && notSelf) {
-
                     neighbourCellsInRange++;
                 }
             }
@@ -78,18 +78,19 @@ vec4 neighbourCellsInRange(int range){
 
 void simulate(out Cell cell){
     vec4 pos = cellIn[index].position;
-    int neighbours = int(neighbourCellsInRange(1).x);
+    int neighbours = neighbourCellsInRange(1).x;
 
-    bool cellInitialized    = cellIn[index].states.x == 1 && cellIn[index].color == blue && cellIn[index].states.y == 0;
-    bool lifeCycle          = cellIn[index].color.g > 0.0f && cellIn[index].color.g < 1.0f  && cellIn[index].states.y == 0;
-    const float tolerance   = 0.0001f; // Tolerance for floating-point comparisons
-    bool end                = abs(cellIn[index].color.g - 1.0f) < tolerance && cellIn[index].states.y == 0;
-    bool stage2             = cellIn[index].states.y == 1;
+    vec4 colorIn = cellIn[index].color;
+    ivec4 states = cellIn[index].states;
+    bool cellInitialized    = states.x == 1 && colorIn == blue && states.y == 0;
+    bool lifeCycle          = colorIn.g > 0.0f && colorIn.g < 1.0f  && states.y == 0;
+    bool end                = abs(colorIn.g - 1.0f) < tolerance && states.y == 0;
+    bool stage2             = states.y == 1;
 
     if          ( cellInitialized ) { 
         cell = Cell(pos, dimGreen, size, setState(alive, 0));
     } else if   ( lifeCycle ) {
-        cell = Cell(pos, cellIn[index].color + vec4(0.0, 0.1, 0.0, 0.0), size, setState(alive, 0));
+        cell = Cell(pos, colorIn + vec4(0.0, 0.1, 0.0, 0.0), size, setState(alive, 0));
     } else if   ( end ) {
         cell = Cell(pos, blue, size, setState(alive, 1));
     } else if   ( stage2 ) {
