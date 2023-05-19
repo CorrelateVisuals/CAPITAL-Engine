@@ -14,7 +14,7 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 projection;
     vec4 lightning;
 } ubo;
-vec3 cubeVertices[8] = {vec3(-0.5f, -0.5f,-0.5f),   // 0
+const vec3 cubeVertices[8] = {vec3(-0.5f, -0.5f,-0.5f),   // 0
                         vec3(0.5f, -0.5f, -0.5f),   // 1
                         vec3(-0.5f, 0.5f, -0.5f),   // 2
                         vec3(0.5f,  0.5f, -0.5f),   // 3
@@ -22,13 +22,13 @@ vec3 cubeVertices[8] = {vec3(-0.5f, -0.5f,-0.5f),   // 0
                         vec3(0.5f, -0.5f,  0.5f),   // 5
                         vec3(-0.5f, 0.5f,  0.5f),   // 6
                         vec3(0.5f,  0.5f,  0.5f)};  // 7
-vec3 cubeNormals[6] = { vec3( 0.0f, 0.0f,-1.0f),    // front
+const vec3 cubeNormals[6] = { vec3( 0.0f, 0.0f,-1.0f),    // front
                         vec3( 0.0f, 0.0f, 1.0f),    // back
                         vec3(-1.0f, 0.0f, 0.0f),    // left
                         vec3( 1.0f, 0.0f, 0.0f),    // right
                         vec3( 0.0f, 1.0f, 0.0f),    // top
                         vec3( 0.0f,-1.0f, 0.0f)};   // bottom
-int cubeIndices[25] = {   0, 1, 2, 3, 6, 7, 4, 5,     // front and back faces
+const int cubeIndices[25] = {   0, 1, 2, 3, 6, 7, 4, 5,     // front and back faces
                         2, 6, 0, 4, 1, 5, 3, 7,     // connecting strips
                         2, 3, 6, 7, 4, 5, 0, 1,     // top and bottom faces
                         2 };                        // degenerate triangle to start new strip
