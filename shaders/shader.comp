@@ -27,7 +27,7 @@ struct Cell {
     vec4 position;  // float    xyz
     vec4 color;     // float    rgba
     vec4 size;      // float    x
-    ivec4 states;   // bool     alive, state, notInUse, ubo.time
+    ivec4 states;   // bool     alive, stage, notInUse, ubo.time
 } cells;
 
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
@@ -61,7 +61,7 @@ ivec4 neighbourCellsInRange(int range){
                 int neighbourIndex = y * SQRT_OF_GRID + x;
 
                 bool notSelf = neighbourIndex != index;
-                bool neighbourAlive = cellIn[neighbourIndex].states.x == 1 && cellIn[neighbourIndex].states.y == 1;
+                bool neighbourAlive = cellIn[neighbourIndex].states.x == alive && cellIn[neighbourIndex].states.y == 1;
 
                 if (neighbourAlive && notSelf) {
                     neighbourCellsInRange++;
@@ -77,10 +77,10 @@ void simulate(out Cell cell){
     vec4 colorIn = cellIn[index].color;
     ivec4 statesIn = cellIn[index].states;
 
-    bool initialized = statesIn.x == 1 && colorIn == blue && statesIn.y == 0;
+    bool initialized = statesIn.x == alive && colorIn == blue && statesIn.y == 0;
     bool lifeCycle   = colorIn.g > 0.0f && colorIn.g < 1.0f  && statesIn.y == 0;
     bool end         = abs(colorIn.g - 1.0f) < tolerance && statesIn.y == 0;
-    bool condition1  = neighbours == 3 || (statesIn.x == 1 && neighbours == 2);
+    bool condition1  = neighbours == 3 || (statesIn.x == alive && neighbours == 2);
     bool condition2  = neighbours < 2;
 
     if ( statesIn.y == 0 ) {
