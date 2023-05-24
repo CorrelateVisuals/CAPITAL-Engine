@@ -77,7 +77,7 @@ void VulkanMechanics::createInstance() {
     createInfo.ppEnabledLayerNames = _validationLayers.validationLayers.data();
 
     _validationLayers.populateDebugMessengerCreateInfo(debugCreateInfo);
-    createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
+    createInfo.pNext = const_cast<VkDebugUtilsMessengerCreateInfoEXT*>(&debugCreateInfo);
   } else {
     createInfo.enabledLayerCount = 0;
 
