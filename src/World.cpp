@@ -80,7 +80,7 @@ std::vector<World::Cell> World::initializeCells() {
       cells[index] = {pos, color, size, state};
     }
   }
-  _log.console(aliveCells);
+  //_log.console(aliveCells);
   return cells;
 }
 
