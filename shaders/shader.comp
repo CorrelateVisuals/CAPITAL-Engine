@@ -35,7 +35,7 @@ vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
 
 int cycleSize = 10;
 ivec4 setState(int _alive, int stage){
-    int cycle = _alive == alive ? ubo.time % cycleSize + 1 : 0;
+    int cycle = ubo.time % cycleSize + 1;
     ivec4 state = ivec4(_alive, stage, cycle, ubo.time);
     return state;
 }
