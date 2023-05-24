@@ -34,9 +34,11 @@ vec4 white      = vec4(1.0, 1.0, 1.0, 1.0);
 vec4 black      = vec4(0.0, 0.0, 0.0, 1.0);
 vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
 
-ivec4 setState(int alive, int stage){
-    int notInUse = 0;
-    ivec4 state = ivec4(alive, stage, notInUse, ubo.time);
+int cycleSize = 10;
+ivec4 setState(int _alive, int stage){
+    int _cycleSize = (_alive == 1) ? cycleSize + 1 : 0;
+    int cycle = _alive == alive ? ubo.time % _cycleSize + 1 : 0;
+    ivec4 state = ivec4(_alive, stage, cycle, ubo.time);
     return state;
 }
 
@@ -60,7 +62,8 @@ ivec4 neighbourCellsInRange(int range){
                 int neighbourIndex = y * SQRT_OF_GRID + x;
 
                 bool notSelf = neighbourIndex != index;
-                bool neighbourAlive = cellIn[neighbourIndex].states.x == alive && cellIn[neighbourIndex].states.y == 1;
+                bool neighbourAlive = cellIn[neighbourIndex].states.x == alive 
+                    && cellIn[neighbourIndex].states.y == 1;
 
                 if (neighbourAlive && notSelf) {
                     neighbourCellsInRange++;
@@ -72,26 +75,33 @@ ivec4 neighbourCellsInRange(int range){
 
 void simulate(out Cell cell){
     vec4 pos = cellIn[index].position;
-    int neighbours = neighbourCellsInRange(1).x;
     vec4 colorIn = cellIn[index].color;
     ivec4 statesIn = cellIn[index].states;
 
-    bool initialized = statesIn.x == alive && colorIn == blue && statesIn.y == 0;
-    bool lifeCycle   = colorIn.g > 0.0f && colorIn.g < 1.0f  && statesIn.y == 0;
-    bool end         = abs(colorIn.g - 1.0f) < tolerance && statesIn.y == 0;
-    bool reproduce  = neighbours == 3 || (statesIn.x == alive && neighbours == 2);
-    bool die  = neighbours < 2;
+    int neighbours = neighbourCellsInRange(1).x;
 
-    if ( statesIn.y == 0 ) {
-        cell =  initialized ?   Cell(pos, dimGreen, size, setState(alive, 0)) :
-                lifeCycle ?     Cell(pos, colorIn + dimGreen, size, setState(alive, 0)) :
-                end ?           Cell(pos, green, size, setState(alive, 1)) :
-                                Cell(pos, black, sizeOff, setState(dead, 1));
+    bool aliveCell      = statesIn.x == alive;
+    bool deadCell       = statesIn.x == dead;
+    bool inCycleRange     = statesIn.z > 0 && statesIn.z < cycleSize;
+    bool reachedCycleEnd  = statesIn.z == cycleSize;
 
-    } else if ( statesIn.y == 1 ) {
-        cell =  reproduce ?     Cell(pos, green, size, setState(alive, 0)) :
-                die ?           Cell(pos, black, sizeOff, setState(dead, 0)) :
-                                Cell(pos, black, sizeOff, setState(dead, 0));
+    bool initialized = aliveCell && colorIn == blue;
+    bool lifeCycle   = aliveCell && inCycleRange;
+    bool endOfStage  = aliveCell && reachedCycleEnd;
+
+    bool reproduce = (aliveCell && (neighbours == 3 || neighbours == 2)) || (deadCell && neighbours == 3);
+    bool die = (aliveCell && (neighbours < 2 || neighbours > 3));
+
+    if (statesIn.y == 0) {
+        cell = initialized ? Cell(pos, dimGreen, size, setState(alive, 0)) :
+               lifeCycle ? Cell(pos, colorIn + dimGreen, size, setState(alive, 0)) :
+               endOfStage ? Cell(pos, green, size, setState(alive, 1)) :
+               Cell(pos, black, sizeOff, setState(dead, 1));
+
+    } else if (statesIn.y == 1) {
+        cell = reproduce ? Cell(pos, dimGreen, size, setState(alive, 0)) :
+               die ? Cell(pos, black, sizeOff, setState(dead, 0)) :
+               Cell(pos, colorIn, sizeOff, setState(dead, 1));
     }
 }
 
