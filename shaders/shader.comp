@@ -1,14 +1,20 @@
 #version 450
                                                 //#extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
-const int SQRT_OF_GRID = 30;
-layout (local_size_x = SQRT_OF_GRID, local_size_y = SQRT_OF_GRID, local_size_z = 1) in;
+layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
 layout (binding = 0) uniform ParameterUBO {
+    int sqrtOfGrid;
     int time;                                   //TODO 'long long' : int64_t passedHours;
     mat4 model;
     mat4 view;
     mat4 projection;
+    vec4 lightDirection;
+    float cellSize;
 } ubo;
+
+uint globalID_x = gl_GlobalInvocationID.x;
+uint globalID_y = gl_GlobalInvocationID.y;
+uint index = globalID_y * ubo.sqrtOfGrid + globalID_x;
 
 struct Cell {
     vec4 position;  // float    xyz
@@ -17,43 +23,39 @@ struct Cell {
     ivec4 states;   // bool     alive, stage, cycle, ubo.time
 } cell;
 
+int cycleSize = 24;
+ivec4 setState(int _alive, int stage){ int cycle = ubo.time % cycleSize + 1; return ivec4(_alive, stage, cycle, ubo.time); }
+
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
-uint index = gl_GlobalInvocationID.x;
 
 int alive       =  1;
 int dead        = -1;
-vec4 size       = vec4(0.1);
+vec4 size       = vec4(ubo.cellSize);
 vec4 sizeOff    = vec4(dead);
 vec4 red        = vec4(1.0, 0.0, 0.0, 1.0);
 vec4 green      = vec4(0.0, 1.0, 0.0, 1.0); 
-vec4 dimGreen   = vec4(0.0, 0.1, 0.0, 1.0);
+vec4 dimGreen   = vec4(0.0, 0.05, 0.0, 1.0);
 vec4 blue       = vec4(0.0, 0.0, 1.0, 1.0);
 vec4 white      = vec4(1.0, 1.0, 1.0, 1.0);
 vec4 black      = vec4(0.0, 0.0, 0.0, 1.0);
 vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
 
-int cycleSize = 10;
-ivec4 setState(int _alive, int stage){
-    int cycle = ubo.time % cycleSize + 1;
-    ivec4 state = ivec4(_alive, stage, cycle, ubo.time);
-    return state;
-}
 
 ivec4 neighbourCellsInRange(int range){
         ivec4 neighbourCellsInRange = ivec4(0);
 
-        int gridSize = SQRT_OF_GRID;
-        int indexX = int(index) % SQRT_OF_GRID;
-        int indexY = int(index) / SQRT_OF_GRID;
+        int gridSize = ubo.sqrtOfGrid;
+        int indexX = int(index) % ubo.sqrtOfGrid;
+        int indexY = int(index) / ubo.sqrtOfGrid;
         int startX = max(indexX - range, 0);
-        int endX = min(indexX + range, SQRT_OF_GRID - 1);
+        int endX = min(indexX + range, ubo.sqrtOfGrid - 1);
         int startY = max(indexY - range, 0);
-        int endY = min(indexY + range, SQRT_OF_GRID - 1);
+        int endY = min(indexY + range, ubo.sqrtOfGrid - 1);
 
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
-                int neighbourIndex = y * SQRT_OF_GRID + x;
+                int neighbourIndex = y * ubo.sqrtOfGrid + x;
 
                 bool notSelf = neighbourIndex != index;
                 bool neighbourAlive = cellIn[neighbourIndex].states.x == alive 

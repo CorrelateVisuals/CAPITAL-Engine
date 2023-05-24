@@ -16,11 +16,13 @@ class World {
   ~World();
 
   struct UniformBufferObject {
+    int sqrtOfGrid;
     int passedHours;  // TODO: 'long long'
     alignas(16) glm::mat4 model;
     alignas(16) glm::mat4 view;
     alignas(16) glm::mat4 proj;
     std::array<float, 4> lightDirection;
+    float cellSize;
   };
 
   struct Cell {

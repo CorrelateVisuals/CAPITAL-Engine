@@ -686,8 +686,14 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
                           &descriptor.sets[_mechanics.syncObjects.currentFrame],
                           0, nullptr);
 
-  vkCmdDispatch(commandBuffer, _control.grid.gridDimensions[0],
-                _control.grid.gridDimensions[1], 1);
+  uint32_t numberOfWorkgroupsX =
+      (_control.grid.gridDimensions[0] + _control.compute.localSizeX - 1) /
+      _control.compute.localSizeX;
+  uint32_t numberOfWorkgroupsY =
+      (_control.grid.gridDimensions[1] + _control.compute.localSizeY - 1) /
+      _control.compute.localSizeY;
+
+  vkCmdDispatch(commandBuffer, numberOfWorkgroupsX, numberOfWorkgroupsY, 1);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to record compute command buffer!");

@@ -12,14 +12,19 @@ class Control {
   ~Control();
 
   struct Grid {
-    float cellSize = 0.1f;
-    const uint32_t numberOfAliveCells = 150;
-    const uint32_t gridDimensions[2] = {30, 30};
+    float cellSize = 0.05f;
+    const uint32_t numberOfAliveCells = 2000;
+    const uint32_t gridDimensions[2] = {100, 100};  // only square for now
     const float gridPointDistance = 3.5;
     const uint32_t numberOfGridPoints = gridDimensions[0] * gridDimensions[1];
   } grid;
 
-  float simulationSpeed = 10.0f;
+  float simulationSpeed = 1000.0f;
+
+  struct Compute {
+    uint32_t localSizeX = 8;
+    uint32_t localSizeY = 8;
+  } compute;
 
  public:
   // Initialization

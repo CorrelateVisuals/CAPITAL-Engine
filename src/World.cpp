@@ -91,11 +91,13 @@ bool World::isIndexAlive(const std::vector<int>& aliveCells, int index) {
 
 World::UniformBufferObject World::updateUniforms() {
   UniformBufferObject uniformObject{};
+  uniformObject.sqrtOfGrid = _control.grid.gridDimensions[0];
   uniformObject.passedHours = _control.passedSimulationHours;
   uniformObject.model = _world.setModel();
   uniformObject.view = _world.setView();
   uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
   uniformObject.lightDirection = {0.0f, 1.0f, 1.0f, 0.2f};
+  uniformObject.cellSize = _control.grid.cellSize;
   return uniformObject;
 }
 
@@ -108,7 +110,8 @@ glm::mat4 World::setModel() {
 glm::mat4 World::setProjection(VkExtent2D& swapChainExtent) {
   glm::mat4 projection = glm::perspective(
       glm::radians(60.0f),
-      swapChainExtent.width / static_cast<float>(swapChainExtent.height), 0.1f, 10.0f);
+      swapChainExtent.width / static_cast<float>(swapChainExtent.height), 0.1f,
+      10.0f);
 
   projection[1][1] *= -1;  // flip y axis
   projection[0][0] *= -1;  // flip x axis
