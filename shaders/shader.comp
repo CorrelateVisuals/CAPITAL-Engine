@@ -35,8 +35,7 @@ vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
 
 int cycleSize = 10;
 ivec4 setState(int _alive, int stage){
-    int _cycleSize = (_alive == 1) ? cycleSize + 1 : 0;
-    int cycle = _alive == alive ? ubo.time % _cycleSize + 1 : 0;
+    int cycle = _alive == alive ? ubo.time % cycleSize + 1 : 0;
     ivec4 state = ivec4(_alive, stage, cycle, ubo.time);
     return state;
 }
@@ -79,7 +78,7 @@ bool initialized        = aliveCell && colorIn == blue;
 bool lifeCycle          = aliveCell && inCycleRange;
 bool endOfStage         = aliveCell && reachedCycleEnd;
 bool live(int neighbours) { return (aliveCell && (neighbours == 3 || neighbours == 2)) || (deadCell && neighbours == 3); }
-bool die(int neighbours) { return (aliveCell && (neighbours < 2 || neighbours > 3));}
+bool die(int neighbours)  { return (aliveCell && (neighbours < 2 || neighbours > 3));}
 
 void simulate(out Cell cell){
     int neighbours  = neighbourCellsInRange(1).x;
