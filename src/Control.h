@@ -19,7 +19,7 @@ class Control {
     const uint32_t numberOfGridPoints = gridDimensions[0] * gridDimensions[1];
   } grid;
 
-  float simulationSpeed = 200.0f;
+  float simulationSpeed = 20.0f;
 
   struct Compute {
     uint32_t localSizeX = 8;
