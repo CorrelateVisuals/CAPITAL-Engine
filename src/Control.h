@@ -11,15 +11,15 @@ class Control {
   Control();
   ~Control();
 
+  float simulationSpeed = 60.0f;
+
   struct Grid {
     float cellSize = 0.02f;
-    const uint32_t numberOfAliveCells = 10000;
-    const uint32_t gridDimensions[2] = {200, 200};  // only square for now
+    const uint32_t numberOfAliveCells = 2000;
+    const uint32_t gridDimensions[2] = {100, 100};  // only square for now
     const float gridPointDistance = 3.5;
     const uint32_t numberOfGridPoints = gridDimensions[0] * gridDimensions[1];
   } grid;
-
-  float simulationSpeed = 60.0f;
 
   struct Compute {
     uint32_t localSizeX = 8;
@@ -35,8 +35,7 @@ class Control {
   double lowFrequencyOsciallator();
   void simulateHours();
 
- public:
-  // Globally accessible variables
+  // Globally accessible
   int passedSimulationHours = 0;  // TODO: 'long long'
 };
 

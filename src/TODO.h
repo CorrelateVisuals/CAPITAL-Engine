@@ -7,9 +7,6 @@
 /// [ BUGS ]
 /// - Adding 'long long' data type to shader, with enabling the right extension
 /// on the Vulkan side
-/// - Correct the scaling of the compute row in relation to the grid size.
-/// Currently sqrt() of one of the grid dimensions is used to do so and manually
-/// this value has to be set in the compute shader, could it be dynamic?
 /// - Remove the vertex, index and normal data from vertex shader to c++
 /// - Optimization and bug fixes
 /// - Revise the _log.console() function (with the use of overload functions)
