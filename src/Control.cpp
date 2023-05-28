@@ -22,7 +22,7 @@ void Control::simulateHours() {
                             .count() /
                         1000000.0;
 
-  if (elapsedSeconds >= (1.0 / simulationSpeed)) {
+  if (elapsedSeconds >= (1.0 / timer.speed)) {
     passedSimulationHours++;
     lastTime = currentTime;
   }

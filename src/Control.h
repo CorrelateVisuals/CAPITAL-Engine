@@ -11,7 +11,9 @@ class Control {
   Control();
   ~Control();
 
-  float simulationSpeed = 60.0f;
+  struct Timer {
+    float speed = 60.0f;
+  } timer;
 
   struct Grid {
     const uint32_t totalAliveCells = 600;
