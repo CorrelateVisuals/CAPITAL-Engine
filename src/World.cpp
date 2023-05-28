@@ -57,11 +57,8 @@ std::vector<World::Cell> World::initializeCells() {
   }
 
   std::vector<World::Cell> cells(numGridPoints);
-  std::vector<float> randomHeights;
-  std::vector<bool> isAliveIndices;
-
-  randomHeights.reserve(numGridPoints);
-  isAliveIndices.reserve(numGridPoints);
+  std::vector<float> randomHeights(numGridPoints, 0.0f);
+  std::vector<bool> isAliveIndices(numGridPoints, false);
 
   for (uint32_t i = 0; i < numGridPoints; i++) {
     randomHeights.push_back(_control.getRandomFloat(0.0f, 0.3f));
@@ -92,7 +89,6 @@ std::vector<World::Cell> World::initializeCells() {
 
     cells[i] = {pos, color, cell.size, state};
   }
-
   return cells;
 }
 
