@@ -16,9 +16,9 @@ class Control {
   } timer;
 
   struct Grid {
-    const uint32_t totalAliveCells = 600;
-    const std::array<uint32_t, 2> gridDimensions = {60, 30};
-    const float gap = 0.1f;
+    uint32_t totalAliveCells = 600;
+    std::array<uint32_t, 2> dimensions = {60, 30};
+    float gap = 0.1f;
   } grid;
 
   struct DisplayConfiguration {
@@ -28,8 +28,8 @@ class Control {
   } display;
 
   struct Compute {
-    uint32_t localSizeX = 8;
-    uint32_t localSizeY = 8;
+    const uint32_t localSizeX = 8;
+    const uint32_t localSizeY = 8;
   } compute;
 
  public:

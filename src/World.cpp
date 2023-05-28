@@ -46,8 +46,8 @@ std::vector<World::Cell> World::initializeCells() {
   static const std::array<int, 4> alive = {1, 0, 0, 0};
   static const std::array<int, 4> dead = {-1, 0, 0, 0};
 
-  const uint32_t width = _control.grid.gridDimensions[0];
-  const uint32_t height = _control.grid.gridDimensions[1];
+  const uint32_t width = _control.grid.dimensions[0];
+  const uint32_t height = _control.grid.dimensions[1];
   const uint32_t numGridPoints = width * height;
   const uint32_t numAliveCells = _control.grid.totalAliveCells;
   const float gap = _control.grid.gap;
@@ -101,7 +101,7 @@ bool World::isIndexAlive(const std::vector<int>& aliveCells, int index) {
 
 World::UniformBufferObject World::updateUniforms() {
   UniformBufferObject uniformObject{};
-  uniformObject.gridDimensions = _control.grid.gridDimensions;
+  uniformObject.gridDimensions = _control.grid.dimensions;
   uniformObject.passedHours = _control.passedSimulationHours;
   uniformObject.model = _world.setModel();
   uniformObject.view = _world.setView();
