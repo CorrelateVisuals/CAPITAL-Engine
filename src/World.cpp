@@ -44,13 +44,20 @@ std::vector<World::Cell> World::initializeCells() {
   static const std::array<int, 4> alive = {1, 0, 0, 0};
   static const std::array<int, 4> dead = {-1, 0, 0, 0};
 
-  const int numGridPoints = _control.grid.numberOfGridPoints;
+  // Grid size
+  const int gridWidth = _control.grid.dimensions[0];
+  const int gridHeight = _control.grid.dimensions[1];
+  const float gridPointDistance = _control.grid.distance;
+  const int numGridPoints = gridWidth * gridHeight;
+  const int numAliveCells = _control.grid.numberOfAliveCells;
+
+  if (numAliveCells > numGridPoints) {
+    throw std::runtime_error(
+        "Number of alive cells exceeds number of grid points");
+  }
+
   std::vector<World::Cell> cells(numGridPoints);
 
-  // Grid size
-  const int gridWidth = _control.grid.gridDimensions[0];
-  const int gridHeight = _control.grid.gridDimensions[1];
-  const float gridPointDistance = _control.grid.gridPointDistance;
   // Grid cell size
   const float cellWidth = gridPointDistance / gridWidth;
   const float cellHeight = gridPointDistance / gridHeight;
@@ -97,6 +104,9 @@ std::vector<World::Cell> World::initializeCells() {
   return cells;
 }
 
+// Bug: The code is not checking if the number of alive cells is greater than
+// the number of grid points. If it is, the code will try to
+
 bool World::isIndexAlive(const std::vector<int>& aliveCells, int index) {
   return std::find(aliveCells.begin(), aliveCells.end(), index) !=
          aliveCells.end();
@@ -104,7 +114,7 @@ bool World::isIndexAlive(const std::vector<int>& aliveCells, int index) {
 
 World::UniformBufferObject World::updateUniforms() {
   UniformBufferObject uniformObject{};
-  uniformObject.sqrtOfGrid = _control.grid.gridDimensions[0];
+  uniformObject.dimensions = _control.grid.dimensions;
   uniformObject.passedHours = _control.passedSimulationHours;
   uniformObject.model = _world.setModel();
   uniformObject.view = _world.setView();

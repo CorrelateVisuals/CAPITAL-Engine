@@ -16,7 +16,7 @@ class World {
   ~World();
 
   struct UniformBufferObject {
-    int sqrtOfGrid;
+    std::array<uint32_t, 2> dimensions;
     int passedHours;  // TODO: 'long long'
     alignas(16) glm::mat4 model;
     alignas(16) glm::mat4 view;
@@ -28,7 +28,7 @@ class World {
   struct Cell {
     std::array<float, 4> position;
     std::array<float, 4> color;
-    std::array<float, 4> size = {0.02f};
+    std::array<float, 4> size = {0.05f};
     std::array<int, 4> states;
   } cell;
 

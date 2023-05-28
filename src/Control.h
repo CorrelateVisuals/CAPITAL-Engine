@@ -14,10 +14,9 @@ class Control {
   float simulationSpeed = 60.0f;
 
   struct Grid {
-    const uint32_t numberOfAliveCells = 2000;
-    const uint32_t gridDimensions[2] = {100, 100};  // only square for now
-    const float gridPointDistance = 3.5;
-    const uint32_t numberOfGridPoints = gridDimensions[0] * gridDimensions[1];
+    const uint32_t numberOfAliveCells = 300;
+    const std::array<uint32_t, 2> dimensions = {30, 30};
+    const float distance = 3.5;
   } grid;
 
   struct Compute {

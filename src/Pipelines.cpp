@@ -5,6 +5,7 @@
 #include <random>
 
 #include "CapitalEngine.h"
+#include "Control.h"
 #include "Mechanics.h"
 #include "Pipelines.h"
 #include "World.h"
@@ -475,8 +476,8 @@ void MemoryCommands::createShaderStorageBuffers() {
 
   std::vector<World::Cell> cells = _world.initializeCells();
 
-  VkDeviceSize bufferSize =
-      sizeof(World::Cell) * _control.grid.numberOfGridPoints;
+  VkDeviceSize bufferSize = sizeof(World::Cell) * _control.grid.dimensions[0] *
+                            _control.grid.dimensions[1];
 
   // Create a staging buffer used to upload data to the gpu
   VkBuffer stagingBuffer;
@@ -633,8 +634,9 @@ void MemoryCommands::createComputeDescriptorSets() {
     storageBufferInfoLastFrame.buffer =
         shaderStorage.buffers[(i - 1) % MAX_FRAMES_IN_FLIGHT];
     storageBufferInfoLastFrame.offset = 0;
-    storageBufferInfoLastFrame.range =
-        sizeof(World::Cell) * _control.grid.numberOfGridPoints;
+    storageBufferInfoLastFrame.range = sizeof(World::Cell) *
+                                       _control.grid.dimensions[0] *
+                                       _control.grid.dimensions[1];
 
     descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[1].dstSet = descriptor.sets[i];
@@ -647,8 +649,9 @@ void MemoryCommands::createComputeDescriptorSets() {
     VkDescriptorBufferInfo storageBufferInfoCurrentFrame{};
     storageBufferInfoCurrentFrame.buffer = shaderStorage.buffers[i];
     storageBufferInfoCurrentFrame.offset = 0;
-    storageBufferInfoCurrentFrame.range =
-        sizeof(World::Cell) * _control.grid.numberOfGridPoints;
+    storageBufferInfoCurrentFrame.range = sizeof(World::Cell) *
+                                          _control.grid.dimensions[0] *
+                                          _control.grid.dimensions[1];
 
     descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     descriptorWrites[2].dstSet = descriptor.sets[i];
@@ -687,10 +690,10 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
                           0, nullptr);
 
   uint32_t numberOfWorkgroupsX =
-      (_control.grid.gridDimensions[0] + _control.compute.localSizeX - 1) /
+      (_control.grid.dimensions[0] + _control.compute.localSizeX - 1) /
       _control.compute.localSizeX;
   uint32_t numberOfWorkgroupsY =
-      (_control.grid.gridDimensions[1] + _control.compute.localSizeY - 1) /
+      (_control.grid.dimensions[1] + _control.compute.localSizeY - 1) /
       _control.compute.localSizeY;
 
   vkCmdDispatch(commandBuffer, numberOfWorkgroupsX, numberOfWorkgroupsY, 1);
@@ -754,7 +757,8 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
                           &descriptor.sets[_mechanics.syncObjects.currentFrame],
                           0, nullptr);
 
-  vkCmdDraw(commandBuffer, 36, _control.grid.numberOfGridPoints, 0, 0);
+  vkCmdDraw(commandBuffer, 36,
+            _control.grid.dimensions[0] * _control.grid.dimensions[1], 0, 0);
 
   vkCmdEndRenderPass(commandBuffer);
 
