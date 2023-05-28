@@ -23,9 +23,9 @@ class World {
   } cell;
 
   struct Camera {
-    glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.5f);
-    glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 up = glm::vec3(0.0f, -1.0f, 0.0f);
+    glm::vec3 position{0.0f, 0.0f, 3.5f};
+    glm::vec3 front{0.0f, 0.0f, -1.0f};
+    glm::vec3 up{0.0f, -1.0f, 0.0f};
   } camera;
 
   struct UniformBufferObject {

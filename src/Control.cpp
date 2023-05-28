@@ -43,8 +43,9 @@ double Control::lowFrequencyOsciallator() {
   const double period = 1000.0;             // time period in milliseconds
   const double frequency = 100.0 / period;  // frequency in Hz
   const double angle = time_elapsed * frequency * 2 * std::numbers::pi /
-                       1000.0;    // angle in radians
-  return 0.5 * (1 + sin(angle));  // lowFrequencyOsciallators between 0 and 1
+                       1000.0;  // angle in radians
+  return 0.5 *
+         (1 + std::sin(angle));  // lowFrequencyOsciallators between 0 and 1
 }
 
 std::vector<int> Control::setCellsAliveRandomly(size_t size) {
