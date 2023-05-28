@@ -43,7 +43,7 @@ vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
 
 
 ivec4 neighbourCellsInRange(int range){
-        ivec4 neighbourCellsInRange = ivec4(0);
+ivec4 neighbourCellsInRange = ivec4(0);
 
 int gridSize = ubo.gridDimensions.x * ubo.gridDimensions.y;
 int indexX = int(index) % ubo.gridDimensions.x;
@@ -64,8 +64,8 @@ for (int x = startX; x <= endX; x++) {
                 if (neighbourAlive && notSelf) {
                     neighbourCellsInRange++;
                 }
-            }
         }
+    }
     return neighbourCellsInRange; 
 }
 
