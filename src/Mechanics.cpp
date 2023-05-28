@@ -32,15 +32,15 @@ VulkanMechanics::VulkanMechanics()
           {VkSurfaceCapabilitiesKHR{{}, {}, {}, {}, {}, {}, {}, {}, {}, {}},
            {},
            {}}} {
-  _log.console("{ #?# }", "constructing Vulkan Mechanics");
+  _log.console("{ VkM }", "constructing Vulkan Mechanics");
 }
 
 VulkanMechanics::~VulkanMechanics() {
-  _log.console("{ #?# }", "destructing Vulkan Mechanics");
+  _log.console("{ VkM }", "destructing Vulkan Mechanics");
 }
 
 void VulkanMechanics::createInstance() {
-  _log.console("{ VKI }", "creating Vulkan Instance");
+  _log.console("{ VkI }", "creating Vulkan Instance");
   if (_validationLayers.enableValidationLayers &&
       !_validationLayers.checkValidationLayerSupport()) {
     throw std::runtime_error(
