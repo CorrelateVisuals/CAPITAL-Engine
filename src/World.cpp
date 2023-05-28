@@ -40,11 +40,6 @@ glm::mat4 World::setView() {
 }
 
 std::vector<World::Cell> World::initializeCells() {
-  static const std::array<float, 4> red = {1.0f, 0.0f, 0.0f, 1.0f};
-  static const std::array<float, 4> blue = {0.0f, 0.0f, 1.0f, 1.0f};
-  static const std::array<int, 4> alive = {1, 0, 0, 0};
-  static const std::array<int, 4> dead = {-1, 0, 0, 0};
-
   const uint32_t width = _control.grid.dimensions[0];
   const uint32_t height = _control.grid.dimensions[1];
   const uint32_t numGridPoints = width * height;

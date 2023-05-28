@@ -50,4 +50,11 @@ class World {
   static std::vector<VkVertexInputAttributeDescription>
   getAttributeDescriptions();
   static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
+
+ private:
+  inline static const std::array<float, 4> red{1.0f, 0.0f, 0.0f, 1.0f};
+  inline static const std::array<float, 4> blue{0.0f, 0.0f, 1.0f, 1.0f};
+
+  inline static const std::array<int, 4> alive{1, 0, 0, 0};
+  inline static const std::array<int, 4> dead{-1, 0, 0, 0};
 };
