@@ -32,12 +32,17 @@ class World {
     std::array<int, 4> states;
   };
 
+  struct Camera {
+    glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.5f);
+    glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 up = glm::vec3(0.0f, -1.0f, 0.0f);
+  } camera;
+
  public:
   std::vector<World::Cell> initializeCells();
   bool isIndexAlive(const std::vector<int>& aliveCells, int index);
 
   UniformBufferObject updateUniforms();
-
   glm::mat4 setModel();
   glm::mat4 setView();
   glm::mat4 setProjection(VkExtent2D& swapChainExtent);

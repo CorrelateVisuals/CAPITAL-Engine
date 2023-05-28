@@ -32,8 +32,8 @@ World::getAttributeDescriptions() {
 
 glm::mat4 World::setView() {
   glm::mat4 view =
-      glm::lookAt(glm::vec3(0.0f, 0.0f, 3.5f), glm::vec3(0.0f, 0.0f, 0.0f),
-                  glm::vec3(0.0f, -1.0f, 0.0f));
+      glm::lookAt(camera.position, camera.position + camera.front, camera.up);
+
   return view;
 }
 
