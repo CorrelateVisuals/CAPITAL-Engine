@@ -28,9 +28,9 @@ class World {
   struct Cell {
     std::array<float, 4> position;
     std::array<float, 4> color;
-    std::array<float, 4> size;
+    std::array<float, 4> size = {0.02f};
     std::array<int, 4> states;
-  };
+  } cell;
 
   struct Camera {
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.5f);

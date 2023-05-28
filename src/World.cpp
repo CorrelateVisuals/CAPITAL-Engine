@@ -43,9 +43,6 @@ std::vector<World::Cell> World::initializeCells() {
   static const std::array<float, 4> blue = {0.0f, 0.0f, 1.0f, 1.0f};
   static const std::array<int, 4> alive = {1, 0, 0, 0};
   static const std::array<int, 4> dead = {-1, 0, 0, 0};
-  static const std::array<float, 4> size = {
-      _control.grid.cellSize, _control.grid.cellSize, _control.grid.cellSize,
-      _control.grid.cellSize};
 
   const int numGridPoints = _control.grid.numberOfGridPoints;
   std::vector<World::Cell> cells(numGridPoints);
@@ -94,7 +91,7 @@ std::vector<World::Cell> World::initializeCells() {
     const std::array<float, 4>& color = isAlive ? blue : red;
     const std::array<int, 4>& state = isAlive ? alive : dead;
 
-    cells[i] = {pos, color, size, state};
+    cells[i] = {pos, color, cell.size, state};
   }
   //_log.console(aliveCells);
   return cells;
@@ -113,7 +110,7 @@ World::UniformBufferObject World::updateUniforms() {
   uniformObject.view = _world.setView();
   uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
   uniformObject.lightDirection = {0.0f, 1.0f, 1.0f, 0.2f};
-  uniformObject.cellSize = _control.grid.cellSize;
+  uniformObject.cellSize = cell.size[0];
   return uniformObject;
 }
 

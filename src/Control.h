@@ -14,7 +14,6 @@ class Control {
   float simulationSpeed = 60.0f;
 
   struct Grid {
-    float cellSize = 0.02f;
     const uint32_t numberOfAliveCells = 2000;
     const uint32_t gridDimensions[2] = {100, 100};  // only square for now
     const float gridPointDistance = 3.5;
