@@ -12,8 +12,8 @@
 
 class World {
  public:
-  World() = default;
-  ~World() = default;
+  World();
+  ~World();
 
   struct Cell {
     std::array<float, 4> position;

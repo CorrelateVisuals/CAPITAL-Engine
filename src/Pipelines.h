@@ -4,8 +4,8 @@
 
 class Pipelines {
  public:
-  Pipelines() = default;
-  ~Pipelines() = default;
+  Pipelines();
+  ~Pipelines();
 
   struct Graphics {
     VkPipelineLayout pipelineLayout;

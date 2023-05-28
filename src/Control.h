@@ -8,8 +8,8 @@ constexpr int parameterOff = -1;
 
 class Control {
  public:
-  Control() = default;
-  ~Control() = default;
+  Control();
+  ~Control();
 
   float simulationSpeed = 60.0f;
 
@@ -25,12 +25,12 @@ class Control {
     uint32_t height = 1080;
   } display;
 
- public:
   struct Compute {
     uint32_t localSizeX = 8;
     uint32_t localSizeY = 8;
   } compute;
 
+ public:
   // Initialization
   float getRandomFloat(float min, float max);
   std::vector<int> setCellsAliveRandomly(size_t size);
