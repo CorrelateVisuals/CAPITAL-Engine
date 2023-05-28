@@ -44,12 +44,11 @@ std::vector<World::Cell> World::initializeCells() {
   static const std::array<int, 4> alive = {1, 0, 0, 0};
   static const std::array<int, 4> dead = {-1, 0, 0, 0};
 
-  // Grid size
-  const int gridWidth = _control.grid.dimensions[0];
-  const int gridHeight = _control.grid.dimensions[1];
-  const float gridPointDistance = _control.grid.distance;
-  const int numGridPoints = gridWidth * gridHeight;
-  const int numAliveCells = _control.grid.numberOfAliveCells;
+  const uint32_t width = _control.grid.dimensions[0];
+  const uint32_t height = _control.grid.dimensions[1];
+  const uint32_t numGridPoints = width * height;
+  const uint32_t numAliveCells = _control.grid.numberOfAliveCells;
+  const float distance = _control.grid.distance;
 
   if (numAliveCells > numGridPoints) {
     throw std::runtime_error(
@@ -58,41 +57,31 @@ std::vector<World::Cell> World::initializeCells() {
 
   std::vector<World::Cell> cells(numGridPoints);
 
-  // Grid cell size
-  const float cellWidth = gridPointDistance / gridWidth;
-  const float cellHeight = gridPointDistance / gridHeight;
-  // Cell position offset
-  const float remainingWidth = 2.0f - gridPointDistance;
-  const float remainingHeight = 2.0f - gridPointDistance;
-  const float offsetX = -1.0f + remainingWidth / 2.0f + cellWidth / 2.0f;
-  const float offsetY = -1.0f + remainingHeight / 2.0f + cellHeight / 2.0f;
+  float startX = -static_cast<int>(width - 1) * distance / 2;
+  float startY = -static_cast<int>(height - 1) * distance / 2;
 
-  // Generate random alive cells
-  std::vector<int> aliveCells =
+  std::vector<int> aliveCellIndices =
       _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
-
-  // Initialize cells on grid
   std::vector<float> randomHeights(numGridPoints);
   std::vector<bool> isAliveIndices(numGridPoints, false);
 
-  // Precompute random heights
-  for (int i = 0; i < numGridPoints; i++) {
+  for (uint32_t i = 0; i < numGridPoints; i++) {
     randomHeights[i] = _control.getRandomFloat(0.0f, 0.3f);
   }
 
-  // Precompute alive cell indices
-  for (int aliveIndex : aliveCells) {
+  for (int aliveIndex : aliveCellIndices) {
     isAliveIndices[aliveIndex] = true;
   }
 
-  for (int i = 0; i < numGridPoints; i++) {
-    int x = i % gridWidth;
-    int y = i / gridWidth;
-    float rowOffset = offsetX + x * cellWidth;
-    float columnOffset = offsetY + y * cellHeight;
-    float randomHeight = randomHeights[i];
-    std::array<float, 4> pos = {rowOffset, columnOffset, randomHeight, 0.0f};
+  // Initialize the grid
+  for (uint32_t i = 0; i < numGridPoints; ++i) {
+    uint32_t x = i % width;
+    uint32_t y = i / height;
+    float posX = startX + x * distance;
+    float posY = startY + y * distance;
 
+    float randomHeight = randomHeights[i];
+    std::array<float, 4> pos = {posX, posY, randomHeight, 0.0f};
     bool isAlive = isAliveIndices[i];
 
     const std::array<float, 4>& color = isAlive ? blue : red;
@@ -103,9 +92,6 @@ std::vector<World::Cell> World::initializeCells() {
   //_log.console(aliveCells);
   return cells;
 }
-
-// Bug: The code is not checking if the number of alive cells is greater than
-// the number of grid points. If it is, the code will try to
 
 bool World::isIndexAlive(const std::vector<int>& aliveCells, int index) {
   return std::find(aliveCells.begin(), aliveCells.end(), index) !=
