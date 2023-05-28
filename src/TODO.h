@@ -10,7 +10,7 @@
 /// - Add vertex and index buffers; remove the vertex, index and normal data
 /// from vertex shader
 /// - Revise the _log.console() function (with the use of overload functions)
-/// - Adding CPU access to cell Shader data through shaderStorage buffer
+/// - Adding CPU read access to cell through shaderStorage buffer
 ///
 /// [ FEATURES: ADDITIONS ]
 /// - Dear ImGui (for runtime settings, graph data and economic encyclopedia)
