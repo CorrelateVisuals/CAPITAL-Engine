@@ -5,7 +5,7 @@
 #include "Window.h"
 
 Window::Window() : window{nullptr}, framebufferResized{false} {
-  _log.console("{ [X] }", "constructing Window");
+  _log.console("{ [-] }", "constructing Window");
   initWindow();
 }
 

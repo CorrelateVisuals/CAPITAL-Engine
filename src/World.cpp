@@ -6,10 +6,12 @@
 #include <ctime>
 
 World::World() {
-  _log.console("{ (:) }", "constructing World");
+  _log.console("{ (X) }", "constructing World");
 }
 
-World::~World() {}
+World::~World() {
+  _log.console("{ (X) }", "destructing World");
+}
 
 std::vector<VkVertexInputBindingDescription> World::getBindingDescriptions() {
   std::vector<VkVertexInputBindingDescription> bindingDescriptions{};
@@ -44,11 +46,11 @@ std::vector<World::Cell> World::initializeCells() {
   static const std::array<int, 4> alive = {1, 0, 0, 0};
   static const std::array<int, 4> dead = {-1, 0, 0, 0};
 
-  const uint32_t width = _control.grid.dimensions[0];
-  const uint32_t height = _control.grid.dimensions[1];
+  const uint32_t width = _control.grid.gridDimensions[0];
+  const uint32_t height = _control.grid.gridDimensions[1];
   const uint32_t numGridPoints = width * height;
   const uint32_t numAliveCells = _control.grid.totalAliveCells;
-  const float distance = _control.grid.distance;
+  const float gap = _control.grid.gap;
 
   if (numAliveCells > numGridPoints) {
     throw std::runtime_error(
@@ -57,8 +59,8 @@ std::vector<World::Cell> World::initializeCells() {
 
   std::vector<World::Cell> cells(numGridPoints);
 
-  const float startX = -static_cast<int>(width - 1) * distance / 2;
-  const float startY = -static_cast<int>(height - 1) * distance / 2;
+  const float startX = -static_cast<int>(width - 1) * gap / 2;
+  const float startY = -static_cast<int>(height - 1) * gap / 2;
 
   std::vector<int> aliveCellIndices =
       _control.setCellsAliveRandomly(_control.grid.totalAliveCells);
@@ -77,8 +79,8 @@ std::vector<World::Cell> World::initializeCells() {
   for (uint32_t i = 0; i < numGridPoints; ++i) {
     const uint32_t x = i % width;
     const uint32_t y = i / width;
-    const float posX = startX + x * distance;
-    const float posY = startY + y * distance;
+    const float posX = startX + x * gap;
+    const float posY = startY + y * gap;
 
     const float randomHeight = randomHeights[i];
     const std::array<float, 4> pos = {posX, posY, randomHeight, 0.0f};
@@ -99,7 +101,7 @@ bool World::isIndexAlive(const std::vector<int>& aliveCells, int index) {
 
 World::UniformBufferObject World::updateUniforms() {
   UniformBufferObject uniformObject{};
-  uniformObject.dimensions = _control.grid.dimensions;
+  uniformObject.gridDimensions = _control.grid.gridDimensions;
   uniformObject.passedHours = _control.passedSimulationHours;
   uniformObject.model = _world.setModel();
   uniformObject.view = _world.setView();

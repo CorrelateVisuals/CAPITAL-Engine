@@ -29,7 +29,7 @@ class World {
   } camera;
 
   struct UniformBufferObject {
-    std::array<uint32_t, 2> dimensions;
+    std::array<uint32_t, 2> gridDimensions;
     int passedHours;  // TODO: 'long long'
     alignas(16) glm::mat4 model;
     alignas(16) glm::mat4 view;

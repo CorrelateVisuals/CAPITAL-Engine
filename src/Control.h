@@ -14,9 +14,9 @@ class Control {
   float simulationSpeed = 60.0f;
 
   struct Grid {
-    const uint32_t totalAliveCells = 100;
-    const std::array<uint32_t, 2> dimensions = {30, 10};
-    const float distance = 0.1f;
+    const uint32_t totalAliveCells = 600;
+    const std::array<uint32_t, 2> gridDimensions = {60, 30};
+    const float gap = 0.1f;
   } grid;
 
   struct DisplayConfiguration {

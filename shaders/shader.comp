@@ -3,7 +3,7 @@
 layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
 layout (binding = 0) uniform ParameterUBO {
-    ivec2 dimensions;
+    ivec2 gridDimensions;
     int time;                                   //TODO 'long long' : int64_t passedHours;
     mat4 model;
     mat4 view;
@@ -14,7 +14,7 @@ layout (binding = 0) uniform ParameterUBO {
 
 uint globalID_x = gl_GlobalInvocationID.x;
 uint globalID_y = gl_GlobalInvocationID.y;
-uint index = globalID_y * ubo.dimensions.x + globalID_x % ubo.dimensions.x + (globalID_x / ubo.dimensions.x) * ubo.dimensions.y;
+uint index = globalID_y * ubo.gridDimensions.x + globalID_x % ubo.gridDimensions.x + (globalID_x / ubo.gridDimensions.x) * ubo.gridDimensions.y;
 
 struct Cell {
     vec4 position;  // float    xyz
@@ -45,17 +45,17 @@ vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
 ivec4 neighbourCellsInRange(int range){
         ivec4 neighbourCellsInRange = ivec4(0);
 
-int gridSize = ubo.dimensions.x * ubo.dimensions.y;
-int indexX = int(index) % ubo.dimensions.x;
-int indexY = int(index) / ubo.dimensions.x;
+int gridSize = ubo.gridDimensions.x * ubo.gridDimensions.y;
+int indexX = int(index) % ubo.gridDimensions.x;
+int indexY = int(index) / ubo.gridDimensions.x;
 int startX = max(indexX - range, 0);
-int endX = min(indexX + range, ubo.dimensions.x - 1);
+int endX = min(indexX + range, ubo.gridDimensions.x - 1);
 int startY = max(indexY - range, 0);
-int endY = min(indexY + range, ubo.dimensions.y - 1);
+int endY = min(indexY + range, ubo.gridDimensions.y - 1);
 
 for (int x = startX; x <= endX; x++) {
     for (int y = startY; y <= endY; y++) {
-        int neighbourIndex = y * ubo.dimensions.x + x;
+        int neighbourIndex = y * ubo.gridDimensions.x + x;
 
                 bool notSelf = neighbourIndex != index;
                 bool neighbourAlive = cellIn[neighbourIndex].states.x == alive 
