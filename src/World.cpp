@@ -52,7 +52,7 @@ std::vector<World::Cell> World::initializeCells() {
 
   if (numAliveCells > numGridPoints) {
     throw std::runtime_error(
-        "ERROR: Number of alive cells exceeds number of grid points");
+        "!ERROR! Number of alive cells exceeds number of grid points");
   }
 
   std::vector<World::Cell> cells(numGridPoints);
@@ -76,7 +76,7 @@ std::vector<World::Cell> World::initializeCells() {
   // Initialize the grid
   for (uint32_t i = 0; i < numGridPoints; ++i) {
     const uint32_t x = i % width;
-    const uint32_t y = i / height;
+    const uint32_t y = i / width;
     const float posX = startX + x * distance;
     const float posY = startY + y * distance;
 
