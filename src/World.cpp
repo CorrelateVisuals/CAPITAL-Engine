@@ -52,13 +52,13 @@ std::vector<World::Cell> World::initializeCells() {
 
   if (numAliveCells > numGridPoints) {
     throw std::runtime_error(
-        "Number of alive cells exceeds number of grid points");
+        "ERROR: Number of alive cells exceeds number of grid points");
   }
 
   std::vector<World::Cell> cells(numGridPoints);
 
-  float startX = -static_cast<int>(width - 1) * distance / 2;
-  float startY = -static_cast<int>(height - 1) * distance / 2;
+  const float startX = -static_cast<int>(width - 1) * distance / 2;
+  const float startY = -static_cast<int>(height - 1) * distance / 2;
 
   std::vector<int> aliveCellIndices =
       _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
@@ -75,21 +75,20 @@ std::vector<World::Cell> World::initializeCells() {
 
   // Initialize the grid
   for (uint32_t i = 0; i < numGridPoints; ++i) {
-    uint32_t x = i % width;
-    uint32_t y = i / height;
-    float posX = startX + x * distance;
-    float posY = startY + y * distance;
+    const uint32_t x = i % width;
+    const uint32_t y = i / height;
+    const float posX = startX + x * distance;
+    const float posY = startY + y * distance;
 
-    float randomHeight = randomHeights[i];
-    std::array<float, 4> pos = {posX, posY, randomHeight, 0.0f};
-    bool isAlive = isAliveIndices[i];
+    const float randomHeight = randomHeights[i];
+    const std::array<float, 4> pos = {posX, posY, randomHeight, 0.0f};
+    const bool isAlive = isAliveIndices[i];
 
     const std::array<float, 4>& color = isAlive ? blue : red;
     const std::array<int, 4>& state = isAlive ? alive : dead;
 
     cells[i] = {pos, color, cell.size, state};
   }
-  //_log.console(aliveCells);
   return cells;
 }
 
