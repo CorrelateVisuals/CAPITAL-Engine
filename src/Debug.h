@@ -8,8 +8,8 @@
 
 class Logging {
  public:
-  Logging();
-  ~Logging();
+  Logging() = default;
+  ~Logging() = default;
 
   struct Style {
     std::string charLeader = "        :";
