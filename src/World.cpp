@@ -40,7 +40,6 @@ glm::mat4 World::setView() {
 }
 
 std::vector<World::Cell> World::initializeCells() {
-  _log.console(_log.style.charLeader, "initializing Cells");
   static const std::array<float, 4> red = {1.0f, 0.0f, 0.0f, 1.0f};
   static const std::array<float, 4> blue = {0.0f, 0.0f, 1.0f, 1.0f};
   static const std::array<int, 4> alive = {1, 0, 0, 0};
@@ -58,24 +57,26 @@ std::vector<World::Cell> World::initializeCells() {
   }
 
   std::vector<World::Cell> cells(numGridPoints);
+  std::vector<float> randomHeights;
+  std::vector<bool> isAliveIndices;
 
-  const float startX = -static_cast<int>(width - 1) * gap / 2;
-  const float startY = -static_cast<int>(height - 1) * gap / 2;
+  randomHeights.reserve(numGridPoints);
+  isAliveIndices.reserve(numGridPoints);
+
+  for (uint32_t i = 0; i < numGridPoints; i++) {
+    randomHeights.push_back(_control.getRandomFloat(0.0f, 0.3f));
+    isAliveIndices.push_back(false);
+  }
 
   std::vector<int> aliveCellIndices =
       _control.setCellsAliveRandomly(_control.grid.totalAliveCells);
-  std::vector<float> randomHeights(numGridPoints);
-  std::vector<bool> isAliveIndices(numGridPoints, false);
-
-  for (uint32_t i = 0; i < numGridPoints; i++) {
-    randomHeights[i] = _control.getRandomFloat(0.0f, 0.3f);
-  }
-
   for (int aliveIndex : aliveCellIndices) {
     isAliveIndices[aliveIndex] = true;
   }
 
-  // Initialize the grid
+  const float startX = -((width - 1) * gap) / 2.0f;
+  const float startY = -((height - 1) * gap) / 2.0f;
+
   for (uint32_t i = 0; i < numGridPoints; ++i) {
     const uint32_t x = i % width;
     const uint32_t y = i / width;
@@ -91,6 +92,7 @@ std::vector<World::Cell> World::initializeCells() {
 
     cells[i] = {pos, color, cell.size, state};
   }
+
   return cells;
 }
 
