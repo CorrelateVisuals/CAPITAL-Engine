@@ -43,14 +43,15 @@ void VulkanMechanics::createInstance() {
   _log.console("{ VKI }", "creating Vulkan Instance");
   if (_validationLayers.enableValidationLayers &&
       !_validationLayers.checkValidationLayerSupport()) {
-    throw std::runtime_error("validation layers requested, but not available!");
+    throw std::runtime_error(
+        "!ERROR! validation layers requested, but not available!");
   }
 
   VkApplicationInfo appInfo{};
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
   appInfo.pApplicationName = "CAPITAL";
   appInfo.applicationVersion = VK_MAKE_VERSION(0, 0, 1);
-  appInfo.pEngineName = displayConfig.projectTitle;
+  appInfo.pEngineName = _control.display.title;
   appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
   appInfo.apiVersion = VK_API_VERSION_1_3;
   _log.console(
@@ -77,7 +78,8 @@ void VulkanMechanics::createInstance() {
     createInfo.ppEnabledLayerNames = _validationLayers.validationLayers.data();
 
     _validationLayers.populateDebugMessengerCreateInfo(debugCreateInfo);
-    createInfo.pNext = const_cast<VkDebugUtilsMessengerCreateInfoEXT*>(&debugCreateInfo);
+    createInfo.pNext =
+        const_cast<VkDebugUtilsMessengerCreateInfoEXT*>(&debugCreateInfo);
   } else {
     createInfo.enabledLayerCount = 0;
 
@@ -85,7 +87,7 @@ void VulkanMechanics::createInstance() {
   }
 
   if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
-    throw std::runtime_error("failed to create instance!");
+    throw std::runtime_error("!ERROR! failed to create instance!");
   }
 }
 
@@ -93,7 +95,7 @@ void VulkanMechanics::createSurface() {
   _log.console("{ [ ] }", "creating Surface");
   if (glfwCreateWindowSurface(instance, _window.window, nullptr, &surface) !=
       VK_SUCCESS) {
-    throw std::runtime_error("failed to create window surface!");
+    throw std::runtime_error("!ERROR! failed to create window surface!");
   }
 }
 
@@ -103,7 +105,8 @@ void VulkanMechanics::pickPhysicalDevice() {
   vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
   if (deviceCount == 0) {
-    throw std::runtime_error("failed to find GPUs with Vulkan support!");
+    throw std::runtime_error(
+        "!ERROR! failed to find GPUs with Vulkan support!");
   }
 
   std::vector<VkPhysicalDevice> devices(deviceCount);
@@ -117,7 +120,7 @@ void VulkanMechanics::pickPhysicalDevice() {
   }
 
   if (mainDevice.physical == VK_NULL_HANDLE) {
-    throw std::runtime_error("failed to find a suitable GPU!");
+    throw std::runtime_error("!ERROR! failed to find a suitable GPU!");
   }
 }
 
@@ -261,7 +264,7 @@ void VulkanMechanics::createLogicalDevice() {
 
   if (vkCreateDevice(mainDevice.physical, &createInfo, nullptr,
                      &mainDevice.logical) != VK_SUCCESS) {
-    throw std::runtime_error("failed to create logical device!");
+    throw std::runtime_error("!ERROR! failed to create logical device!");
   }
 
   vkGetDeviceQueue(mainDevice.logical, indices.graphicsAndComputeFamily.value(),
@@ -441,7 +444,7 @@ void VulkanMechanics::createSwapChain() {
 
   if (vkCreateSwapchainKHR(mainDevice.logical, &createInfo, nullptr,
                            &swapChain.swapChain) != VK_SUCCESS) {
-    throw std::runtime_error("failed to create swap chain!");
+    throw std::runtime_error("!ERROR! failed to create swap chain!");
   }
 
   vkGetSwapchainImagesKHR(mainDevice.logical, swapChain.swapChain, &imageCount,
@@ -509,7 +512,7 @@ void VulkanMechanics::createImageViews() {
 
     if (vkCreateImageView(mainDevice.logical, &createInfo, nullptr,
                           &swapChain.imageViews[i]) != VK_SUCCESS) {
-      throw std::runtime_error("failed to create image views!");
+      throw std::runtime_error("!ERROR! failed to create image views!");
     }
   }
 }
@@ -531,7 +534,7 @@ VkImageView VulkanMechanics::createImageView(VkImage image,
   VkImageView imageView;
   if (vkCreateImageView(mainDevice.logical, &viewInfo, nullptr, &imageView) !=
       VK_SUCCESS) {
-    throw std::runtime_error("failed to create texture image view!");
+    throw std::runtime_error("!ERROR! failed to create texture image view!");
   }
 
   return imageView;

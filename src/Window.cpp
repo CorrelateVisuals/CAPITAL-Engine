@@ -18,20 +18,20 @@ Window::~Window() {
 void Window::initWindow() {
   glfwInit();
   glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-  window = glfwCreateWindow(displayConfig.width, displayConfig.height,
-                            displayConfig.projectTitle, nullptr, nullptr);
+  window = glfwCreateWindow(_control.display.width, _control.display.height,
+                            _control.display.title, nullptr, nullptr);
 
   glfwSetWindowUserPointer(window, this);
   glfwSetFramebufferSizeCallback(window, windowResize);
-  _log.console("{ [*] }", "Window initialized with", displayConfig.width, "*",
-               displayConfig.height);
+  _log.console("{ [*] }", "Window initialized with", _control.display.width,
+               "*", _control.display.height);
 }
 
 void Window::windowResize(GLFWwindow* win, int width, int height) {
   auto app = reinterpret_cast<Window*>(glfwGetWindowUserPointer(win));
   app->framebufferResized = true;
-  displayConfig.width = width;
-  displayConfig.height = height;
+  _control.display.width = width;
+  _control.display.height = height;
   _log.console("{ [*] }", "Window resized to", width, "*", height);
 }
 
@@ -56,8 +56,8 @@ void Window::mouseClick(GLFWwindow* win, int button) {
   static double pressTime = 0.0;
   double xpos, ypos;
   glfwGetCursorPos(win, &xpos, &ypos);
-  xpos /= displayConfig.width;
-  ypos /= displayConfig.height;
+  xpos /= _control.display.width;
+  ypos /= _control.display.height;
 
   switch (oldState) {
     case GLFW_PRESS:

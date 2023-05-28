@@ -15,16 +15,6 @@ class World {
   World();
   ~World();
 
-  struct UniformBufferObject {
-    std::array<uint32_t, 2> dimensions;
-    int passedHours;  // TODO: 'long long'
-    alignas(16) glm::mat4 model;
-    alignas(16) glm::mat4 view;
-    alignas(16) glm::mat4 proj;
-    std::array<float, 4> lightDirection;
-    float cellSize;
-  };
-
   struct Cell {
     std::array<float, 4> position;
     std::array<float, 4> color;
@@ -37,6 +27,16 @@ class World {
     glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 up = glm::vec3(0.0f, -1.0f, 0.0f);
   } camera;
+
+  struct UniformBufferObject {
+    std::array<uint32_t, 2> dimensions;
+    int passedHours;  // TODO: 'long long'
+    alignas(16) glm::mat4 model;
+    alignas(16) glm::mat4 view;
+    alignas(16) glm::mat4 proj;
+    std::array<float, 4> lightDirection;
+    float cellSize;
+  };
 
  public:
   std::vector<World::Cell> initializeCells();

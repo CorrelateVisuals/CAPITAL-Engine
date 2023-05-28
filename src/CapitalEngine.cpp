@@ -105,7 +105,8 @@ void CapitalEngine::drawFrame() {
           _mechanics.syncObjects
               .computeInFlightFences[_mechanics.syncObjects.currentFrame]) !=
       VK_SUCCESS) {
-    throw std::runtime_error("failed to submit compute command buffer!");
+    throw std::runtime_error(
+        "!ERROR! failed to submit compute command buffer!");
   }
 
   // Graphics submission
@@ -125,7 +126,7 @@ void CapitalEngine::drawFrame() {
     _mechanics.recreateSwapChain();
     return;
   } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-    throw std::runtime_error("failed to acquire swap chain image!");
+    throw std::runtime_error("!ERROR! failed to acquire swap chain image!");
   }
 
   vkResetFences(_mechanics.mainDevice.logical, 1,
@@ -165,7 +166,7 @@ void CapitalEngine::drawFrame() {
                     _mechanics.syncObjects
                         .inFlightFences[_mechanics.syncObjects.currentFrame]) !=
       VK_SUCCESS) {
-    throw std::runtime_error("failed to submit draw command buffer!");
+    throw std::runtime_error("!ERROR! failed to submit draw command buffer!");
   }
 
   VkPresentInfoKHR presentInfo{};
@@ -186,7 +187,7 @@ void CapitalEngine::drawFrame() {
     _window.framebufferResized = false;
     _mechanics.recreateSwapChain();
   } else if (result != VK_SUCCESS) {
-    throw std::runtime_error("failed to present swap chain image!");
+    throw std::runtime_error("!ERROR! failed to present swap chain image!");
   }
 
   _mechanics.syncObjects.currentFrame =

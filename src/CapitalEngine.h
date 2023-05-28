@@ -30,11 +30,11 @@ class Global {
 
     Logging logging;
     ValidationLayers validationLayers;
-    Window mainWindow;
+    Control control;
     VulkanMechanics vulkanMechanics;
     Pipelines pipelines;
     MemoryCommands memoryCommands;
-    Control control;
+    Window mainWindow;
     World world;
   };
   inline static Objects obj;

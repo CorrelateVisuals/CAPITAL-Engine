@@ -47,7 +47,7 @@ std::vector<World::Cell> World::initializeCells() {
   const uint32_t width = _control.grid.dimensions[0];
   const uint32_t height = _control.grid.dimensions[1];
   const uint32_t numGridPoints = width * height;
-  const uint32_t numAliveCells = _control.grid.numberOfAliveCells;
+  const uint32_t numAliveCells = _control.grid.totalAliveCells;
   const float distance = _control.grid.distance;
 
   if (numAliveCells > numGridPoints) {
@@ -61,7 +61,7 @@ std::vector<World::Cell> World::initializeCells() {
   const float startY = -static_cast<int>(height - 1) * distance / 2;
 
   std::vector<int> aliveCellIndices =
-      _control.setCellsAliveRandomly(_control.grid.numberOfAliveCells);
+      _control.setCellsAliveRandomly(_control.grid.totalAliveCells);
   std::vector<float> randomHeights(numGridPoints);
   std::vector<bool> isAliveIndices(numGridPoints, false);
 

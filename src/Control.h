@@ -14,10 +14,16 @@ class Control {
   float simulationSpeed = 60.0f;
 
   struct Grid {
-    const uint32_t numberOfAliveCells = 100;
+    const uint32_t totalAliveCells = 100;
     const std::array<uint32_t, 2> dimensions = {30, 10};
     const float distance = 0.1f;
   } grid;
+
+  struct DisplayConfiguration {
+    const char* title = "CAPITAL Engine";
+    uint32_t width = 1080;
+    uint32_t height = 1080;
+  } display;
 
   struct Compute {
     uint32_t localSizeX = 8;
@@ -36,11 +42,3 @@ class Control {
   // Globally accessible
   int passedSimulationHours = 0;  // TODO: 'long long'
 };
-
-struct DisplayConfig {
- public:
-  const char* projectTitle = "CAPITAL Engine";
-  uint32_t width = 1080;
-  uint32_t height = 1080;
-};
-inline DisplayConfig displayConfig;
