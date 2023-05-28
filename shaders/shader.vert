@@ -6,14 +6,15 @@ layout(location = 1) in vec4 inColor;
 layout(location = 2) in vec4 inSize;
 
 layout (binding = 0) uniform ParameterUBO {
-    int passedHours; //TODO 'long long' : int64_t passedHours;
-    int gridSize;
-    
+    int sqrtOfGrid;
+    int time;                                   //TODO 'long long' : int64_t passedHours;
     mat4 model;
     mat4 view;
     mat4 projection;
-    vec4 lightning;
+    vec4 lightDirection;
+    float cellSize;
 } ubo;
+
 const vec3 cubeVertices[8] = {vec3(-0.5f, -0.5f,-0.5f),   // 0
                         vec3(0.5f, -0.5f, -0.5f),   // 1
                         vec3(-0.5f, 0.5f, -0.5f),   // 2
@@ -47,6 +48,6 @@ void main() {
     
     if( inSize.x == -1.0f ){ return; } else {
         gl_Position = modelViewProjection() * constructCube();  
-        fragColor =  phongLightning(ubo.lightning.xyzw) * inColor.rgb;
+        fragColor =  phongLightning(ubo.lightDirection.xyzw) * inColor.rgb;
     }    
 }
