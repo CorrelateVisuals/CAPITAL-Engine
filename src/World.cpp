@@ -33,7 +33,8 @@ World::getAttributeDescriptions() {
 }
 
 glm::mat4 World::setView() {
-  glm::mat4 view =
+  glm::mat4 view;
+  view =
       glm::lookAt(camera.position, camera.position + camera.front, camera.up);
 
   return view;
@@ -52,11 +53,9 @@ std::vector<World::Cell> World::initializeCells() {
   }
 
   std::vector<World::Cell> cells(numGridPoints);
-  std::vector<float> randomHeights(numGridPoints, 0.0f);
   std::vector<bool> isAliveIndices(numGridPoints, false);
 
   for (uint32_t i = 0; i < numGridPoints; i++) {
-    randomHeights.push_back(_control.getRandomFloat(0.0f, 0.3f));
     isAliveIndices.push_back(false);
   }
 
@@ -75,8 +74,7 @@ std::vector<World::Cell> World::initializeCells() {
     const float posX = startX + x * gap;
     const float posY = startY + y * gap;
 
-    const float randomHeight = randomHeights[i];
-    const std::array<float, 4> pos = {posX, posY, randomHeight, 0.0f};
+    const std::array<float, 4> pos = {posX, posY, 0.0f, 0.0f};
     const bool isAlive = isAliveIndices[i];
 
     const std::array<float, 4>& color = isAlive ? blue : red;

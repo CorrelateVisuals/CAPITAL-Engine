@@ -18,12 +18,12 @@ class World {
   struct Cell {
     std::array<float, 4> position;
     std::array<float, 4> color;
-    std::array<float, 4> size = {0.05f};
+    std::array<float, 4> size = {0.1f};
     std::array<int, 4> states;
   } cell;
 
   struct Camera {
-    glm::vec3 position{0.0f, 0.0f, 3.5f};
+    glm::vec3 position{0.0f, 0.0f, 5.5f};
     glm::vec3 front{0.0f, 0.0f, -1.0f};
     glm::vec3 up{0.0f, -1.0f, 0.0f};
   } camera;
