@@ -7,17 +7,18 @@
 /// [ BUGS ]
 /// - Adding 'long long' data type to shader, with enabling the right extension
 /// on the Vulkan side
-/// - Add vertex and index buffers; remove the vertex, index and normal data
-/// from vertex shader
-/// https://vulkan-tutorial.com/Vertex_buffers/Vertex_buffer_creation
 /// - Revise the _log.console() function (with the use of overload functions)
 /// - Adding CPU read access to cell through shaderStorage buffer
 ///
 /// [ FEATURES: ADDITIONS ]
+/// - Add vertex and index buffers; remove the vertex, index and normal data
+/// from vertex shader
+/// https://vulkan-tutorial.com/Vertex_buffers/Vertex_buffer_creation
 /// - Dear ImGui (for runtime settings, graph data and economic encyclopedia)
 /// https://github.com/ocornut/imgui
 /// - Multisampling
 /// https://vulkan-tutorial.com/Multisampling
+/// - Adding push constants
 /// - Renderpicking/colorpicking: Adding screenspace position to vertex ID, to
 /// click on objects and return their IDs.
 /// https://snoozetime.github.io/2019/05/02/object-picking.html
