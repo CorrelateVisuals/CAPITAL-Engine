@@ -75,7 +75,7 @@ ivec4 statesIn  = cellIn[index].states;
 bool aliveCell          = statesIn.x == alive;
 bool deadCell           = statesIn.x == dead;
 bool stage(int number)  { return statesIn.y == number; }
-bool inCycleRange       = statesIn.z > 0 && statesIn.z < cycleSize;
+bool inCycleRange       = statesIn.z >= 0 && statesIn.z < cycleSize;
 bool reachedCycleEnd    = statesIn.z == cycleSize;
 
 bool initialized        = aliveCell && colorIn == blue;
@@ -83,13 +83,14 @@ bool lifeCycle          = aliveCell && inCycleRange;
 bool endOfStage         = aliveCell && reachedCycleEnd;
 bool live(int neighbours) { return (aliveCell && (neighbours == 3 || neighbours == 2)) || (deadCell && neighbours == 3); }
 bool die(int neighbours)  { return (aliveCell && (neighbours < 2 || neighbours > 3));}
+vec4 colorIncrement     = colorIn + vec4(float((ubo.time % cycleSize + 1)) / float(cycleSize * 2), vec3(0.0));
 
 void simulate(out Cell cell){
     int neighbours  = neighbourCellsInRange(1).x;
 
     if (stage(0)) {
         cell = initialized ?    Cell(pos, green, size, setState(alive, 0)) :
-               lifeCycle ?      Cell(pos, green, size, setState(alive, 0)) :
+               lifeCycle ?      Cell(pos, colorIncrement, size, setState(alive, 0)) :
                endOfStage ?     Cell(pos, green, size, setState(alive, 1)) :
                                 Cell(pos, black, sizeOff, setState(dead, 1));
     } else if (stage(1)) {

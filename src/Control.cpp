@@ -16,14 +16,12 @@ Control::~Control() {
 }
 
 void Control::simulateHours() {
-  static auto lastTime = std::chrono::system_clock::now();
-  auto currentTime = std::chrono::system_clock::now();
-  auto elapsedSeconds = std::chrono::duration_cast<std::chrono::microseconds>(
-                            currentTime - lastTime)
-                            .count() /
-                        1000000.0;
+  static auto lastTime = std::chrono::high_resolution_clock::now();
+  auto currentTime = std::chrono::high_resolution_clock::now();
 
-  if (elapsedSeconds >= (1.0 / timer.speed)) {
+  if (currentTime - lastTime >=
+      std::chrono::duration_cast<std::chrono::high_resolution_clock::duration>(
+          std::chrono::duration<float>(1.0 / timer.speed))) {
     passedSimulationHours++;
     lastTime = currentTime;
   }
