@@ -16,14 +16,14 @@ class Control {
   } timer;
 
   struct Grid {
-    uint32_t totalAliveCells = 1000;
+    uint32_t totalAliveCells = 700;
     std::array<uint32_t, 2> dimensions = {60, 30};
     float gap = 0.12f;
   } grid;
 
   struct DisplayConfiguration {
     const char* title = "CAPITAL Engine";
-    uint32_t width = 1080;
+    uint32_t width = 1920;
     uint32_t height = 1080;
   } display;
 
@@ -33,14 +33,10 @@ class Control {
   } compute;
 
  public:
-  // Initialization
-  float getRandomFloat(float min, float max);
   std::vector<int> setCellsAliveRandomly(size_t size);
 
-  // Animation
   double lowFrequencyOsciallator();
   void simulateHours();
 
-  // Globally accessible
   int passedSimulationHours = 0;  // TODO: 'long long'
 };

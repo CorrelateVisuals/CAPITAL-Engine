@@ -82,6 +82,7 @@ std::vector<World::Cell> World::initializeCells() {
 
     cells[i] = {pos, color, cell.size, state};
   }
+  _log.console(aliveCellIndices);
   return cells;
 }
 

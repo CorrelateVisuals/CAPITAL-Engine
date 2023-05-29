@@ -39,7 +39,6 @@ float noise(vec2 p) {
     float total = 0.0; 
     float frequency = 0.1;
     float amplitude = 0.5;
-
     int octaves = 12;
     float persistence = 0.5;
     float lacunarity = 2.0;
