@@ -11,9 +11,8 @@
 /// - Adding CPU read access to cell through shaderStorage buffer
 ///
 /// [ FEATURES: ADDITIONS ]
-/// - Add vertex and index buffers; remove the vertex, index and normal data
-/// from vertex shader
-/// https://vulkan-tutorial.com/Vertex_buffers/Vertex_buffer_creation
+/// - Add camera movements, arcball or common
+/// https://github.com/Twinklebear/arcball-cpp
 /// - Dear ImGui (for runtime settings, graph data and economic encyclopedia)
 /// https://github.com/ocornut/imgui
 /// - Multisampling
@@ -22,8 +21,9 @@
 /// - Renderpicking/colorpicking: Adding screenspace position to vertex ID, to
 /// click on objects and return their IDs.
 /// https://snoozetime.github.io/2019/05/02/object-picking.html
-/// - Add camera movements, arcball or common
-/// https://github.com/Twinklebear/arcball-cpp
+/// - Add vertex and index buffers; remove the vertex, index and normal data
+/// from vertex shader
+/// https://vulkan-tutorial.com/Vertex_buffers/Vertex_buffer_creation
 ///
 /// [ FEATURES: GEOMETRY ]
 /// - Animating geometry between cells
