@@ -35,13 +35,22 @@ const int cubeIndices[25] = {   0, 1, 2, 3, 6, 7, 4, 5,     // front and back fa
                         2 };                        // degenerate triangle to start new strip
 
 float random(vec2 co) { return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453); }
-float noise(vec2 p) { float total = 0.0; float frequency = 1.0; float amplitude = 1.0;
-    int octaves = 8; float persistence = 0.5; float lacunarity = 2.0; float scale = 2.0;
+float noise(vec2 p) { 
+    float total = 0.0; 
+    float frequency = 0.1;
+    float amplitude = 0.5;
+
+    int octaves = 12;
+    float persistence = 0.5;
+    float lacunarity = 2.0;
+    float scale = 0.5;
+
     for (int i = 0; i < octaves; i++) {
         total += random(p * scale) * amplitude;
         p *= lacunarity;
         amplitude *= persistence;
     }
+    total /= scale;
     return total;
 }
 vec4 pos = vec4( inPosition.xy, noise( inPosition.xy ), inPosition.w );
