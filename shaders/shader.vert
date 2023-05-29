@@ -33,7 +33,19 @@ const int cubeIndices[25] = {   0, 1, 2, 3, 6, 7, 4, 5,     // front and back fa
                         2, 6, 0, 4, 1, 5, 3, 7,     // connecting strips
                         2, 3, 6, 7, 4, 5, 0, 1,     // top and bottom faces
                         2 };                        // degenerate triangle to start new strip
-vec4 constructCube(){ vec4 cube = inPosition.rgba + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); return cube; }
+
+float random(vec2 co) { return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453); }
+float noise(vec2 p) { float total = 0.0; float frequency = 1.0; float amplitude = 1.0;
+    int octaves = 8; float persistence = 0.5; float lacunarity = 2.0; float scale = 2.0;
+    for (int i = 0; i < octaves; i++) {
+        total += random(p * scale) * amplitude;
+        p *= lacunarity;
+        amplitude *= persistence;
+    }
+    return total;
+}
+vec4 pos = vec4( inPosition.xy, noise( inPosition.xy ), inPosition.w );
+vec4 constructCube(){ vec4 cube = pos + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); return cube; }
 mat4 modelViewProjection(){ mat4 mvp = ubo.projection * ubo.view * ubo.model; return mvp; }
 float phongLightning ( vec4 directionAndIntensity ) {
     int index = gl_VertexIndex / 4; 
