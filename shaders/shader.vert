@@ -6,14 +6,15 @@ layout(location = 1) in vec4 inColor;
 layout(location = 2) in vec4 inSize;
 
 layout (binding = 0) uniform ParameterUBO {
-    int passedHours; //TODO 'long long' : int64_t passedHours;
-    int gridSize;
-    
+    int sqrtOfGrid;
+    int time;                                   //TODO 'long long' : int64_t passedHours;
     mat4 model;
     mat4 view;
     mat4 projection;
-    vec4 lightning;
+    vec4 lightDirection;
+    float cellSize;
 } ubo;
+
 const vec3 cubeVertices[8] = {vec3(-0.5f, -0.5f,-0.5f),   // 0
                         vec3(0.5f, -0.5f, -0.5f),   // 1
                         vec3(-0.5f, 0.5f, -0.5f),   // 2
@@ -32,7 +33,27 @@ const int cubeIndices[25] = {   0, 1, 2, 3, 6, 7, 4, 5,     // front and back fa
                         2, 6, 0, 4, 1, 5, 3, 7,     // connecting strips
                         2, 3, 6, 7, 4, 5, 0, 1,     // top and bottom faces
                         2 };                        // degenerate triangle to start new strip
-vec4 constructCube(){ vec4 cube = inPosition.rgba + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); return cube; }
+
+float random(vec2 co) { return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453); }
+float noise(vec2 p) { 
+    float total = 0.0; 
+    float frequency = 0.1;
+    float amplitude = 0.5;
+    int octaves = 12;
+    float persistence = 0.5;
+    float lacunarity = 2.0;
+    float scale = 0.8;
+
+    for (int i = 0; i < octaves; i++) {
+        total += random(p * scale) * amplitude;
+        p *= lacunarity;
+        amplitude *= persistence;
+    }
+    total /= scale;
+    return total;
+}
+vec4 pos = vec4( inPosition.xy, noise( inPosition.xy ), inPosition.w );
+vec4 constructCube(){ vec4 cube = pos + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); return cube; }
 mat4 modelViewProjection(){ mat4 mvp = ubo.projection * ubo.view * ubo.model; return mvp; }
 float phongLightning ( vec4 directionAndIntensity ) {
     int index = gl_VertexIndex / 4; 
@@ -47,6 +68,6 @@ void main() {
     
     if( inSize.x == -1.0f ){ return; } else {
         gl_Position = modelViewProjection() * constructCube();  
-        fragColor =  phongLightning(ubo.lightning.xyzw) * inColor.rgb;
+        fragColor =  phongLightning(ubo.lightDirection.xyzw) * inColor.rgb;
     }    
 }

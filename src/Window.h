@@ -19,11 +19,10 @@ class Window {
     std::array<double, 2> rightCoords = {parameterOff, parameterOff};
   } mouse;
 
-  void initWindow();
-
   void getMouseButtonType();
   void mouseClick(GLFWwindow* win, int button);
 
  private:
+  void initWindow();
   static void windowResize(GLFWwindow* win, int width, int height);
 };

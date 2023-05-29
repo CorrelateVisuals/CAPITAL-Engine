@@ -11,34 +11,32 @@ class Control {
   Control();
   ~Control();
 
+  struct Timer {
+    float speed = 40.0f;
+  } timer;
+
   struct Grid {
-    float cellSize = 0.1f;
-    const uint32_t numberOfAliveCells = 150;
-    const uint32_t gridDimensions[2] = {30, 30};
-    const float gridPointDistance = 3.5;
-    const uint32_t numberOfGridPoints = gridDimensions[0] * gridDimensions[1];
+    uint32_t totalAliveCells = 700;
+    std::array<uint32_t, 2> dimensions = {60, 30};
+    float gap = 0.12f;
   } grid;
 
-  float simulationSpeed = 10.0f;
+  struct DisplayConfiguration {
+    const char* title = "CAPITAL Engine";
+    uint32_t width = 1920;
+    uint32_t height = 1080;
+  } display;
+
+  struct Compute {
+    const uint32_t localSizeX = 8;
+    const uint32_t localSizeY = 8;
+  } compute;
 
  public:
-  // Initialization
-  float getRandomFloat(float min, float max);
-  std::vector<int> setCellsAliveRandomly(size_t size);
+  std::vector<int> setCellsAliveRandomly(size_t numberOfCells);
 
-  // Animation
   double lowFrequencyOsciallator();
   void simulateHours();
 
- public:
-  // Globally accessible variables
   int passedSimulationHours = 0;  // TODO: 'long long'
 };
-
-struct DisplayConfig {
- public:
-  const char* projectTitle = "CAPITAL Engine";
-  uint32_t width = 1080;
-  uint32_t height = 1080;
-};
-inline DisplayConfig displayConfig;

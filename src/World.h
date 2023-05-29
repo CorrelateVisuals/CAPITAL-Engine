@@ -15,19 +15,27 @@ class World {
   World();
   ~World();
 
+  struct Cell {
+    std::array<float, 4> position;
+    std::array<float, 4> color;
+    std::array<float, 4> size = {0.1f};
+    std::array<int, 4> states;
+  } cell;
+
+  struct Camera {
+    glm::vec3 position{0.0f, 0.0f, 5.5f};
+    glm::vec3 front{0.0f, 0.0f, -1.0f};
+    glm::vec3 up{0.0f, -1.0f, 0.0f};
+  } camera;
+
   struct UniformBufferObject {
+    std::array<uint32_t, 2> gridDimensions;
     int passedHours;  // TODO: 'long long'
     alignas(16) glm::mat4 model;
     alignas(16) glm::mat4 view;
     alignas(16) glm::mat4 proj;
     std::array<float, 4> lightDirection;
-  };
-
-  struct Cell {
-    std::array<float, 4> position;
-    std::array<float, 4> color;
-    std::array<float, 4> size;
-    std::array<int, 4> states;
+    float cellSize;
   };
 
  public:
@@ -35,7 +43,6 @@ class World {
   bool isIndexAlive(const std::vector<int>& aliveCells, int index);
 
   UniformBufferObject updateUniforms();
-
   glm::mat4 setModel();
   glm::mat4 setView();
   glm::mat4 setProjection(VkExtent2D& swapChainExtent);
@@ -43,4 +50,11 @@ class World {
   static std::vector<VkVertexInputAttributeDescription>
   getAttributeDescriptions();
   static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
+
+ private:
+  inline static const std::array<float, 4> red{1.0f, 0.0f, 0.0f, 1.0f};
+  inline static const std::array<float, 4> blue{0.0f, 0.0f, 1.0f, 1.0f};
+
+  inline static const std::array<int, 4> alive{1, 0, 0, 0};
+  inline static const std::array<int, 4> dead{-1, 0, 0, 0};
 };

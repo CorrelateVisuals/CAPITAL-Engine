@@ -30,11 +30,11 @@ class Global {
 
     Logging logging;
     ValidationLayers validationLayers;
-    Window mainWindow;
+    Control control;
     VulkanMechanics vulkanMechanics;
     Pipelines pipelines;
     MemoryCommands memoryCommands;
-    Control control;
+    Window mainWindow;
     World world;
   };
   inline static Objects obj;
@@ -43,11 +43,11 @@ class Global {
   void cleanup();
 };
 
-static constexpr auto& _log = Global::obj.logging;
-static constexpr auto& _validationLayers = Global::obj.validationLayers;
-static constexpr auto& _window = Global::obj.mainWindow;
-static constexpr auto& _mechanics = Global::obj.vulkanMechanics;
-static constexpr auto& _pipelines = Global::obj.pipelines;
-static constexpr auto& _memCommands = Global::obj.memoryCommands;
-static constexpr auto& _control = Global::obj.control;
-static constexpr auto& _world = Global::obj.world;
+inline static auto& _log = Global::obj.logging;
+inline static auto& _validationLayers = Global::obj.validationLayers;
+inline static auto& _window = Global::obj.mainWindow;
+inline static auto& _mechanics = Global::obj.vulkanMechanics;
+inline static auto& _pipelines = Global::obj.pipelines;
+inline static auto& _memCommands = Global::obj.memoryCommands;
+inline static auto& _control = Global::obj.control;
+inline static auto& _world = Global::obj.world;

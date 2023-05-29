@@ -79,7 +79,7 @@ void ValidationLayers::setupDebugMessenger(VkInstance instance) {
 
   if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr,
                                    &debugMessenger) != VK_SUCCESS)
-    throw std::runtime_error("Failed to set up debug messenger!");
+    throw std::runtime_error("!ERROR! Failed to set up debug messenger!");
 }
 
 bool ValidationLayers::checkValidationLayerSupport() {

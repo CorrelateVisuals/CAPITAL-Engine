@@ -1,6 +1,7 @@
 #include <chrono>
 #include <numbers>
 #include <random>
+#include <unordered_set>
 
 #include "CapitalEngine.h"
 #include "Control.h"
@@ -15,23 +16,15 @@ Control::~Control() {
 }
 
 void Control::simulateHours() {
-  static auto lastTime = std::chrono::system_clock::now();
-  auto currentTime = std::chrono::system_clock::now();
-  auto elapsedSeconds = std::chrono::duration_cast<std::chrono::microseconds>(
-                            currentTime - lastTime)
-                            .count() /
-                        1000000.0;
+  static auto lastTime = std::chrono::high_resolution_clock::now();
+  auto currentTime = std::chrono::high_resolution_clock::now();
 
-  if (elapsedSeconds >= (1.0 / simulationSpeed)) {
+  if (currentTime - lastTime >=
+      std::chrono::duration_cast<std::chrono::high_resolution_clock::duration>(
+          std::chrono::duration<float>(1.0 / timer.speed))) {
     passedSimulationHours++;
     lastTime = currentTime;
   }
-}
-
-float Control::getRandomFloat(float min, float max) {
-  static std::mt19937 rng(std::random_device{}());
-  static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-  return dist(rng) * (max - min) + min;
 }
 
 double Control::lowFrequencyOsciallator() {
@@ -43,17 +36,22 @@ double Control::lowFrequencyOsciallator() {
   const double period = 1000.0;             // time period in milliseconds
   const double frequency = 100.0 / period;  // frequency in Hz
   const double angle = time_elapsed * frequency * 2 * std::numbers::pi /
-                       1000.0;    // angle in radians
-  return 0.5 * (1 + sin(angle));  // lowFrequencyOsciallators between 0 and 1
+                       1000.0;  // angle in radians
+  return 0.5 *
+         (1 + std::sin(angle));  // lowFrequencyOsciallators between 0 and 1
 }
 
-std::vector<int> Control::setCellsAliveRandomly(size_t size) {
+std::vector<int> Control::setCellsAliveRandomly(size_t numberOfCells) {
   std::vector<int> CellIDs;
+  CellIDs.reserve(numberOfCells);
 
-  while (CellIDs.size() < size) {
-    int CellID = static_cast<int>(getRandomFloat(0, 1) *
-                                  _control.grid.numberOfGridPoints);
-    // check if the CellID is not already in CellIDs
+  std::random_device random;
+  std::mt19937 generate(random());
+  std::uniform_int_distribution<int> distribution(
+      0, _control.grid.dimensions[0] * _control.grid.dimensions[1] - 1);
+
+  while (CellIDs.size() < numberOfCells) {
+    int CellID = distribution(generate);
     if (std::find(CellIDs.begin(), CellIDs.end(), CellID) == CellIDs.end()) {
       CellIDs.push_back(CellID);
     }

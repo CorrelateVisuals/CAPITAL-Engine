@@ -1,60 +1,60 @@
 #version 450
                                                 //#extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
-const int SQRT_OF_GRID = 30;
-layout (local_size_x = SQRT_OF_GRID, local_size_y = SQRT_OF_GRID, local_size_z = 1) in;
+layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
 layout (binding = 0) uniform ParameterUBO {
+    ivec2 gridDimensions;
     int time;                                   //TODO 'long long' : int64_t passedHours;
     mat4 model;
     mat4 view;
     mat4 projection;
+    vec4 lightDirection;
+    float cellSize;
 } ubo;
+
+uint globalID_x = gl_GlobalInvocationID.x;
+uint globalID_y = gl_GlobalInvocationID.y;
+uint index = globalID_y * ubo.gridDimensions.x + globalID_x % ubo.gridDimensions.x + (globalID_x / ubo.gridDimensions.x) * ubo.gridDimensions.y;
 
 struct Cell {
     vec4 position;  // float    xyz
     vec4 color;     // float    rgba
     vec4 size;      // float    x
-    ivec4 states;   // bool     alive, stage, notInUse, ubo.time
+    ivec4 states;   // bool     alive, stage, cycle, ubo.time
 } cell;
+
+int cycleSize = 24;
+ivec4 setState(int _alive, int stage){ int cycle = ubo.time % cycleSize + 1; return ivec4(_alive, stage, cycle, ubo.time); }
 
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
-uint index = gl_GlobalInvocationID.x;
 
 int alive       =  1;
 int dead        = -1;
-vec4 size       = vec4(0.1);
+vec4 size       = vec4(ubo.cellSize);
 vec4 sizeOff    = vec4(dead);
 vec4 red        = vec4(1.0, 0.0, 0.0, 1.0);
 vec4 green      = vec4(0.0, 1.0, 0.0, 1.0); 
-vec4 dimGreen   = vec4(0.0, 0.1, 0.0, 1.0);
+vec4 dimGreen   = vec4(0.0, 0.05, 0.0, 1.0);
 vec4 blue       = vec4(0.0, 0.0, 1.0, 1.0);
 vec4 white      = vec4(1.0, 1.0, 1.0, 1.0);
 vec4 black      = vec4(0.0, 0.0, 0.0, 1.0);
 vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
 
-int cycleSize = 10;
-ivec4 setState(int _alive, int stage){
-    int _cycleSize = (_alive == 1) ? cycleSize + 1 : 0;
-    int cycle = _alive == alive ? ubo.time % _cycleSize + 1 : 0;
-    ivec4 state = ivec4(_alive, stage, cycle, ubo.time);
-    return state;
-}
-
 ivec4 neighbourCellsInRange(int range){
-        ivec4 neighbourCellsInRange = ivec4(0);
+ivec4 neighbourCellsInRange = ivec4(0);
 
-        int gridSize = SQRT_OF_GRID;
-        int indexX = int(index) % SQRT_OF_GRID;
-        int indexY = int(index) / SQRT_OF_GRID;
-        int startX = max(indexX - range, 0);
-        int endX = min(indexX + range, SQRT_OF_GRID - 1);
-        int startY = max(indexY - range, 0);
-        int endY = min(indexY + range, SQRT_OF_GRID - 1);
+int gridSize = ubo.gridDimensions.x * ubo.gridDimensions.y;
+int indexX = int(index) % ubo.gridDimensions.x;
+int indexY = int(index) / ubo.gridDimensions.x;
+int startX = max(indexX - range, 0);
+int endX = min(indexX + range, ubo.gridDimensions.x - 1);
+int startY = max(indexY - range, 0);
+int endY = min(indexY + range, ubo.gridDimensions.y - 1);
 
-        for (int x = startX; x <= endX; x++) {
-            for (int y = startY; y <= endY; y++) {
-                int neighbourIndex = y * SQRT_OF_GRID + x;
+for (int x = startX; x <= endX; x++) {
+    for (int y = startY; y <= endY; y++) {
+        int neighbourIndex = y * ubo.gridDimensions.x + x;
 
                 bool notSelf = neighbourIndex != index;
                 bool neighbourAlive = cellIn[neighbourIndex].states.x == alive 
@@ -63,34 +63,38 @@ ivec4 neighbourCellsInRange(int range){
                 if (neighbourAlive && notSelf) {
                     neighbourCellsInRange++;
                 }
-            }
         }
+    }
     return neighbourCellsInRange; 
 }
 
 vec4 pos        = cellIn[index].position;
 vec4 colorIn    = cellIn[index].color;
 ivec4 statesIn  = cellIn[index].states;
+
 bool aliveCell          = statesIn.x == alive;
 bool deadCell           = statesIn.x == dead;
-bool inCycleRange       = statesIn.z > 0 && statesIn.z < cycleSize;
+bool stage(int number)  { return statesIn.y == number; }
+bool inCycleRange       = statesIn.z >= 0 && statesIn.z < cycleSize;
 bool reachedCycleEnd    = statesIn.z == cycleSize;
+
 bool initialized        = aliveCell && colorIn == blue;
 bool lifeCycle          = aliveCell && inCycleRange;
 bool endOfStage         = aliveCell && reachedCycleEnd;
 bool live(int neighbours) { return (aliveCell && (neighbours == 3 || neighbours == 2)) || (deadCell && neighbours == 3); }
-bool die(int neighbours) { return (aliveCell && (neighbours < 2 || neighbours > 3));}
+bool die(int neighbours)  { return (aliveCell && (neighbours < 2 || neighbours > 3));}
+vec4 colorIncrement     = colorIn + vec4(float((ubo.time % cycleSize + 1)) / float(cycleSize * 2), vec3(0.0));
 
 void simulate(out Cell cell){
     int neighbours  = neighbourCellsInRange(1).x;
 
-    if (statesIn.y == 0) {
-        cell = initialized ?    Cell(pos, dimGreen, size, setState(alive, 0)) :
-               lifeCycle ?      Cell(pos, colorIn + dimGreen, size, setState(alive, 0)) :
+    if (stage(0)) {
+        cell = initialized ?    Cell(pos, green, size, setState(alive, 0)) :
+               lifeCycle ?      Cell(pos, colorIncrement, size, setState(alive, 0)) :
                endOfStage ?     Cell(pos, green, size, setState(alive, 1)) :
                                 Cell(pos, black, sizeOff, setState(dead, 1));
-    } else if (statesIn.y == 1) {
-        cell = live(neighbours) ?   Cell(pos, dimGreen, size, setState(alive, 0)) :
+    } else if (stage(1)) {
+        cell = live(neighbours) ?   Cell(pos, green, size, setState(alive, 0)) :
                die(neighbours) ?    Cell(pos, black, sizeOff, setState(dead, 0)) :
                                     Cell(pos, colorIn, sizeOff, setState(dead, 1));
     }
