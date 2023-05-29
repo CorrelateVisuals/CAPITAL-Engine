@@ -48,12 +48,12 @@ std::vector<int> Control::setCellsAliveRandomly(size_t size) {
   CellIDs.reserve(size);
 
   std::random_device random;
-  std::mt19937 gen(random());
-  std::uniform_int_distribution<int> dis(
+  std::mt19937 generate(random());
+  std::uniform_int_distribution<int> distribution(
       0, _control.grid.dimensions[0] * _control.grid.dimensions[1] - 1);
 
   while (CellIDs.size() < size) {
-    int CellID = dis(gen);
+    int CellID = distribution(generate);
     if (std::find(CellIDs.begin(), CellIDs.end(), CellID) == CellIDs.end()) {
       CellIDs.push_back(CellID);
     }

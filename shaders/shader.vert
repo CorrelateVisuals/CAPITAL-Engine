@@ -42,7 +42,7 @@ float noise(vec2 p) {
     int octaves = 12;
     float persistence = 0.5;
     float lacunarity = 2.0;
-    float scale = 0.5;
+    float scale = 0.8;
 
     for (int i = 0; i < octaves; i++) {
         total += random(p * scale) * amplitude;
