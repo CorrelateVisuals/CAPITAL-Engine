@@ -41,16 +41,16 @@ double Control::lowFrequencyOsciallator() {
          (1 + std::sin(angle));  // lowFrequencyOsciallators between 0 and 1
 }
 
-std::vector<int> Control::setCellsAliveRandomly(size_t size) {
+std::vector<int> Control::setCellsAliveRandomly(size_t numberOfCells) {
   std::vector<int> CellIDs;
-  CellIDs.reserve(size);
+  CellIDs.reserve(numberOfCells);
 
   std::random_device random;
   std::mt19937 generate(random());
   std::uniform_int_distribution<int> distribution(
       0, _control.grid.dimensions[0] * _control.grid.dimensions[1] - 1);
 
-  while (CellIDs.size() < size) {
+  while (CellIDs.size() < numberOfCells) {
     int CellID = distribution(generate);
     if (std::find(CellIDs.begin(), CellIDs.end(), CellID) == CellIDs.end()) {
       CellIDs.push_back(CellID);
