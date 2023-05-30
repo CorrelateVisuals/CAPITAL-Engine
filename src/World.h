@@ -30,7 +30,7 @@ class World {
 
   struct UniformBufferObject {
     std::array<uint32_t, 2> gridDimensions;
-    int passedHours;  // TODO: 'long long'
+    int passedHours;
     alignas(16) glm::mat4 model;
     alignas(16) glm::mat4 view;
     alignas(16) glm::mat4 proj;

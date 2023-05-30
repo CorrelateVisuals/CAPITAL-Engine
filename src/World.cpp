@@ -94,7 +94,7 @@ bool World::isIndexAlive(const std::vector<int>& aliveCells, int index) {
 World::UniformBufferObject World::updateUniforms() {
   UniformBufferObject uniformObject{};
   uniformObject.gridDimensions = _control.grid.dimensions;
-  uniformObject.passedHours = _control.passedSimulationHours;
+  uniformObject.passedHours = _control.timer.passedHours;
   uniformObject.model = _world.setModel();
   uniformObject.view = _world.setView();
   uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);

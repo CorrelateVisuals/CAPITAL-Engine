@@ -22,7 +22,7 @@ void Control::simulateHours() {
   if (currentTime - lastTime >=
       std::chrono::duration_cast<std::chrono::high_resolution_clock::duration>(
           std::chrono::duration<float>(1.0 / timer.speed))) {
-    passedSimulationHours++;
+    timer.passedHours++;
     lastTime = currentTime;
   }
 }

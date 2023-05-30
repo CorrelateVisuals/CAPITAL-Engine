@@ -13,6 +13,7 @@ class Control {
 
   struct Timer {
     float speed = 40.0f;
+    int passedHours = 0;
   } timer;
 
   struct Grid {
@@ -37,6 +38,4 @@ class Control {
 
   double lowFrequencyOsciallator();
   void simulateHours();
-
-  int passedSimulationHours = 0;  // TODO: 'long long'
 };
