@@ -17,15 +17,13 @@ class Logging {
     int columnCount = 14;
   } style;
 
-  std::ofstream logFile;
-
   template <class T, class... Ts>
   void console(const T& first, const Ts&... inputs);
   std::string getBufferUsageString(VkBufferUsageFlags usage);
 
  private:
+  std::ofstream logFile;
   std::string previousTime;
-
   std::string returnDateAndTime();
 };
 
@@ -72,7 +70,7 @@ class ValidationLayers {
 };
 
 template <class T, class... Ts>
-inline void Logging::console(const T& first, const Ts&... inputs) {
+void Logging::console(const T& first, const Ts&... inputs) {
   if (!logFile.is_open()) {
     std::cerr << "!ERROR! Could not open logFile for writing" << std::endl;
     return;
