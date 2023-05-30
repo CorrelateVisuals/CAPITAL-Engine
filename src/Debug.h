@@ -95,18 +95,12 @@ inline void Logging::console(const T& first, const Ts&... inputs) {
     logFile << ' ' << style.charLeader << ' ';
     for (const auto& element : first) {
       if (elementCount % style.columnCount == 0 && elementCount != 0) {
-        std::cout << '\n'
-                  << ' '
-                  << std::string(static_cast<size_t>(style.columnCount) +
-                                     columnCountOffset,
-                                 ' ')
-                  << style.charLeader << ' ';
-        logFile << '\n'
-                << ' '
-                << std::string(static_cast<size_t>(style.columnCount) +
-                                   columnCountOffset,
-                               ' ')
-                << style.charLeader << ' ';
+        std::string spaces(
+            static_cast<size_t>(style.columnCount) + columnCountOffset, ' ');
+
+        std::cout << '\n' << ' ' << spaces << style.charLeader << ' ';
+        logFile << '\n' << ' ' << spaces << style.charLeader << ' ';
+
         elementCount = 0;
       }
       std::cout << element << ' ';
