@@ -72,39 +72,42 @@ class ValidationLayers {
 
 template <class T, class... Ts>
 inline void Logging::console(const T& first, const Ts&... inputs) {
-  int i = 0;
   if (!logFile.is_open()) {
-    std::cerr << "!!! Could not open logFile for writing !!!" << std::endl;
+    std::cerr << "!ERROR! Could not open logFile for writing" << std::endl;
     return;
   }
 
   std::string currentTime = returnDateAndTime();
   int numColumnsOffset = 4;
+
   if (currentTime != previousTime) {
-    std::cout << " " << returnDateAndTime();
-    logFile << " " << returnDateAndTime();
+    std::cout << ' ' << currentTime;
+    logFile << ' ' << currentTime;
   } else {
-    std::cout << std::string(
+    std::string padding(
         static_cast<size_t>(style.numColumns) + numColumnsOffset, ' ');
+    std::cout << padding;
+    logFile << padding;
   }
 
-  // If the first input is a vector, handle it separately
   if constexpr (std::is_same_v<T, std::vector<int>>) {
     static int elementCount = 0;
-    std::cout << " " << style.charLeader << " ";
-    logFile << " " << style.charLeader << " ";
+    std::cout << ' ' << style.charLeader << ' ';
+    logFile << ' ' << style.charLeader << ' ';
     for (const auto& element : first) {
       if (elementCount % style.numColumns == 0 && elementCount != 0) {
-        std::cout << "\n "
+        std::cout << '\n'
+                  << ' '
                   << std::string(static_cast<size_t>(style.numColumns) +
                                      numColumnsOffset,
                                  ' ')
-                  << style.charLeader << " ";
-        logFile << "\n "
+                  << style.charLeader << ' ';
+        logFile << '\n'
+                << ' '
                 << std::string(
                        static_cast<size_t>(style.numColumns) + numColumnsOffset,
                        ' ')
-                << style.charLeader << " ";
+                << style.charLeader << ' ';
         elementCount = 0;
       }
       std::cout << element << ' ';
@@ -114,18 +117,12 @@ inline void Logging::console(const T& first, const Ts&... inputs) {
     std::cout << '\n';
     logFile << '\n';
   } else {
-    // Handle all other inputs normally
     std::cerr << ' ' << first;
     logFile << ' ' << first;
-    (
-        [&] {
-          ++i;
-          std::cerr << ' ' << inputs;
-          logFile << ' ' << inputs;
-        }(),
-        ...);
+    ((std::cerr << ' ' << inputs, logFile << ' ' << inputs), ...);
     std::cerr << '\n';
     logFile << '\n';
   }
+
   previousTime = currentTime;
 }
