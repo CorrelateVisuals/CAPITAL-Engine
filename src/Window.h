@@ -13,9 +13,9 @@ class Window {
 
   struct Mouse {
     float pressDelayDuration = 0.18f;
-    std::array<float, 2> leftCoords = {parameterOff, parameterOff};
-    std::array<float, 2> middleCoords = {parameterOff, parameterOff};
-    std::array<float, 2> rightCoords = {parameterOff, parameterOff};
+    std::array<float, 2> leftCoords{off, off};
+    std::array<float, 2> middleCoords{off, off};
+    std::array<float, 2> rightCoords{off, off};
   } mouse;
 
   void mouseClick(GLFWwindow* win);

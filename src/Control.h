@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-constexpr int parameterOff = -1;
+constexpr int off = -1;
 
 class Control {
  public:
@@ -17,7 +17,7 @@ class Control {
   } timer;
 
   struct Grid {
-    size_t totalAliveCells = 700;
+    uint32_t totalAliveCells = 700;
     std::array<uint32_t, 2> dimensions = {60, 30};
     float gap = 0.12f;
   } grid;
@@ -34,7 +34,7 @@ class Control {
   } compute;
 
  public:
-  std::vector<int> setCellsAliveRandomly(size_t numberOfCells);
+  std::vector<int> setCellsAliveRandomly(uint32_t numberOfCells);
 
   double lowFrequencyOsciallator();
   void simulateHours();

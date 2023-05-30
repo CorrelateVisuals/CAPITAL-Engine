@@ -49,7 +49,7 @@ class VulkanMechanics {
     std::vector<VkFramebuffer> framebuffers;
 
     struct SupportDetails {
-      VkSurfaceCapabilitiesKHR capabilities;
+      VkSurfaceCapabilitiesKHR capabilities{};
       std::vector<VkSurfaceFormatKHR> formats;
       std::vector<VkPresentModeKHR> presentModes;
     } supportDetails;

@@ -22,16 +22,7 @@ VulkanMechanics::VulkanMechanics()
              VK_NULL_HANDLE,
              VK_NULL_HANDLE,
              {std::nullopt, std::nullopt}},
-      swapChain{
-          VK_NULL_HANDLE,
-          {},
-          VK_FORMAT_UNDEFINED,
-          {},
-          {0, 0},
-          {},
-          {VkSurfaceCapabilitiesKHR{{}, {}, {}, {}, {}, {}, {}, {}, {}, {}},
-           {},
-           {}}} {
+      swapChain{VK_NULL_HANDLE, {}, VK_FORMAT_UNDEFINED, {}, {0, 0}, {}, {}} {
   _log.console("{ VkM }", "constructing Vulkan Mechanics");
 }
 

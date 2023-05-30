@@ -41,7 +41,7 @@ double Control::lowFrequencyOsciallator() {
          (1 + std::sin(angle));  // lowFrequencyOsciallators between 0 and 1
 }
 
-std::vector<int> Control::setCellsAliveRandomly(size_t numberOfCells) {
+std::vector<int> Control::setCellsAliveRandomly(uint32_t numberOfCells) {
   std::vector<int> CellIDs;
   CellIDs.reserve(numberOfCells);
 
