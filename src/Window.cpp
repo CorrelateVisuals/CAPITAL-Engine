@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unordered_map>
 
 #include "CapitalEngine.h"
 #include "Control.h"
@@ -36,14 +37,13 @@ void Window::windowResize(GLFWwindow* win, int width, int height) {
 }
 
 void Window::mouseClick() {
-  static int oldState = GLFW_RELEASE;
   int newState = GLFW_RELEASE;
   static int buttonType = -1;
-  const int mouseButtonTypes[] = {GLFW_MOUSE_BUTTON_LEFT,
-                                  GLFW_MOUSE_BUTTON_MIDDLE,
-                                  GLFW_MOUSE_BUTTON_RIGHT};
+  const static int mouseButtonTypes[] = {GLFW_MOUSE_BUTTON_LEFT,
+                                         GLFW_MOUSE_BUTTON_MIDDLE,
+                                         GLFW_MOUSE_BUTTON_RIGHT};
 
-  for (const auto& mouseButtonType : mouseButtonTypes) {
+  for (const int& mouseButtonType : mouseButtonTypes) {
     if (glfwGetMouseButton(window, mouseButtonType) == GLFW_PRESS) {
       newState = GLFW_PRESS;
       buttonType = mouseButtonType;
@@ -52,6 +52,7 @@ void Window::mouseClick() {
   }
 
   if (buttonType != -1) {
+    static int oldState = GLFW_RELEASE;
     double xpos, ypos;
     static float timer = 0.0f;
     static float pressTime = 0.0f;
@@ -60,47 +61,42 @@ void Window::mouseClick() {
     const float x = static_cast<float>(xpos) / _control.display.width;
     const float y = static_cast<float>(ypos) / _control.display.height;
 
-    static const std::array<std::pair<int, std::string>, 3> buttonMappings = {
-        {{GLFW_MOUSE_BUTTON_LEFT, "{ --> } Left Mouse Button"},
-         {GLFW_MOUSE_BUTTON_MIDDLE, "{ --> } Middle Mouse Button"},
-         {GLFW_MOUSE_BUTTON_RIGHT, "{ --> } Right Mouse Button"}}};
+    static const std::unordered_map<int, std::string> buttonMappings = {
+        {GLFW_MOUSE_BUTTON_LEFT, "{ --> } Left Mouse Button"},
+        {GLFW_MOUSE_BUTTON_MIDDLE, "{ --> } Middle Mouse Button"},
+        {GLFW_MOUSE_BUTTON_RIGHT, "{ --> } Right Mouse Button"}};
 
     switch (oldState) {
-      case GLFW_PRESS:
-        switch (newState) {
-          case GLFW_RELEASE:
-            for (const auto& buttonMapping : buttonMappings) {
-              if (buttonType == buttonMapping.first) {
-                const auto& [button, message] = buttonMapping;
-                mouse.coords[button] = glm::vec2{x, y};
-                _log.console(message + " clicked at", x, ":", y);
-                break;
-              }
-            }
-            timer = 0.0;
-            break;
-          case GLFW_PRESS:
-            timer = static_cast<float>(glfwGetTime()) - pressTime;
-            if (timer >= mouse.pressDelayDuration) {
-              for (const auto& buttonMapping : buttonMappings) {
-                if (buttonType == buttonMapping.first) {
-                  const auto& [button, message] = buttonMapping;
-                  mouse.coords[button] = glm::vec2{x, y};
-                  _log.console(message + " down at", x, ":", y);
-                  break;
-                }
-              }
-            }
-            break;
-        }
-        break;
-      case GLFW_RELEASE:
-        if (newState == GLFW_PRESS) {
-          pressTime = static_cast<float>(glfwGetTime());
+      case GLFW_PRESS: {
+        if (newState == GLFW_RELEASE) {
+          const auto& buttonMapping = buttonMappings.find(buttonType);
+          if (buttonMapping != buttonMappings.end()) {
+            const std::string& message = buttonMapping->second;
+            const glm::vec2 coords{x, y};
+            mouse.coords[buttonType] = coords;
+            _log.console(message + " clicked at", x, ":", y);
+            timer = 0.0f;
+          }
         } else {
-          pressTime = 0.0;
+          const float currentTime = static_cast<float>(glfwGetTime());
+          const float timer = currentTime - pressTime;
+          if (timer >= mouse.pressDelayDuration) {
+            const auto& buttonMapping = buttonMappings.find(buttonType);
+            if (buttonMapping != buttonMappings.end()) {
+              const std::string& message = buttonMapping->second;
+              const glm::vec2 coords{x, y};
+              mouse.coords[buttonType] = coords;
+              _log.console(message + " down at", x, ":", y);
+            }
+          }
         }
         break;
+      }
+      case GLFW_RELEASE: {
+        pressTime =
+            (newState == GLFW_PRESS) ? static_cast<float>(glfwGetTime()) : 0.0f;
+        break;
+      }
     }
     oldState = newState;
   }
