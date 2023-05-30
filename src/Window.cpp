@@ -36,12 +36,8 @@ void Window::windowResize(GLFWwindow* win, int width, int height) {
 }
 
 void Window::mouseClick() {
-  double xpos, ypos;
-  float x, y;
   static int oldState = GLFW_RELEASE;
   int newState = GLFW_RELEASE;
-  static float timer = 0.0;
-  static float pressTime = 0.0;
   static int buttonType = -1;
   const int mouseButtonTypes[] = {GLFW_MOUSE_BUTTON_LEFT,
                                   GLFW_MOUSE_BUTTON_MIDDLE,
@@ -56,52 +52,56 @@ void Window::mouseClick() {
   }
 
   if (buttonType != -1) {
-    glfwGetCursorPos(window, &xpos, &ypos);
-    x = static_cast<float>(xpos) / _control.display.width;
-    y = static_cast<float>(ypos) / _control.display.height;
-  }
+    double xpos, ypos;
+    static float timer = 0.0f;
+    static float pressTime = 0.0f;
 
-  switch (oldState) {
-    case GLFW_PRESS:
-      switch (newState) {
-        case GLFW_RELEASE:
-          if (buttonType == GLFW_MOUSE_BUTTON_LEFT) {
-            mouse.leftCoords = {x, y};
-            _log.console("{ --> }", "Left Mouse Button clicked at", x, ":", y);
-          } else if (buttonType == GLFW_MOUSE_BUTTON_MIDDLE) {
-            mouse.middleCoords = {x, y};
-            _log.console("{ --> }", "Middle Mouse Button clicked at", x, ":",
-                         y);
-          } else if (buttonType == GLFW_MOUSE_BUTTON_RIGHT) {
-            mouse.rightCoords = {x, y};
-            _log.console("{ --> }", "Right Mouse Button clicked at", x, ":", y);
-          }
-          timer = 0.0;
-          break;
-        case GLFW_PRESS:
-          timer = static_cast<float>(glfwGetTime()) - pressTime;
-          if (timer >= mouse.pressDelayDuration) {
-            if (buttonType == GLFW_MOUSE_BUTTON_LEFT) {
-              mouse.leftCoords = {x, y};
-              _log.console("{ --> }", "Left Mouse Button down at", x, ":", y);
-            } else if (buttonType == GLFW_MOUSE_BUTTON_MIDDLE) {
-              mouse.middleCoords = {x, y};
-              _log.console("{ --> }", "Middle Mouse Button down at", x, ":", y);
-            } else if (buttonType == GLFW_MOUSE_BUTTON_RIGHT) {
-              mouse.rightCoords = {x, y};
-              _log.console("{ --> }", "Right Mouse Button down at", x, ":", y);
+    glfwGetCursorPos(window, &xpos, &ypos);
+    const float x = static_cast<float>(xpos) / _control.display.width;
+    const float y = static_cast<float>(ypos) / _control.display.height;
+
+    static const std::array<std::pair<int, std::string>, 3> buttonMappings = {
+        {{GLFW_MOUSE_BUTTON_LEFT, "{ --> } Left Mouse Button"},
+         {GLFW_MOUSE_BUTTON_MIDDLE, "{ --> } Middle Mouse Button"},
+         {GLFW_MOUSE_BUTTON_RIGHT, "{ --> } Right Mouse Button"}}};
+
+    switch (oldState) {
+      case GLFW_PRESS:
+        switch (newState) {
+          case GLFW_RELEASE:
+            for (const auto& buttonMapping : buttonMappings) {
+              if (buttonType == buttonMapping.first) {
+                const auto& [button, message] = buttonMapping;
+                mouse.coords[button] = glm::vec2{x, y};
+                _log.console(message + " clicked at", x, ":", y);
+                break;
+              }
             }
-          }
-          break;
-      }
-      break;
-    case GLFW_RELEASE:
-      if (newState == GLFW_PRESS) {
-        pressTime = static_cast<float>(glfwGetTime());
-      } else {
-        pressTime = 0.0;
-      }
-      break;
+            timer = 0.0;
+            break;
+          case GLFW_PRESS:
+            timer = static_cast<float>(glfwGetTime()) - pressTime;
+            if (timer >= mouse.pressDelayDuration) {
+              for (const auto& buttonMapping : buttonMappings) {
+                if (buttonType == buttonMapping.first) {
+                  const auto& [button, message] = buttonMapping;
+                  mouse.coords[button] = glm::vec2{x, y};
+                  _log.console(message + " down at", x, ":", y);
+                  break;
+                }
+              }
+            }
+            break;
+        }
+        break;
+      case GLFW_RELEASE:
+        if (newState == GLFW_PRESS) {
+          pressTime = static_cast<float>(glfwGetTime());
+        } else {
+          pressTime = 0.0;
+        }
+        break;
+    }
+    oldState = newState;
   }
-  oldState = newState;
 }
