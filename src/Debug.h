@@ -23,7 +23,7 @@ class Logging {
 
  private:
   std::ofstream logFile;
-  std::string previousTime = "";
+  std::string previousTime;
 
   std::string returnDateAndTime();
 };
@@ -42,16 +42,6 @@ class ValidationLayers {
   const bool enableValidationLayers = true;
 #endif
 
-  static VKAPI_ATTR VkBool32 VKAPI_CALL
-  debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                VkDebugUtilsMessageTypeFlagsEXT messageType,
-                const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-                void* pUserData) {
-    const std::string debugMessage = pCallbackData->pMessage;
-    logValidationMessage(debugMessage, "Epic Games");
-    return VK_FALSE;
-  }
-
   void setupDebugMessenger(VkInstance instance);
   void populateDebugMessengerCreateInfo(
       VkDebugUtilsMessengerCreateInfoEXT& createInfo);
@@ -68,6 +58,16 @@ class ValidationLayers {
       const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
       const VkAllocationCallbacks* pAllocator,
       VkDebugUtilsMessengerEXT* pDebugMessenger);
+
+  static VKAPI_ATTR VkBool32 VKAPI_CALL
+  debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                VkDebugUtilsMessageTypeFlagsEXT messageType,
+                const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+                void* pUserData) {
+    const std::string debugMessage = pCallbackData->pMessage;
+    logValidationMessage(debugMessage, "Epic Games");
+    return VK_FALSE;
+  }
 };
 
 template <class T, class... Ts>
@@ -76,7 +76,6 @@ inline void Logging::console(const T& first, const Ts&... inputs) {
     std::cerr << "!ERROR! Could not open logFile for writing" << std::endl;
     return;
   }
-
   std::string currentTime = returnDateAndTime();
   int numColumnsOffset = 4;
 
@@ -89,7 +88,6 @@ inline void Logging::console(const T& first, const Ts&... inputs) {
     std::cout << padding;
     logFile << padding;
   }
-
   if constexpr (std::is_same_v<T, std::vector<int>>) {
     static int elementCount = 0;
     std::cout << ' ' << style.charLeader << ' ';
@@ -123,6 +121,5 @@ inline void Logging::console(const T& first, const Ts&... inputs) {
     std::cerr << '\n';
     logFile << '\n';
   }
-
   previousTime = currentTime;
 }
