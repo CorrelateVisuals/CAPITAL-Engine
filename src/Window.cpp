@@ -72,20 +72,18 @@ void Window::mouseClick() {
           const auto& buttonMapping = buttonMappings.find(buttonType);
           if (buttonMapping != buttonMappings.end()) {
             const std::string& message = buttonMapping->second;
-            const glm::vec2 coords{x, y};
-            mouse.coords[buttonType] = coords;
+            mouse.coords[buttonType] = glm::vec2{x, y};
             _log.console(message + " clicked at", x, ":", y);
             timer = 0.0f;
           }
         } else {
           const float currentTime = static_cast<float>(glfwGetTime());
           const float timer = currentTime - pressTime;
-          if (timer >= mouse.pressDelayDuration) {
+          if (timer >= mouse.pressDelay) {
             const auto& buttonMapping = buttonMappings.find(buttonType);
             if (buttonMapping != buttonMappings.end()) {
               const std::string& message = buttonMapping->second;
-              const glm::vec2 coords{x, y};
-              mouse.coords[buttonType] = coords;
+              mouse.coords[buttonType] = glm::vec2{x, y};
               _log.console(message + " down at", x, ":", y);
             }
           }

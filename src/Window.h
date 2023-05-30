@@ -12,7 +12,7 @@ class Window {
   bool framebufferResized;
 
   struct Mouse {
-    float pressDelayDuration = 0.18f;
+    float pressDelay = 0.18f;
     std::array<glm::vec2, 3> coords{glm::vec2(off, off), glm::vec2(off, off),
                                     glm::vec2(off, off)};
   } mouse;
