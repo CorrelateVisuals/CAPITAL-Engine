@@ -12,17 +12,18 @@ class Logging {
   ~Logging();
 
   struct Style {
-    std::string charLeader = "        :";
-    std::string indentSize = "                 ";
-    static constexpr int numColumns = 14;
+    std::string charLeader = std::string(8, ' ') + ":";
+    std::string indentSize = std::string(17, ' ');
+    int columnCount = 14;
   } style;
+
+  std::ofstream logFile;
 
   template <class T, class... Ts>
   void console(const T& first, const Ts&... inputs);
   std::string getBufferUsageString(VkBufferUsageFlags usage);
 
  private:
-  std::ofstream logFile;
   std::string previousTime;
 
   std::string returnDateAndTime();
@@ -77,14 +78,14 @@ inline void Logging::console(const T& first, const Ts&... inputs) {
     return;
   }
   std::string currentTime = returnDateAndTime();
-  int numColumnsOffset = 4;
+  int columnCountOffset = 4;
 
   if (currentTime != previousTime) {
     std::cout << ' ' << currentTime;
     logFile << ' ' << currentTime;
   } else {
     std::string padding(
-        static_cast<size_t>(style.numColumns) + numColumnsOffset, ' ');
+        static_cast<size_t>(style.columnCount) + columnCountOffset, ' ');
     std::cout << padding;
     logFile << padding;
   }
@@ -93,18 +94,18 @@ inline void Logging::console(const T& first, const Ts&... inputs) {
     std::cout << ' ' << style.charLeader << ' ';
     logFile << ' ' << style.charLeader << ' ';
     for (const auto& element : first) {
-      if (elementCount % style.numColumns == 0 && elementCount != 0) {
+      if (elementCount % style.columnCount == 0 && elementCount != 0) {
         std::cout << '\n'
                   << ' '
-                  << std::string(static_cast<size_t>(style.numColumns) +
-                                     numColumnsOffset,
+                  << std::string(static_cast<size_t>(style.columnCount) +
+                                     columnCountOffset,
                                  ' ')
                   << style.charLeader << ' ';
         logFile << '\n'
                 << ' '
-                << std::string(
-                       static_cast<size_t>(style.numColumns) + numColumnsOffset,
-                       ' ')
+                << std::string(static_cast<size_t>(style.columnCount) +
+                                   columnCountOffset,
+                               ' ')
                 << style.charLeader << ' ';
         elementCount = 0;
       }

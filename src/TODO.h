@@ -7,7 +7,6 @@
 /// [ BUGS ]
 /// - Adding 'long long' data type to shader, with enabling the right extension
 /// on the Vulkan side
-/// - Revise the _log.console() function (with the use of overload functions)
 /// - Adding CPU read access to cell through shaderStorage buffer
 ///
 /// [ FEATURES: ADDITIONS ]
