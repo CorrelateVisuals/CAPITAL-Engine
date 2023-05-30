@@ -43,7 +43,7 @@ glm::mat4 World::setView() {
 std::vector<World::Cell> World::initializeCells() {
   const uint16_t width = _control.grid.dimensions[0];
   const uint16_t height = _control.grid.dimensions[1];
-  const uint32_t numGridPoints = width * height;
+  const size_t numGridPoints = static_cast<size_t>(width * height);
   const size_t numAliveCells = _control.grid.totalAliveCells;
   const float gap = _control.grid.gap;
 
@@ -55,7 +55,7 @@ std::vector<World::Cell> World::initializeCells() {
   std::vector<World::Cell> cells(numGridPoints);
   std::vector<bool> isAliveIndices(numGridPoints, false);
 
-  for (uint32_t i = 0; i < numGridPoints; i++) {
+  for (size_t i = 0; i < numGridPoints; i++) {
     isAliveIndices.push_back(false);
   }
 
@@ -68,9 +68,9 @@ std::vector<World::Cell> World::initializeCells() {
   const float startX = -((width - 1) * gap) / 2.0f;
   const float startY = -((height - 1) * gap) / 2.0f;
 
-  for (uint32_t i = 0; i < numGridPoints; ++i) {
-    const uint32_t x = i % width;
-    const uint32_t y = i / width;
+  for (size_t i = 0; i < numGridPoints; ++i) {
+    const uint16_t x = static_cast<uint16_t>(i % width);
+    const uint16_t y = static_cast<uint16_t>(i / width);
     const float posX = startX + x * gap;
     const float posY = startY + y * gap;
 
