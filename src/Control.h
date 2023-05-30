@@ -17,15 +17,15 @@ class Control {
   } timer;
 
   struct Grid {
-    std::size_t totalAliveCells = 700;
+    size_t totalAliveCells = 700;
     std::array<uint32_t, 2> dimensions = {60, 30};
     float gap = 0.12f;
   } grid;
 
   struct DisplayConfiguration {
     const char* title = "CAPITAL Engine";
-    uint32_t width = 1920;
-    uint32_t height = 1080;
+    uint16_t width = 1920;
+    uint16_t height = 1080;
   } display;
 
   struct Compute {

@@ -41,10 +41,10 @@ glm::mat4 World::setView() {
 }
 
 std::vector<World::Cell> World::initializeCells() {
-  const uint32_t width = _control.grid.dimensions[0];
-  const uint32_t height = _control.grid.dimensions[1];
+  const uint16_t width = _control.grid.dimensions[0];
+  const uint16_t height = _control.grid.dimensions[1];
   const uint32_t numGridPoints = width * height;
-  const std::size_t numAliveCells = _control.grid.totalAliveCells;
+  const size_t numAliveCells = _control.grid.totalAliveCells;
   const float gap = _control.grid.gap;
 
   if (numAliveCells > numGridPoints) {
