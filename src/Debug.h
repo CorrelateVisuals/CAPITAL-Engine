@@ -110,10 +110,10 @@ inline void Logging::console(const T& first, const Ts&... inputs) {
     std::cout << '\n';
     logFile << '\n';
   } else {
-    std::cerr << ' ' << first;
+    std::cout << ' ' << first;
     logFile << ' ' << first;
-    ((std::cerr << ' ' << inputs, logFile << ' ' << inputs), ...);
-    std::cerr << '\n';
+    ((std::cout << ' ' << inputs, logFile << ' ' << inputs), ...);
+    std::cout << '\n';
     logFile << '\n';
   }
   previousTime = currentTime;
