@@ -29,8 +29,8 @@ class Control {
   } display;
 
   struct Compute {
-    const uint32_t localSizeX = 8;
-    const uint32_t localSizeY = 8;
+    const uint8_t localSizeX = 8;
+    const uint8_t localSizeY = 8;
   } compute;
 
  public:

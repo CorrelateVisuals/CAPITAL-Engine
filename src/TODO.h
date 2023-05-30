@@ -5,9 +5,10 @@
 /// - Check if functions work as they are supposed to work
 ///
 /// [ BUGS ]
+/// - Adding mirror effect for cells outside of the grid to be added to the
+/// other end of the grid
 /// - Adding 'long long' data type to shader, with enabling the right extension
 /// on the Vulkan side
-/// - Adding CPU read access to cell through shaderStorage buffer
 ///
 /// [ FEATURES: ADDITIONS ]
 /// - Add camera movements, arcball or common
