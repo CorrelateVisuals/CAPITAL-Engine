@@ -35,9 +35,9 @@ void Window::windowResize(GLFWwindow* win, int width, int height) {
   _log.console("{ [*] }", "Window resized to", width, "*", height);
 }
 
-void Window::mouseClick(GLFWwindow* win) {
+void Window::mouseClick() {
   double xpos, ypos;
-  glfwGetCursorPos(win, &xpos, &ypos);
+  glfwGetCursorPos(window, &xpos, &ypos);
   float x = static_cast<float>(xpos) / _control.display.width;
   float y = static_cast<float>(ypos) / _control.display.height;
 
@@ -51,7 +51,7 @@ void Window::mouseClick(GLFWwindow* win) {
                                   GLFW_MOUSE_BUTTON_RIGHT};
 
   for (const auto& mouseButtonType : mouseButtonTypes) {
-    if (glfwGetMouseButton(win, mouseButtonType) == GLFW_PRESS) {
+    if (glfwGetMouseButton(window, mouseButtonType) == GLFW_PRESS) {
       newState = GLFW_PRESS;
       buttonType = mouseButtonType;
       break;

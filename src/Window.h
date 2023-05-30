@@ -18,7 +18,7 @@ class Window {
     std::array<float, 2> rightCoords{off, off};
   } mouse;
 
-  void mouseClick(GLFWwindow* win);
+  void mouseClick();
 
  private:
   void initWindow();

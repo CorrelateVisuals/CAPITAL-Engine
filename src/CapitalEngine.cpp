@@ -29,7 +29,7 @@ void CapitalEngine::mainLoop() {
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
 
-    _window.mouseClick(_window.window);
+    _window.mouseClick();
 
     _control.simulateHours();
     drawFrame();
