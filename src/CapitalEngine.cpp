@@ -28,8 +28,8 @@ void CapitalEngine::mainLoop() {
 
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
-    _window.getMouseButtonType();
-    _window.mouseClick(_window.window, _window.mouse.buttonType);
+
+    _window.mouseClick(_window.window);
 
     _control.simulateHours();
     drawFrame();
