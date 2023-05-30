@@ -37,10 +37,7 @@ void Window::windowResize(GLFWwindow* win, int width, int height) {
 
 void Window::mouseClick() {
   double xpos, ypos;
-  glfwGetCursorPos(window, &xpos, &ypos);
-  float x = static_cast<float>(xpos) / _control.display.width;
-  float y = static_cast<float>(ypos) / _control.display.height;
-
+  float x, y;
   static int oldState = GLFW_RELEASE;
   int newState = GLFW_RELEASE;
   static float timer = 0.0;
@@ -56,6 +53,12 @@ void Window::mouseClick() {
       buttonType = mouseButtonType;
       break;
     }
+  }
+
+  if (buttonType != -1) {
+    glfwGetCursorPos(window, &xpos, &ypos);
+    x = static_cast<float>(xpos) / _control.display.width;
+    y = static_cast<float>(ypos) / _control.display.height;
   }
 
   switch (oldState) {
