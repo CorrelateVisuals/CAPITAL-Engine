@@ -29,10 +29,7 @@ const vec3 cubeNormals[6] = { vec3( 0.0f, 0.0f,-1.0f),    // front
                         vec3( 1.0f, 0.0f, 0.0f),    // right
                         vec3( 0.0f, 1.0f, 0.0f),    // top
                         vec3( 0.0f,-1.0f, 0.0f)};   // bottom
-const int cubeIndices[25] = {   0, 1, 2, 3, 6, 7, 4, 5,     // front and back faces
-                        2, 6, 0, 4, 1, 5, 3, 7,     // connecting strips
-                        2, 3, 6, 7, 4, 5, 0, 1,     // top and bottom faces
-                        2 };                        // degenerate triangle to start new strip
+const int cubeIndices[16] = {  0, 1, 2, 3, 6, 7, 4, 5, 2, 6, 0, 4, 1, 5, 3, 7 };
 
 float random(vec2 co) { return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453); }
 float noise(vec2 p) { 

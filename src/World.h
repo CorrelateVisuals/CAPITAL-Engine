@@ -19,6 +19,7 @@ class World {
     glm::vec3 position{0.0f, 0.0f, 5.5f};
     glm::vec3 front{0.0f, 0.0f, -1.0f};
     glm::vec3 up{0.0f, -1.0f, 0.0f};
+    float distance;
   } camera;
 
   struct Cell {

@@ -114,24 +114,28 @@ void World::updateCamera() {
   glm::vec2 rightButtonDelta = deltas[right];
   glm::vec2 middleButtonDelta = deltas[middle];
 
-  constexpr float rotationSpeed = 1.0f * glm::pi<float>() / 180.0f;
+  constexpr float rotationSpeed = 0.3f * glm::pi<float>() / 180.0f;
   float turn = rotationSpeed * leftButtonDelta.x;
   float tilt = rotationSpeed * -leftButtonDelta.y;
-  glm::mat4 rotationMatrix =
-      glm::rotate(glm::mat4(1.0f), turn, camera.up) *
-      glm::rotate(glm::mat4(1.0f), tilt, glm::cross(camera.front, camera.up));
+
+  glm::vec3 cameraRight = glm::cross(camera.front, camera.up);
+
+  glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), turn, camera.up) *
+                             glm::rotate(glm::mat4(1.0f), tilt, cameraRight);
   camera.front =
       glm::normalize(glm::vec3(rotationMatrix * glm::vec4(camera.front, 0.0f)));
   camera.up =
       glm::normalize(glm::vec3(rotationMatrix * glm::vec4(camera.up, 0.0f)));
 
-  constexpr float panningSpeed = 0.1f;
-  glm::vec3 cameraRight = glm::cross(camera.front, camera.up);
+  // Reset the roll component to maintain a level camera orientation
+  camera.up = glm::cross(cameraRight, camera.front);
+
+  constexpr float panningSpeed = 0.01f;
   glm::vec3 cameraUp = glm::cross(cameraRight, camera.front);
   camera.position += panningSpeed * rightButtonDelta.x * -cameraRight;
   camera.position += panningSpeed * rightButtonDelta.y * -cameraUp;
 
-  constexpr float zoomSpeed = 0.1f;
+  constexpr float zoomSpeed = 0.01f;
   camera.position += zoomSpeed * middleButtonDelta.x * camera.front;
 }
 
