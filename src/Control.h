@@ -17,8 +17,8 @@ class Control {
   } timer;
 
   struct Grid {
-    uint_fast32_t totalAliveCells = 2000;
-    std::array<uint_fast16_t, 2> dimensions = {100, 100};
+    uint_fast32_t totalAliveCells = 10000;
+    std::array<uint_fast16_t, 2> dimensions = {200, 200};
     float gap = 0.12f;
   } grid;
 

@@ -99,28 +99,46 @@ World::UniformBufferObject World::updateUniforms() {
 }
 
 void World::updateCamera() {
-  uint_fast8_t left = 0;
-  uint_fast8_t right = 1;
-  uint_fast8_t middle = 2;
+  uint8_t left = 0;
+  uint8_t right = 1;
+  uint8_t middle = 2;
 
-  glm::vec2 coordinates = _window.mouse.buttonDown[right].position;
-  glm::vec2 delta =
-      coordinates - _window.mouse.previousButtonDown[right].position;
-  _window.mouse.previousButtonDown[right].position = coordinates;
+  glm::vec2 leftButtonCoordinates = _window.mouse.buttonDown[left].position;
+  glm::vec2 leftButtonDelta =
+      leftButtonCoordinates - _window.mouse.previousButtonDown[left].position;
+  _window.mouse.previousButtonDown[left].position = leftButtonCoordinates;
+
+  glm::vec2 rightButtonCoordinates = _window.mouse.buttonDown[right].position;
+  glm::vec2 rightButtonDelta =
+      rightButtonCoordinates - _window.mouse.previousButtonDown[right].position;
+  _window.mouse.previousButtonDown[right].position = rightButtonCoordinates;
+
+  glm::vec2 middleButtonCoordinates = _window.mouse.buttonDown[middle].position;
+  glm::vec2 middleButtonDelta =
+      middleButtonCoordinates -
+      _window.mouse.previousButtonDown[middle].position;
+  _window.mouse.previousButtonDown[middle].position = middleButtonCoordinates;
+
+  constexpr float rotationSpeed = 1.0f * glm::pi<float>() / 180.0f;
+  float yaw = rotationSpeed * leftButtonDelta.x;
+  float pitch = rotationSpeed * -leftButtonDelta.y;
 
   glm::mat4 rotationMatrix =
-      glm::rotate(glm::mat4(1.0f), 0.0f, camera.up) *
-      glm::rotate(glm::mat4(1.0f), 0.0f, glm::cross(camera.front, camera.up));
+      glm::rotate(glm::mat4(1.0f), yaw, camera.up) *
+      glm::rotate(glm::mat4(1.0f), pitch, glm::cross(camera.front, camera.up));
   camera.front =
       glm::normalize(glm::vec3(rotationMatrix * glm::vec4(camera.front, 0.0f)));
   camera.up =
       glm::normalize(glm::vec3(rotationMatrix * glm::vec4(camera.up, 0.0f)));
 
-  float movementSpeed = 0.01f;
-  glm::vec3 cameraRight = glm::normalize(glm::cross(camera.front, camera.up));
-  glm::vec3 cameraUp = glm::normalize(glm::cross(cameraRight, camera.front));
-  camera.position += movementSpeed * delta.x * -cameraRight;
-  camera.position -= movementSpeed * delta.y * cameraUp;
+  float panningSpeed = 0.1f;
+  glm::vec3 cameraRight = glm::cross(camera.front, camera.up);
+  glm::vec3 cameraUp = glm::cross(cameraRight, camera.front);
+  camera.position += panningSpeed * rightButtonDelta.x * -cameraRight;
+  camera.position += panningSpeed * rightButtonDelta.y * -cameraUp;
+
+  float zoomSpeed = 0.1f;
+  camera.position += zoomSpeed * middleButtonDelta.y * camera.front;
 }
 
 glm::mat4 World::setModel() {
