@@ -24,11 +24,11 @@ const vec3 cubeVertices[8] = {vec3(-0.5f, -0.5f,-0.5f),   // 0
                         vec3(-0.5f, 0.5f,  0.5f),   // 6
                         vec3(0.5f,  0.5f,  0.5f)};  // 7
 const vec3 cubeNormals[6] = { vec3( 0.0f, 0.0f,-1.0f),    // front
-                        vec3( 0.0f, 0.0f, 1.0f),    // back
-                        vec3(-1.0f, 0.0f, 0.0f),    // left
-                        vec3( 1.0f, 0.0f, 0.0f),    // right
-                        vec3( 0.0f, 1.0f, 0.0f),    // top
-                        vec3( 0.0f,-1.0f, 0.0f)};   // bottom
+                              vec3( 0.0f, 0.0f, 1.0f),    // back
+                              vec3(-1.0f, 0.0f, 0.0f),    // left
+                              vec3( 1.0f, 0.0f, 0.0f),    // right
+                              vec3( 0.0f, 1.0f, 0.0f),    // top
+                              vec3( 0.0f,-1.0f, 0.0f)};   // bottom
 const int cubeIndices[16] = {  0, 1, 2, 3, 6, 7, 4, 5, 2, 6, 0, 4, 1, 5, 3, 7 };
 
 float random(vec2 co) { return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453); }
@@ -53,7 +53,7 @@ vec4 pos = vec4( inPosition.xy, noise( inPosition.xy ), inPosition.w );
 vec4 constructCube(){ vec4 cube = pos + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); return cube; }
 mat4 modelViewProjection(){ mat4 mvp = ubo.projection * ubo.view * ubo.model; return mvp; }
 float phongLightning ( vec4 directionAndIntensity ) {
-    int index = gl_VertexIndex / 4; 
+    int index = gl_VertexIndex / 8; 
     mat3 normalMatrix = mat3(ubo.model);
     vec3 normalWorldSpace = normalize(normalMatrix * cubeNormals[index]);
     float lightIntensity = directionAndIntensity.w + max(dot(normalWorldSpace, normalize(directionAndIntensity.xyz)), 0.0f);

@@ -40,11 +40,11 @@ class World {
   };
 
  public:
-  std::vector<World::Cell> initializeCells();
-  bool isIndexAlive(const std::vector<int>& aliveCells, int index);
-
   UniformBufferObject updateUniforms();
   void updateCamera();
+
+  std::vector<World::Cell> initializeCells();
+  bool isIndexAlive(const std::vector<int>& aliveCells, int index);
 
   static std::vector<VkVertexInputAttributeDescription>
   getAttributeDescriptions();

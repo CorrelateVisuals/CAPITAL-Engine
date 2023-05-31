@@ -93,7 +93,7 @@ World::UniformBufferObject World::updateUniforms() {
   uniformObject.model = _world.setModel();
   uniformObject.view = _world.setView();
   uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
-  uniformObject.lightDirection = {0.0f, 1.0f, 1.0f, 0.2f};
+  uniformObject.lightDirection = {1.0f, 0.0f, 0.5f, 0.2f};
   uniformObject.cellSize = _control.cells.size;
   return uniformObject;
 }
