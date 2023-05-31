@@ -40,6 +40,7 @@ std::vector<World::Cell> World::initializeCells() {
   const uint32_t numGridPoints = width * height;
   const uint32_t numAliveCells = _control.grid.totalAliveCells;
   const float gap = _control.grid.gap;
+  std::array<float, 4> size = {_control.cells.size};
 
   if (numAliveCells > numGridPoints) {
     throw std::runtime_error(
@@ -74,9 +75,9 @@ std::vector<World::Cell> World::initializeCells() {
     const std::array<float, 4>& color = isAlive ? blue : red;
     const std::array<int, 4>& state = isAlive ? alive : dead;
 
-    cells[i] = {pos, color, cell.size, state};
+    cells[i] = {pos, color, size, state};
   }
-  _log.console(aliveCellIndices);
+  //_log.console(aliveCellIndices);
   return cells;
 }
 
@@ -93,7 +94,7 @@ World::UniformBufferObject World::updateUniforms() {
   uniformObject.view = _world.setView();
   uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
   uniformObject.lightDirection = {0.0f, 1.0f, 1.0f, 0.2f};
-  uniformObject.cellSize = cell.size[0];
+  uniformObject.cellSize = _control.cells.size;
   return uniformObject;
 }
 

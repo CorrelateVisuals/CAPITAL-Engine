@@ -24,6 +24,7 @@
 /// - Add vertex and index buffers; remove the vertex, index and normal data
 /// from vertex shader
 /// https://vulkan-tutorial.com/Vertex_buffers/Vertex_buffer_creation
+/// - Shader to SPIRV runtime conversion
 ///
 /// [ FEATURES: GEOMETRY ]
 /// - Animating geometry between cells

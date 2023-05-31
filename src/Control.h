@@ -16,9 +16,13 @@ class Control {
     int passedHours = 0;
   } timer;
 
+  struct Cell {
+    float size = {0.1f};
+  } cells;
+
   struct Grid {
-    uint32_t totalAliveCells = 700;
-    std::array<uint32_t, 2> dimensions = {60, 30};
+    uint32_t totalAliveCells = 10000;
+    std::array<uint32_t, 2> dimensions = {250, 250};
     float gap = 0.12f;
   } grid;
 

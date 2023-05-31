@@ -89,7 +89,8 @@ void Window::mouseClick() {
             if (buttonMapping != buttonMappings.end()) {
               const std::string& message = buttonMapping->second;
               mouse.buttonDown[buttonType].position +=
-                  lib.smoothstep(glm::vec2(x, y));
+                  glm::vec2(x, y) * glm::vec2(2.0f, 2.0f) -
+                  glm::vec2(1.0f, 1.0f);
               _log.console(message + " moved to",
                            mouse.buttonDown[buttonType].position.x, ":",
                            mouse.buttonDown[buttonType].position.y);
