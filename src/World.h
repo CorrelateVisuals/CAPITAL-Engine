@@ -16,12 +16,16 @@ class World {
   ~World();
 
   struct Camera {
-    float fieldOfView = 90.0f;
-    glm::vec3 position{0.0f, 0.0f, 0.1f};
+    float fieldOfView = 100.0f;
+    glm::vec3 position{0.0f, 0.0f, 4.0f};
     glm::vec3 front{0.0f, 0.0f, -1.0f};
     glm::vec3 up{0.0f, -1.0f, 0.0f};
     float distance;
   } camera;
+
+  struct Light {
+    std::array<float, 4> direction = {0.075f, 0.0f, 0.5f, 0.2f};
+  } directionalLight;
 
   struct Cell {
     std::array<float, 4> position;

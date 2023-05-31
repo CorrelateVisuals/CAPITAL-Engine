@@ -19,13 +19,12 @@ class Control {
   struct Grid {
     uint_fast32_t totalAliveCells = 2500;
     std::array<uint_fast16_t, 2> dimensions = {100, 100};
-    float gap = 0.01f;
+    float gap = 1.0f;
     float height = 0.02f;
-    std::array<float, 4> lightDirection = {0.075f, 0.0f, 0.5f, 0.2f};
   } grid;
 
   struct Cell {
-    float size = {0.005f};
+    float size = {0.2f};
   } cells;
 
   struct DisplayConfiguration {

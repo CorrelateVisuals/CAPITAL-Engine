@@ -92,10 +92,10 @@ World::UniformBufferObject World::updateUniforms() {
   uniformObject.gridHeight = _control.grid.height;
   uniformObject.passedHours = _control.timer.passedHours;
   uniformObject.cellSize = _control.cells.size;
-  uniformObject.lightDirection = _control.grid.lightDirection;
-  uniformObject.model = _world.setModel();
-  uniformObject.view = _world.setView();
-  uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
+  uniformObject.lightDirection = directionalLight.direction;
+  uniformObject.model = setModel();
+  uniformObject.view = setView();
+  uniformObject.proj = setProjection(_mechanics.swapChain.extent);
 
   return uniformObject;
 }
@@ -132,12 +132,12 @@ void World::updateCamera() {
   // Reset the roll component to maintain a level camera orientation
   camera.up = glm::cross(cameraRight, camera.front);
 
-  constexpr float panningSpeed = 0.001f;
+  constexpr float panningSpeed = 0.1f;
   glm::vec3 cameraUp = glm::cross(cameraRight, camera.front);
   camera.position += panningSpeed * rightButtonDelta.x * -cameraRight;
   camera.position += panningSpeed * rightButtonDelta.y * -cameraUp;
 
-  constexpr float zoomSpeed = 0.001f;
+  constexpr float zoomSpeed = 0.1f;
   camera.position += zoomSpeed * middleButtonDelta.x * camera.front;
 }
 
