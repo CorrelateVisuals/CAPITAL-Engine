@@ -19,6 +19,7 @@ class Window {
     };
     std::array<Button, 3> buttonClick;
     std::array<Button, 3> buttonDown;
+    std::array<Button, 3> previousButtonDown;
   } mouse;
 
   void mouseClick();

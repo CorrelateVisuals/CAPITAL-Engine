@@ -98,7 +98,30 @@ World::UniformBufferObject World::updateUniforms() {
   return uniformObject;
 }
 
-void World::updateCamera() {}
+void World::updateCamera() {
+  uint_fast8_t left = 0;
+  uint_fast8_t right = 1;
+  uint_fast8_t middle = 2;
+
+  glm::vec2 coordinates = _window.mouse.buttonDown[right].position;
+  glm::vec2 delta =
+      coordinates - _window.mouse.previousButtonDown[right].position;
+  _window.mouse.previousButtonDown[right].position = coordinates;
+
+  glm::mat4 rotationMatrix =
+      glm::rotate(glm::mat4(1.0f), 0.0f, camera.up) *
+      glm::rotate(glm::mat4(1.0f), 0.0f, glm::cross(camera.front, camera.up));
+  camera.front =
+      glm::normalize(glm::vec3(rotationMatrix * glm::vec4(camera.front, 0.0f)));
+  camera.up =
+      glm::normalize(glm::vec3(rotationMatrix * glm::vec4(camera.up, 0.0f)));
+
+  float movementSpeed = 0.01f;
+  glm::vec3 cameraRight = glm::normalize(glm::cross(camera.front, camera.up));
+  glm::vec3 cameraUp = glm::normalize(glm::cross(cameraRight, camera.front));
+  camera.position += movementSpeed * delta.x * -cameraRight;
+  camera.position -= movementSpeed * delta.y * cameraUp;
+}
 
 glm::mat4 World::setModel() {
   glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f),
@@ -107,6 +130,7 @@ glm::mat4 World::setModel() {
 }
 
 glm::mat4 World::setView() {
+  updateCamera();
   glm::mat4 view;
   view =
       glm::lookAt(camera.position, camera.position + camera.front, camera.up);
