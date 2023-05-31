@@ -16,7 +16,8 @@ class World {
   ~World();
 
   struct Camera {
-    glm::vec3 position{0.0f, 0.0f, 5.5f};
+    float fieldOfView = 90.0f;
+    glm::vec3 position{0.0f, 0.0f, 0.1f};
     glm::vec3 front{0.0f, 0.0f, -1.0f};
     glm::vec3 up{0.0f, -1.0f, 0.0f};
     float distance;
@@ -37,6 +38,7 @@ class World {
     alignas(16) glm::mat4 proj;
     std::array<float, 4> lightDirection;
     float cellSize;
+    float gridHeight;
   };
 
  public:

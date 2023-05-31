@@ -14,7 +14,7 @@ class Window {
 
   struct Mouse {
     float pressDelay = 0.18f;
-    float speed = 1.1f;
+    float speed = 0.5f;
     struct Button {
       glm::vec2 position;
     };

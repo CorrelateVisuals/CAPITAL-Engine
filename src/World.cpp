@@ -60,8 +60,8 @@ std::vector<World::Cell> World::initializeCells() {
     isAliveIndices[aliveIndex] = true;
   }
 
-  const float startX = -((width - 1) * gap) / 2.0f;
-  const float startY = -((height - 1) * gap) / 2.0f;
+  float startX = -((width - 1) * gap) / 2.0f;
+  float startY = -((height - 1) * gap) / 2.0f;
 
   for (uint_fast32_t i = 0; i < numGridPoints; ++i) {
     const uint_fast16_t x = static_cast<uint_fast16_t>(i % width);
@@ -89,12 +89,14 @@ bool World::isIndexAlive(const std::vector<int>& aliveCells, int index) {
 World::UniformBufferObject World::updateUniforms() {
   UniformBufferObject uniformObject{};
   uniformObject.gridDimensions = _control.grid.dimensions;
+  uniformObject.gridHeight = _control.grid.height;
   uniformObject.passedHours = _control.timer.passedHours;
+  uniformObject.cellSize = _control.cells.size;
+  uniformObject.lightDirection = _control.grid.lightDirection;
   uniformObject.model = _world.setModel();
   uniformObject.view = _world.setView();
   uniformObject.proj = _world.setProjection(_mechanics.swapChain.extent);
-  uniformObject.lightDirection = {1.0f, 0.0f, 0.5f, 0.2f};
-  uniformObject.cellSize = _control.cells.size;
+
   return uniformObject;
 }
 
@@ -130,12 +132,12 @@ void World::updateCamera() {
   // Reset the roll component to maintain a level camera orientation
   camera.up = glm::cross(cameraRight, camera.front);
 
-  constexpr float panningSpeed = 0.01f;
+  constexpr float panningSpeed = 0.001f;
   glm::vec3 cameraUp = glm::cross(cameraRight, camera.front);
   camera.position += panningSpeed * rightButtonDelta.x * -cameraRight;
   camera.position += panningSpeed * rightButtonDelta.y * -cameraUp;
 
-  constexpr float zoomSpeed = 0.01f;
+  constexpr float zoomSpeed = 0.001f;
   camera.position += zoomSpeed * middleButtonDelta.x * camera.front;
 }
 
@@ -154,10 +156,12 @@ glm::mat4 World::setView() {
 }
 
 glm::mat4 World::setProjection(VkExtent2D& swapChainExtent) {
+  float nearClipping = 0.0001f;
+  float farClipping = 100.0f;
   glm::mat4 projection = glm::perspective(
-      glm::radians(60.0f),
-      swapChainExtent.width / static_cast<float>(swapChainExtent.height), 0.1f,
-      10.0f);
+      glm::radians(camera.fieldOfView),
+      swapChainExtent.width / static_cast<float>(swapChainExtent.height),
+      nearClipping, farClipping);
 
   projection[1][1] *= -1;  // flip y axis
   projection[0][0] *= -1;  // flip x axis

@@ -13,6 +13,7 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 projection;
     vec4 lightDirection;
     float cellSize;
+    float gridHeight;
 } ubo;
 
 const vec3 cubeVertices[8] = {vec3(-0.5f, -0.5f,-0.5f),   // 0
@@ -35,7 +36,7 @@ float random(vec2 co) { return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43
 float noise(vec2 p) { 
     float total = 0.0; 
     float frequency = 0.1;
-    float amplitude = 0.5;
+    float amplitude = ubo.gridHeight;
     int octaves = 12;
     float persistence = 0.5;
     float lacunarity = 2.0;

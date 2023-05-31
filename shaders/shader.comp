@@ -10,6 +10,7 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 projection;
     vec4 lightDirection;
     float cellSize;
+    float gridHeight;
 } ubo;
 
 uint globalID_x = gl_GlobalInvocationID.x;
@@ -83,7 +84,7 @@ bool lifeCycle          = aliveCell && inCycleRange;
 bool endOfStage         = aliveCell && reachedCycleEnd;
 bool live(int neighbours) { return (aliveCell && (neighbours == 3 || neighbours == 2)) || (deadCell && neighbours == 3); }
 bool die(int neighbours)  { return (aliveCell && (neighbours < 2 || neighbours > 3));}
-vec4 colorIncrement     = colorIn + vec4(float((ubo.time % cycleSize + 1)) / float(cycleSize * 2), vec3(0.0));
+vec4 colorIncrement     = colorIn + vec4(float((ubo.time % cycleSize + 1)) / float(cycleSize * 50), vec3(0.0));
 
 void simulate(out Cell cell){
     int neighbours  = neighbourCellsInRange(1).x;
