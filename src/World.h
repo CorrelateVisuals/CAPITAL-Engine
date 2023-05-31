@@ -43,15 +43,17 @@ class World {
   bool isIndexAlive(const std::vector<int>& aliveCells, int index);
 
   UniformBufferObject updateUniforms();
-  glm::mat4 setModel();
-  glm::mat4 setView();
-  glm::mat4 setProjection(VkExtent2D& swapChainExtent);
+  void updateCamera();
 
   static std::vector<VkVertexInputAttributeDescription>
   getAttributeDescriptions();
   static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
 
  private:
+  glm::mat4 setModel();
+  glm::mat4 setView();
+  glm::mat4 setProjection(VkExtent2D& swapChainExtent);
+
   inline static const std::array<float, 4> red{1.0f, 0.0f, 0.0f, 1.0f};
   inline static const std::array<float, 4> blue{0.0f, 0.0f, 1.0f, 1.0f};
 

@@ -1,5 +1,7 @@
-#include "World.h"
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "CapitalEngine.h"
+#include "World.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -30,14 +32,6 @@ World::getAttributeDescriptions() {
   attributeDescriptions.push_back(
       {2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, size)});
   return attributeDescriptions;
-}
-
-glm::mat4 World::setView() {
-  glm::mat4 view;
-  view =
-      glm::lookAt(camera.position, camera.position + camera.front, camera.up);
-
-  return view;
 }
 
 std::vector<World::Cell> World::initializeCells() {
@@ -103,10 +97,19 @@ World::UniformBufferObject World::updateUniforms() {
   return uniformObject;
 }
 
+void World::updateCamera() {}
+
 glm::mat4 World::setModel() {
   glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f),
                                 glm::vec3(0.0f, 0.0f, 1.0f));
   return model;
+}
+
+glm::mat4 World::setView() {
+  glm::mat4 view;
+  view =
+      glm::lookAt(camera.position, camera.position + camera.front, camera.up);
+  return view;
 }
 
 glm::mat4 World::setProjection(VkExtent2D& swapChainExtent) {
