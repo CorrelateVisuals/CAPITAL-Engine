@@ -162,8 +162,8 @@ void Pipelines::createGraphicsPipeline() {
   fragShaderStageInfo.module = fragShaderModule;
   fragShaderStageInfo.pName = "main";
 
-  VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo,
-                                                    fragShaderStageInfo};
+  VkPipelineShaderStageCreateInfo shaderStages[]{vertShaderStageInfo,
+                                                 fragShaderStageInfo};
 
   VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
   vertexInputInfo.sType =
@@ -751,7 +751,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
   scissor.extent = _mechanics.swapChain.extent;
   vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-  VkDeviceSize offsets[] = {0};
+  VkDeviceSize offsets[]{0};
   vkCmdBindVertexBuffers(
       commandBuffer, 0, 1,
       &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],

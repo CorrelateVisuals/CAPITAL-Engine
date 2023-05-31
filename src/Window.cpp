@@ -39,9 +39,9 @@ void Window::windowResize(GLFWwindow* win, int width, int height) {
 void Window::mouseClick() {
   int newState = GLFW_RELEASE;
   static int buttonType = -1;
-  const static int mouseButtonTypes[] = {GLFW_MOUSE_BUTTON_LEFT,
-                                         GLFW_MOUSE_BUTTON_RIGHT,
-                                         GLFW_MOUSE_BUTTON_MIDDLE};
+  const static int mouseButtonTypes[]{GLFW_MOUSE_BUTTON_LEFT,
+                                      GLFW_MOUSE_BUTTON_RIGHT,
+                                      GLFW_MOUSE_BUTTON_MIDDLE};
 
   for (const int& mouseButtonType : mouseButtonTypes) {
     if (glfwGetMouseButton(window, mouseButtonType) == GLFW_PRESS) {
@@ -72,7 +72,7 @@ void Window::mouseClick() {
           const auto& buttonMapping = buttonMappings.find(buttonType);
           if (buttonMapping != buttonMappings.end()) {
             const std::string& message = buttonMapping->second;
-            mouse.button[buttonType].position = glm::vec3{x, y, 0};
+            mouse.button[buttonType].position = glm::vec2{x, y};
             _log.console(message + " clicked at", x, ":", y);
             timer = 0.0f;
           }
@@ -83,7 +83,7 @@ void Window::mouseClick() {
             const auto& buttonMapping = buttonMappings.find(buttonType);
             if (buttonMapping != buttonMappings.end()) {
               const std::string& message = buttonMapping->second;
-              mouse.button[buttonType].position = glm::vec3{x, y, 0};
+              mouse.button[buttonType].position = glm::vec2{x, y};
               _log.console(message + " down at", x, ":", y);
             }
           }

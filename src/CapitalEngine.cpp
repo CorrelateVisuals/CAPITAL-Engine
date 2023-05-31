@@ -140,12 +140,12 @@ void CapitalEngine::drawFrame() {
       _memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame],
       imageIndex);
 
-  VkSemaphore waitSemaphores[] = {
+  VkSemaphore waitSemaphores[]{
       _mechanics.syncObjects
           .computeFinishedSemaphores[_mechanics.syncObjects.currentFrame],
       _mechanics.syncObjects
           .imageAvailableSemaphores[_mechanics.syncObjects.currentFrame]};
-  VkPipelineStageFlags waitStages[] = {
+  VkPipelineStageFlags waitStages[]{
       VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
       VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
 
@@ -175,7 +175,7 @@ void CapitalEngine::drawFrame() {
   presentInfo.pWaitSemaphores =
       &_mechanics.syncObjects
            .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame];
-  VkSwapchainKHR swapChains[] = {_mechanics.swapChain.swapChain};
+  VkSwapchainKHR swapChains[]{_mechanics.swapChain.swapChain};
   presentInfo.swapchainCount = 1;
   presentInfo.pSwapchains = swapChains;
   presentInfo.pImageIndices = &imageIndex;
