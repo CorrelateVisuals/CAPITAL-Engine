@@ -40,8 +40,8 @@ void Window::mouseClick() {
   int newState = GLFW_RELEASE;
   static int buttonType = -1;
   const static int mouseButtonTypes[] = {GLFW_MOUSE_BUTTON_LEFT,
-                                         GLFW_MOUSE_BUTTON_MIDDLE,
-                                         GLFW_MOUSE_BUTTON_RIGHT};
+                                         GLFW_MOUSE_BUTTON_RIGHT,
+                                         GLFW_MOUSE_BUTTON_MIDDLE};
 
   for (const int& mouseButtonType : mouseButtonTypes) {
     if (glfwGetMouseButton(window, mouseButtonType) == GLFW_PRESS) {
@@ -63,8 +63,8 @@ void Window::mouseClick() {
 
     static const std::unordered_map<int, std::string> buttonMappings = {
         {GLFW_MOUSE_BUTTON_LEFT, "{ --> } Left Mouse Button"},
-        {GLFW_MOUSE_BUTTON_MIDDLE, "{ --> } Middle Mouse Button"},
-        {GLFW_MOUSE_BUTTON_RIGHT, "{ --> } Right Mouse Button"}};
+        {GLFW_MOUSE_BUTTON_RIGHT, "{ --> } Right Mouse Button"},
+        {GLFW_MOUSE_BUTTON_MIDDLE, "{ --> } Middle Mouse Button"}};
 
     switch (oldState) {
       case GLFW_PRESS: {
@@ -72,7 +72,7 @@ void Window::mouseClick() {
           const auto& buttonMapping = buttonMappings.find(buttonType);
           if (buttonMapping != buttonMappings.end()) {
             const std::string& message = buttonMapping->second;
-            mouse.coords[buttonType] = glm::vec2{x, y};
+            mouse.button[buttonType].position = glm::vec3{x, y, 0};
             _log.console(message + " clicked at", x, ":", y);
             timer = 0.0f;
           }
@@ -83,7 +83,7 @@ void Window::mouseClick() {
             const auto& buttonMapping = buttonMappings.find(buttonType);
             if (buttonMapping != buttonMappings.end()) {
               const std::string& message = buttonMapping->second;
-              mouse.coords[buttonType] = glm::vec2{x, y};
+              mouse.button[buttonType].position = glm::vec3{x, y, 0};
               _log.console(message + " down at", x, ":", y);
             }
           }

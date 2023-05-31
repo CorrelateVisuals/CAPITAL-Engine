@@ -1,5 +1,6 @@
 #pragma once
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 #include <iostream>
 
@@ -13,8 +14,10 @@ class Window {
 
   struct Mouse {
     float pressDelay = 0.18f;
-    std::array<glm::vec2, 3> coords{glm::vec2(off, off), glm::vec2(off, off),
-                                    glm::vec2(off, off)};
+    struct Button {
+      glm::vec2 position{off, off};
+    };
+    std::array<Button, 3> button;
   } mouse;
 
   void mouseClick();
