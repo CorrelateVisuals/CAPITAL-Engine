@@ -114,7 +114,7 @@ void World::updateCamera() {
         _window.mouse.buttonDown[i].position;
   }
 
-  float multiplier = 10.0f;
+  float multiplier = 2.0f;
   glm::vec2 leftButtonDelta = buttonType[left];
   glm::vec2 rightButtonDelta = buttonType[right];
   glm::vec2 middleButtonDelta = buttonType[middle];
@@ -149,7 +149,7 @@ void World::updateCamera() {
   // Reset the roll component to maintain a level camera orientation
   camera.up = glm::cross(cameraRight, camera.front);
 
-  constexpr float movementSpeed = 0.001f;
+  constexpr float movementSpeed = 0.0001f;
   static bool leftMouseButtonDown = false;
   static float forwardMovement = 0.0f;
   float leftButtonDeltaLength = glm::length(leftButtonDelta);
@@ -164,8 +164,6 @@ void World::updateCamera() {
     leftMouseButtonDown = false;
     forwardMovement = 0.0f;
   }
-
-  forwardMovement = glm::clamp(forwardMovement, 0.0f, 1.0f);
   camera.position += forwardMovement * camera.front;
 
   constexpr float panningSpeed = 0.5f;
