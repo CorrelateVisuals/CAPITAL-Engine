@@ -35,10 +35,10 @@ World::getAttributeDescriptions() {
 }
 
 std::vector<World::Cell> World::initializeCells() {
-  const uint32_t width = _control.grid.dimensions[0];
-  const uint32_t height = _control.grid.dimensions[1];
-  const uint32_t numGridPoints = width * height;
-  const uint32_t numAliveCells = _control.grid.totalAliveCells;
+  const uint_fast16_t width = _control.grid.dimensions[0];
+  const uint_fast16_t height = _control.grid.dimensions[1];
+  const uint_fast32_t numGridPoints = width * height;
+  const uint_fast32_t numAliveCells = _control.grid.totalAliveCells;
   const float gap = _control.grid.gap;
   std::array<float, 4> size = {_control.cells.size};
 
@@ -50,11 +50,11 @@ std::vector<World::Cell> World::initializeCells() {
   std::vector<World::Cell> cells(numGridPoints);
   std::vector<bool> isAliveIndices(numGridPoints, false);
 
-  for (uint32_t i = 0; i < numGridPoints; i++) {
+  for (uint_fast32_t i = 0; i < numGridPoints; i++) {
     isAliveIndices.push_back(false);
   }
 
-  std::vector<int> aliveCellIndices =
+  std::vector<uint_fast32_t> aliveCellIndices =
       _control.setCellsAliveRandomly(_control.grid.totalAliveCells);
   for (int aliveIndex : aliveCellIndices) {
     isAliveIndices[aliveIndex] = true;
@@ -63,9 +63,9 @@ std::vector<World::Cell> World::initializeCells() {
   const float startX = -((width - 1) * gap) / 2.0f;
   const float startY = -((height - 1) * gap) / 2.0f;
 
-  for (uint32_t i = 0; i < numGridPoints; ++i) {
-    const uint16_t x = static_cast<uint16_t>(i % width);
-    const uint16_t y = static_cast<uint16_t>(i / width);
+  for (uint_fast32_t i = 0; i < numGridPoints; ++i) {
+    const uint_fast16_t x = static_cast<uint_fast16_t>(i % width);
+    const uint_fast16_t y = static_cast<uint_fast16_t>(i / width);
     const float posX = startX + x * gap;
     const float posY = startY + y * gap;
 

@@ -16,15 +16,15 @@ class Control {
     int passedHours = 0;
   } timer;
 
+  struct Grid {
+    uint_fast32_t totalAliveCells = 2000;
+    std::array<uint_fast16_t, 2> dimensions = {100, 100};
+    float gap = 0.12f;
+  } grid;
+
   struct Cell {
     float size = {0.1f};
   } cells;
-
-  struct Grid {
-    uint32_t totalAliveCells = 10000;
-    std::array<uint32_t, 2> dimensions = {250, 250};
-    float gap = 0.12f;
-  } grid;
 
   struct DisplayConfiguration {
     const char* title = "CAPITAL Engine";
@@ -38,6 +38,6 @@ class Control {
   } compute;
 
  public:
-  std::vector<int> setCellsAliveRandomly(uint32_t numberOfCells);
+  std::vector<uint_fast32_t> setCellsAliveRandomly(uint_fast32_t numberOfCells);
   void simulateHours();
 };

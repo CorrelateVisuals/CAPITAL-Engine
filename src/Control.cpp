@@ -27,8 +27,9 @@ void Control::simulateHours() {
   }
 }
 
-std::vector<int> Control::setCellsAliveRandomly(uint32_t numberOfCells) {
-  std::vector<int> CellIDs;
+std::vector<uint_fast32_t> Control::setCellsAliveRandomly(
+    uint_fast32_t numberOfCells) {
+  std::vector<uint_fast32_t> CellIDs;
   CellIDs.reserve(numberOfCells);
 
   std::random_device random;
