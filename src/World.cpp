@@ -1,4 +1,5 @@
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include "CapitalEngine.h"
 #include "World.h"
@@ -101,38 +102,73 @@ World::UniformBufferObject World::updateUniforms() {
 }
 
 void World::updateCamera() {
-  constexpr uint8_t left = 0;
-  constexpr uint8_t right = 1;
-  constexpr uint8_t middle = 2;
+  constexpr uint_fast8_t left = 0;
+  constexpr uint_fast8_t right = 1;
+  constexpr uint_fast8_t middle = 2;
 
-  glm::vec2 deltas[3]{};
-  for (uint8_t i = 0; i < 3; ++i) {
-    deltas[i] = _window.mouse.buttonDown[i].position -
-                _window.mouse.previousButtonDown[i].position;
+  glm::vec2 buttonType[3]{};
+  for (uint_fast8_t i = 0; i < 3; ++i) {
+    buttonType[i] = _window.mouse.buttonDown[i].position -
+                    _window.mouse.previousButtonDown[i].position;
     _window.mouse.previousButtonDown[i].position =
         _window.mouse.buttonDown[i].position;
   }
-  glm::vec2 leftButtonDelta = deltas[left];
-  glm::vec2 rightButtonDelta = deltas[right];
-  glm::vec2 middleButtonDelta = deltas[middle];
+
+  float multiplier = 10.0f;
+  glm::vec2 leftButtonDelta = buttonType[left];
+  glm::vec2 rightButtonDelta = buttonType[right];
+  glm::vec2 middleButtonDelta = buttonType[middle];
 
   constexpr float rotationSpeed = 0.3f * glm::pi<float>() / 180.0f;
-  float turn = rotationSpeed * leftButtonDelta.x;
-  float tilt = rotationSpeed * -leftButtonDelta.y;
 
   glm::vec3 cameraRight = glm::cross(camera.front, camera.up);
 
-  glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), turn, camera.up) *
-                             glm::rotate(glm::mat4(1.0f), tilt, cameraRight);
-  camera.front =
-      glm::normalize(glm::vec3(rotationMatrix * glm::vec4(camera.front, 0.0f)));
-  camera.up =
-      glm::normalize(glm::vec3(rotationMatrix * glm::vec4(camera.up, 0.0f)));
+  // Calculate rotation around the cameraRight axis only if leftButtonDelta.y is
+  // larger
+  if (glm::abs(leftButtonDelta.y) > glm::abs(leftButtonDelta.x)) {
+    glm::mat4 rotationMatrix = glm::rotate(
+        glm::mat4(1.0f), rotationSpeed * -leftButtonDelta.y * multiplier,
+        cameraRight);
+    camera.front = glm::normalize(
+        glm::vec3(rotationMatrix * glm::vec4(camera.front, 0.0f)));
+    camera.up =
+        glm::normalize(glm::vec3(rotationMatrix * glm::vec4(camera.up, 0.0f)));
+  }
+  // Calculate rotation around the camera.up axis only if leftButtonDelta.x is
+  // larger
+  else if (glm::abs(leftButtonDelta.x) > glm::abs(leftButtonDelta.y)) {
+    glm::mat4 rotationMatrix =
+        glm::rotate(glm::mat4(1.0f),
+                    rotationSpeed * leftButtonDelta.x * multiplier, camera.up);
+    camera.front = glm::normalize(
+        glm::vec3(rotationMatrix * glm::vec4(camera.front, 0.0f)));
+    camera.up =
+        glm::normalize(glm::vec3(rotationMatrix * glm::vec4(camera.up, 0.0f)));
+  }
 
   // Reset the roll component to maintain a level camera orientation
   camera.up = glm::cross(cameraRight, camera.front);
 
-  constexpr float panningSpeed = 0.1f;
+  constexpr float movementSpeed = 0.001f;
+  static bool leftMouseButtonDown = false;
+  static float forwardMovement = 0.0f;
+  float leftButtonDeltaLength = glm::length(leftButtonDelta);
+
+  if (leftButtonDeltaLength > 0.0f) {
+    if (!leftMouseButtonDown) {
+      leftMouseButtonDown = true;
+      forwardMovement = 0.0f;
+    }
+    forwardMovement += movementSpeed * leftButtonDeltaLength;
+  } else {
+    leftMouseButtonDown = false;
+    forwardMovement = 0.0f;
+  }
+
+  forwardMovement = glm::clamp(forwardMovement, 0.0f, 1.0f);
+  camera.position += forwardMovement * camera.front;
+
+  constexpr float panningSpeed = 0.5f;
   glm::vec3 cameraUp = glm::cross(cameraRight, camera.front);
   camera.position += panningSpeed * rightButtonDelta.x * -cameraRight;
   camera.position += panningSpeed * rightButtonDelta.y * -cameraUp;
