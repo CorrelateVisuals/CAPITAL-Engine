@@ -15,9 +15,10 @@ class Window {
   struct Mouse {
     float pressDelay = 0.18f;
     struct Button {
-      glm::vec2 position{off, off};
+      glm::vec2 position;
     };
-    std::array<Button, 3> button;
+    std::array<Button, 3> buttonClick;
+    std::array<Button, 3> buttonDown;
   } mouse;
 
   void mouseClick();

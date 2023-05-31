@@ -35,7 +35,5 @@ class Control {
 
  public:
   std::vector<int> setCellsAliveRandomly(uint32_t numberOfCells);
-
-  double lowFrequencyOsciallator();
   void simulateHours();
 };

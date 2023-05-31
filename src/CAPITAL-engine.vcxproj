@@ -170,6 +170,7 @@
     <ClCompile Include="CapitalEngine.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="Library.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Pipelines.cpp" />
     <ClCompile Include="Mechanics.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Control.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="CapitalEngine.h" />
+    <ClInclude Include="Library.h" />
     <ClInclude Include="Pipelines.h" />
     <ClInclude Include="Mechanics.h" />
     <ClInclude Include="TODO.h" />

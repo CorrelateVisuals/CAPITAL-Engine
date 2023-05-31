@@ -3,6 +3,7 @@
 
 #include "CapitalEngine.h"
 #include "Control.h"
+#include "Library.h"
 #include "Window.h"
 
 Window::Window() : window{nullptr}, framebufferResized{false} {
@@ -69,22 +70,29 @@ void Window::mouseClick() {
     switch (oldState) {
       case GLFW_PRESS: {
         if (newState == GLFW_RELEASE) {
-          const auto& buttonMapping = buttonMappings.find(buttonType);
+          const std::unordered_map<int, std::string>::const_iterator&
+              buttonMapping = buttonMappings.find(buttonType);
           if (buttonMapping != buttonMappings.end()) {
             const std::string& message = buttonMapping->second;
-            mouse.button[buttonType].position = glm::vec2{x, y};
-            _log.console(message + " clicked at", x, ":", y);
+            mouse.buttonClick[buttonType].position = glm::vec2{x, y};
+            _log.console(message + " clicked at",
+                         mouse.buttonClick[buttonType].position.x, ":",
+                         mouse.buttonClick[buttonType].position.y);
             timer = 0.0f;
           }
         } else {
           const float currentTime = static_cast<float>(glfwGetTime());
           const float timer = currentTime - pressTime;
           if (timer >= mouse.pressDelay) {
-            const auto& buttonMapping = buttonMappings.find(buttonType);
+            const std::unordered_map<int, std::string>::const_iterator&
+                buttonMapping = buttonMappings.find(buttonType);
             if (buttonMapping != buttonMappings.end()) {
               const std::string& message = buttonMapping->second;
-              mouse.button[buttonType].position = glm::vec2{x, y};
-              _log.console(message + " down at", x, ":", y);
+              mouse.buttonDown[buttonType].position +=
+                  lib.smoothstep(glm::vec2(x, y));
+              _log.console(message + " moved to",
+                           mouse.buttonDown[buttonType].position.x, ":",
+                           mouse.buttonDown[buttonType].position.y);
             }
           }
         }
