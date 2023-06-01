@@ -63,6 +63,14 @@ float phongLightning ( vec4 directionAndIntensity ) {
 layout(location = 0) out vec3 fragColor;
 
 void main() { 
+
+     if (gl_InstanceIndex == 0) {
+        vec3 color = vec3(0.9, 0.0, 0.0);
+        vec4 position = vec4( vec2(0.0f), 5.0f, 0.0f );
+        gl_Position = modelViewProjection() * vec4( position + vec4(cubeVertices[cubeIndices[gl_VertexIndex]] * 10.0, 1.0) );
+        fragColor = phongLightning(ubo.lightDirection.xyzw) * color;
+        return;
+    }
     
     if( inSize.x == -1.0f ){ return; } else {
         gl_Position = modelViewProjection() * constructCube();  
