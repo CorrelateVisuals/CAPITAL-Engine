@@ -42,7 +42,7 @@ void CapitalEngine::mainLoop() {
 
 void CapitalEngine::compileShaders() {
 #ifdef _WIN32
-  auto err = std::system("./shaders/compile_shaders.bat");
+  auto err = std::system("..\\shaders\\compile_shaders.bat");
 #else
   // Linux-specific code
   auto err = std::system("./shaders/compile_shaders.sh");
