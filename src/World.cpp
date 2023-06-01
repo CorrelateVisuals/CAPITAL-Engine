@@ -89,7 +89,9 @@ bool World::isIndexAlive(const std::vector<int>& aliveCells, int index) {
 
 World::UniformBufferObject World::updateUniforms() {
   UniformBufferObject uniformObject{};
-  uniformObject.gridDimensions = _control.grid.dimensions;
+  uniformObject.gridDimensions = {
+      static_cast<uint32_t>(_control.grid.dimensions[0]),
+      static_cast<uint32_t>(_control.grid.dimensions[1])};
   uniformObject.gridHeight = _control.grid.height;
   uniformObject.passedHours = _control.timer.passedHours;
   uniformObject.cellSize = _control.cells.size;
