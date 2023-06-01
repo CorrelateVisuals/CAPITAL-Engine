@@ -116,12 +116,11 @@ void World::updateCamera() {
         _window.mouse.buttonDown[i].position;
   }
 
-  float multiplier = 2.0f;
   glm::vec2 leftButtonDelta = buttonType[left];
   glm::vec2 rightButtonDelta = buttonType[right];
   glm::vec2 middleButtonDelta = buttonType[middle];
 
-  constexpr float rotationSpeed = 0.3f * glm::pi<float>() / 180.0f;
+  constexpr float rotationSpeed = 1.0f * glm::pi<float>() / 180.0f;
 
   glm::vec3 cameraRight = glm::cross(camera.front, camera.up);
 
@@ -129,33 +128,39 @@ void World::updateCamera() {
   // larger
   if (glm::abs(leftButtonDelta.y) > glm::abs(leftButtonDelta.x)) {
     glm::mat4 rotationMatrix = glm::rotate(
-        glm::mat4(1.0f), rotationSpeed * -leftButtonDelta.y * multiplier,
-        cameraRight);
-    camera.front = glm::normalize(
-        glm::vec3(rotationMatrix * glm::vec4(camera.front, 0.0f)));
-    camera.up =
-        glm::normalize(glm::vec3(rotationMatrix * glm::vec4(camera.up, 0.0f)));
+        glm::mat4(1.0f), rotationSpeed * -leftButtonDelta.y, cameraRight);
+    camera.front =
+        glm::normalize(rotationMatrix * glm::vec4(camera.front, 0.0f));
+    camera.up = glm::normalize(rotationMatrix * glm::vec4(camera.up, 0.0f));
   }
   // Calculate rotation around the camera.up axis only if leftButtonDelta.x is
   // larger
   else if (glm::abs(leftButtonDelta.x) > glm::abs(leftButtonDelta.y)) {
-    glm::mat4 rotationMatrix =
-        glm::rotate(glm::mat4(1.0f),
-                    rotationSpeed * leftButtonDelta.x * multiplier, camera.up);
-    camera.front = glm::normalize(
-        glm::vec3(rotationMatrix * glm::vec4(camera.front, 0.0f)));
-    camera.up =
-        glm::normalize(glm::vec3(rotationMatrix * glm::vec4(camera.up, 0.0f)));
+    glm::mat4 rotationMatrix = glm::rotate(
+        glm::mat4(1.0f), rotationSpeed * leftButtonDelta.x, camera.up);
+    camera.front =
+        glm::normalize(rotationMatrix * glm::vec4(camera.front, 0.0f));
+    camera.up = glm::normalize(rotationMatrix * glm::vec4(camera.up, 0.0f));
   }
 
-  // Reset the roll component to maintain a level camera orientation
-  camera.up = glm::cross(cameraRight, camera.front);
-  constexpr float movementSpeed = 0.1f;
-  leftButtonDelta = glm::vec2(glm::clamp(leftButtonDelta[0], -1.0f, 1.0f),
-                              glm::clamp(leftButtonDelta[1], -1.0f, 1.0f));
+  camera.position += getForwardMovement(leftButtonDelta) * camera.front;
 
+  constexpr float panningSpeed = 0.5f;
+  glm::vec3 cameraUp = glm::cross(cameraRight, camera.front);
+  camera.position += panningSpeed * rightButtonDelta.x * -cameraRight;
+  camera.position += panningSpeed * rightButtonDelta.y * -cameraUp;
+
+  constexpr float zoomSpeed = 0.1f;
+  camera.position += zoomSpeed * middleButtonDelta.x * camera.front;
+
+  // Clamp the y-coordinate of the camera position to zero
+  camera.position.z = std::max(camera.position.z, 0.0f);
+}
+
+float World::getForwardMovement(const glm::vec2& leftButtonDelta) {
   static bool leftMouseButtonDown = false;
   static float forwardMovement = 0.0f;
+
   float leftButtonDeltaLength = glm::length(leftButtonDelta);
 
   if (leftButtonDeltaLength > 0.0f) {
@@ -163,8 +168,8 @@ void World::updateCamera() {
       leftMouseButtonDown = true;
       forwardMovement = 0.0f;
     }
-    constexpr float maxSpeed = 0.05f;
-    constexpr float acceleration = 0.001f;
+    constexpr float maxSpeed = 0.03f;
+    constexpr float acceleration = 0.0001f;
 
     // Calculate the speed based on the distance from the center
     float normalizedDeltaLength = glm::clamp(leftButtonDeltaLength, 0.0f, 1.0f);
@@ -176,14 +181,8 @@ void World::updateCamera() {
     leftMouseButtonDown = false;
     forwardMovement = 0.0f;
   }
-  camera.position += forwardMovement * camera.front;
-  constexpr float panningSpeed = 0.5f;
-  glm::vec3 cameraUp = glm::cross(cameraRight, camera.front);
-  camera.position += panningSpeed * rightButtonDelta.x * -cameraRight;
-  camera.position += panningSpeed * rightButtonDelta.y * -cameraUp;
 
-  constexpr float zoomSpeed = 0.1f;
-  camera.position += zoomSpeed * middleButtonDelta.x * camera.front;
+  return forwardMovement;
 }
 
 glm::mat4 World::setModel() {

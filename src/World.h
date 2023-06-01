@@ -51,6 +51,7 @@ class World {
  public:
   UniformBufferObject updateUniforms();
   void updateCamera();
+  float getForwardMovement(const glm::vec2& leftButtonDelta);
 
   std::vector<World::Cell> initializeCells();
   bool isIndexAlive(const std::vector<int>& aliveCells, int index);
