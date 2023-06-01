@@ -43,8 +43,7 @@ void CapitalEngine::mainLoop() {
 void CapitalEngine::compileShaders() {
   _log.console("{ SHA }", "compiling shaders");
 #ifdef _WIN32
-  std::string cmd = "cmd /C \"..\\shaders\\compile_shaders.bat > NUL\"";
-  auto err = std::system(cmd.c_str());
+  auto err = std::system("cmd /C \"..\\shaders\\compile_shaders.bat > NUL\"");
 #else
   // Linux-specific code
   auto err = std::system("./shaders/compile_shaders.sh");
