@@ -10,6 +10,7 @@ CapitalEngine::CapitalEngine() {
   _log.console("\n", _log.style.indentSize, "[ CAPITAL engine ]",
                "starting...\n");
 
+  compileShaders();
   initVulkan();
 }
 
@@ -37,6 +38,15 @@ void CapitalEngine::mainLoop() {
 
   vkDeviceWaitIdle(_mechanics.mainDevice.logical);
   _log.console("\n", _log.style.indentSize, "{ Main Loop } ....... terminated");
+}
+
+void CapitalEngine::compileShaders() {
+#ifdef _WIN32
+  auto err = std::system("./shaders/compile_shaders.bat");
+#else
+  // Linux-specific code
+  auto err = std::system("./shaders/compile_shaders.sh");
+#endif
 }
 
 void CapitalEngine::initVulkan() {
