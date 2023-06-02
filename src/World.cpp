@@ -33,6 +33,8 @@ World::getAttributeDescriptions() {
       {1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, color)});
   attributeDescriptions.push_back(
       {2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, size)});
+  attributeDescriptions.push_back(
+      {3, 0, VK_FORMAT_R32G32B32_SINT, offsetof(Cell, states)});
   return attributeDescriptions;
 }
 

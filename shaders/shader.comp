@@ -1,10 +1,9 @@
 #version 450
-                                                //#extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
 layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
 layout (binding = 0) uniform ParameterUBO {
     ivec2 gridDimensions;
-    int time;                                   //TODO 'long long' : int64_t passedHours;
+    int time; 
     mat4 model;
     mat4 view;
     mat4 projection;
@@ -31,9 +30,8 @@ layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
 int alive       =  1;
-int dead        = -1;
+int dead        =  -1;
 vec4 size       = vec4(ubo.cellSize);
-vec4 sizeOff    = vec4(dead);
 vec4 red        = vec4(1.0, 0.0, 0.0, 1.0);
 vec4 green      = vec4(0.0, 1.0, 0.0, 1.0); 
 vec4 dimGreen   = vec4(0.0, 0.05, 0.0, 1.0);
@@ -41,6 +39,7 @@ vec4 blue       = vec4(0.0, 0.0, 1.0, 1.0);
 vec4 white      = vec4(1.0, 1.0, 1.0, 1.0);
 vec4 black      = vec4(0.0, 0.0, 0.0, 1.0);
 vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
+vec4 terrain    = vec4(0.0, 0.1, 0.02, 1.0);
 
 ivec4 neighbourCellsInRange(int range){
 ivec4 neighbourCellsInRange = ivec4(0);
@@ -93,11 +92,11 @@ void simulate(out Cell cell){
         cell = initialized ?    Cell(pos, green, size, setState(alive, 0)) :
                lifeCycle ?      Cell(pos, colorIncrement, size, setState(alive, 0)) :
                endOfStage ?     Cell(pos, green, size, setState(alive, 1)) :
-                                Cell(pos, black, sizeOff, setState(dead, 1));
+                                Cell(pos, terrain, size, setState(dead, 1));
     } else if (stage(1)) {
         cell = live(neighbours) ?   Cell(pos, green, size, setState(alive, 0)) :
-               die(neighbours) ?    Cell(pos, black, sizeOff, setState(dead, 0)) :
-                                    Cell(pos, colorIn, sizeOff, setState(dead, 1));
+               die(neighbours) ?    Cell(pos, terrain, size, setState(dead, 0)) :
+                                    Cell(pos, colorIn, size, setState(dead, 1));
     }
 }
 
