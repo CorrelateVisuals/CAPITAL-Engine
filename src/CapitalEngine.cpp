@@ -29,13 +29,15 @@ void CapitalEngine::mainLoop() {
 
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
-
     _window.mouseClick();
-
     _control.simulateHours();
-    drawFrame();
-  }
 
+    drawFrame();
+
+    if (glfwGetKey(_window.window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+      break;
+    }
+  }
   vkDeviceWaitIdle(_mechanics.mainDevice.logical);
   _log.console("\n", _log.style.indentSize, "{ Main Loop } ....... terminated");
 }

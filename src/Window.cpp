@@ -22,7 +22,6 @@ void Window::initWindow() {
   glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
   window = glfwCreateWindow(_control.display.width, _control.display.height,
                             _control.display.title, nullptr, nullptr);
-
   glfwSetWindowUserPointer(window, this);
   glfwSetFramebufferSizeCallback(window, windowResize);
   _log.console("{ [*] }", "Window initialized with", _control.display.width,
@@ -95,9 +94,9 @@ void Window::mouseClick() {
               mouse.buttonDown[buttonType].position +=
                   normalizedCoords * mouse.speed;
 
-              _log.console(message + " moved to",
-                           mouse.buttonDown[buttonType].position.x, ":",
-                           mouse.buttonDown[buttonType].position.y);
+              //_log.console(message + " moved to",
+              //             mouse.buttonDown[buttonType].position.x, ":",
+              //             mouse.buttonDown[buttonType].position.y);
             }
           }
         }
