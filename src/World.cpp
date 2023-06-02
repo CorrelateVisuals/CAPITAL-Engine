@@ -2,6 +2,7 @@
 #include <glm/gtc/quaternion.hpp>
 
 #include "CapitalEngine.h"
+#include "Library.h"
 #include "World.h"
 
 #include <algorithm>
@@ -150,12 +151,12 @@ void World::updateCamera() {
     float movementSpeed = getForwardMovement(leftButtonDelta);
     camera.position += movementSpeed * camera.front;
 
-    constexpr float panningSpeed = 1.0f;
+    constexpr float panningSpeed = 0.1f;
     glm::vec3 cameraUp = glm::cross(cameraRight, camera.front);
     camera.position -= panningSpeed * rightButtonDelta.x * cameraRight;
     camera.position -= panningSpeed * rightButtonDelta.y * cameraUp;
 
-    constexpr float zoomSpeed = 0.3f;
+    constexpr float zoomSpeed = 0.1f;
     camera.position += zoomSpeed * middleButtonDelta.x * camera.front;
     camera.position.z = std::max(camera.position.z, 0.0f);
   }

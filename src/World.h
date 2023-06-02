@@ -23,7 +23,7 @@ class World {
   } camera;
 
   struct Light {
-    std::array<float, 4> direction = {0.5f, 0.5f, 0.5f, 0.2f};
+    std::array<float, 4> direction = {0.5f, 1.0f, 0.5f, 0.1f};
   } directionalLight;
 
   struct Cell {
