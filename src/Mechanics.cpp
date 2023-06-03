@@ -106,6 +106,7 @@ void VulkanMechanics::pickPhysicalDevice() {
   for (const auto& device : devices) {
     if (isDeviceSuitable(device)) {
       mainDevice.physical = device;
+      _pipelines.msaa.samples = _pipelines.getMaxUsableSampleCount();
       break;
     }
   }
@@ -355,6 +356,20 @@ void VulkanMechanics::createSyncObjects() {
 }
 
 void VulkanMechanics::cleanupSwapChain() {
+  vkDestroyImageView(_mechanics.mainDevice.logical, _pipelines.depth.imageView,
+                     nullptr);
+  vkDestroyImage(_mechanics.mainDevice.logical, _pipelines.depth.image,
+                 nullptr);
+  vkFreeMemory(_mechanics.mainDevice.logical, _pipelines.depth.imageMemory,
+               nullptr);
+
+  vkDestroyImageView(_mechanics.mainDevice.logical,
+                     _pipelines.msaa.colorImageView, nullptr);
+  vkDestroyImage(_mechanics.mainDevice.logical, _pipelines.msaa.colorImage,
+                 nullptr);
+  vkFreeMemory(_mechanics.mainDevice.logical, _pipelines.msaa.colorImageMemory,
+               nullptr);
+
   for (auto framebuffer : swapChain.framebuffers) {
     vkDestroyFramebuffer(_mechanics.mainDevice.logical, framebuffer, nullptr);
   }
@@ -461,6 +476,7 @@ void VulkanMechanics::recreateSwapChain() {
   createSwapChain();
   createImageViews();
   _pipelines.createDepthResources();
+  _pipelines.createColorResources();
   _memCommands.createFramebuffers();
 }
 

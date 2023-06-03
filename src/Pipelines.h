@@ -25,12 +25,23 @@ class Pipelines {
     VkImageView imageView;
   } depth;
 
+  struct MultiSampling {
+    VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
+    VkImage colorImage;
+    VkDeviceMemory colorImageMemory;
+    VkImageView colorImageView;
+  } msaa;
+
  public:
+  void createColorResources();
   void createDepthResources();
+
   void createRenderPass();
 
   void createGraphicsPipeline();
   void createComputePipeline();
+
+  VkSampleCountFlagBits getMaxUsableSampleCount();
 
  private:
   VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
@@ -93,6 +104,7 @@ class MemoryCommands {
 
   void createImage(uint32_t width,
                    uint32_t height,
+                   VkSampleCountFlagBits numSamples,
                    VkFormat format,
                    VkImageTiling tiling,
                    VkImageUsageFlags usage,

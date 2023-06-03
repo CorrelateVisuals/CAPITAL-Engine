@@ -71,6 +71,7 @@ void CapitalEngine::initVulkan() {
   _pipelines.createComputePipeline();
 
   _memCommands.createCommandPool();
+  _pipelines.createColorResources();
   _pipelines.createDepthResources();
   _memCommands.createFramebuffers();
 
