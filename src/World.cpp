@@ -134,7 +134,7 @@ void World::updateCamera() {
     glm::vec2 middleButtonDelta = buttonType[middle];
     glm::vec3 cameraRight = glm::cross(camera.front, camera.up);
     glm::vec2 absDelta = glm::abs(leftButtonDelta);
-    constexpr float rotationSpeed = 0.2f * glm::pi<float>() / 180.0f;
+    constexpr float rotationSpeed = 0.1f * glm::pi<float>() / 180.0f;
     glm::vec2 rotationDelta = rotationSpeed * leftButtonDelta;
     glm::mat4 rotationMatrix(1.0f);
 
@@ -174,8 +174,8 @@ float World::getForwardMovement(const glm::vec2& leftButtonDelta) {
       leftMouseButtonDown = true;
       forwardMovement = 0.0f;
     }
-    constexpr float maxSpeed = 0.01f;
-    constexpr float acceleration = 0.0001f;
+    constexpr float maxSpeed = 0.001f;
+    constexpr float acceleration = 0.00001f;
 
     // Calculate the speed based on the distance from the center
     float normalizedDeltaLength = glm::clamp(leftButtonDeltaLength, 0.0f, 1.0f);
@@ -206,7 +206,7 @@ glm::mat4 World::setView() {
 
 glm::mat4 World::setProjection(VkExtent2D& swapChainExtent) {
   float nearClipping = 0.0001f;
-  float farClipping = 1000.0f;
+  float farClipping = 20.0f;
   glm::mat4 projection = glm::perspective(
       glm::radians(camera.fieldOfView),
       swapChainExtent.width / static_cast<float>(swapChainExtent.height),

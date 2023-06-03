@@ -24,16 +24,33 @@ float noise(vec2 p) {   for (int i = 0; i < octaves; i++)
                         total /= scale; 
                         return total; }
 vec4 position = vec4( inpositionition.xy, noise( inpositionition.xy ), inpositionition.w );
-const vec3 cubeVertices[8] ={ { -0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, -0.5f}, {-0.5f, 0.5f, -0.5f}, {0.5f, 0.5f, -0.5f},
-                              { -0.5f, -0.5f, 0.5f},  {0.5f, -0.5f, 0.5f},  {-0.5f, 0.5f, 0.5f},  {0.5f, 0.5f, 0.5f} };
-const int cubeIndices[36] = {
-    0, 1, 2, 2, 1, 3,     // front face
-    1, 5, 3, 3, 5, 7,     // right face
-    5, 4, 7, 7, 4, 6,     // back face
-    4, 0, 6, 6, 0, 2,     // left face
-    4, 5, 0, 0, 5, 1,     // bottom face
-    2, 3, 6, 6, 3, 7      // top face
-};
+
+vec3 cubeVertices[24] = {{1, 1, 1},    {-1, 1, 1}, {-1, -1, 1},  {1, -1, 1},  // v0,v1,v2,v3 (front)
+                         {1, 1, 1},    {1, -1, 1}, {1, -1, -1},  {1, 1, -1},  // v0,v3,v4,v5 (right)
+                         {1, 1, 1},    {1, 1, -1}, {-1, 1, -1},  {-1, 1, 1},  // v0,v5,v6,v1 (top)
+                         {-1, 1, 1},   {-1, 1, -1}, {-1, -1, -1}, {-1, -1, 1},  // v1,v6,v7,v2 (left)
+                         {-1, -1, -1}, {1, -1, -1}, {1, -1, 1},   {-1, -1, 1},  // v7,v4,v3,v2 (bottom)
+                         {1, -1, -1},  {-1, -1, -1}, {-1, 1, -1},  {1, 1, -1}};  // v4,v7,v6,v5 (back)
+vec3 cubeNormals[24] = {
+    {0, 0, 1},  {0, 0, 1},  {0, 0, 1},  {0, 0, 1},    // v0,v1,v2,v3 (front)
+    {1, 0, 0},  {1, 0, 0},  {1, 0, 0},  {1, 0, 0},    // v0,v3,v4,v5 (right)
+    {0, 1, 0},  {0, 1, 0},  {0, 1, 0},  {0, 1, 0},    // v0,v5,v6,v1 (top)
+    {-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0},   // v1,v6,v7,v2 (left)
+    {0, -1, 0}, {0, -1, 0}, {0, -1, 0}, {0, -1, 0},   // v7,v4,v3,v2 (bottom)
+    {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}};  // v4,v7,v6,v5 (back)
+vec3 cubeColors[24] = {
+    {1, 1, 1}, {1, 1, 0}, {1, 0, 0}, {1, 0, 1},   // v0,v1,v2,v3 (front)
+    {1, 1, 1}, {1, 0, 1}, {0, 0, 1}, {0, 1, 1},   // v0,v3,v4,v5 (right)
+    {1, 1, 1}, {0, 1, 1}, {0, 1, 0}, {1, 1, 0},   // v0,v5,v6,v1 (top)
+    {1, 1, 0}, {0, 1, 0}, {0, 0, 0}, {1, 0, 0},   // v1,v6,v7,v2 (left)
+    {0, 0, 0}, {0, 0, 1}, {1, 0, 1}, {1, 0, 0},   // v7,v4,v3,v2 (bottom)
+    {0, 0, 1}, {0, 0, 0}, {0, 1, 0}, {0, 1, 1}};  // v4,v7,v6,v5 (back)
+int cubeIndices[36] = {0,  1,  2,  2,  3,  0,    // front 
+                       4,  5,  6,  6,  7,  4,    // right
+                       8,  9,  10, 10, 11, 8,    // top
+                       12, 13, 14, 14, 15, 12,   // left
+                       16, 17, 18, 18, 19, 16,   // bottom
+                       20, 21, 22, 22, 23, 20};  // back
 
 vec4 constructCube(){ return position + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); }
 
@@ -49,16 +66,16 @@ float quadIllumination() {
     }
 }
 
-layout(location = 0) out vec3 fragColor;
+layout(location = 0) out vec4 fragColor;
 
 void main() {
     if (inStates.x == -1) {
         gl_Position = modelViewProjection() * constructCube();
-        fragColor   = inColor.rgb * quadIllumination();
+        fragColor   = inColor * quadIllumination();
         return;
     } else {
         gl_Position = modelViewProjection() * constructCube();
-        fragColor   = inColor.rgb * quadIllumination();
+        fragColor   = inColor * quadIllumination();
         return;
     }
 }
