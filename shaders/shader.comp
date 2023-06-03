@@ -7,7 +7,6 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 model;
     mat4 view;
     mat4 projection;
-    vec4 lightDirection;
     float cellSize;
     float gridHeight;
 } ubo;
@@ -39,7 +38,7 @@ vec4 blue       = vec4(0.0, 0.0, 1.0, 1.0);
 vec4 white      = vec4(1.0, 1.0, 1.0, 1.0);
 vec4 black      = vec4(0.0, 0.0, 0.0, 1.0);
 vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
-vec4 terrain    = vec4(0.0, 0.1, 0.02, 1.0);
+vec4 terrain    = vec4(0.0, 0.1, 0.1, 1.0);
 
 ivec4 neighbourCellsInRange(int range){
 ivec4 neighbourCellsInRange = ivec4(0);

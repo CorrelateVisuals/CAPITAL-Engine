@@ -22,10 +22,6 @@ class World {
     glm::vec3 up{0.0f, -1.0f, 0.0f};
   } camera;
 
-  struct Light {
-    std::array<float, 4> direction = {0.5f, 1.0f, 0.5f, 0.1f};
-  } directionalLight;
-
   struct Cell {
     std::array<float, 4> position;
     std::array<float, 4> color;
@@ -39,7 +35,6 @@ class World {
     alignas(16) glm::mat4 model;
     alignas(16) glm::mat4 view;
     alignas(16) glm::mat4 proj;
-    std::array<float, 4> lightDirection;
     float cellSize;
     float gridHeight;
   };

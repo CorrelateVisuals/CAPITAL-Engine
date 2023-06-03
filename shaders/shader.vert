@@ -11,7 +11,6 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 model;
     mat4 view;
     mat4 projection;
-    vec4 lightDirection;
     float cellSize;
     float gridHeight;
 } ubo;
@@ -27,21 +26,26 @@ float noise(vec2 p) {   for (int i = 0; i < octaves; i++)
 vec4 position = vec4( inpositionition.xy, noise( inpositionition.xy ), inpositionition.w );
 const vec3 cubeVertices[8] ={ { -0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, -0.5f}, {-0.5f, 0.5f, -0.5f}, {0.5f, 0.5f, -0.5f},
                               { -0.5f, -0.5f, 0.5f},  {0.5f, -0.5f, 0.5f},  {-0.5f, 0.5f, 0.5f},  {0.5f, 0.5f, 0.5f} };
-const vec3 cubeNormals[6] = { { 0.0f, 0.0f,-1.0f},  {0.0f, 0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f},
-                              { 1.0f, 0.0f, 0.0f},  {0.0f, 1.0f, 0.0f}, {0.0f,-1.0f, 0.0f} };
-const int cubeIndices[36] = { 0, 2, 3, 0, 3, 1, 4, 5, 7, 4, 7, 6, 1, 3, 7, 1, 7, 5,
-                              0, 4, 6, 0, 6, 2, 2, 6, 7, 2, 7, 3, 0, 1, 5, 0, 5, 4 };
-vec4 constructCube(){ return position + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.y, vec2(0.0)); }
+const int cubeIndices[36] = {
+    0, 1, 2, 2, 1, 3,     // front face
+    1, 5, 3, 3, 5, 7,     // right face
+    5, 4, 7, 7, 4, 6,     // back face
+    4, 0, 6, 6, 0, 2,     // left face
+    4, 5, 0, 0, 5, 1,     // bottom face
+    2, 3, 6, 6, 3, 7      // top face
+};
+
+vec4 constructCube(){ return position + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); }
 
 float quadIllumination() { 
     switch (gl_VertexIndex / 6){
-        case 0: return 0.1;     // bottom
-        case 1: return 1.0;     // top
-        case 2: return 0.5;     // right
-        case 3: return 0.7;     // left
-        case 4: return 0.8;     // front
-        case 5: return 0.3;     // back
-        default: return 0.3;    // fallback value
+        case 0: return 0.1f;     // bottom
+        case 1: return 1.0f;     // top
+        case 2: return 0.4f;     // right
+        case 3: return 0.8f;     // left
+        case 4: return 0.9f;     // front
+        case 5: return 0.2f;     // back
+        default: return 0.2f;    // fallback value
     }
 }
 
@@ -78,3 +82,5 @@ void main() {
 //                         vec3(-0.5f, 0.5f,  0.5f),   // 6
 //                         vec3(0.5f,  0.5f,  0.5f)};  // 7
 // const int cubeIndices[16] = {  0, 1, 2, 3, 6, 7, 4, 5, 2, 6, 0, 4, 1, 5, 3, 7 };
+/*const vec3 cubeNormals[6] = { { 0.0f, 0.0f,-1.0f},  {0.0f, 0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f},
+                              { 1.0f, 0.0f, 0.0f},  {0.0f, 1.0f, 0.0f}, {0.0f,-1.0f, 0.0f} };*/

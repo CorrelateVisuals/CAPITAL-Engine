@@ -98,7 +98,6 @@ World::UniformBufferObject World::updateUniforms() {
   uniformObject.gridHeight = _control.grid.height;
   uniformObject.passedHours = _control.timer.passedHours;
   uniformObject.cellSize = _control.cells.size;
-  uniformObject.lightDirection = directionalLight.direction;
   uniformObject.model = setModel();
   uniformObject.view = setView();
   uniformObject.proj = setProjection(_mechanics.swapChain.extent);
