@@ -276,7 +276,6 @@ VkSurfaceFormatKHR VulkanMechanics::chooseSwapSurfaceFormat(
       return availableFormat;
     }
   }
-
   return availableFormats[0];
 }
 
@@ -288,7 +287,6 @@ VkPresentModeKHR VulkanMechanics::chooseSwapPresentMode(
       return availablePresentMode;
     }
   }
-
   return VK_PRESENT_MODE_FIFO_KHR;
 }
 

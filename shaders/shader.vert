@@ -32,18 +32,29 @@ const vec3 cubeNormals[6] = { { 0.0f, 0.0f,-1.0f},  {0.0f, 0.0f, 1.0f}, {-1.0f, 
 const int cubeIndices[36] = { 0, 2, 3, 0, 3, 1, 4, 5, 7, 4, 7, 6, 1, 3, 7, 1, 7, 5,
                               0, 4, 6, 0, 6, 2, 2, 6, 7, 2, 7, 3, 0, 1, 5, 0, 5, 4 };
 vec4 constructCube(){ return position + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.y, vec2(0.0)); }
-float light() { return max(dot(cubeNormals[gl_VertexIndex / 6], ubo.lightDirection.xyz), 0.0) + ubo.lightDirection.w; }
+
+float quadIllumination() { 
+    switch (gl_VertexIndex / 6){
+        case 0: return 0.1;     // bottom
+        case 1: return 1.0;     // top
+        case 2: return 0.5;     // right
+        case 3: return 0.7;     // left
+        case 4: return 0.8;     // front
+        case 5: return 0.3;     // back
+        default: return 0.3;    // fallback value
+    }
+}
 
 layout(location = 0) out vec3 fragColor;
 
 void main() {
     if (inStates.x == -1) {
         gl_Position = modelViewProjection() * constructCube();
-        fragColor   = inColor.rgb * light();
+        fragColor   = inColor.rgb * quadIllumination();
         return;
     } else {
         gl_Position = modelViewProjection() * constructCube();
-        fragColor   = inColor.rgb * light();
+        fragColor   = inColor.rgb * quadIllumination();
         return;
     }
 }
