@@ -11,12 +11,10 @@
 /// on the Vulkan side
 ///
 /// [ FEATURES: ADDITIONS ]
-/// - Add camera movements, arcball or common
+/// - Add camera arcball camera
 /// https://github.com/Twinklebear/arcball-cpp
 /// - Dear ImGui (for runtime settings, graph data and economic encyclopedia)
 /// https://github.com/ocornut/imgui
-/// - Multisampling
-/// https://vulkan-tutorial.com/Multisampling
 /// - Adding push constants
 /// - Renderpicking/colorpicking: Adding screenspace position to vertex ID, to
 /// click on objects and return their IDs.
@@ -24,7 +22,6 @@
 /// - Add vertex and index buffers; remove the vertex, index and normal data
 /// from vertex shader
 /// https://vulkan-tutorial.com/Vertex_buffers/Vertex_buffer_creation
-/// - Shader to SPIRV runtime conversion
 ///
 /// [ FEATURES: GEOMETRY ]
 /// - Animating geometry between cells

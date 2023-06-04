@@ -56,13 +56,13 @@ vec4 constructCube(){ return position + vec4( cubeVertices[ cubeIndices[ gl_Vert
 
 float quadIllumination() { 
     switch (gl_VertexIndex / 6){
-        case 0: return 0.1f;     // bottom
-        case 1: return 1.0f;     // top
-        case 2: return 0.4f;     // right
-        case 3: return 0.8f;     // left
-        case 4: return 0.9f;     // front
-        case 5: return 0.2f;     // back
-        default: return 0.2f;    // fallback value
+        case 0: return 1.0f;
+        case 1: return 0.8f;
+        case 2: return 0.7f; 
+        case 3: return 0.4f;
+        case 4: return 0.3f;
+        case 5: return 0.1f;
+        default: return 0.2f;
     }
 }
 

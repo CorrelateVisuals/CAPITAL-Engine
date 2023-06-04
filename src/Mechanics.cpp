@@ -229,6 +229,7 @@ void VulkanMechanics::createLogicalDevice() {
   }
 
   VkPhysicalDeviceFeatures deviceFeatures{};
+  deviceFeatures.sampleRateShading = VK_TRUE;  // MSAA texture shading
 
   VkDeviceCreateInfo createInfo{};
   createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
