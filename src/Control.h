@@ -24,7 +24,7 @@ class Control {
   } grid;
 
   struct Cell {
-    float size = {0.02f};
+    float size = {0.03f};
   } cells;
 
   struct DisplayConfiguration {

@@ -25,13 +25,34 @@ float noise(vec2 p) {   for (int i = 0; i < octaves; i++)
                         return total; }
 vec4 position = vec4( inpositionition.xy, noise( inpositionition.xy ), inpositionition.w );
 
-vec3 cubeVertices[24] = {{1, 1, 1},    {-1, 1, 1}, {-1, -1, 1},  {1, -1, 1},  // v0,v1,v2,v3 (front)
-                         {1, 1, 1},    {1, -1, 1}, {1, -1, -1},  {1, 1, -1},  // v0,v3,v4,v5 (right)
-                         {1, 1, 1},    {1, 1, -1}, {-1, 1, -1},  {-1, 1, 1},  // v0,v5,v6,v1 (top)
-                         {-1, 1, 1},   {-1, 1, -1}, {-1, -1, -1}, {-1, -1, 1},  // v1,v6,v7,v2 (left)
-                         {-1, -1, -1}, {1, -1, -1}, {1, -1, 1},   {-1, -1, 1},  // v7,v4,v3,v2 (bottom)
-                         {1, -1, -1},  {-1, -1, -1}, {-1, 1, -1},  {1, 1, -1}};  // v4,v7,v6,v5 (back)
-vec3 cubeNormals[24] = {
+const vec3 cubeVertices[8] ={ { -0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, -0.5f}, {-0.5f, 0.5f, -0.5f}, {0.5f, 0.5f, -0.5f},
+                              { -0.5f, -0.5f, 0.5f},  {0.5f, -0.5f, 0.5f},  {-0.5f, 0.5f, 0.5f},  {0.5f, 0.5f, 0.5f} };
+const int cubeIndices[36] = { 0, 2, 3, 0, 3, 1, 4, 5, 7, 4, 7, 6, 1, 3, 7, 1, 7, 5,
+                              0, 4, 6, 0, 6, 2, 2, 6, 7, 2, 7, 3, 0, 1, 5, 0, 5, 4 };
+const float cubeIllumination[6] = {1.0f, 0.8f, 0.7f, 0.4f, 0.3f, 0.1f};
+
+vec4 constructCube(){ return position + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); }
+float quadIllumination() { return cubeIllumination[ int( gl_VertexIndex / 6 ) ]; }
+
+layout(location = 0) out vec4 fragColor;
+
+void main() {
+
+    gl_Position = modelViewProjection() * constructCube();
+    fragColor   = inColor * quadIllumination();
+
+}
+
+
+
+
+
+
+
+
+
+
+/*vec3 cubeNormals[24] = {
     {0, 0, 1},  {0, 0, 1},  {0, 0, 1},  {0, 0, 1},    // v0,v1,v2,v3 (front)
     {1, 0, 0},  {1, 0, 0},  {1, 0, 0},  {1, 0, 0},    // v0,v3,v4,v5 (right)
     {0, 1, 0},  {0, 1, 0},  {0, 1, 0},  {0, 1, 0},    // v0,v5,v6,v1 (top)
@@ -44,45 +65,22 @@ vec3 cubeColors[24] = {
     {1, 1, 1}, {0, 1, 1}, {0, 1, 0}, {1, 1, 0},   // v0,v5,v6,v1 (top)
     {1, 1, 0}, {0, 1, 0}, {0, 0, 0}, {1, 0, 0},   // v1,v6,v7,v2 (left)
     {0, 0, 0}, {0, 0, 1}, {1, 0, 1}, {1, 0, 0},   // v7,v4,v3,v2 (bottom)
-    {0, 0, 1}, {0, 0, 0}, {0, 1, 0}, {0, 1, 1}};  // v4,v7,v6,v5 (back)
-int cubeIndices[36] = {0,  1,  2,  2,  3,  0,    // front 
-                       4,  5,  6,  6,  7,  4,    // right
-                       8,  9,  10, 10, 11, 8,    // top
-                       12, 13, 14, 14, 15, 12,   // left
-                       16, 17, 18, 18, 19, 16,   // bottom
-                       20, 21, 22, 22, 23, 20};  // back
+    {0, 0, 1}, {0, 0, 0}, {0, 1, 0}, {0, 1, 1}};  // v4,v7,v6,v5 (back)*/
 
-vec4 constructCube(){ return position + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); }
+/*    
+vec3 lightPosition = vec3(1.0, 2.5, 5.0);
 
-float quadIllumination() { 
-    switch (gl_VertexIndex / 6){
-        case 0: return 1.0f;
-        case 1: return 0.8f;
-        case 2: return 0.7f; 
-        case 3: return 0.4f;
-        case 4: return 0.3f;
-        case 5: return 0.1f;
-        default: return 0.2f;
-    }
-}
-
-layout(location = 0) out vec4 fragColor;
-
-void main() {
-    if (inStates.x == -1) {
-        gl_Position = modelViewProjection() * constructCube();
-        fragColor   = inColor * quadIllumination();
-        return;
-    } else {
-        gl_Position = modelViewProjection() * constructCube();
-        fragColor   = inColor * quadIllumination();
-        return;
-    }
-}
-
-
-
-
+vec4 worldPosition = ubo.model * constructCube();
+    vec4 viewPosition = ubo.view * worldPosition;
+    
+    vec3 worldNormal = mat3(transpose(inverse(ubo.model))) * cubeNormals[cubeIndices[ gl_VertexIndex ]];
+    vec3 lightDirection = normalize(lightPosition - worldPosition.xyz);
+    
+    float diffuseIntensity = max(dot(worldNormal, lightDirection), 0.0);
+    
+    fragColor = inColor * diffuseIntensity;
+    
+    gl_Position = ubo.projection * viewPosition;*/
 
 
 
