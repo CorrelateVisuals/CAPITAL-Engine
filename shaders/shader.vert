@@ -5,6 +5,8 @@ layout(location = 1) in vec4 inColor;
 layout(location = 2) in vec4 inSize;
 layout(location = 3) in ivec4 inStates;
 
+layout(push_constant, std430) uniform pc { vec4 data; };
+
 layout (binding = 0) uniform ParameterUBO {
     vec4 light;
     ivec2 gridDimensions;
@@ -42,7 +44,7 @@ const int cubeIndices[36] = {0,  1,  2,  2,  3,  0,  4,  5,  6,  6,  7,  4,
                              
 vec4 constructCube(){ return position + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); }
 
-vec4 worldPosition = ubo.model * constructCube();
+vec4 worldPosition = ubo.model * constructCube() ;
 vec4 viewPosition = ubo.view * worldPosition;
 vec3 worldNormal = mat3(ubo.model) * cubeNormals[cubeIndices[gl_VertexIndex]];
 

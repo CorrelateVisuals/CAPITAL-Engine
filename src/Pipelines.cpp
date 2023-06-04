@@ -278,10 +278,17 @@ void Pipelines::createGraphicsPipeline() {
   dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
   dynamicState.pDynamicStates = dynamicStates.data();
 
+  VkPushConstantRange pushConstantRange = {};
+  pushConstantRange.stageFlags = _memCommands.pushConstant.shaderStage;
+  pushConstantRange.offset = _memCommands.pushConstant.offset;
+  pushConstantRange.size = _memCommands.pushConstant.size;
+
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
   pipelineLayoutInfo.setLayoutCount = 1;
   pipelineLayoutInfo.pSetLayouts = &_memCommands.descriptor.setLayout;
+  pipelineLayoutInfo.pushConstantRangeCount = 1;
+  pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
   if (vkCreatePipelineLayout(_mechanics.mainDevice.logical, &pipelineLayoutInfo,
                              nullptr, &graphics.pipelineLayout) != VK_SUCCESS) {
@@ -817,6 +824,10 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
       commandBuffer, 0, 1,
       &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],
       offsets);
+
+  vkCmdPushConstants(commandBuffer, _pipelines.graphics.pipelineLayout,
+                     pushConstant.shaderStage, pushConstant.offset,
+                     pushConstant.size, pushConstant.data.data());
 
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
                           _pipelines.graphics.pipelineLayout, 0, 1,

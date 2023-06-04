@@ -22,16 +22,16 @@ class World {
     glm::vec3 up{0.0f, -1.0f, 0.0f};
   } camera;
 
+  struct Light {
+    std::array<float, 4> position = {0.0, 2.0, 5.0, 0.1f};
+  } light;
+
   struct Cell {
     std::array<float, 4> position;
     std::array<float, 4> color;
     std::array<float, 4> size;
     std::array<int, 4> states;
   };
-
-  struct Light {
-    std::array<float, 4> position = {-0.5, 2.0, 5.0, 0.1f};
-  } light;
 
   struct UniformBufferObject {
     std::array<float, 4> light;

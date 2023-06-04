@@ -59,11 +59,12 @@ class MemoryCommands {
   MemoryCommands();
   ~MemoryCommands();
 
-  struct Command {
-    VkCommandPool pool;
-    std::vector<VkCommandBuffer> graphicBuffers;
-    std::vector<VkCommandBuffer> computeBuffers;
-  } command;
+  struct PushConstant {
+    VkShaderStageFlagBits shaderStage = {VK_SHADER_STAGE_VERTEX_BIT};
+    uint32_t offset = 0;
+    uint32_t size = 128;
+    std::array<float, 32> data;
+  } pushConstant;
 
   struct UniformBuffers {
     std::vector<VkBuffer> buffers;
@@ -81,6 +82,12 @@ class MemoryCommands {
     std::vector<VkDescriptorSet> sets;
     VkDescriptorSetLayout setLayout;
   } descriptor;
+
+  struct Command {
+    VkCommandPool pool;
+    std::vector<VkCommandBuffer> graphicBuffers;
+    std::vector<VkCommandBuffer> computeBuffers;
+  } command;
 
  public:
   void createFramebuffers();
