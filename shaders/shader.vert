@@ -14,7 +14,6 @@ layout (binding = 0) uniform ParameterUBO {
     float cellSize;
     float gridHeight;
 } ubo;
-mat4 modelViewProjection(){ return ubo.projection * ubo.view * ubo.model; }
 float random(vec2 co) { return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453); }
 float total = -ubo.gridHeight / 2;  float frequency = 10.1;      float amplitude = ubo.gridHeight;   
 int octaves = 2;                    float persistence = 0.2;    float lacunarity = 2.0;     float scale = 1.5;
@@ -25,22 +24,36 @@ float noise(vec2 p) {   for (int i = 0; i < octaves; i++)
                         return total; }
 vec4 position = vec4( inpositionition.xy, noise( inpositionition.xy ), inpositionition.w );
 
-const vec3 cubeVertices[8] ={ { -0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, -0.5f}, {-0.5f, 0.5f, -0.5f}, {0.5f, 0.5f, -0.5f},
-                              { -0.5f, -0.5f, 0.5f},  {0.5f, -0.5f, 0.5f},  {-0.5f, 0.5f, 0.5f},  {0.5f, 0.5f, 0.5f} };
-const int cubeIndices[36] = { 0, 2, 3, 0, 3, 1, 4, 5, 7, 4, 7, 6, 1, 3, 7, 1, 7, 5,
-                              0, 4, 6, 0, 6, 2, 2, 6, 7, 2, 7, 3, 0, 1, 5, 0, 5, 4 };
-const float cubeIllumination[6] = {1.0f, 0.8f, 0.7f, 0.4f, 0.3f, 0.1f};
-
+const vec3 cubeVertices[24] = {
+    {1, 1, 1},   {-1, 1, 1},  {-1, -1, 1},  {1, -1, 1},  {1, 1, 1},   {1, -1, 1},  
+    {1, -1, -1}, {1, 1, -1},  {1, 1, 1},    {1, 1, -1},  {-1, 1, -1}, {-1, 1, 1},   
+    {-1, 1, 1},  {-1, 1, -1}, {-1, -1, -1}, {-1, -1, 1}, {-1, -1, -1},{1, -1, -1}, 
+    {1, -1, 1},  {-1, -1, 1}, {1, -1, -1},  {-1, -1, -1},{-1, 1, -1}, {1, 1, -1}};
+vec3 cubeNormals[24] = {
+    {0, 0, 1},  {0, 0, 1},  {0, 0, 1},  {0, 0, 1},  {1, 0, 0},  {1, 0, 0},
+    {1, 0, 0},  {1, 0, 0},  {0, 1, 0},  {0, 1, 0},  {0, 1, 0},  {0, 1, 0},
+    {-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0}, {0, -1, 0}, {0, -1, 0},
+    {0, -1, 0}, {0, -1, 0}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}};
+const int cubeIndices[36] = {0,  1,  2,  2,  3,  0,  4,  5,  6,  6,  7,  4,
+                             8,  9,  10, 10, 11, 8,  12, 13, 14, 14, 15, 12,
+                             16, 17, 18, 18, 19, 16, 20, 21, 22, 22, 23, 20};
 vec4 constructCube(){ return position + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); }
-float quadIllumination() { return cubeIllumination[ int( gl_VertexIndex / 6 ) ]; }
+
+vec3 lightPosition = vec3(1.0, 2.5, 5.0);
+mat3 normalMatrix = mat3(transpose(inverse(mat3(ubo.model))));
+vec4 worldPosition = ubo.model * constructCube();
+vec4 viewPosition = ubo.view * worldPosition;
+vec3 worldNormal = normalMatrix * cubeNormals[cubeIndices[gl_VertexIndex]];
+
+float gouraudShading() {vec3 lightDirection = normalize(lightPosition - worldPosition.xyz);
+                        float diffuseIntensity = max(dot(worldNormal, lightDirection), 0.1f);
+                        return diffuseIntensity; }
 
 layout(location = 0) out vec4 fragColor;
 
 void main() {
-
-    gl_Position = modelViewProjection() * constructCube();
-    fragColor   = inColor * quadIllumination();
-
+    fragColor = inColor * gouraudShading();
+    gl_Position = ubo.projection * viewPosition;
 }
 
 
