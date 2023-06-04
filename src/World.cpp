@@ -96,6 +96,7 @@ World::UniformBufferObject World::updateUniforms() {
       static_cast<uint32_t>(_control.grid.dimensions[0]),
       static_cast<uint32_t>(_control.grid.dimensions[1])};
   uniformObject.gridHeight = _control.grid.height;
+  uniformObject.light = light.position;
   uniformObject.passedHours = _control.timer.passedHours;
   uniformObject.cellSize = _control.cells.size;
   uniformObject.model = setModel();

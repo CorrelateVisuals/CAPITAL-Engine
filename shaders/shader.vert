@@ -1,19 +1,21 @@
 #version 450
 
-layout(location = 0) in vec4 inpositionition;
+layout(location = 0) in vec4 inPosition;
 layout(location = 1) in vec4 inColor;
 layout(location = 2) in vec4 inSize;
 layout(location = 3) in ivec4 inStates;
 
 layout (binding = 0) uniform ParameterUBO {
+    vec4 light;
     ivec2 gridDimensions;
-    int time;
+    float gridHeight;
+    float cellSize;
     mat4 model;
     mat4 view;
     mat4 projection;
-    float cellSize;
-    float gridHeight;
+    int passedHours;
 } ubo;
+
 float random(vec2 co) { return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453); }
 float total = -ubo.gridHeight / 2;  float frequency = 10.1;      float amplitude = ubo.gridHeight;   
 int octaves = 2;                    float persistence = 0.2;    float lacunarity = 2.0;     float scale = 1.5;
@@ -22,7 +24,7 @@ float noise(vec2 p) {   for (int i = 0; i < octaves; i++)
                         p *= lacunarity; amplitude *= persistence; }
                         total /= scale; 
                         return total; }
-vec4 position = vec4( inpositionition.xy, noise( inpositionition.xy ), inpositionition.w );
+vec4 position = vec4( inPosition.xy, noise( inPosition.xy ), inPosition.w );
 
 const vec3 cubeVertices[24] = {
     {1, 1, 1},   {-1, 1, 1},  {-1, -1, 1},  {1, -1, 1},  {1, 1, 1},   {1, -1, 1},  
@@ -37,16 +39,15 @@ vec3 cubeNormals[24] = {
 const int cubeIndices[36] = {0,  1,  2,  2,  3,  0,  4,  5,  6,  6,  7,  4,
                              8,  9,  10, 10, 11, 8,  12, 13, 14, 14, 15, 12,
                              16, 17, 18, 18, 19, 16, 20, 21, 22, 22, 23, 20};
+                             
 vec4 constructCube(){ return position + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); }
 
-vec3 lightPosition = vec3(1.0, 2.5, 5.0);
-mat3 normalMatrix = mat3(transpose(inverse(mat3(ubo.model))));
 vec4 worldPosition = ubo.model * constructCube();
 vec4 viewPosition = ubo.view * worldPosition;
-vec3 worldNormal = normalMatrix * cubeNormals[cubeIndices[gl_VertexIndex]];
+vec3 worldNormal = mat3(ubo.model) * cubeNormals[cubeIndices[gl_VertexIndex]];
 
-float gouraudShading() {vec3 lightDirection = normalize(lightPosition - worldPosition.xyz);
-                        float diffuseIntensity = max(dot(worldNormal, lightDirection), 0.1f);
+float gouraudShading() {vec3 lightDirection = normalize(ubo.light.rgb - worldPosition.xyz);
+                        float diffuseIntensity = max(dot(worldNormal, lightDirection), ubo.light.a);
                         return diffuseIntensity; }
 
 layout(location = 0) out vec4 fragColor;

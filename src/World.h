@@ -29,14 +29,19 @@ class World {
     std::array<int, 4> states;
   };
 
+  struct Light {
+    std::array<float, 4> position = {-0.5, 2.0, 5.0, 0.1f};
+  } light;
+
   struct UniformBufferObject {
+    std::array<float, 4> light;
     std::array<uint32_t, 2> gridDimensions;
-    int passedHours;
+    float gridHeight;
+    float cellSize;
     alignas(16) glm::mat4 model;
     alignas(16) glm::mat4 view;
     alignas(16) glm::mat4 proj;
-    float cellSize;
-    float gridHeight;
+    int passedHours;
   };
 
  public:

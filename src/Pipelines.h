@@ -93,10 +93,10 @@ class MemoryCommands {
   void createUniformBuffers();
   void updateUniformBuffer(uint32_t currentImage);
 
-  void createComputeDescriptorSetLayout();
+  void createDescriptorSetLayout();
   void createDescriptorPool();
 
-  void createComputeDescriptorSets();
+  void createDescriptorSets();
   void createComputeCommandBuffers();
 
   void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);

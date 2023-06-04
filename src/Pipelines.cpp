@@ -133,7 +133,7 @@ void Pipelines::createRenderPass() {
   }
 }
 
-void MemoryCommands::createComputeDescriptorSetLayout() {
+void MemoryCommands::createDescriptorSetLayout() {
   _log.console("{ DES }", "creating Compute Descriptor Set Layout");
 
   std::array<VkDescriptorSetLayoutBinding, 3> layoutBindings{};
@@ -663,7 +663,7 @@ void MemoryCommands::createImage(uint32_t width,
   vkBindImageMemory(_mechanics.mainDevice.logical, image, imageMemory, 0);
 }
 
-void MemoryCommands::createComputeDescriptorSets() {
+void MemoryCommands::createDescriptorSets() {
   _log.console("{ DES }", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptor.setLayout);
