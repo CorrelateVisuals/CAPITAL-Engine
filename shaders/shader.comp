@@ -42,27 +42,21 @@ vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
 vec4 terrain    = vec4(0.0, 0.1, 0.1, 1.0);
 
 ivec4 neighbourCellsInRange(int range){
-ivec4 neighbourCellsInRange = ivec4(0);
+    ivec4 neighbourCellsInRange = ivec4(0);
+    int gridSize = ubo.gridDimensions.x * ubo.gridDimensions.y;
+    int indexX = int(index) % ubo.gridDimensions.x;
+    int indexY = int(index) / ubo.gridDimensions.x;
+    int startX = max(indexX - range, 0);
+    int endX = min(indexX + range, ubo.gridDimensions.x - 1);
+    int startY = max(indexY - range, 0);
+    int endY = min(indexY + range, ubo.gridDimensions.y - 1);
 
-int gridSize = ubo.gridDimensions.x * ubo.gridDimensions.y;
-int indexX = int(index) % ubo.gridDimensions.x;
-int indexY = int(index) / ubo.gridDimensions.x;
-int startX = max(indexX - range, 0);
-int endX = min(indexX + range, ubo.gridDimensions.x - 1);
-int startY = max(indexY - range, 0);
-int endY = min(indexY + range, ubo.gridDimensions.y - 1);
-
-for (int x = startX; x <= endX; x++) {
-    for (int y = startY; y <= endY; y++) {
-        int neighbourIndex = y * ubo.gridDimensions.x + x;
-
-                bool notSelf = neighbourIndex != index;
-                bool neighbourAlive = cellIn[neighbourIndex].states.x == alive 
-                    && cellIn[neighbourIndex].states.y == 1;
-
-                if (neighbourAlive && notSelf) {
-                    neighbourCellsInRange++;
-                }
+    for (int x = startX; x <= endX; x++) {
+        for (int y = startY; y <= endY; y++) {
+            int neighbourIndex = y * ubo.gridDimensions.x + x;
+            bool notSelf = neighbourIndex != index;
+            bool neighbourAlive = (cellIn[neighbourIndex].states.x == alive) && (cellIn[neighbourIndex].states.y == 1);
+            neighbourCellsInRange += int(neighbourAlive && notSelf);
         }
     }
     return neighbourCellsInRange; 
