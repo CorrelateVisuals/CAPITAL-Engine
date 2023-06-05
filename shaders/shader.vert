@@ -19,12 +19,15 @@ layout (binding = 0) uniform ParameterUBO {
 } ubo;
 
 float random(vec2 co) { return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453); }
-float total = -ubo.gridHeight / 2;  float frequency = 10.1;      float amplitude = ubo.gridHeight;   
-int octaves = 2;                    float persistence = 0.2;    float lacunarity = 2.0;     float scale = 1.5;
-float noise(vec2 p) {   for (int i = 0; i < octaves; i++) 
-                        { total += random(p * scale) * amplitude; 
-                        p *= lacunarity; amplitude *= persistence; }
-                        total /= scale; 
+const lowp float frequency = 10.1;      mediump float amplitude = ubo.gridHeight;    const int octaves = 2;
+const lowp float persistence = 0.2;     const lowp float lacunarity = 2.0;           const lowp float scale = 1.5;
+float noise(vec2 p) { float total = -amplitude / 2.0;
+                        for (int i = 0; i < octaves; i++) {
+                            total += random(p * scale) * amplitude;
+                            p *= lacunarity;
+                            amplitude *= persistence;
+                        }
+                        total /= scale;
                         return total; }
 vec4 position = vec4( inPosition.xy, noise( inPosition.xy ), inPosition.w );
 
@@ -42,7 +45,8 @@ const int cubeIndices[36] = {0,  1,  2,  2,  3,  0,  4,  5,  6,  6,  7,  4,
                              8,  9,  10, 10, 11, 8,  12, 13, 14, 14, 15, 12,
                              16, 17, 18, 18, 19, 16, 20, 21, 22, 22, 23, 20};
                              
-vec4 constructCube(){ return position + vec4( cubeVertices[ cubeIndices[ gl_VertexIndex ]] * inSize.x, vec2(0.0)); }
+vec4 constructCube() {  vec3 vertex = cubeVertices[cubeIndices[gl_VertexIndex]];
+                        return position + vec4(vertex * inSize.x, vec2(0.0)); }
 
 vec4 worldPosition = ubo.model * constructCube() ;
 vec4 viewPosition = ubo.view * worldPosition;
