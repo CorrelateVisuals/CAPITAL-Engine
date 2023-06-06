@@ -1,6 +1,8 @@
 #version 450
 layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
+layout(push_constant, std430) uniform pc { int pushedPassedHours; };
+
 layout (binding = 0) uniform ParameterUBO {
     vec4 lightDirection;
     ivec2 gridDimensions;
@@ -9,7 +11,6 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 model;
     mat4 view;
     mat4 projection;
-    int passedHours;
 } ubo;
 
 uint globalID_x = gl_GlobalInvocationID.x;
@@ -20,11 +21,11 @@ struct Cell {
     vec4 position;  // float    xyz
     vec4 color;     // float    rgba
     vec4 size;      // float    x
-    ivec4 states;   // bool     alive, stage, cycle, ubo.passedHours
+    ivec4 states;   // bool     alive, stage, cycle, passedHours
 } cell;
 
 int cycleSize = 24;
-ivec4 setState(int _alive, int stage){ int cycle = ubo.passedHours % cycleSize + 1; return ivec4(_alive, stage, cycle, ubo.passedHours); }
+ivec4 setState(int _alive, int stage){ int cycle = passedHours % cycleSize + 1; return ivec4(_alive, stage, cycle, passedHours); }
 
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
@@ -77,7 +78,7 @@ bool lifeCycle          = aliveCell && inCycleRange;
 bool endOfStage         = aliveCell && reachedCycleEnd;
 bool live(int neighbours) { return (aliveCell && (neighbours == 3 || neighbours == 2)) || (deadCell && neighbours == 3); }
 bool die(int neighbours)  { return (aliveCell && (neighbours < 2 || neighbours > 3));}
-vec4 colorIncrement     = colorIn + vec4(float((ubo.passedHours % cycleSize + 1)) / float(cycleSize * 50), vec3(0.0));
+vec4 colorIncrement     = colorIn + vec4(float((passedHours % cycleSize + 1)) / float(cycleSize * 50), vec3(0.0));
 
 void simulate(out Cell cell){
     int neighbours  = neighbourCellsInRange(1).x;
@@ -95,7 +96,7 @@ void simulate(out Cell cell){
 }
 
 void main() {  
-    if (cellIn[index].states.w == ubo.passedHours) { 
+    if (cellIn[index].states.w == passedHours) { 
         cellOut[index] = cellIn[index]; 
         return; 
     } else { 

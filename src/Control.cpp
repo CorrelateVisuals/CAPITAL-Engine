@@ -27,6 +27,10 @@ void Control::simulateHours() {
   }
 }
 
+void Control::setPushConstants() {
+  _memCommands.pushConstants.data = {_control.timer.passedHours};
+}
+
 std::vector<uint_fast32_t> Control::setCellsAliveRandomly(
     uint_fast32_t numberOfCells) {
   std::vector<uint_fast32_t> CellIDs;

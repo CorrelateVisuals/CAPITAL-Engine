@@ -278,17 +278,17 @@ void Pipelines::createGraphicsPipeline() {
   dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
   dynamicState.pDynamicStates = dynamicStates.data();
 
-  VkPushConstantRange pushConstantRange = {};
-  pushConstantRange.stageFlags = _memCommands.pushConstants.shaderStage;
-  pushConstantRange.offset = _memCommands.pushConstants.offset;
-  pushConstantRange.size = _memCommands.pushConstants.size;
+  // VkPushConstantRange pushConstantRange = {};
+  // pushConstantRange.stageFlags = _memCommands.pushConstants.shaderStage;
+  // pushConstantRange.offset = _memCommands.pushConstants.offset;
+  // pushConstantRange.size = _memCommands.pushConstants.size;
 
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
   pipelineLayoutInfo.setLayoutCount = 1;
   pipelineLayoutInfo.pSetLayouts = &_memCommands.descriptor.setLayout;
-  pipelineLayoutInfo.pushConstantRangeCount = 1;
-  pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+  // pipelineLayoutInfo.pushConstantRangeCount = 1;
+  // pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
   if (vkCreatePipelineLayout(_mechanics.mainDevice.logical, &pipelineLayoutInfo,
                              nullptr, &graphics.pipelineLayout) != VK_SUCCESS) {
@@ -387,10 +387,17 @@ void Pipelines::createComputePipeline() {
   computeShaderStageInfo.module = computeShaderModule;
   computeShaderStageInfo.pName = "main";
 
+  VkPushConstantRange pushConstantRange = {};
+  pushConstantRange.stageFlags = _memCommands.pushConstants.shaderStage;
+  pushConstantRange.offset = _memCommands.pushConstants.offset;
+  pushConstantRange.size = _memCommands.pushConstants.size;
+
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
   pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
   pipelineLayoutInfo.setLayoutCount = 1;
   pipelineLayoutInfo.pSetLayouts = &_memCommands.descriptor.setLayout;
+  pipelineLayoutInfo.pushConstantRangeCount = 1;
+  pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
   if (vkCreatePipelineLayout(_mechanics.mainDevice.logical, &pipelineLayoutInfo,
                              nullptr, &compute.pipelineLayout) != VK_SUCCESS) {
@@ -760,6 +767,11 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
                           &descriptor.sets[_mechanics.syncObjects.currentFrame],
                           0, nullptr);
 
+  _control.setPushConstants();
+  vkCmdPushConstants(commandBuffer, _pipelines.compute.pipelineLayout,
+                     pushConstants.shaderStage, pushConstants.offset,
+                     pushConstants.size, pushConstants.data.data());
+
   uint32_t numberOfWorkgroupsX =
       (_control.grid.dimensions[0] + _control.compute.localSizeX - 1) /
       _control.compute.localSizeX;
@@ -824,10 +836,6 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
       commandBuffer, 0, 1,
       &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],
       offsets);
-
-  vkCmdPushConstants(commandBuffer, _pipelines.graphics.pipelineLayout,
-                     pushConstants.shaderStage, pushConstants.offset,
-                     pushConstants.size, pushConstants.data.data());
 
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
                           _pipelines.graphics.pipelineLayout, 0, 1,

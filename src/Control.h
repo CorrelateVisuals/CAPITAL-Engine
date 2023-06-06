@@ -41,4 +41,6 @@ class Control {
  public:
   std::vector<uint_fast32_t> setCellsAliveRandomly(uint_fast32_t numberOfCells);
   void simulateHours();
+
+  void setPushConstants();
 };

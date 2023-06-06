@@ -5,8 +5,6 @@ layout(location = 1) in vec4 inColor;
 layout(location = 2) in vec4 inSize;
 layout(location = 3) in ivec4 inStates;
 
-layout(push_constant, std430) uniform pc { vec4 data; };
-
 layout (binding = 0) uniform ParameterUBO {
     vec4 light;
     ivec2 gridDimensions;
@@ -15,7 +13,6 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 model;
     mat4 view;
     mat4 projection;
-    int passedHours;
 } ubo;
 
 float random(vec2 co) { return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453); }
