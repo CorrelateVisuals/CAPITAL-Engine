@@ -59,12 +59,12 @@ class MemoryCommands {
   MemoryCommands();
   ~MemoryCommands();
 
-  struct PushConstant {
+  struct PushConstants {
     VkShaderStageFlagBits shaderStage = {VK_SHADER_STAGE_VERTEX_BIT};
     uint32_t offset = 0;
     uint32_t size = 128;
-    std::array<float, 32> data;
-  } pushConstant;
+    std::array<float, 32> data = {};
+  } pushConstants;
 
   struct UniformBuffers {
     std::vector<VkBuffer> buffers;
