@@ -84,9 +84,9 @@ class VulkanMechanics {
 
   Queues::FamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice);
 
-  template <typename CheckVulkanResult, typename... Args>
-  void vulkanResult(CheckVulkanResult vkResult, Args&&... args) {
-    using ObjectType = std::remove_pointer_t<std::decay_t<CheckVulkanResult>>;
+  template <typename Checkresult, typename... Args>
+  void result(Checkresult vkResult, Args&&... args) {
+    using ObjectType = std::remove_pointer_t<std::decay_t<Checkresult>>;
     std::string objectName = typeid(ObjectType).name();
 
     VkResult result = vkResult(std::forward<Args>(args)...);

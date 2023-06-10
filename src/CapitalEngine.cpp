@@ -119,7 +119,7 @@ void CapitalEngine::drawFrame() {
           &_mechanics.syncObjects
                .computeFinishedSemaphores[_mechanics.syncObjects.currentFrame]};
 
-  _mechanics.vulkanResult(
+  _mechanics.result(
       vkQueueSubmit, _mechanics.queues.compute, 1, &computeSubmitInfo,
       _mechanics.syncObjects
           .computeInFlightFences[_mechanics.syncObjects.currentFrame]);
@@ -179,10 +179,10 @@ void CapitalEngine::drawFrame() {
           &_mechanics.syncObjects
                .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame]};
 
-  _mechanics.vulkanResult(
-      vkQueueSubmit, _mechanics.queues.graphics, 1, &graphicsSubmitInfo,
-      _mechanics.syncObjects
-          .inFlightFences[_mechanics.syncObjects.currentFrame]);
+  _mechanics.result(vkQueueSubmit, _mechanics.queues.graphics, 1,
+                    &graphicsSubmitInfo,
+                    _mechanics.syncObjects
+                        .inFlightFences[_mechanics.syncObjects.currentFrame]);
 
   VkSwapchainKHR swapChains[] = {_mechanics.swapChain.swapChain};
 

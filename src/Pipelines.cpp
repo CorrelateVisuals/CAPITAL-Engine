@@ -117,7 +117,7 @@ void Pipelines::createRenderPass() {
       .dependencyCount = 1,
       .pDependencies = &dependency};
 
-  _mechanics.vulkanResult(vkCreateRenderPass, _mechanics.mainDevice.logical,
+  _mechanics.result(vkCreateRenderPass, _mechanics.mainDevice.logical,
                           &renderPassInfo, nullptr, &renderPass);
 }
 
@@ -165,7 +165,7 @@ void Pipelines::createGraphicsPipeline() {
       .setLayoutCount = 1,
       .pSetLayouts = &_memCommands.descriptor.setLayout};
 
-  _mechanics.vulkanResult(vkCreatePipelineLayout, _mechanics.mainDevice.logical,
+  _mechanics.result(vkCreatePipelineLayout, _mechanics.mainDevice.logical,
                           &pipelineLayoutInfo, nullptr,
                           &graphics.pipelineLayout);
 
@@ -186,7 +186,7 @@ void Pipelines::createGraphicsPipeline() {
       .subpass = 0,
       .basePipelineHandle = VK_NULL_HANDLE};
 
-  _mechanics.vulkanResult(vkCreateGraphicsPipelines,
+  _mechanics.result(vkCreateGraphicsPipelines,
                           _mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
                           &pipelineInfo, nullptr, &graphics.pipeline);
 
@@ -281,7 +281,7 @@ void Pipelines::createComputePipeline() {
       .pushConstantRangeCount = 1,
       .pPushConstantRanges = &pushConstantRange};
 
-  _mechanics.vulkanResult(vkCreatePipelineLayout, _mechanics.mainDevice.logical,
+  _mechanics.result(vkCreatePipelineLayout, _mechanics.mainDevice.logical,
                           &pipelineLayoutInfo, nullptr,
                           &compute.pipelineLayout);
 
@@ -290,7 +290,7 @@ void Pipelines::createComputePipeline() {
       .stage = computeShaderStageInfo,
       .layout = compute.pipelineLayout};
 
-  _mechanics.vulkanResult(vkCreateComputePipelines,
+  _mechanics.result(vkCreateComputePipelines,
                           _mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
                           &pipelineInfo, nullptr, &compute.pipeline);
 
@@ -322,7 +322,7 @@ VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
 
   VkShaderModule shaderModule;
 
-  _mechanics.vulkanResult(vkCreateShaderModule, _mechanics.mainDevice.logical,
+  _mechanics.result(vkCreateShaderModule, _mechanics.mainDevice.logical,
                           &createInfo, nullptr, &shaderModule);
 
   return shaderModule;

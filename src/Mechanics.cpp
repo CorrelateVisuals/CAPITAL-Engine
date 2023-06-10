@@ -74,13 +74,13 @@ void VulkanMechanics::createInstance() {
     createInfo.pNext = &debugCreateInfo;
   }
 
-  _mechanics.vulkanResult(vkCreateInstance, &createInfo, nullptr, &instance);
+  _mechanics.result(vkCreateInstance, &createInfo, nullptr, &instance);
 }
 
 void VulkanMechanics::createSurface() {
   _log.console("{ [ ] }", "creating Surface");
-  _mechanics.vulkanResult(glfwCreateWindowSurface, instance, _window.window,
-                          nullptr, &surface);
+  _mechanics.result(glfwCreateWindowSurface, instance, _window.window, nullptr,
+                    &surface);
 }
 
 void VulkanMechanics::pickPhysicalDevice() {
@@ -237,8 +237,8 @@ void VulkanMechanics::createLogicalDevice() {
     createInfo.ppEnabledLayerNames = _validationLayers.validationLayers.data();
   }
 
-  _mechanics.vulkanResult(vkCreateDevice, mainDevice.physical, &createInfo,
-                          nullptr, &mainDevice.logical);
+  _mechanics.result(vkCreateDevice, mainDevice.physical, &createInfo, nullptr,
+                    &mainDevice.logical);
 
   vkGetDeviceQueue(mainDevice.logical, indices.graphicsAndComputeFamily.value(),
                    0, &queues.graphics);
@@ -312,25 +312,23 @@ void VulkanMechanics::createSyncObjects() {
                               .flags = VK_FENCE_CREATE_SIGNALED_BIT};
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-    _mechanics.vulkanResult(vkCreateSemaphore, _mechanics.mainDevice.logical,
-                            &semaphoreInfo, nullptr,
-                            &syncObjects.imageAvailableSemaphores[i]);
+    _mechanics.result(vkCreateSemaphore, _mechanics.mainDevice.logical,
+                      &semaphoreInfo, nullptr,
+                      &syncObjects.imageAvailableSemaphores[i]);
 
-    _mechanics.vulkanResult(vkCreateSemaphore, _mechanics.mainDevice.logical,
-                            &semaphoreInfo, nullptr,
-                            &syncObjects.renderFinishedSemaphores[i]);
+    _mechanics.result(vkCreateSemaphore, _mechanics.mainDevice.logical,
+                      &semaphoreInfo, nullptr,
+                      &syncObjects.renderFinishedSemaphores[i]);
 
-    _mechanics.vulkanResult(vkCreateFence, _mechanics.mainDevice.logical,
-                            &fenceInfo, nullptr,
-                            &syncObjects.inFlightFences[i]);
+    _mechanics.result(vkCreateFence, _mechanics.mainDevice.logical, &fenceInfo,
+                      nullptr, &syncObjects.inFlightFences[i]);
 
-    _mechanics.vulkanResult(vkCreateSemaphore, _mechanics.mainDevice.logical,
-                            &semaphoreInfo, nullptr,
-                            &syncObjects.computeFinishedSemaphores[i]);
+    _mechanics.result(vkCreateSemaphore, _mechanics.mainDevice.logical,
+                      &semaphoreInfo, nullptr,
+                      &syncObjects.computeFinishedSemaphores[i]);
 
-    _mechanics.vulkanResult(vkCreateFence, _mechanics.mainDevice.logical,
-                            &fenceInfo, nullptr,
-                            &syncObjects.computeInFlightFences[i]);
+    _mechanics.result(vkCreateFence, _mechanics.mainDevice.logical, &fenceInfo,
+                      nullptr, &syncObjects.computeInFlightFences[i]);
   }
 }
 
@@ -424,8 +422,8 @@ void VulkanMechanics::createSwapChain() {
     createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
   }
 
-  _mechanics.vulkanResult(vkCreateSwapchainKHR, mainDevice.logical, &createInfo,
-                          nullptr, &swapChain.swapChain);
+  _mechanics.result(vkCreateSwapchainKHR, mainDevice.logical, &createInfo,
+                    nullptr, &swapChain.swapChain);
 
   vkGetSwapchainImagesKHR(mainDevice.logical, swapChain.swapChain, &imageCount,
                           nullptr);
@@ -491,8 +489,8 @@ void VulkanMechanics::createImageViews() {
                              .baseArrayLayer = 0,
                              .layerCount = 1}};
 
-    _mechanics.vulkanResult(vkCreateImageView, mainDevice.logical, &createInfo,
-                            nullptr, &swapChain.imageViews[i]);
+    _mechanics.result(vkCreateImageView, mainDevice.logical, &createInfo,
+                      nullptr, &swapChain.imageViews[i]);
   }
 }
 
@@ -511,8 +509,8 @@ VkImageView VulkanMechanics::createImageView(VkImage image,
                            .layerCount = 1}};
 
   VkImageView imageView;
-  _mechanics.vulkanResult(vkCreateImageView, mainDevice.logical, &viewInfo,
-                          nullptr, &imageView);
+  _mechanics.result(vkCreateImageView, mainDevice.logical, &viewInfo, nullptr,
+                    &imageView);
 
   return imageView;
 }
