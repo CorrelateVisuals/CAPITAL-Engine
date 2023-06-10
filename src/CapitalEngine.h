@@ -2,6 +2,7 @@
 #include "Control.h"
 #include "Debug.h"
 #include "Mechanics.h"
+#include "MemoryCommands.h"
 #include "Pipelines.h"
 #include "Window.h"
 #include "World.h"
