@@ -6,7 +6,7 @@
 #include "Library.h"
 #include "Window.h"
 
-Window::Window() : window{nullptr}, framebufferResized{false} {
+Window::Window() : window{nullptr}, framebufferResized{false}, mouse{} {
   _log.console("{ [-] }", "constructing Window");
   initWindow();
 }
