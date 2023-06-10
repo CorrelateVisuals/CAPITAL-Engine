@@ -171,53 +171,22 @@ void MemoryCommands::createDescriptorSetLayout() {
 
 void Pipelines::createGraphicsPipeline() {
   _log.console("{ PIP }", "creating Graphics Pipeline");
-  auto vertShaderCode = readShaderFile("shaders/vert.spv");
-  auto fragShaderCode = readShaderFile("shaders/frag.spv");
 
-  VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
-  VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
+  std::vector<VkPipelineShaderStageCreateInfo> shaderStages{
+      getShaderStageInfo(VK_SHADER_STAGE_VERTEX_BIT, "vert.spv", graphics),
+      getShaderStageInfo(VK_SHADER_STAGE_FRAGMENT_BIT, "frag.spv", graphics)};
 
-  VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
-  vertShaderStageInfo.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-  vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-  vertShaderStageInfo.module = vertShaderModule;
-  vertShaderStageInfo.pName = "main";
+  VkPipelineVertexInputStateCreateInfo vertexInputInfo = getVertexInputInfo();
 
-  VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
-  fragShaderStageInfo.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-  fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-  fragShaderStageInfo.module = fragShaderModule;
-  fragShaderStageInfo.pName = "main";
+  VkPipelineInputAssemblyStateCreateInfo inputAssembly{
+      .sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+      .topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+      .primitiveRestartEnable = VK_FALSE};
 
-  VkPipelineShaderStageCreateInfo shaderStages[]{vertShaderStageInfo,
-                                                 fragShaderStageInfo};
-
-  VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
-  vertexInputInfo.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-
-  auto bindingDescriptions = World::getBindingDescriptions();
-  auto attributeDescriptions = World::getAttributeDescriptions();
-
-  vertexInputInfo.vertexBindingDescriptionCount =
-      static_cast<uint32_t>(bindingDescriptions.size());
-  vertexInputInfo.vertexAttributeDescriptionCount =
-      static_cast<uint32_t>(attributeDescriptions.size());
-  vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
-  vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
-
-  VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
-  inputAssembly.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-  inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-  inputAssembly.primitiveRestartEnable = VK_FALSE;
-
-  VkPipelineViewportStateCreateInfo viewportState{};
-  viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-  viewportState.viewportCount = 1;
-  viewportState.scissorCount = 1;
+  VkPipelineViewportStateCreateInfo viewportState{
+      .sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+      .viewportCount = 1,
+      .scissorCount = 1};
 
   VkPipelineRasterizationStateCreateInfo rasterizer{};
   rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -245,48 +214,18 @@ void Pipelines::createGraphicsPipeline() {
   depthStencil.depthBoundsTestEnable = VK_FALSE;
   depthStencil.stencilTestEnable = VK_FALSE;
 
-  VkPipelineColorBlendAttachmentState colorBlendAttachment{};
-  colorBlendAttachment.colorWriteMask =
-      VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
-      VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-  colorBlendAttachment.blendEnable = VK_FALSE;
-  colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
-  colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-  colorBlendAttachment.dstColorBlendFactor =
-      VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-  colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
-  colorBlendAttachment.srcAlphaBlendFactor =
-      VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-  colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-
-  VkPipelineColorBlendStateCreateInfo colorBlending{};
-  colorBlending.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-  colorBlending.logicOpEnable = VK_FALSE;
-  colorBlending.logicOp = VK_LOGIC_OP_COPY;
-  colorBlending.attachmentCount = 1;
-  colorBlending.pAttachments = &colorBlendAttachment;
-  colorBlending.blendConstants[0] = 0.0f;
-  colorBlending.blendConstants[1] = 0.0f;
-  colorBlending.blendConstants[2] = 0.0f;
-  colorBlending.blendConstants[3] = 0.0f;
-
-  std::vector<VkDynamicState> dynamicStates = {VK_DYNAMIC_STATE_VIEWPORT,
-                                               VK_DYNAMIC_STATE_SCISSOR};
-  VkPipelineDynamicStateCreateInfo dynamicState{};
-  dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-  dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
-  dynamicState.pDynamicStates = dynamicStates.data();
+  VkPipelineColorBlendStateCreateInfo colorBlending = getColorBlend();
+  VkPipelineDynamicStateCreateInfo dynamicState = getDynamicState();
 
   // VkPushConstantRange pushConstantRange = {};
   // pushConstantRange.stageFlags = _memCommands.pushConstants.shaderStage;
   // pushConstantRange.offset = _memCommands.pushConstants.offset;
   // pushConstantRange.size = _memCommands.pushConstants.size;
 
-  VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
-  pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-  pipelineLayoutInfo.setLayoutCount = 1;
-  pipelineLayoutInfo.pSetLayouts = &_memCommands.descriptor.setLayout;
+  VkPipelineLayoutCreateInfo pipelineLayoutInfo{
+      .sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+      .setLayoutCount = 1,
+      .pSetLayouts = &_memCommands.descriptor.setLayout};
   // pipelineLayoutInfo.pushConstantRangeCount = 1;
   // pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
@@ -298,7 +237,7 @@ void Pipelines::createGraphicsPipeline() {
   VkGraphicsPipelineCreateInfo pipelineInfo{};
   pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
   pipelineInfo.stageCount = 2;
-  pipelineInfo.pStages = shaderStages;
+  pipelineInfo.pStages = shaderStages.data();
   pipelineInfo.pVertexInputState = &vertexInputInfo;
   pipelineInfo.pInputAssemblyState = &inputAssembly;
   pipelineInfo.pViewportState = &viewportState;
@@ -318,10 +257,10 @@ void Pipelines::createGraphicsPipeline() {
     throw std::runtime_error("!ERROR! failed to create graphics pipeline!");
   }
 
-  vkDestroyShaderModule(_mechanics.mainDevice.logical, fragShaderModule,
-                        nullptr);
-  vkDestroyShaderModule(_mechanics.mainDevice.logical, vertShaderModule,
-                        nullptr);
+  for (size_t i = 0; i < graphics.shaderModules.size(); i++) {
+    vkDestroyShaderModule(_mechanics.mainDevice.logical,
+                          graphics.shaderModules[i], nullptr);
+  }
 }
 
 VkFormat Pipelines::findSupportedFormat(const std::vector<VkFormat>& candidates,
@@ -356,6 +295,26 @@ bool Pipelines::hasStencilComponent(VkFormat format) {
          format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
 
+VkPipelineShaderStageCreateInfo Pipelines::getShaderStageInfo(
+    VkShaderStageFlagBits shaderStage,
+    std::string shaderName,
+    auto pipeline) {
+  std::string directory = "shaders/";
+  std::string shaderPath = directory + shaderName;
+
+  auto shaderCode = readShaderFile(shaderPath);
+  VkShaderModule shaderModule = createShaderModule(shaderCode);
+  pipeline.shaderModules.push_back(shaderModule);
+
+  VkPipelineShaderStageCreateInfo shaderStageInfo{
+      .sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+      .stage = shaderStage,
+      .module = shaderModule,
+      .pName = "main"};
+
+  return shaderStageInfo;
+}
+
 std::vector<char> Pipelines::readShaderFile(const std::string& filename) {
   std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
@@ -376,16 +335,9 @@ std::vector<char> Pipelines::readShaderFile(const std::string& filename) {
 
 void Pipelines::createComputePipeline() {
   _log.console("{ PIP }", "creating Compute Pipeline");
-  auto computeShaderCode = readShaderFile("shaders/comp.spv");
 
-  VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
-
-  VkPipelineShaderStageCreateInfo computeShaderStageInfo{};
-  computeShaderStageInfo.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-  computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-  computeShaderStageInfo.module = computeShaderModule;
-  computeShaderStageInfo.pName = "main";
+  VkPipelineShaderStageCreateInfo computeShaderStageInfo =
+      getShaderStageInfo(VK_SHADER_STAGE_COMPUTE_BIT, "comp.spv", compute);
 
   VkPushConstantRange pushConstantRange = {};
   pushConstantRange.stageFlags = _memCommands.pushConstants.shaderStage;
@@ -416,8 +368,10 @@ void Pipelines::createComputePipeline() {
     throw std::runtime_error("!ERROR! failed to create compute pipeline!");
   }
 
-  vkDestroyShaderModule(_mechanics.mainDevice.logical, computeShaderModule,
-                        nullptr);
+  for (size_t i = 0; i < compute.shaderModules.size(); i++) {
+    vkDestroyShaderModule(_mechanics.mainDevice.logical,
+                          compute.shaderModules[i], nullptr);
+  }
 }
 
 VkSampleCountFlagBits Pipelines::getMaxUsableSampleCount() {
@@ -451,10 +405,10 @@ VkSampleCountFlagBits Pipelines::getMaxUsableSampleCount() {
 
 VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
   _log.console(_log.style.charLeader, "creating Shader Module");
-  VkShaderModuleCreateInfo createInfo{};
-  createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-  createInfo.codeSize = code.size();
-  createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+  VkShaderModuleCreateInfo createInfo{
+      .sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+      .codeSize = code.size(),
+      .pCode = reinterpret_cast<const uint32_t*>(code.data())};
 
   VkShaderModule shaderModule;
   if (vkCreateShaderModule(_mechanics.mainDevice.logical, &createInfo, nullptr,
@@ -463,6 +417,58 @@ VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
   }
 
   return shaderModule;
+}
+
+VkPipelineVertexInputStateCreateInfo Pipelines::getVertexInputInfo() {
+  static auto bindingDescriptions = World::getBindingDescriptions();
+  static auto attributeDescriptions = World::getAttributeDescriptions();
+
+  VkPipelineVertexInputStateCreateInfo vertexInputInfo{
+      .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+      .pNext = nullptr,
+      .flags = 0,
+      .vertexBindingDescriptionCount =
+          static_cast<uint32_t>(bindingDescriptions.size()),
+      .pVertexBindingDescriptions = bindingDescriptions.data(),
+      .vertexAttributeDescriptionCount =
+          static_cast<uint32_t>(attributeDescriptions.size()),
+      .pVertexAttributeDescriptions = attributeDescriptions.data()};
+
+  return vertexInputInfo;
+}
+
+VkPipelineColorBlendStateCreateInfo Pipelines::getColorBlend() {
+  static VkPipelineColorBlendAttachmentState colorBlendAttachment{
+      .blendEnable = VK_FALSE,
+      .srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA,
+      .dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
+      .colorBlendOp = VK_BLEND_OP_ADD,
+      .srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
+      .dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO,
+      .alphaBlendOp = VK_BLEND_OP_ADD,
+      .colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
+                        VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT};
+
+  VkPipelineColorBlendStateCreateInfo colorBlending{
+      .sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+      .pNext = nullptr,
+      .flags = 0,
+      .logicOpEnable = VK_FALSE,
+      .logicOp = VK_LOGIC_OP_COPY,
+      .attachmentCount = 1,
+      .pAttachments = &colorBlendAttachment,
+      .blendConstants = {0.0f, 0.0f, 0.0f, 0.0f}};
+  return colorBlending;
+}
+
+VkPipelineDynamicStateCreateInfo Pipelines::getDynamicState() {
+  static std::vector<VkDynamicState> dynamicStates = {VK_DYNAMIC_STATE_VIEWPORT,
+                                                      VK_DYNAMIC_STATE_SCISSOR};
+  VkPipelineDynamicStateCreateInfo dynamicState{
+      .sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
+      .dynamicStateCount = static_cast<uint32_t>(dynamicStates.size()),
+      .pDynamicStates = dynamicStates.data()};
+  return dynamicState;
 }
 
 void MemoryCommands::createFramebuffers() {

@@ -10,11 +10,13 @@ class Pipelines {
   struct Graphics {
     VkPipelineLayout pipelineLayout;
     VkPipeline pipeline;
+    std::vector<VkShaderModule> shaderModules;
   } graphics;
 
   struct Compute {
     VkPipelineLayout pipelineLayout;
     VkPipeline pipeline;
+    std::vector<VkShaderModule> shaderModules;
   } compute;
 
   VkRenderPass renderPass;
@@ -52,6 +54,14 @@ class Pipelines {
 
   static std::vector<char> readShaderFile(const std::string& filename);
   VkShaderModule createShaderModule(const std::vector<char>& code);
+  VkPipelineShaderStageCreateInfo getShaderStageInfo(
+      VkShaderStageFlagBits shaderStage,
+      std::string shaderName,
+      auto pipeline);
+
+  VkPipelineVertexInputStateCreateInfo getVertexInputInfo();
+  VkPipelineColorBlendStateCreateInfo getColorBlend();
+  VkPipelineDynamicStateCreateInfo getDynamicState();
 };
 
 class MemoryCommands {

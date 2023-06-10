@@ -15,7 +15,6 @@
 /// https://github.com/Twinklebear/arcball-cpp
 /// - Dear ImGui (for runtime settings, graph data and economic encyclopedia)
 /// https://github.com/ocornut/imgui
-/// - Adding push constants
 /// - Renderpicking/colorpicking: Adding screenspace position to vertex ID, to
 /// click on objects and return their IDs.
 /// https://snoozetime.github.io/2019/05/02/object-picking.html
