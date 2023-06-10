@@ -10,7 +10,7 @@
 #include "Pipelines.h"
 #include "World.h"
 
-Pipelines::Pipelines() : graphics{}, compute{} {
+Pipelines::Pipelines() : graphics{}, compute{}, renderPass{}, depth{}, msaa{} {
   _log.console("{ PIP }", "constructing Pipelines");
 }
 
