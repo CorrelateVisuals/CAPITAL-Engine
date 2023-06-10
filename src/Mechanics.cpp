@@ -412,13 +412,14 @@ void VulkanMechanics::createSwapChain() {
       .clipped = VK_TRUE};
 
   Queues::FamilyIndices indices = findQueueFamilies(mainDevice.physical);
-  uint32_t queueFamilyIndices[]{indices.graphicsAndComputeFamily.value(),
-                                indices.presentFamily.value()};
+  std::vector<uint32_t> queueFamilyIndices{
+      indices.graphicsAndComputeFamily.value(), indices.presentFamily.value()};
 
   if (indices.graphicsAndComputeFamily != indices.presentFamily) {
     createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-    createInfo.queueFamilyIndexCount = 2;
-    createInfo.pQueueFamilyIndices = queueFamilyIndices;
+    createInfo.queueFamilyIndexCount =
+        static_cast<uint32_t>(queueFamilyIndices.size());
+    createInfo.pQueueFamilyIndices = queueFamilyIndices.data();
   } else {
     createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
   }

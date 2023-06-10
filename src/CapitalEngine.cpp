@@ -151,6 +151,7 @@ void CapitalEngine::drawFrame() {
   vkResetCommandBuffer(
       _memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame],
       0);
+
   _memCommands.recordCommandBuffer(
       _memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame],
       imageIndex);

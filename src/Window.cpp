@@ -39,9 +39,9 @@ void Window::windowResize(GLFWwindow* win, int width, int height) {
 void Window::mouseClick() {
   int newState = GLFW_RELEASE;
   static int buttonType = -1;
-  const static int mouseButtonTypes[]{GLFW_MOUSE_BUTTON_LEFT,
-                                      GLFW_MOUSE_BUTTON_RIGHT,
-                                      GLFW_MOUSE_BUTTON_MIDDLE};
+  const static std::vector<uint32_t> mouseButtonTypes{GLFW_MOUSE_BUTTON_LEFT,
+                                                      GLFW_MOUSE_BUTTON_RIGHT,
+                                                      GLFW_MOUSE_BUTTON_MIDDLE};
 
   for (const int& mouseButtonType : mouseButtonTypes) {
     if (glfwGetMouseButton(window, mouseButtonType) == GLFW_PRESS) {
