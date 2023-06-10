@@ -91,16 +91,15 @@ bool World::isIndexAlive(const std::vector<int>& aliveCells, int index) {
 }
 
 World::UniformBufferObject World::updateUniforms() {
-  UniformBufferObject uniformObject{};
-  uniformObject.gridDimensions = {
-      static_cast<uint32_t>(_control.grid.dimensions[0]),
-      static_cast<uint32_t>(_control.grid.dimensions[1])};
-  uniformObject.gridHeight = _control.grid.height;
-  uniformObject.light = light.position;
-  uniformObject.cellSize = _control.cells.size;
-  uniformObject.model = setModel();
-  uniformObject.view = setView();
-  uniformObject.proj = setProjection(_mechanics.swapChain.extent);
+  UniformBufferObject uniformObject{
+      .light = light.position,
+      .gridDimensions = {static_cast<uint32_t>(_control.grid.dimensions[0]),
+                         static_cast<uint32_t>(_control.grid.dimensions[1])},
+      .gridHeight = _control.grid.height,
+      .cellSize = _control.cells.size,
+      .model = setModel(),
+      .view = setView(),
+      .proj = setProjection(_mechanics.swapChain.extent)};
 
   return uniformObject;
 }

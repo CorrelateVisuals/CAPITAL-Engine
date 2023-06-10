@@ -107,15 +107,16 @@ void CapitalEngine::drawFrame() {
   _memCommands.recordComputeCommandBuffer(
       _memCommands.command.computeBuffers[_mechanics.syncObjects.currentFrame]);
 
-  VkSubmitInfo computeSubmitInfo{};
-  computeSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-  computeSubmitInfo.commandBufferCount = 1;
-  computeSubmitInfo.pCommandBuffers =
-      &_memCommands.command.computeBuffers[_mechanics.syncObjects.currentFrame];
-  computeSubmitInfo.signalSemaphoreCount = 1;
-  computeSubmitInfo.pSignalSemaphores =
-      &_mechanics.syncObjects
-           .computeFinishedSemaphores[_mechanics.syncObjects.currentFrame];
+  VkSubmitInfo computeSubmitInfo{
+      .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+      .commandBufferCount = 1,
+      .pCommandBuffers =
+          &_memCommands.command
+               .computeBuffers[_mechanics.syncObjects.currentFrame],
+      .signalSemaphoreCount = 1,
+      .pSignalSemaphores =
+          &_mechanics.syncObjects
+               .computeFinishedSemaphores[_mechanics.syncObjects.currentFrame]};
 
   if (vkQueueSubmit(
           _mechanics.queues.compute, 1, &computeSubmitInfo,
@@ -166,18 +167,19 @@ void CapitalEngine::drawFrame() {
       VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
       VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
 
-  VkSubmitInfo graphicsSubmitInfo{};
-  graphicsSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-  graphicsSubmitInfo.waitSemaphoreCount = 2;
-  graphicsSubmitInfo.pWaitSemaphores = waitSemaphores;
-  graphicsSubmitInfo.pWaitDstStageMask = waitStages;
-  graphicsSubmitInfo.commandBufferCount = 1;
-  graphicsSubmitInfo.pCommandBuffers =
-      &_memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame];
-  graphicsSubmitInfo.signalSemaphoreCount = 1;
-  graphicsSubmitInfo.pSignalSemaphores =
-      &_mechanics.syncObjects
-           .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame];
+  VkSubmitInfo graphicsSubmitInfo{
+      .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+      .waitSemaphoreCount = sizeof(waitStages) / sizeof(waitStages[0]),
+      .pWaitSemaphores = waitSemaphores,
+      .pWaitDstStageMask = waitStages,
+      .commandBufferCount = 1,
+      .pCommandBuffers =
+          &_memCommands.command
+               .graphicBuffers[_mechanics.syncObjects.currentFrame],
+      .signalSemaphoreCount = 1,
+      .pSignalSemaphores =
+          &_mechanics.syncObjects
+               .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame]};
 
   if (vkQueueSubmit(_mechanics.queues.graphics, 1, &graphicsSubmitInfo,
                     _mechanics.syncObjects
@@ -186,16 +188,17 @@ void CapitalEngine::drawFrame() {
     throw std::runtime_error("!ERROR! failed to submit draw command buffer!");
   }
 
-  VkPresentInfoKHR presentInfo{};
-  presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-  presentInfo.waitSemaphoreCount = 1;
-  presentInfo.pWaitSemaphores =
-      &_mechanics.syncObjects
-           .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame];
-  VkSwapchainKHR swapChains[]{_mechanics.swapChain.swapChain};
-  presentInfo.swapchainCount = 1;
-  presentInfo.pSwapchains = swapChains;
-  presentInfo.pImageIndices = &imageIndex;
+  VkSwapchainKHR swapChains[] = {_mechanics.swapChain.swapChain};
+
+  VkPresentInfoKHR presentInfo{
+      .sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+      .waitSemaphoreCount = 1,
+      .pWaitSemaphores =
+          &_mechanics.syncObjects
+               .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame],
+      .swapchainCount = 1,
+      .pSwapchains = swapChains,
+      .pImageIndices = &imageIndex};
 
   result = vkQueuePresentKHR(_mechanics.queues.present, &presentInfo);
 

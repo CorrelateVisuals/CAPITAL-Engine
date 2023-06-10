@@ -60,8 +60,9 @@ class Pipelines {
       auto pipeline);
 
   VkPipelineVertexInputStateCreateInfo getVertexInputInfo();
-  VkPipelineColorBlendStateCreateInfo getColorBlend();
-  VkPipelineDynamicStateCreateInfo getDynamicState();
+  VkPipelineColorBlendStateCreateInfo getColorBlendingInfo();
+  VkPipelineDynamicStateCreateInfo getDynamicStateInfo();
+  VkPipelineDepthStencilStateCreateInfo getDepthStencilInfo();
 };
 
 class MemoryCommands {
@@ -70,7 +71,7 @@ class MemoryCommands {
   ~MemoryCommands();
 
   struct PushConstants {
-    VkShaderStageFlagBits shaderStage = {VK_SHADER_STAGE_COMPUTE_BIT};
+    VkShaderStageFlags shaderStage = {VK_SHADER_STAGE_COMPUTE_BIT};
     uint32_t offset = 0;
     uint32_t size = 128;
     std::array<int, 32> data = {};
