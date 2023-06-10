@@ -85,7 +85,16 @@ class VulkanMechanics {
   Queues::FamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice);
 
   template <typename CheckVulkanResult, typename... Args>
-  void vulkanResult(CheckVulkanResult vkResult, Args&&... args);
+  void vulkanResult(CheckVulkanResult vkResult, Args&&... args) {
+    using ObjectType = std::remove_pointer_t<std::decay_t<CheckVulkanResult>>;
+    std::string objectName = typeid(ObjectType).name();
+
+    VkResult result = vkResult(std::forward<Args>(args)...);
+    if (result != VK_SUCCESS) {
+      throw std::runtime_error("!ERROR! result != VK_SUCCESS " + objectName +
+                               "!");
+    }
+  }
 
  private:
   std::vector<const char*> getRequiredExtensions();
@@ -101,16 +110,3 @@ class VulkanMechanics {
       const std::vector<VkPresentModeKHR>& availablePresentModes);
   VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 };
-
-template <typename CheckVulkanResult, typename... Args>
-inline void VulkanMechanics::vulkanResult(CheckVulkanResult vkResult,
-                                          Args&&... args) {
-  using ObjectType = std::remove_pointer_t<std::decay_t<CheckVulkanResult>>;
-  std::string objectName = typeid(ObjectType).name();
-
-  VkResult result = vkResult(std::forward<Args>(args)...);
-  if (result != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! result != VK_SUCCESS " + objectName +
-                             "!");
-  }
-}
