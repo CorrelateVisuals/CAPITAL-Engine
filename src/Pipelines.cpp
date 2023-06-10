@@ -117,10 +117,8 @@ void Pipelines::createRenderPass() {
       .dependencyCount = 1,
       .pDependencies = &dependency};
 
-  if (vkCreateRenderPass(_mechanics.mainDevice.logical, &renderPassInfo,
-                         nullptr, &renderPass) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create render pass!");
-  }
+  _mechanics.vulkanResult(vkCreateRenderPass, _mechanics.mainDevice.logical,
+                          &renderPassInfo, nullptr, &renderPass);
 }
 
 void Pipelines::createGraphicsPipeline() {
@@ -167,10 +165,9 @@ void Pipelines::createGraphicsPipeline() {
       .setLayoutCount = 1,
       .pSetLayouts = &_memCommands.descriptor.setLayout};
 
-  if (vkCreatePipelineLayout(_mechanics.mainDevice.logical, &pipelineLayoutInfo,
-                             nullptr, &graphics.pipelineLayout) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create pipeline layout!");
-  }
+  _mechanics.vulkanResult(vkCreatePipelineLayout, _mechanics.mainDevice.logical,
+                          &pipelineLayoutInfo, nullptr,
+                          &graphics.pipelineLayout);
 
   VkGraphicsPipelineCreateInfo pipelineInfo{
       .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
@@ -189,16 +186,11 @@ void Pipelines::createGraphicsPipeline() {
       .subpass = 0,
       .basePipelineHandle = VK_NULL_HANDLE};
 
-  if (vkCreateGraphicsPipelines(_mechanics.mainDevice.logical, VK_NULL_HANDLE,
-                                1, &pipelineInfo, nullptr,
-                                &graphics.pipeline) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create graphics pipeline!");
-  }
+  _mechanics.vulkanResult(vkCreateGraphicsPipelines,
+                          _mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
+                          &pipelineInfo, nullptr, &graphics.pipeline);
 
-  for (size_t i = 0; i < graphics.shaderModules.size(); i++) {
-    vkDestroyShaderModule(_mechanics.mainDevice.logical,
-                          graphics.shaderModules[i], nullptr);
-  }
+  destroyShaderModules(graphics.shaderModules);
 }
 
 VkFormat Pipelines::findSupportedFormat(const std::vector<VkFormat>& candidates,
@@ -289,27 +281,20 @@ void Pipelines::createComputePipeline() {
       .pushConstantRangeCount = 1,
       .pPushConstantRanges = &pushConstantRange};
 
-  if (vkCreatePipelineLayout(_mechanics.mainDevice.logical, &pipelineLayoutInfo,
-                             nullptr, &compute.pipelineLayout) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "!ERROR! failed to create compute pipeline layout!");
-  }
+  _mechanics.vulkanResult(vkCreatePipelineLayout, _mechanics.mainDevice.logical,
+                          &pipelineLayoutInfo, nullptr,
+                          &compute.pipelineLayout);
 
   VkComputePipelineCreateInfo pipelineInfo{
       .sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,
       .stage = computeShaderStageInfo,
       .layout = compute.pipelineLayout};
 
-  if (vkCreateComputePipelines(_mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
-                               &pipelineInfo, nullptr,
-                               &compute.pipeline) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create compute pipeline!");
-  }
+  _mechanics.vulkanResult(vkCreateComputePipelines,
+                          _mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
+                          &pipelineInfo, nullptr, &compute.pipeline);
 
-  for (size_t i = 0; i < compute.shaderModules.size(); i++) {
-    vkDestroyShaderModule(_mechanics.mainDevice.logical,
-                          compute.shaderModules[i], nullptr);
-  }
+  destroyShaderModules(compute.shaderModules);
 }
 
 VkSampleCountFlagBits Pipelines::getMaxUsableSampleCount() {
@@ -336,13 +321,20 @@ VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
       .pCode = reinterpret_cast<const uint32_t*>(code.data())};
 
   VkShaderModule shaderModule;
-  if (vkCreateShaderModule(_mechanics.mainDevice.logical, &createInfo, nullptr,
-                           &shaderModule) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create shader module!");
-  }
+
+  _mechanics.vulkanResult(vkCreateShaderModule, _mechanics.mainDevice.logical,
+                          &createInfo, nullptr, &shaderModule);
 
   return shaderModule;
 }
+
+void Pipelines::destroyShaderModules(
+    std::vector<VkShaderModule>& shaderModules) {
+  for (size_t i = 0; i < shaderModules.size(); i++) {
+    vkDestroyShaderModule(_mechanics.mainDevice.logical, shaderModules[i],
+                          nullptr);
+  }
+};
 
 VkPipelineVertexInputStateCreateInfo Pipelines::getVertexInputInfo() {
   static auto bindingDescriptions = World::getBindingDescriptions();

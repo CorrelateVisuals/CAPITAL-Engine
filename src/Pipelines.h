@@ -58,6 +58,7 @@ class Pipelines {
       VkShaderStageFlagBits shaderStage,
       std::string shaderName,
       auto pipeline);
+  void destroyShaderModules(std::vector<VkShaderModule>& shaderModules);
 
   VkPipelineVertexInputStateCreateInfo getVertexInputInfo();
   VkPipelineColorBlendStateCreateInfo getColorBlendingInfo();

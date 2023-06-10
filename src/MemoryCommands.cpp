@@ -32,11 +32,9 @@ void MemoryCommands::createFramebuffers() {
         .height = _mechanics.swapChain.extent.height,
         .layers = 1};
 
-    if (vkCreateFramebuffer(_mechanics.mainDevice.logical, &framebufferInfo,
-                            nullptr, &_mechanics.swapChain.framebuffers[i]) !=
-        VK_SUCCESS) {
-      throw std::runtime_error("!ERROR! failed to create framebuffer!");
-    }
+    _mechanics.vulkanResult(
+        vkCreateFramebuffer, _mechanics.mainDevice.logical, &framebufferInfo,
+        nullptr, &_mechanics.swapChain.framebuffers[i]);
   }
 }
 
@@ -51,10 +49,9 @@ void MemoryCommands::createCommandPool() {
       .flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
       .queueFamilyIndex = queueFamilyIndices.graphicsAndComputeFamily.value()};
 
-  if (vkCreateCommandPool(_mechanics.mainDevice.logical, &poolInfo, nullptr,
-                          &command.pool) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create graphics command pool!");
-  }
+  _mechanics.vulkanResult(vkCreateCommandPool,
+                                _mechanics.mainDevice.logical, &poolInfo,
+                                nullptr, &command.pool);
 }
 
 void MemoryCommands::createCommandBuffers() {
@@ -69,10 +66,9 @@ void MemoryCommands::createCommandBuffers() {
       .commandBufferCount =
           static_cast<uint32_t>(command.graphicBuffers.size())};
 
-  if (vkAllocateCommandBuffers(_mechanics.mainDevice.logical, &allocateInfo,
-                               command.graphicBuffers.data()) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to allocate command buffers!");
-  }
+  _mechanics.vulkanResult(vkAllocateCommandBuffers,
+                                _mechanics.mainDevice.logical, &allocateInfo,
+                                command.graphicBuffers.data());
 }
 
 void MemoryCommands::createComputeCommandBuffers() {
@@ -87,11 +83,9 @@ void MemoryCommands::createComputeCommandBuffers() {
       .commandBufferCount =
           static_cast<uint32_t>(command.computeBuffers.size())};
 
-  if (vkAllocateCommandBuffers(_mechanics.mainDevice.logical, &allocateInfo,
-                               command.computeBuffers.data()) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "!ERROR! failed to allocate compute command buffers!");
-  }
+  _mechanics.vulkanResult(vkAllocateCommandBuffers,
+                                _mechanics.mainDevice.logical, &allocateInfo,
+                                command.computeBuffers.data());
 }
 
 void MemoryCommands::createShaderStorageBuffers() {
@@ -178,12 +172,9 @@ void MemoryCommands::createDescriptorSetLayout() {
       .bindingCount = static_cast<uint32_t>(layoutBindings.size()),
       .pBindings = layoutBindings.data()};
 
-  if (vkCreateDescriptorSetLayout(
-          _mechanics.mainDevice.logical, &layoutInfo, nullptr,
-          &_memCommands.descriptor.setLayout) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "!ERROR! failed to create compute descriptor set layout!");
-  }
+  _mechanics.vulkanResult(vkCreateDescriptorSetLayout,
+                                _mechanics.mainDevice.logical, &layoutInfo,
+                                nullptr, &_memCommands.descriptor.setLayout);
 }
 
 void MemoryCommands::createDescriptorPool() {
@@ -200,10 +191,9 @@ void MemoryCommands::createDescriptorPool() {
       .poolSizeCount = static_cast<uint32_t>(poolSizes.size()),
       .pPoolSizes = poolSizes.data()};
 
-  if (vkCreateDescriptorPool(_mechanics.mainDevice.logical, &poolInfo, nullptr,
-                             &_memCommands.descriptor.pool) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create descriptor pool!");
-  }
+  _mechanics.vulkanResult(vkCreateDescriptorPool,
+                                _mechanics.mainDevice.logical, &poolInfo,
+                                nullptr, &_memCommands.descriptor.pool);
 }
 
 void MemoryCommands::createImage(uint32_t width,
@@ -232,10 +222,8 @@ void MemoryCommands::createImage(uint32_t width,
       .pQueueFamilyIndices = nullptr,
       .initialLayout = VK_IMAGE_LAYOUT_UNDEFINED};
 
-  if (vkCreateImage(_mechanics.mainDevice.logical, &imageInfo, nullptr,
-                    &image) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create image!");
-  }
+  _mechanics.vulkanResult(vkCreateImage, _mechanics.mainDevice.logical,
+                                &imageInfo, nullptr, &image);
 
   VkMemoryRequirements memRequirements;
   vkGetImageMemoryRequirements(_mechanics.mainDevice.logical, image,
@@ -247,10 +235,8 @@ void MemoryCommands::createImage(uint32_t width,
       .memoryTypeIndex =
           findMemoryType(memRequirements.memoryTypeBits, properties)};
 
-  if (vkAllocateMemory(_mechanics.mainDevice.logical, &allocateInfo, nullptr,
-                       &imageMemory) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to allocate image memory!");
-  }
+  _mechanics.vulkanResult(vkAllocateMemory, _mechanics.mainDevice.logical,
+                                &allocateInfo, nullptr, &imageMemory);
   vkBindImageMemory(_mechanics.mainDevice.logical, image, imageMemory, 0);
 }
 
@@ -265,10 +251,9 @@ void MemoryCommands::createDescriptorSets() {
       .pSetLayouts = layouts.data()};
 
   descriptor.sets.resize(MAX_FRAMES_IN_FLIGHT);
-  if (vkAllocateDescriptorSets(_mechanics.mainDevice.logical, &allocateInfo,
-                               descriptor.sets.data()) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to allocate descriptor sets!");
-  }
+  _mechanics.vulkanResult(vkAllocateDescriptorSets,
+                                _mechanics.mainDevice.logical, &allocateInfo,
+                                descriptor.sets.data());
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     VkDescriptorBufferInfo uniformBufferInfo{
@@ -356,10 +341,7 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
 
   vkCmdDispatch(commandBuffer, numberOfWorkgroupsX, numberOfWorkgroupsY, 1);
 
-  if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "!ERROR! failed to record compute command buffer!");
-  }
+  _mechanics.vulkanResult(vkEndCommandBuffer, commandBuffer);
 }
 
 void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
@@ -367,10 +349,9 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
   VkCommandBufferBeginInfo beginInfo{
       .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
 
-  if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
-    throw std::runtime_error(
-        "!ERROR! failed to begin recording command buffer!");
-  }
+  _mechanics.vulkanResult(vkBeginCommandBuffer, commandBuffer,
+                                &beginInfo);
+
   std::vector<VkClearValue> clearValues{{.color = {{0.0f, 0.0f, 0.0f, 1.0f}}},
                                         {.depthStencil = {1.0f, 0}}};
 
@@ -417,9 +398,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
 
   vkCmdEndRenderPass(commandBuffer);
 
-  if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to record command buffer!");
-  }
+  _mechanics.vulkanResult(vkEndCommandBuffer, commandBuffer);
 }
 
 void MemoryCommands::createBuffer(VkDeviceSize size,
@@ -436,10 +415,8 @@ void MemoryCommands::createBuffer(VkDeviceSize size,
                "creating Buffer:", _log.getBufferUsageString(bufferInfo.usage));
   _log.console(_log.style.charLeader, bufferInfo.size, "bytes");
 
-  if (vkCreateBuffer(_mechanics.mainDevice.logical, &bufferInfo, nullptr,
-                     &buffer) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create buffer!");
-  }
+  _mechanics.vulkanResult(vkCreateBuffer, _mechanics.mainDevice.logical,
+                                &bufferInfo, nullptr, &buffer);
 
   VkMemoryRequirements memRequirements;
   vkGetBufferMemoryRequirements(_mechanics.mainDevice.logical, buffer,
@@ -451,10 +428,8 @@ void MemoryCommands::createBuffer(VkDeviceSize size,
       .memoryTypeIndex =
           findMemoryType(memRequirements.memoryTypeBits, properties)};
 
-  if (vkAllocateMemory(_mechanics.mainDevice.logical, &allocateInfo, nullptr,
-                       &bufferMemory) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to allocate buffer memory!");
-  }
+  _mechanics.vulkanResult(vkAllocateMemory, _mechanics.mainDevice.logical,
+                                &allocateInfo, nullptr, &bufferMemory);
 
   vkBindBufferMemory(_mechanics.mainDevice.logical, buffer, bufferMemory, 0);
 }

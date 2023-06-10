@@ -119,14 +119,10 @@ void CapitalEngine::drawFrame() {
           &_mechanics.syncObjects
                .computeFinishedSemaphores[_mechanics.syncObjects.currentFrame]};
 
-  if (vkQueueSubmit(
-          _mechanics.queues.compute, 1, &computeSubmitInfo,
-          _mechanics.syncObjects
-              .computeInFlightFences[_mechanics.syncObjects.currentFrame]) !=
-      VK_SUCCESS) {
-    throw std::runtime_error(
-        "!ERROR! failed to submit compute command buffer!");
-  }
+  _mechanics.vulkanResult(
+      vkQueueSubmit, _mechanics.queues.compute, 1, &computeSubmitInfo,
+      _mechanics.syncObjects
+          .computeInFlightFences[_mechanics.syncObjects.currentFrame]);
 
   // Graphics submission
   vkWaitForFences(_mechanics.mainDevice.logical, 1,
@@ -182,12 +178,10 @@ void CapitalEngine::drawFrame() {
           &_mechanics.syncObjects
                .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame]};
 
-  if (vkQueueSubmit(_mechanics.queues.graphics, 1, &graphicsSubmitInfo,
-                    _mechanics.syncObjects
-                        .inFlightFences[_mechanics.syncObjects.currentFrame]) !=
-      VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to submit draw command buffer!");
-  }
+  _mechanics.vulkanResult(
+      vkQueueSubmit, _mechanics.queues.graphics, 1, &graphicsSubmitInfo,
+      _mechanics.syncObjects
+          .inFlightFences[_mechanics.syncObjects.currentFrame]);
 
   VkSwapchainKHR swapChains[] = {_mechanics.swapChain.swapChain};
 

@@ -74,17 +74,13 @@ void VulkanMechanics::createInstance() {
     createInfo.pNext = &debugCreateInfo;
   }
 
-  if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create instance!");
-  }
+  _mechanics.vulkanResult(vkCreateInstance, &createInfo, nullptr, &instance);
 }
 
 void VulkanMechanics::createSurface() {
   _log.console("{ [ ] }", "creating Surface");
-  if (glfwCreateWindowSurface(instance, _window.window, nullptr, &surface) !=
-      VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create window surface!");
-  }
+  _mechanics.vulkanResult(glfwCreateWindowSurface, instance, _window.window,
+                          nullptr, &surface);
 }
 
 void VulkanMechanics::pickPhysicalDevice() {
@@ -107,7 +103,6 @@ void VulkanMechanics::pickPhysicalDevice() {
       break;
     }
   }
-
   if (mainDevice.physical == VK_NULL_HANDLE) {
     throw std::runtime_error("!ERROR! failed to find a suitable GPU!");
   }
@@ -242,10 +237,8 @@ void VulkanMechanics::createLogicalDevice() {
     createInfo.ppEnabledLayerNames = _validationLayers.validationLayers.data();
   }
 
-  if (vkCreateDevice(mainDevice.physical, &createInfo, nullptr,
-                     &mainDevice.logical) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create logical device!");
-  }
+  _mechanics.vulkanResult(vkCreateDevice, mainDevice.physical, &createInfo,
+                          nullptr, &mainDevice.logical);
 
   vkGetDeviceQueue(mainDevice.logical, indices.graphicsAndComputeFamily.value(),
                    0, &queues.graphics);
@@ -319,25 +312,25 @@ void VulkanMechanics::createSyncObjects() {
                               .flags = VK_FENCE_CREATE_SIGNALED_BIT};
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-    if (vkCreateSemaphore(_mechanics.mainDevice.logical, &semaphoreInfo,
-                          nullptr, &syncObjects.imageAvailableSemaphores[i]) !=
-            VK_SUCCESS ||
-        vkCreateSemaphore(_mechanics.mainDevice.logical, &semaphoreInfo,
-                          nullptr, &syncObjects.renderFinishedSemaphores[i]) !=
-            VK_SUCCESS ||
-        vkCreateFence(_mechanics.mainDevice.logical, &fenceInfo, nullptr,
-                      &syncObjects.inFlightFences[i]) != VK_SUCCESS) {
-      throw std::runtime_error(
-          "failed to create graphics synchronization objects for a frame!");
-    }
-    if (vkCreateSemaphore(_mechanics.mainDevice.logical, &semaphoreInfo,
-                          nullptr, &syncObjects.computeFinishedSemaphores[i]) !=
-            VK_SUCCESS ||
-        vkCreateFence(_mechanics.mainDevice.logical, &fenceInfo, nullptr,
-                      &syncObjects.computeInFlightFences[i]) != VK_SUCCESS) {
-      throw std::runtime_error(
-          "failed to create compute synchronization objects for a frame!");
-    }
+    _mechanics.vulkanResult(vkCreateSemaphore, _mechanics.mainDevice.logical,
+                            &semaphoreInfo, nullptr,
+                            &syncObjects.imageAvailableSemaphores[i]);
+
+    _mechanics.vulkanResult(vkCreateSemaphore, _mechanics.mainDevice.logical,
+                            &semaphoreInfo, nullptr,
+                            &syncObjects.renderFinishedSemaphores[i]);
+
+    _mechanics.vulkanResult(vkCreateFence, _mechanics.mainDevice.logical,
+                            &fenceInfo, nullptr,
+                            &syncObjects.inFlightFences[i]);
+
+    _mechanics.vulkanResult(vkCreateSemaphore, _mechanics.mainDevice.logical,
+                            &semaphoreInfo, nullptr,
+                            &syncObjects.computeFinishedSemaphores[i]);
+
+    _mechanics.vulkanResult(vkCreateFence, _mechanics.mainDevice.logical,
+                            &fenceInfo, nullptr,
+                            &syncObjects.computeInFlightFences[i]);
   }
 }
 
@@ -430,10 +423,8 @@ void VulkanMechanics::createSwapChain() {
     createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
   }
 
-  if (vkCreateSwapchainKHR(mainDevice.logical, &createInfo, nullptr,
-                           &swapChain.swapChain) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create swap chain!");
-  }
+  _mechanics.vulkanResult(vkCreateSwapchainKHR, mainDevice.logical, &createInfo,
+                          nullptr, &swapChain.swapChain);
 
   vkGetSwapchainImagesKHR(mainDevice.logical, swapChain.swapChain, &imageCount,
                           nullptr);
@@ -499,10 +490,8 @@ void VulkanMechanics::createImageViews() {
                              .baseArrayLayer = 0,
                              .layerCount = 1}};
 
-    if (vkCreateImageView(mainDevice.logical, &createInfo, nullptr,
-                          &swapChain.imageViews[i]) != VK_SUCCESS) {
-      throw std::runtime_error("!ERROR! failed to create image views!");
-    }
+    _mechanics.vulkanResult(vkCreateImageView, mainDevice.logical, &createInfo,
+                            nullptr, &swapChain.imageViews[i]);
   }
 }
 
@@ -521,10 +510,8 @@ VkImageView VulkanMechanics::createImageView(VkImage image,
                            .layerCount = 1}};
 
   VkImageView imageView;
-  if (vkCreateImageView(mainDevice.logical, &viewInfo, nullptr, &imageView) !=
-      VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create texture image view!");
-  }
+  _mechanics.vulkanResult(vkCreateImageView, mainDevice.logical, &viewInfo,
+                          nullptr, &imageView);
 
   return imageView;
 }
