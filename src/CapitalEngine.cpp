@@ -156,20 +156,20 @@ void CapitalEngine::drawFrame() {
       _memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame],
       imageIndex);
 
-  VkSemaphore waitSemaphores[]{
+  std::vector<VkSemaphore> waitSemaphores{
       _mechanics.syncObjects
           .computeFinishedSemaphores[_mechanics.syncObjects.currentFrame],
       _mechanics.syncObjects
           .imageAvailableSemaphores[_mechanics.syncObjects.currentFrame]};
-  VkPipelineStageFlags waitStages[]{
+  std::vector<VkPipelineStageFlags> waitStages{
       VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
       VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
 
   VkSubmitInfo graphicsSubmitInfo{
       .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-      .waitSemaphoreCount = sizeof(waitStages) / sizeof(waitStages[0]),
-      .pWaitSemaphores = waitSemaphores,
-      .pWaitDstStageMask = waitStages,
+      .waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size()),
+      .pWaitSemaphores = waitSemaphores.data(),
+      .pWaitDstStageMask = waitStages.data(),
       .commandBufferCount = 1,
       .pCommandBuffers =
           &_memCommands.command
