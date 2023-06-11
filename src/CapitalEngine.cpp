@@ -184,7 +184,7 @@ void CapitalEngine::drawFrame() {
                     _mechanics.syncObjects
                         .inFlightFences[_mechanics.syncObjects.currentFrame]);
 
-  VkSwapchainKHR swapChains[] = {_mechanics.swapChain.swapChain};
+  std::vector<VkSwapchainKHR> swapChains{_mechanics.swapChain.swapChain};
 
   VkPresentInfoKHR presentInfo{
       .sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
@@ -193,7 +193,7 @@ void CapitalEngine::drawFrame() {
           &_mechanics.syncObjects
                .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame],
       .swapchainCount = 1,
-      .pSwapchains = swapChains,
+      .pSwapchains = swapChains.data(),
       .pImageIndices = &imageIndex};
 
   result = vkQueuePresentKHR(_mechanics.queues.present, &presentInfo);
