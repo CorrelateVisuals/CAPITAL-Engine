@@ -18,21 +18,21 @@ class Memory {
   } pushConstants;
 
   struct Buffers {
+    std::vector<VkBuffer> shaderStorage;
+    std::vector<VkDeviceMemory> shaderStorageMemory;
+
     std::vector<VkBuffer> uniforms;
     std::vector<VkDeviceMemory> uniformsMemory;
     std::vector<void*> uniformsMapped;
 
-    std::vector<VkBuffer> shaderStorage;
-    std::vector<VkDeviceMemory> shaderStorageMemory;
-
-    struct Command {
+    struct CommandBuffers {
       VkCommandPool pool;
       std::vector<VkCommandBuffer> graphic;
       std::vector<VkCommandBuffer> compute;
     } command;
   } buffers;
 
-  struct Descriptors {
+  struct DescriptorSets {
     VkDescriptorPool pool;
     VkDescriptorSetLayout setLayout;
     std::vector<VkDescriptorSet> sets;
@@ -43,20 +43,19 @@ class Memory {
 
   void createCommandPool();
   void createCommandBuffers();
+  void createComputeCommandBuffers();
+
+  void createDescriptorPool();
+  void createDescriptorSetLayout();
+  void createDescriptorSets();
+
+  void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+  void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);
 
   void createShaderStorageBuffers();
 
   void createUniformBuffers();
   void updateUniformBuffer(uint32_t currentImage);
-
-  void createDescriptorSetLayout();
-  void createDescriptorPool();
-
-  void createDescriptorSets();
-  void createComputeCommandBuffers();
-
-  void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);
-  void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
   void createImage(uint32_t width,
                    uint32_t height,
