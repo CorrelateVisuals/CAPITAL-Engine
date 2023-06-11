@@ -1,31 +1,24 @@
 #pragma once
-/// <TO DO> ///////////////////////////////////////////////////////////////////
-///
-/// [ FIND BUGS ]
-/// - Check if functions work as they are supposed to work
+/// <TO DO> //////////////////////////////////////////////////////////////////
 ///
 /// [ BUGS ]
-/// - Adding mirror effect for cells outside of the grid to be added to the
-/// other end of the grid
-/// - Adding 'long long' data type to shader, with enabling the right extension
-/// on the Vulkan side
+/// - bug finding
 ///
 /// [ FEATURES: ADDITIONS ]
-/// - Add camera arcball camera
+/// - camera arcball camera
 /// https://github.com/Twinklebear/arcball-cpp
-/// - Dear ImGui (for runtime settings, graph data and economic encyclopedia)
+/// - Dear ImGui
 /// https://github.com/ocornut/imgui
-/// - Renderpicking/colorpicking: Adding screenspace position to vertex ID, to
-/// click on objects and return their IDs.
+/// - colorpicking; screenspace position to vertex ID
 /// https://snoozetime.github.io/2019/05/02/object-picking.html
-/// - Add vertex and index buffers; remove the vertex, index and normal data
-/// from vertex shader
+/// - vertex and index buffers
 /// https://vulkan-tutorial.com/Vertex_buffers/Vertex_buffer_creation
 ///
 /// [ FEATURES: GEOMETRY ]
-/// - Animating geometry between cells
-/// - Terrain (needs new pipeline?)
-///		- Add landownership vinroy effect (camera that films cones that
-///		  overlap, as texture on landscape)
+/// - inter cell movement
+/// - terrain renderpass or subpass
+///		- Add vinroy effect
+/// - mirror borders of grid
+/// - 'long long' data type to shader
 ///
 /// </TO DO> ///////////////////////////////////////////////////////////////////

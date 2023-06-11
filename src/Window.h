@@ -24,7 +24,7 @@ class Window {
     std::array<Button, 3> previousButtonDown;
   } mouse;
 
-  void mouseClick();
+  void setMouse();
 
  private:
   void initWindow();

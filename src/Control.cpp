@@ -15,7 +15,7 @@ Control::~Control() {
   _log.console("{ CTR }", "destructing Control");
 }
 
-void Control::simulateHours() {
+void Control::setPassedHours() {
   static auto lastTime = std::chrono::high_resolution_clock::now();
   auto currentTime = std::chrono::high_resolution_clock::now();
 

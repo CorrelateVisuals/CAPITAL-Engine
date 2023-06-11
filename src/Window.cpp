@@ -36,7 +36,7 @@ void Window::windowResize(GLFWwindow* win, int width, int height) {
   _log.console("{ [*] }", "Window resized to", width, "*", height);
 }
 
-void Window::mouseClick() {
+void Window::setMouse() {
   int newState = GLFW_RELEASE;
   static int buttonType = -1;
   const static std::vector<uint32_t> mouseButtonTypes{GLFW_MOUSE_BUTTON_LEFT,
