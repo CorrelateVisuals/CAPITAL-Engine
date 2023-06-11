@@ -219,8 +219,8 @@ void Global::cleanup() {
   vkDestroyPipelineLayout(_mechanics.mainDevice.logical,
                           _pipelines.compute.pipelineLayout, nullptr);
 
-  vkDestroyRenderPass(_mechanics.mainDevice.logical, _pipelines.renderPass,
-                      nullptr);
+  vkDestroyRenderPass(_mechanics.mainDevice.logical,
+                      _pipelines.graphics.renderPass, nullptr);
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     vkDestroyBuffer(_mechanics.mainDevice.logical,

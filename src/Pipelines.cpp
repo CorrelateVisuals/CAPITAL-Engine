@@ -11,7 +11,7 @@
 #include "Pipelines.h"
 #include "World.h"
 
-Pipelines::Pipelines() : graphics{}, compute{}, renderPass{}, depth{}, msaa{} {
+Pipelines::Pipelines() : graphics{}, compute{} {
   _log.console("{ PIP }", "constructing Pipelines");
 }
 
@@ -23,33 +23,34 @@ void Pipelines::createColorResources() {
   VkFormat colorFormat = _mechanics.swapChain.imageFormat;
 
   _memory.createImage(_mechanics.swapChain.extent.width,
-                      _mechanics.swapChain.extent.height, msaa.samples,
+                      _mechanics.swapChain.extent.height, graphics.msaa.samples,
                       colorFormat, VK_IMAGE_TILING_OPTIMAL,
                       VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT |
                           VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, msaa.colorImage,
-                      msaa.colorImageMemory);
-  msaa.colorImageView = _mechanics.createImageView(msaa.colorImage, colorFormat,
-                                                   VK_IMAGE_ASPECT_COLOR_BIT);
+                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                      graphics.msaa.colorImage, graphics.msaa.colorImageMemory);
+  graphics.msaa.colorImageView = _mechanics.createImageView(
+      graphics.msaa.colorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
 void Pipelines::createDepthResources() {
   VkFormat depthFormat = findDepthFormat();
 
-  _memory.createImage(
-      _mechanics.swapChain.extent.width, _mechanics.swapChain.extent.height,
-      msaa.samples, depthFormat, VK_IMAGE_TILING_OPTIMAL,
-      VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depth.image, depth.imageMemory);
-  depth.imageView = _mechanics.createImageView(depth.image, depthFormat,
-                                               VK_IMAGE_ASPECT_DEPTH_BIT);
+  _memory.createImage(_mechanics.swapChain.extent.width,
+                      _mechanics.swapChain.extent.height, graphics.msaa.samples,
+                      depthFormat, VK_IMAGE_TILING_OPTIMAL,
+                      VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, graphics.depth.image,
+                      graphics.depth.imageMemory);
+  graphics.depth.imageView = _mechanics.createImageView(
+      graphics.depth.image, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
 }
 
 void Pipelines::createRenderPass() {
   _log.console("{ []< }", "creating Render Pass");
   VkAttachmentDescription colorAttachment{
       .format = _mechanics.swapChain.imageFormat,
-      .samples = msaa.samples,
+      .samples = graphics.msaa.samples,
       .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
       .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
       .stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
@@ -59,7 +60,7 @@ void Pipelines::createRenderPass() {
 
   VkAttachmentDescription depthAttachment{
       .format = findDepthFormat(),
-      .samples = msaa.samples,
+      .samples = graphics.msaa.samples,
       .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
       .storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
       .stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
@@ -118,7 +119,7 @@ void Pipelines::createRenderPass() {
       .pDependencies = &dependency};
 
   _mechanics.result(vkCreateRenderPass, _mechanics.mainDevice.logical,
-                    &renderPassInfo, nullptr, &renderPass);
+                    &renderPassInfo, nullptr, &graphics.renderPass);
 }
 
 void Pipelines::createGraphicsPipeline() {
@@ -152,7 +153,7 @@ void Pipelines::createGraphicsPipeline() {
 
   VkPipelineMultisampleStateCreateInfo multisampling{
       .sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
-      .rasterizationSamples = msaa.samples,
+      .rasterizationSamples = graphics.msaa.samples,
       .sampleShadingEnable = VK_TRUE,
       .minSampleShading = 0.2f};
 
@@ -181,7 +182,7 @@ void Pipelines::createGraphicsPipeline() {
       .pColorBlendState = &colorBlending,
       .pDynamicState = &dynamicState,
       .layout = graphics.pipelineLayout,
-      .renderPass = renderPass,
+      .renderPass = graphics.renderPass,
       .subpass = 0,
       .basePipelineHandle = VK_NULL_HANDLE};
 

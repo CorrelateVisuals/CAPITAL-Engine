@@ -8,9 +8,24 @@ class Pipelines {
   ~Pipelines();
 
   struct Graphics {
+    VkRenderPass renderPass;
+
     VkPipelineLayout pipelineLayout;
     VkPipeline pipeline;
     std::vector<VkShaderModule> shaderModules;
+
+    struct Depth {
+      VkImage image;
+      VkDeviceMemory imageMemory;
+      VkImageView imageView;
+    } depth;
+
+    struct MultiSampling {
+      VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
+      VkImage colorImage;
+      VkDeviceMemory colorImageMemory;
+      VkImageView colorImageView;
+    } msaa;
   } graphics;
 
   struct Compute {
@@ -18,21 +33,6 @@ class Pipelines {
     VkPipeline pipeline;
     std::vector<VkShaderModule> shaderModules;
   } compute;
-
-  VkRenderPass renderPass;
-
-  struct Depth {
-    VkImage image;
-    VkDeviceMemory imageMemory;
-    VkImageView imageView;
-  } depth;
-
-  struct MultiSampling {
-    VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;
-    VkImage colorImage;
-    VkDeviceMemory colorImageMemory;
-    VkImageView colorImageView;
-  } msaa;
 
  public:
   void createColorResources();
@@ -54,11 +54,11 @@ class Pipelines {
 
   static std::vector<char> readShaderFile(const std::string& filename);
   VkShaderModule createShaderModule(const std::vector<char>& code);
+  void destroyShaderModules(std::vector<VkShaderModule>& shaderModules);
   VkPipelineShaderStageCreateInfo getShaderStageInfo(
       VkShaderStageFlagBits shaderStage,
       std::string shaderName,
       auto pipeline);
-  void destroyShaderModules(std::vector<VkShaderModule>& shaderModules);
 
   VkPipelineVertexInputStateCreateInfo getVertexInputInfo();
   VkPipelineColorBlendStateCreateInfo getColorBlendingInfo();

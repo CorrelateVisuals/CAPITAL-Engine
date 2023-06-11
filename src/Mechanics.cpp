@@ -99,7 +99,7 @@ void VulkanMechanics::pickPhysicalDevice() {
   for (const auto& device : devices) {
     if (isDeviceSuitable(device)) {
       mainDevice.physical = device;
-      _pipelines.msaa.samples = _pipelines.getMaxUsableSampleCount();
+      _pipelines.graphics.msaa.samples = _pipelines.getMaxUsableSampleCount();
       break;
     }
   }
@@ -333,18 +333,18 @@ void VulkanMechanics::createSyncObjects() {
 }
 
 void VulkanMechanics::cleanupSwapChain() {
-  vkDestroyImageView(_mechanics.mainDevice.logical, _pipelines.depth.imageView,
+  vkDestroyImageView(_mechanics.mainDevice.logical, _pipelines.graphics.depth.imageView,
                      nullptr);
-  vkDestroyImage(_mechanics.mainDevice.logical, _pipelines.depth.image,
+  vkDestroyImage(_mechanics.mainDevice.logical, _pipelines.graphics.depth.image,
                  nullptr);
-  vkFreeMemory(_mechanics.mainDevice.logical, _pipelines.depth.imageMemory,
+  vkFreeMemory(_mechanics.mainDevice.logical, _pipelines.graphics.depth.imageMemory,
                nullptr);
 
   vkDestroyImageView(_mechanics.mainDevice.logical,
-                     _pipelines.msaa.colorImageView, nullptr);
-  vkDestroyImage(_mechanics.mainDevice.logical, _pipelines.msaa.colorImage,
+                     _pipelines.graphics.msaa.colorImageView, nullptr);
+  vkDestroyImage(_mechanics.mainDevice.logical, _pipelines.graphics.msaa.colorImage,
                  nullptr);
-  vkFreeMemory(_mechanics.mainDevice.logical, _pipelines.msaa.colorImageMemory,
+  vkFreeMemory(_mechanics.mainDevice.logical, _pipelines.graphics.msaa.colorImageMemory,
                nullptr);
 
   for (auto framebuffer : swapChain.framebuffers) {

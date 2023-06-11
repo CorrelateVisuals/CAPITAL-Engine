@@ -19,12 +19,13 @@ void Memory::createFramebuffers() {
 
   for (size_t i = 0; i < _mechanics.swapChain.imageViews.size(); i++) {
     std::array<VkImageView, 3> attachments = {
-        _pipelines.msaa.colorImageView, _pipelines.depth.imageView,
+        _pipelines.graphics.msaa.colorImageView,
+        _pipelines.graphics.depth.imageView,
         _mechanics.swapChain.imageViews[i]};
 
     VkFramebufferCreateInfo framebufferInfo{
         .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-        .renderPass = _pipelines.renderPass,
+        .renderPass = _pipelines.graphics.renderPass,
         .attachmentCount = static_cast<uint32_t>(attachments.size()),
         .pAttachments = attachments.data(),
         .width = _mechanics.swapChain.extent.width,
@@ -351,7 +352,7 @@ void Memory::recordCommandBuffer(VkCommandBuffer commandBuffer,
   VkRenderPassBeginInfo renderPassInfo{
       .sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
       .pNext = nullptr,
-      .renderPass = _pipelines.renderPass,
+      .renderPass = _pipelines.graphics.renderPass,
       .framebuffer = _mechanics.swapChain.framebuffers[imageIndex],
       .renderArea = {.offset = {0, 0}, .extent = _mechanics.swapChain.extent},
       .clearValueCount = static_cast<uint32_t>(clearValues.size()),
