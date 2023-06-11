@@ -18,23 +18,18 @@ World::~World() {
 }
 
 std::vector<VkVertexInputBindingDescription> World::getBindingDescriptions() {
-  std::vector<VkVertexInputBindingDescription> bindingDescriptions{};
-  bindingDescriptions.push_back(
-      {0, sizeof(Cell), VK_VERTEX_INPUT_RATE_INSTANCE});
+  std::vector<VkVertexInputBindingDescription> bindingDescriptions{
+      {0, sizeof(Cell), VK_VERTEX_INPUT_RATE_INSTANCE}};
   return bindingDescriptions;
 }
 
 std::vector<VkVertexInputAttributeDescription>
 World::getAttributeDescriptions() {
-  std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
-  attributeDescriptions.push_back(
-      {0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, position)});
-  attributeDescriptions.push_back(
-      {1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, color)});
-  attributeDescriptions.push_back(
-      {2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, size)});
-  attributeDescriptions.push_back(
-      {3, 0, VK_FORMAT_R32G32B32_SINT, offsetof(Cell, states)});
+  std::vector<VkVertexInputAttributeDescription> attributeDescriptions{
+      {0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, position)},
+      {1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, color)},
+      {2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, size)},
+      {3, 0, VK_FORMAT_R32G32B32_SINT, offsetof(Cell, states)}};
   return attributeDescriptions;
 }
 
