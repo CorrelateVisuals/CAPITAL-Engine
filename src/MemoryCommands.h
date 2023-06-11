@@ -14,31 +14,29 @@ class MemoryCommands {
     VkShaderStageFlags shaderStage = {VK_SHADER_STAGE_COMPUTE_BIT};
     uint32_t offset = 0;
     uint32_t size = 128;
-    std::array<int, 32> data = {};
+    std::array<int, 32> data;
   } pushConstants;
 
-  struct UniformBuffers {
-    std::vector<VkBuffer> buffers;
-    std::vector<VkDeviceMemory> buffersMemory;
-    std::vector<void*> buffersMapped;
-  } uniform;
+  struct Buffers {
+    std::vector<VkBuffer> uniforms;
+    std::vector<VkDeviceMemory> uniformsMemory;
+    std::vector<void*> uniformsMapped;
 
-  struct ShaderStorageBuffers {
-    std::vector<VkBuffer> buffers;
-    std::vector<VkDeviceMemory> buffersMemory;
-  } shaderStorage;
+    std::vector<VkBuffer> shaderStorage;
+    std::vector<VkDeviceMemory> shaderStorageMemory;
 
-  struct Descriptor {
+    struct Command {
+      VkCommandPool pool;
+      std::vector<VkCommandBuffer> graphic;
+      std::vector<VkCommandBuffer> compute;
+    } command;
+  } buffers;
+
+  struct Descriptors {
     VkDescriptorPool pool;
-    std::vector<VkDescriptorSet> sets;
     VkDescriptorSetLayout setLayout;
+    std::vector<VkDescriptorSet> sets;
   } descriptor;
-
-  struct Command {
-    VkCommandPool pool;
-    std::vector<VkCommandBuffer> graphicBuffers;
-    std::vector<VkCommandBuffer> computeBuffers;
-  } command;
 
  public:
   void createFramebuffers();

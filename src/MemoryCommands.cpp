@@ -3,8 +3,7 @@
 #include "Debug.h"
 #include "Pipelines.h"
 
-MemoryCommands::MemoryCommands()
-    : command{}, uniform{}, shaderStorage{}, descriptor{} {
+MemoryCommands::MemoryCommands() : pushConstants{}, buffers{}, descriptor{} {
   _log.console("{ 010 }", "constructing Memory Management");
 }
 
@@ -32,9 +31,9 @@ void MemoryCommands::createFramebuffers() {
         .height = _mechanics.swapChain.extent.height,
         .layers = 1};
 
-    _mechanics.result(
-        vkCreateFramebuffer, _mechanics.mainDevice.logical, &framebufferInfo,
-        nullptr, &_mechanics.swapChain.framebuffers[i]);
+    _mechanics.result(vkCreateFramebuffer, _mechanics.mainDevice.logical,
+                      &framebufferInfo, nullptr,
+                      &_mechanics.swapChain.framebuffers[i]);
   }
 }
 
@@ -49,43 +48,41 @@ void MemoryCommands::createCommandPool() {
       .flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
       .queueFamilyIndex = queueFamilyIndices.graphicsAndComputeFamily.value()};
 
-  _mechanics.result(vkCreateCommandPool,
-                                _mechanics.mainDevice.logical, &poolInfo,
-                                nullptr, &command.pool);
+  _mechanics.result(vkCreateCommandPool, _mechanics.mainDevice.logical,
+                    &poolInfo, nullptr, &buffers.command.pool);
 }
 
 void MemoryCommands::createCommandBuffers() {
   _log.console("{ CMD }", "creating Command Buffers");
 
-  command.graphicBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+  buffers.command.graphic.resize(MAX_FRAMES_IN_FLIGHT);
 
   VkCommandBufferAllocateInfo allocateInfo{
       .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-      .commandPool = command.pool,
+      .commandPool = buffers.command.pool,
       .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
       .commandBufferCount =
-          static_cast<uint32_t>(command.graphicBuffers.size())};
+          static_cast<uint32_t>(buffers.command.graphic.size())};
 
-  _mechanics.result(vkAllocateCommandBuffers,
-                                _mechanics.mainDevice.logical, &allocateInfo,
-                                command.graphicBuffers.data());
+  _mechanics.result(vkAllocateCommandBuffers, _mechanics.mainDevice.logical,
+                    &allocateInfo, buffers.command.graphic.data());
 }
 
 void MemoryCommands::createComputeCommandBuffers() {
   _log.console("{ CMD }", "creating Compute Command Buffers");
+  _log.console("{ CMD }", "creating Compute Command Buffers");
 
-  command.computeBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+  buffers.command.compute.resize(MAX_FRAMES_IN_FLIGHT);
 
   VkCommandBufferAllocateInfo allocateInfo{
       .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-      .commandPool = command.pool,
+      .commandPool = buffers.command.pool,
       .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
       .commandBufferCount =
-          static_cast<uint32_t>(command.computeBuffers.size())};
+          static_cast<uint32_t>(buffers.command.compute.size())};
 
-  _mechanics.result(vkAllocateCommandBuffers,
-                                _mechanics.mainDevice.logical, &allocateInfo,
-                                command.computeBuffers.data());
+  _mechanics.result(vkAllocateCommandBuffers, _mechanics.mainDevice.logical,
+                    &allocateInfo, buffers.command.compute.data());
 }
 
 void MemoryCommands::createShaderStorageBuffers() {
@@ -110,8 +107,8 @@ void MemoryCommands::createShaderStorageBuffers() {
   std::memcpy(data, cells.data(), static_cast<size_t>(bufferSize));
   vkUnmapMemory(_mechanics.mainDevice.logical, stagingBufferMemory);
 
-  shaderStorage.buffers.resize(MAX_FRAMES_IN_FLIGHT);
-  shaderStorage.buffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+  buffers.shaderStorage.resize(MAX_FRAMES_IN_FLIGHT);
+  buffers.shaderStorageMemory.resize(MAX_FRAMES_IN_FLIGHT);
 
   // Copy initial Cell data to all storage buffers
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -119,9 +116,9 @@ void MemoryCommands::createShaderStorageBuffers() {
                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
                      VK_BUFFER_USAGE_VERTEX_BUFFER_BIT |
                      VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, shaderStorage.buffers[i],
-                 shaderStorage.buffersMemory[i]);
-    copyBuffer(stagingBuffer, shaderStorage.buffers[i], bufferSize);
+                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffers.shaderStorage[i],
+                 buffers.shaderStorageMemory[i]);
+    copyBuffer(stagingBuffer, buffers.shaderStorage[i], bufferSize);
   }
 
   vkDestroyBuffer(_mechanics.mainDevice.logical, stagingBuffer, nullptr);
@@ -132,18 +129,18 @@ void MemoryCommands::createUniformBuffers() {
   _log.console("{ BUF }", "creating Uniform Buffers");
   VkDeviceSize bufferSize = sizeof(World::UniformBufferObject);
 
-  uniform.buffers.resize(MAX_FRAMES_IN_FLIGHT);
-  uniform.buffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
-  uniform.buffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+  buffers.uniforms.resize(MAX_FRAMES_IN_FLIGHT);
+  buffers.uniformsMemory.resize(MAX_FRAMES_IN_FLIGHT);
+  buffers.uniformsMapped.resize(MAX_FRAMES_IN_FLIGHT);
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                      VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                 uniform.buffers[i], uniform.buffersMemory[i]);
+                 buffers.uniforms[i], buffers.uniformsMemory[i]);
 
-    vkMapMemory(_mechanics.mainDevice.logical, uniform.buffersMemory[i], 0,
-                bufferSize, 0, &uniform.buffersMapped[i]);
+    vkMapMemory(_mechanics.mainDevice.logical, buffers.uniformsMemory[i], 0,
+                bufferSize, 0, &buffers.uniformsMapped[i]);
   }
 }
 
@@ -172,9 +169,8 @@ void MemoryCommands::createDescriptorSetLayout() {
       .bindingCount = static_cast<uint32_t>(layoutBindings.size()),
       .pBindings = layoutBindings.data()};
 
-  _mechanics.result(vkCreateDescriptorSetLayout,
-                                _mechanics.mainDevice.logical, &layoutInfo,
-                                nullptr, &_memCommands.descriptor.setLayout);
+  _mechanics.result(vkCreateDescriptorSetLayout, _mechanics.mainDevice.logical,
+                    &layoutInfo, nullptr, &_memCommands.descriptor.setLayout);
 }
 
 void MemoryCommands::createDescriptorPool() {
@@ -191,9 +187,8 @@ void MemoryCommands::createDescriptorPool() {
       .poolSizeCount = static_cast<uint32_t>(poolSizes.size()),
       .pPoolSizes = poolSizes.data()};
 
-  _mechanics.result(vkCreateDescriptorPool,
-                                _mechanics.mainDevice.logical, &poolInfo,
-                                nullptr, &_memCommands.descriptor.pool);
+  _mechanics.result(vkCreateDescriptorPool, _mechanics.mainDevice.logical,
+                    &poolInfo, nullptr, &_memCommands.descriptor.pool);
 }
 
 void MemoryCommands::createImage(uint32_t width,
@@ -222,8 +217,8 @@ void MemoryCommands::createImage(uint32_t width,
       .pQueueFamilyIndices = nullptr,
       .initialLayout = VK_IMAGE_LAYOUT_UNDEFINED};
 
-  _mechanics.result(vkCreateImage, _mechanics.mainDevice.logical,
-                                &imageInfo, nullptr, &image);
+  _mechanics.result(vkCreateImage, _mechanics.mainDevice.logical, &imageInfo,
+                    nullptr, &image);
 
   VkMemoryRequirements memRequirements;
   vkGetImageMemoryRequirements(_mechanics.mainDevice.logical, image,
@@ -236,7 +231,7 @@ void MemoryCommands::createImage(uint32_t width,
           findMemoryType(memRequirements.memoryTypeBits, properties)};
 
   _mechanics.result(vkAllocateMemory, _mechanics.mainDevice.logical,
-                                &allocateInfo, nullptr, &imageMemory);
+                    &allocateInfo, nullptr, &imageMemory);
   vkBindImageMemory(_mechanics.mainDevice.logical, image, imageMemory, 0);
 }
 
@@ -251,24 +246,23 @@ void MemoryCommands::createDescriptorSets() {
       .pSetLayouts = layouts.data()};
 
   descriptor.sets.resize(MAX_FRAMES_IN_FLIGHT);
-  _mechanics.result(vkAllocateDescriptorSets,
-                                _mechanics.mainDevice.logical, &allocateInfo,
-                                descriptor.sets.data());
+  _mechanics.result(vkAllocateDescriptorSets, _mechanics.mainDevice.logical,
+                    &allocateInfo, descriptor.sets.data());
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     VkDescriptorBufferInfo uniformBufferInfo{
-        .buffer = uniform.buffers[i],
+        .buffer = buffers.uniforms[i],
         .offset = 0,
         .range = sizeof(World::UniformBufferObject)};
 
     VkDescriptorBufferInfo storageBufferInfoLastFrame{
-        .buffer = shaderStorage.buffers[(i - 1) % MAX_FRAMES_IN_FLIGHT],
+        .buffer = buffers.shaderStorage[(i - 1) % MAX_FRAMES_IN_FLIGHT],
         .offset = 0,
         .range = sizeof(World::Cell) * _control.grid.dimensions[0] *
                  _control.grid.dimensions[1]};
 
     VkDescriptorBufferInfo storageBufferInfoCurrentFrame{
-        .buffer = shaderStorage.buffers[i],
+        .buffer = buffers.shaderStorage[i],
         .offset = 0,
         .range = sizeof(World::Cell) * _control.grid.dimensions[0] *
                  _control.grid.dimensions[1]};
@@ -306,7 +300,7 @@ void MemoryCommands::createDescriptorSets() {
 
 void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
   World::UniformBufferObject uniformObject = _world.updateUniforms();
-  std::memcpy(uniform.buffersMapped[currentImage], &uniformObject,
+  std::memcpy(buffers.uniformsMapped[currentImage], &uniformObject,
               sizeof(uniformObject));
 }
 
@@ -349,8 +343,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
   VkCommandBufferBeginInfo beginInfo{
       .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
 
-  _mechanics.result(vkBeginCommandBuffer, commandBuffer,
-                                &beginInfo);
+  _mechanics.result(vkBeginCommandBuffer, commandBuffer, &beginInfo);
 
   std::vector<VkClearValue> clearValues{{.color = {{0.0f, 0.0f, 0.0f, 1.0f}}},
                                         {.depthStencil = {1.0f, 0}}};
@@ -385,7 +378,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
   VkDeviceSize offsets[]{0};
   vkCmdBindVertexBuffers(
       commandBuffer, 0, 1,
-      &_memCommands.shaderStorage.buffers[_mechanics.syncObjects.currentFrame],
+      &_memCommands.buffers.shaderStorage[_mechanics.syncObjects.currentFrame],
       offsets);
 
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -415,8 +408,8 @@ void MemoryCommands::createBuffer(VkDeviceSize size,
                "creating Buffer:", _log.getBufferUsageString(bufferInfo.usage));
   _log.console(_log.style.charLeader, bufferInfo.size, "bytes");
 
-  _mechanics.result(vkCreateBuffer, _mechanics.mainDevice.logical,
-                                &bufferInfo, nullptr, &buffer);
+  _mechanics.result(vkCreateBuffer, _mechanics.mainDevice.logical, &bufferInfo,
+                    nullptr, &buffer);
 
   VkMemoryRequirements memRequirements;
   vkGetBufferMemoryRequirements(_mechanics.mainDevice.logical, buffer,
@@ -429,7 +422,7 @@ void MemoryCommands::createBuffer(VkDeviceSize size,
           findMemoryType(memRequirements.memoryTypeBits, properties)};
 
   _mechanics.result(vkAllocateMemory, _mechanics.mainDevice.logical,
-                                &allocateInfo, nullptr, &bufferMemory);
+                    &allocateInfo, nullptr, &bufferMemory);
 
   vkBindBufferMemory(_mechanics.mainDevice.logical, buffer, bufferMemory, 0);
 }
@@ -439,7 +432,7 @@ void MemoryCommands::copyBuffer(VkBuffer srcBuffer,
                                 VkDeviceSize size) {
   VkCommandBufferAllocateInfo allocateInfo{
       .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-      .commandPool = command.pool,
+      .commandPool = buffers.command.pool,
       .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
       .commandBufferCount = 1};
 
@@ -465,7 +458,7 @@ void MemoryCommands::copyBuffer(VkBuffer srcBuffer,
   vkQueueSubmit(_mechanics.queues.graphics, 1, &submitInfo, VK_NULL_HANDLE);
   vkQueueWaitIdle(_mechanics.queues.graphics);
 
-  vkFreeCommandBuffers(_mechanics.mainDevice.logical, command.pool, 1,
+  vkFreeCommandBuffers(_mechanics.mainDevice.logical, buffers.command.pool, 1,
                        &commandBuffer);
 }
 

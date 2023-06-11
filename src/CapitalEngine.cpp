@@ -103,17 +103,17 @@ void CapitalEngine::drawFrame() {
            .computeInFlightFences[_mechanics.syncObjects.currentFrame]);
 
   vkResetCommandBuffer(
-      _memCommands.command.computeBuffers[_mechanics.syncObjects.currentFrame],
+      _memCommands.buffers.command.compute[_mechanics.syncObjects.currentFrame],
       0);
   _memCommands.recordComputeCommandBuffer(
-      _memCommands.command.computeBuffers[_mechanics.syncObjects.currentFrame]);
+      _memCommands.buffers.command
+          .compute[_mechanics.syncObjects.currentFrame]);
 
   VkSubmitInfo computeSubmitInfo{
       .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
       .commandBufferCount = 1,
-      .pCommandBuffers =
-          &_memCommands.command
-               .computeBuffers[_mechanics.syncObjects.currentFrame],
+      .pCommandBuffers = &_memCommands.buffers.command
+                              .compute[_mechanics.syncObjects.currentFrame],
       .signalSemaphoreCount = 1,
       .pSignalSemaphores =
           &_mechanics.syncObjects
@@ -149,11 +149,11 @@ void CapitalEngine::drawFrame() {
                      .inFlightFences[_mechanics.syncObjects.currentFrame]);
 
   vkResetCommandBuffer(
-      _memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame],
+      _memCommands.buffers.command.graphic[_mechanics.syncObjects.currentFrame],
       0);
 
   _memCommands.recordCommandBuffer(
-      _memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame],
+      _memCommands.buffers.command.graphic[_mechanics.syncObjects.currentFrame],
       imageIndex);
 
   std::vector<VkSemaphore> waitSemaphores{
@@ -171,9 +171,8 @@ void CapitalEngine::drawFrame() {
       .pWaitSemaphores = waitSemaphores.data(),
       .pWaitDstStageMask = waitStages.data(),
       .commandBufferCount = 1,
-      .pCommandBuffers =
-          &_memCommands.command
-               .graphicBuffers[_mechanics.syncObjects.currentFrame],
+      .pCommandBuffers = &_memCommands.buffers.command
+                              .graphic[_mechanics.syncObjects.currentFrame],
       .signalSemaphoreCount = 1,
       .pSignalSemaphores =
           &_mechanics.syncObjects
@@ -228,9 +227,9 @@ void Global::cleanup() {
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     vkDestroyBuffer(_mechanics.mainDevice.logical,
-                    _memCommands.uniform.buffers[i], nullptr);
+                    _memCommands.buffers.uniforms[i], nullptr);
     vkFreeMemory(_mechanics.mainDevice.logical,
-                 _memCommands.uniform.buffersMemory[i], nullptr);
+                 _memCommands.buffers.uniformsMemory[i], nullptr);
   }
 
   vkDestroyDescriptorPool(_mechanics.mainDevice.logical,
@@ -241,9 +240,9 @@ void Global::cleanup() {
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     vkDestroyBuffer(_mechanics.mainDevice.logical,
-                    _memCommands.shaderStorage.buffers[i], nullptr);
+                    _memCommands.buffers.shaderStorage[i], nullptr);
     vkFreeMemory(_mechanics.mainDevice.logical,
-                 _memCommands.shaderStorage.buffersMemory[i], nullptr);
+                 _memCommands.buffers.shaderStorageMemory[i], nullptr);
   }
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -262,8 +261,8 @@ void Global::cleanup() {
                    _mechanics.syncObjects.computeInFlightFences[i], nullptr);
   }
 
-  vkDestroyCommandPool(_mechanics.mainDevice.logical, _memCommands.command.pool,
-                       nullptr);
+  vkDestroyCommandPool(_mechanics.mainDevice.logical,
+                       _memCommands.buffers.command.pool, nullptr);
 
   vkDestroyDevice(_mechanics.mainDevice.logical, nullptr);
 
