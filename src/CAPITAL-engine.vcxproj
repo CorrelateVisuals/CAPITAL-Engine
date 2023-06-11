@@ -172,7 +172,7 @@
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Library.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MemoryCommands.cpp" />
+    <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Pipelines.cpp" />
     <ClCompile Include="Mechanics.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -183,7 +183,7 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="CapitalEngine.h" />
     <ClInclude Include="Library.h" />
-    <ClInclude Include="MemoryCommands.h" />
+    <ClInclude Include="Memory.h" />
     <ClInclude Include="Pipelines.h" />
     <ClInclude Include="Mechanics.h" />
     <ClInclude Include="TODO.h" />

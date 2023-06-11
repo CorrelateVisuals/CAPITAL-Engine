@@ -1,17 +1,17 @@
-#include "MemoryCommands.h"
+#include "Memory.h"
 #include "CapitalEngine.h"
 #include "Debug.h"
 #include "Pipelines.h"
 
-MemoryCommands::MemoryCommands() : pushConstants{}, buffers{}, descriptor{} {
+Memory::Memory() : pushConstants{}, buffers{}, descriptor{} {
   _log.console("{ 010 }", "constructing Memory Management");
 }
 
-MemoryCommands::~MemoryCommands() {
+Memory::~Memory() {
   _log.console("{ 010 }", "destructing Memory Management");
 }
 
-void MemoryCommands::createFramebuffers() {
+void Memory::createFramebuffers() {
   _log.console("{ BUF }", "creating Frame Buffers");
 
   _mechanics.swapChain.framebuffers.resize(
@@ -37,7 +37,7 @@ void MemoryCommands::createFramebuffers() {
   }
 }
 
-void MemoryCommands::createCommandPool() {
+void Memory::createCommandPool() {
   _log.console("{ CMD }", "creating Command Pool");
 
   VulkanMechanics::Queues::FamilyIndices queueFamilyIndices =
@@ -52,7 +52,7 @@ void MemoryCommands::createCommandPool() {
                     &poolInfo, nullptr, &buffers.command.pool);
 }
 
-void MemoryCommands::createCommandBuffers() {
+void Memory::createCommandBuffers() {
   _log.console("{ CMD }", "creating Command Buffers");
 
   buffers.command.graphic.resize(MAX_FRAMES_IN_FLIGHT);
@@ -68,7 +68,7 @@ void MemoryCommands::createCommandBuffers() {
                     &allocateInfo, buffers.command.graphic.data());
 }
 
-void MemoryCommands::createComputeCommandBuffers() {
+void Memory::createComputeCommandBuffers() {
   _log.console("{ CMD }", "creating Compute Command Buffers");
   _log.console("{ CMD }", "creating Compute Command Buffers");
 
@@ -85,7 +85,7 @@ void MemoryCommands::createComputeCommandBuffers() {
                     &allocateInfo, buffers.command.compute.data());
 }
 
-void MemoryCommands::createShaderStorageBuffers() {
+void Memory::createShaderStorageBuffers() {
   _log.console("{ BUF }", "creating Shader Storage Buffers");
 
   std::vector<World::Cell> cells = _world.initializeCells();
@@ -125,7 +125,7 @@ void MemoryCommands::createShaderStorageBuffers() {
   vkFreeMemory(_mechanics.mainDevice.logical, stagingBufferMemory, nullptr);
 }
 
-void MemoryCommands::createUniformBuffers() {
+void Memory::createUniformBuffers() {
   _log.console("{ BUF }", "creating Uniform Buffers");
   VkDeviceSize bufferSize = sizeof(World::UniformBufferObject);
 
@@ -144,7 +144,7 @@ void MemoryCommands::createUniformBuffers() {
   }
 }
 
-void MemoryCommands::createDescriptorSetLayout() {
+void Memory::createDescriptorSetLayout() {
   _log.console("{ DES }", "creating Compute Descriptor Set Layout");
 
   std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {
@@ -170,10 +170,10 @@ void MemoryCommands::createDescriptorSetLayout() {
       .pBindings = layoutBindings.data()};
 
   _mechanics.result(vkCreateDescriptorSetLayout, _mechanics.mainDevice.logical,
-                    &layoutInfo, nullptr, &_memCommands.descriptor.setLayout);
+                    &layoutInfo, nullptr, &_memory.descriptor.setLayout);
 }
 
-void MemoryCommands::createDescriptorPool() {
+void Memory::createDescriptorPool() {
   _log.console("{ DES }", "creating Descriptor Pools");
   std::vector<VkDescriptorPoolSize> poolSizes{
       {.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
@@ -188,18 +188,18 @@ void MemoryCommands::createDescriptorPool() {
       .pPoolSizes = poolSizes.data()};
 
   _mechanics.result(vkCreateDescriptorPool, _mechanics.mainDevice.logical,
-                    &poolInfo, nullptr, &_memCommands.descriptor.pool);
+                    &poolInfo, nullptr, &_memory.descriptor.pool);
 }
 
-void MemoryCommands::createImage(uint32_t width,
-                                 uint32_t height,
-                                 VkSampleCountFlagBits numSamples,
-                                 VkFormat format,
-                                 VkImageTiling tiling,
-                                 VkImageUsageFlags usage,
-                                 VkMemoryPropertyFlags properties,
-                                 VkImage& image,
-                                 VkDeviceMemory& imageMemory) {
+void Memory::createImage(uint32_t width,
+                         uint32_t height,
+                         VkSampleCountFlagBits numSamples,
+                         VkFormat format,
+                         VkImageTiling tiling,
+                         VkImageUsageFlags usage,
+                         VkMemoryPropertyFlags properties,
+                         VkImage& image,
+                         VkDeviceMemory& imageMemory) {
   VkImageCreateInfo imageInfo{
       .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
       .pNext = nullptr,
@@ -235,7 +235,7 @@ void MemoryCommands::createImage(uint32_t width,
   vkBindImageMemory(_mechanics.mainDevice.logical, image, imageMemory, 0);
 }
 
-void MemoryCommands::createDescriptorSets() {
+void Memory::createDescriptorSets() {
   _log.console("{ DES }", "creating Compute Descriptor Sets");
   std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
                                              descriptor.setLayout);
@@ -298,13 +298,13 @@ void MemoryCommands::createDescriptorSets() {
   }
 }
 
-void MemoryCommands::updateUniformBuffer(uint32_t currentImage) {
+void Memory::updateUniformBuffer(uint32_t currentImage) {
   World::UniformBufferObject uniformObject = _world.updateUniforms();
   std::memcpy(buffers.uniformsMapped[currentImage], &uniformObject,
               sizeof(uniformObject));
 }
 
-void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
+void Memory::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
   VkCommandBufferBeginInfo beginInfo{
       .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
 
@@ -338,8 +338,8 @@ void MemoryCommands::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
   _mechanics.result(vkEndCommandBuffer, commandBuffer);
 }
 
-void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
-                                         uint32_t imageIndex) {
+void Memory::recordCommandBuffer(VkCommandBuffer commandBuffer,
+                                 uint32_t imageIndex) {
   VkCommandBufferBeginInfo beginInfo{
       .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
 
@@ -378,7 +378,7 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
   VkDeviceSize offsets[]{0};
   vkCmdBindVertexBuffers(
       commandBuffer, 0, 1,
-      &_memCommands.buffers.shaderStorage[_mechanics.syncObjects.currentFrame],
+      &_memory.buffers.shaderStorage[_mechanics.syncObjects.currentFrame],
       offsets);
 
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -394,11 +394,11 @@ void MemoryCommands::recordCommandBuffer(VkCommandBuffer commandBuffer,
   _mechanics.result(vkEndCommandBuffer, commandBuffer);
 }
 
-void MemoryCommands::createBuffer(VkDeviceSize size,
-                                  VkBufferUsageFlags usage,
-                                  VkMemoryPropertyFlags properties,
-                                  VkBuffer& buffer,
-                                  VkDeviceMemory& bufferMemory) {
+void Memory::createBuffer(VkDeviceSize size,
+                          VkBufferUsageFlags usage,
+                          VkMemoryPropertyFlags properties,
+                          VkBuffer& buffer,
+                          VkDeviceMemory& bufferMemory) {
   VkBufferCreateInfo bufferInfo{.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
                                 .size = size,
                                 .usage = usage,
@@ -427,9 +427,9 @@ void MemoryCommands::createBuffer(VkDeviceSize size,
   vkBindBufferMemory(_mechanics.mainDevice.logical, buffer, bufferMemory, 0);
 }
 
-void MemoryCommands::copyBuffer(VkBuffer srcBuffer,
-                                VkBuffer dstBuffer,
-                                VkDeviceSize size) {
+void Memory::copyBuffer(VkBuffer srcBuffer,
+                        VkBuffer dstBuffer,
+                        VkDeviceSize size) {
   VkCommandBufferAllocateInfo allocateInfo{
       .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
       .commandPool = buffers.command.pool,
@@ -462,8 +462,8 @@ void MemoryCommands::copyBuffer(VkBuffer srcBuffer,
                        &commandBuffer);
 }
 
-uint32_t MemoryCommands::findMemoryType(uint32_t typeFilter,
-                                        VkMemoryPropertyFlags properties) {
+uint32_t Memory::findMemoryType(uint32_t typeFilter,
+                                VkMemoryPropertyFlags properties) {
   VkPhysicalDeviceMemoryProperties memProperties;
   vkGetPhysicalDeviceMemoryProperties(_mechanics.mainDevice.physical,
                                       &memProperties);

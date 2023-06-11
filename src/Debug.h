@@ -33,7 +33,7 @@ class ValidationLayers {
   ~ValidationLayers();
 
   VkDebugUtilsMessengerEXT debugMessenger;
-  const std::vector<const char*> validationLayers;
+  const std::vector<const char*> validation;
 
 #ifdef NDEBUG
   const bool enableValidationLayers = false;

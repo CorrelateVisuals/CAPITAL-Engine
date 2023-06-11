@@ -7,7 +7,7 @@
 #include "CapitalEngine.h"
 #include "Control.h"
 #include "Mechanics.h"
-#include "MemoryCommands.h"
+#include "Memory.h"
 #include "Pipelines.h"
 #include "World.h"
 
@@ -22,13 +22,13 @@ Pipelines::~Pipelines() {
 void Pipelines::createColorResources() {
   VkFormat colorFormat = _mechanics.swapChain.imageFormat;
 
-  _memCommands.createImage(_mechanics.swapChain.extent.width,
-                           _mechanics.swapChain.extent.height, msaa.samples,
-                           colorFormat, VK_IMAGE_TILING_OPTIMAL,
-                           VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT |
-                               VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-                           VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, msaa.colorImage,
-                           msaa.colorImageMemory);
+  _memory.createImage(_mechanics.swapChain.extent.width,
+                      _mechanics.swapChain.extent.height, msaa.samples,
+                      colorFormat, VK_IMAGE_TILING_OPTIMAL,
+                      VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT |
+                          VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, msaa.colorImage,
+                      msaa.colorImageMemory);
   msaa.colorImageView = _mechanics.createImageView(msaa.colorImage, colorFormat,
                                                    VK_IMAGE_ASPECT_COLOR_BIT);
 }
@@ -36,7 +36,7 @@ void Pipelines::createColorResources() {
 void Pipelines::createDepthResources() {
   VkFormat depthFormat = findDepthFormat();
 
-  _memCommands.createImage(
+  _memory.createImage(
       _mechanics.swapChain.extent.width, _mechanics.swapChain.extent.height,
       msaa.samples, depthFormat, VK_IMAGE_TILING_OPTIMAL,
       VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
@@ -118,7 +118,7 @@ void Pipelines::createRenderPass() {
       .pDependencies = &dependency};
 
   _mechanics.result(vkCreateRenderPass, _mechanics.mainDevice.logical,
-                          &renderPassInfo, nullptr, &renderPass);
+                    &renderPassInfo, nullptr, &renderPass);
 }
 
 void Pipelines::createGraphicsPipeline() {
@@ -163,11 +163,10 @@ void Pipelines::createGraphicsPipeline() {
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{
       .sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
       .setLayoutCount = 1,
-      .pSetLayouts = &_memCommands.descriptor.setLayout};
+      .pSetLayouts = &_memory.descriptor.setLayout};
 
   _mechanics.result(vkCreatePipelineLayout, _mechanics.mainDevice.logical,
-                          &pipelineLayoutInfo, nullptr,
-                          &graphics.pipelineLayout);
+                    &pipelineLayoutInfo, nullptr, &graphics.pipelineLayout);
 
   VkGraphicsPipelineCreateInfo pipelineInfo{
       .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
@@ -186,9 +185,9 @@ void Pipelines::createGraphicsPipeline() {
       .subpass = 0,
       .basePipelineHandle = VK_NULL_HANDLE};
 
-  _mechanics.result(vkCreateGraphicsPipelines,
-                          _mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
-                          &pipelineInfo, nullptr, &graphics.pipeline);
+  _mechanics.result(vkCreateGraphicsPipelines, _mechanics.mainDevice.logical,
+                    VK_NULL_HANDLE, 1, &pipelineInfo, nullptr,
+                    &graphics.pipeline);
 
   destroyShaderModules(graphics.shaderModules);
 }
@@ -270,29 +269,28 @@ void Pipelines::createComputePipeline() {
       getShaderStageInfo(VK_SHADER_STAGE_COMPUTE_BIT, "comp.spv", compute);
 
   VkPushConstantRange pushConstantRange = {
-      .stageFlags = _memCommands.pushConstants.shaderStage,
-      .offset = _memCommands.pushConstants.offset,
-      .size = _memCommands.pushConstants.size};
+      .stageFlags = _memory.pushConstants.shaderStage,
+      .offset = _memory.pushConstants.offset,
+      .size = _memory.pushConstants.size};
 
   VkPipelineLayoutCreateInfo pipelineLayoutInfo{
       .sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
       .setLayoutCount = 1,
-      .pSetLayouts = &_memCommands.descriptor.setLayout,
+      .pSetLayouts = &_memory.descriptor.setLayout,
       .pushConstantRangeCount = 1,
       .pPushConstantRanges = &pushConstantRange};
 
   _mechanics.result(vkCreatePipelineLayout, _mechanics.mainDevice.logical,
-                          &pipelineLayoutInfo, nullptr,
-                          &compute.pipelineLayout);
+                    &pipelineLayoutInfo, nullptr, &compute.pipelineLayout);
 
   VkComputePipelineCreateInfo pipelineInfo{
       .sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,
       .stage = computeShaderStageInfo,
       .layout = compute.pipelineLayout};
 
-  _mechanics.result(vkCreateComputePipelines,
-                          _mechanics.mainDevice.logical, VK_NULL_HANDLE, 1,
-                          &pipelineInfo, nullptr, &compute.pipeline);
+  _mechanics.result(vkCreateComputePipelines, _mechanics.mainDevice.logical,
+                    VK_NULL_HANDLE, 1, &pipelineInfo, nullptr,
+                    &compute.pipeline);
 
   destroyShaderModules(compute.shaderModules);
 }
@@ -323,7 +321,7 @@ VkShaderModule Pipelines::createShaderModule(const std::vector<char>& code) {
   VkShaderModule shaderModule;
 
   _mechanics.result(vkCreateShaderModule, _mechanics.mainDevice.logical,
-                          &createInfo, nullptr, &shaderModule);
+                    &createInfo, nullptr, &shaderModule);
 
   return shaderModule;
 }

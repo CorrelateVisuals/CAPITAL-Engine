@@ -28,7 +28,7 @@ void Control::setPassedHours() {
 }
 
 void Control::setPushConstants() {
-  _memCommands.pushConstants.data = {_control.timer.passedHours};
+  _memory.pushConstants.data = {_control.timer.passedHours};
 }
 
 std::vector<uint_fast32_t> Control::setCellsAliveRandomly(

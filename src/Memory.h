@@ -5,10 +5,10 @@
 #include "array"
 #include "vector"
 
-class MemoryCommands {
+class Memory {
  public:
-  MemoryCommands();
-  ~MemoryCommands();
+  Memory();
+  ~Memory();
 
   struct PushConstants {
     VkShaderStageFlags shaderStage = {VK_SHADER_STAGE_COMPUTE_BIT};

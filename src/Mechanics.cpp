@@ -9,7 +9,7 @@
 #include "CapitalEngine.h"
 #include "Control.h"
 #include "Mechanics.h"
-#include "MemoryCommands.h"
+#include "Memory.h"
 #include "Pipelines.h"
 #include "Window.h"
 #include "World.h"
@@ -33,8 +33,8 @@ VulkanMechanics::~VulkanMechanics() {
 
 void VulkanMechanics::createInstance() {
   _log.console("{ VkI }", "creating Vulkan Instance");
-  if (_validationLayers.enableValidationLayers &&
-      !_validationLayers.checkValidationLayerSupport()) {
+  if (_validation.enableValidationLayers &&
+      !_validation.checkValidationLayerSupport()) {
     throw std::runtime_error(
         "!ERROR! validation layers requested, but not available!");
   }
@@ -65,12 +65,12 @@ void VulkanMechanics::createInstance() {
       .ppEnabledExtensionNames = extensions.data()};
 
   VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
-  if (_validationLayers.enableValidationLayers) {
+  if (_validation.enableValidationLayers) {
     createInfo.enabledLayerCount =
-        static_cast<uint32_t>(_validationLayers.validationLayers.size());
-    createInfo.ppEnabledLayerNames = _validationLayers.validationLayers.data();
+        static_cast<uint32_t>(_validation.validation.size());
+    createInfo.ppEnabledLayerNames = _validation.validation.data();
 
-    _validationLayers.populateDebugMessengerCreateInfo(debugCreateInfo);
+    _validation.populateDebugMessengerCreateInfo(debugCreateInfo);
     createInfo.pNext = &debugCreateInfo;
   }
 
@@ -231,10 +231,10 @@ void VulkanMechanics::createLogicalDevice() {
       .ppEnabledExtensionNames = deviceExtensions.data(),
       .pEnabledFeatures = &deviceFeatures};
 
-  if (_validationLayers.enableValidationLayers) {
+  if (_validation.enableValidationLayers) {
     createInfo.enabledLayerCount =
-        static_cast<uint32_t>(_validationLayers.validationLayers.size());
-    createInfo.ppEnabledLayerNames = _validationLayers.validationLayers.data();
+        static_cast<uint32_t>(_validation.validation.size());
+    createInfo.ppEnabledLayerNames = _validation.validation.data();
   }
 
   _mechanics.result(vkCreateDevice, mainDevice.physical, &createInfo, nullptr,
@@ -451,7 +451,7 @@ void VulkanMechanics::recreateSwapChain() {
   createImageViews();
   _pipelines.createDepthResources();
   _pipelines.createColorResources();
-  _memCommands.createFramebuffers();
+  _memory.createFramebuffers();
 }
 
 std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
@@ -462,7 +462,7 @@ std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
   std::vector<const char*> extensions(glfwExtensions,
                                       glfwExtensions + glfwExtensionCount);
 
-  if (_validationLayers.enableValidationLayers) {
+  if (_validation.enableValidationLayers) {
     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
   }
 

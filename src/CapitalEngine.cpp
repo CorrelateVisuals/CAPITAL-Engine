@@ -3,7 +3,7 @@
 #include "CapitalEngine.h"
 #include "Debug.h"
 #include "Mechanics.h"
-#include "MemoryCommands.h"
+#include "Memory.h"
 #include "Pipelines.h"
 #include "Window.h"
 
@@ -59,7 +59,7 @@ void CapitalEngine::compileShaders() {
 void CapitalEngine::initVulkan() {
   _log.console("{ *** }", "initializing Capital Engine");
   _mechanics.createInstance();
-  _validationLayers.setupDebugMessenger(_mechanics.instance);
+  _validation.setupDebugMessenger(_mechanics.instance);
   _mechanics.createSurface();
   _mechanics.pickPhysicalDevice();
   _mechanics.createLogicalDevice();
@@ -67,22 +67,22 @@ void CapitalEngine::initVulkan() {
   _mechanics.createImageViews();
 
   _pipelines.createRenderPass();
-  _memCommands.createDescriptorSetLayout();
+  _memory.createDescriptorSetLayout();
   _pipelines.createGraphicsPipeline();
   _pipelines.createComputePipeline();
 
-  _memCommands.createCommandPool();
+  _memory.createCommandPool();
   _pipelines.createColorResources();
   _pipelines.createDepthResources();
-  _memCommands.createFramebuffers();
+  _memory.createFramebuffers();
 
-  _memCommands.createShaderStorageBuffers();
-  _memCommands.createUniformBuffers();
-  _memCommands.createDescriptorPool();
-  _memCommands.createDescriptorSets();
+  _memory.createShaderStorageBuffers();
+  _memory.createUniformBuffers();
+  _memory.createDescriptorPool();
+  _memory.createDescriptorSets();
 
-  _memCommands.createCommandBuffers();
-  _memCommands.createComputeCommandBuffers();
+  _memory.createCommandBuffers();
+  _memory.createComputeCommandBuffers();
 
   _mechanics.createSyncObjects();
 }
@@ -95,7 +95,7 @@ void CapitalEngine::drawFrame() {
            .computeInFlightFences[_mechanics.syncObjects.currentFrame],
       VK_TRUE, UINT64_MAX);
 
-  _memCommands.updateUniformBuffer(_mechanics.syncObjects.currentFrame);
+  _memory.updateUniformBuffer(_mechanics.syncObjects.currentFrame);
 
   vkResetFences(
       _mechanics.mainDevice.logical, 1,
@@ -103,17 +103,15 @@ void CapitalEngine::drawFrame() {
            .computeInFlightFences[_mechanics.syncObjects.currentFrame]);
 
   vkResetCommandBuffer(
-      _memCommands.buffers.command.compute[_mechanics.syncObjects.currentFrame],
-      0);
-  _memCommands.recordComputeCommandBuffer(
-      _memCommands.buffers.command
-          .compute[_mechanics.syncObjects.currentFrame]);
+      _memory.buffers.command.compute[_mechanics.syncObjects.currentFrame], 0);
+  _memory.recordComputeCommandBuffer(
+      _memory.buffers.command.compute[_mechanics.syncObjects.currentFrame]);
 
   VkSubmitInfo computeSubmitInfo{
       .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
       .commandBufferCount = 1,
-      .pCommandBuffers = &_memCommands.buffers.command
-                              .compute[_mechanics.syncObjects.currentFrame],
+      .pCommandBuffers =
+          &_memory.buffers.command.compute[_mechanics.syncObjects.currentFrame],
       .signalSemaphoreCount = 1,
       .pSignalSemaphores =
           &_mechanics.syncObjects
@@ -149,11 +147,10 @@ void CapitalEngine::drawFrame() {
                      .inFlightFences[_mechanics.syncObjects.currentFrame]);
 
   vkResetCommandBuffer(
-      _memCommands.buffers.command.graphic[_mechanics.syncObjects.currentFrame],
-      0);
+      _memory.buffers.command.graphic[_mechanics.syncObjects.currentFrame], 0);
 
-  _memCommands.recordCommandBuffer(
-      _memCommands.buffers.command.graphic[_mechanics.syncObjects.currentFrame],
+  _memory.recordCommandBuffer(
+      _memory.buffers.command.graphic[_mechanics.syncObjects.currentFrame],
       imageIndex);
 
   std::vector<VkSemaphore> waitSemaphores{
@@ -171,8 +168,8 @@ void CapitalEngine::drawFrame() {
       .pWaitSemaphores = waitSemaphores.data(),
       .pWaitDstStageMask = waitStages.data(),
       .commandBufferCount = 1,
-      .pCommandBuffers = &_memCommands.buffers.command
-                              .graphic[_mechanics.syncObjects.currentFrame],
+      .pCommandBuffers =
+          &_memory.buffers.command.graphic[_mechanics.syncObjects.currentFrame],
       .signalSemaphoreCount = 1,
       .pSignalSemaphores =
           &_mechanics.syncObjects
@@ -227,22 +224,23 @@ void Global::cleanup() {
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     vkDestroyBuffer(_mechanics.mainDevice.logical,
-                    _memCommands.buffers.uniforms[i], nullptr);
+
+                    _memory.buffers.uniforms[i], nullptr);
     vkFreeMemory(_mechanics.mainDevice.logical,
-                 _memCommands.buffers.uniformsMemory[i], nullptr);
+                 _memory.buffers.uniformsMemory[i], nullptr);
   }
 
   vkDestroyDescriptorPool(_mechanics.mainDevice.logical,
-                          _memCommands.descriptor.pool, nullptr);
+                          _memory.descriptor.pool, nullptr);
 
   vkDestroyDescriptorSetLayout(_mechanics.mainDevice.logical,
-                               _memCommands.descriptor.setLayout, nullptr);
+                               _memory.descriptor.setLayout, nullptr);
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     vkDestroyBuffer(_mechanics.mainDevice.logical,
-                    _memCommands.buffers.shaderStorage[i], nullptr);
+                    _memory.buffers.shaderStorage[i], nullptr);
     vkFreeMemory(_mechanics.mainDevice.logical,
-                 _memCommands.buffers.shaderStorageMemory[i], nullptr);
+                 _memory.buffers.shaderStorageMemory[i], nullptr);
   }
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -262,13 +260,13 @@ void Global::cleanup() {
   }
 
   vkDestroyCommandPool(_mechanics.mainDevice.logical,
-                       _memCommands.buffers.command.pool, nullptr);
+                       _memory.buffers.command.pool, nullptr);
 
   vkDestroyDevice(_mechanics.mainDevice.logical, nullptr);
 
-  if (_validationLayers.enableValidationLayers) {
-    _validationLayers.DestroyDebugUtilsMessengerEXT(
-        _mechanics.instance, _validationLayers.debugMessenger, nullptr);
+  if (_validation.enableValidationLayers) {
+    _validation.DestroyDebugUtilsMessengerEXT(
+        _mechanics.instance, _validation.debugMessenger, nullptr);
   }
 
   vkDestroySurfaceKHR(_mechanics.instance, _mechanics.surface, nullptr);

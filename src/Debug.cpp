@@ -16,7 +16,7 @@ Logging::~Logging() {
 }
 
 ValidationLayers::ValidationLayers()
-    : debugMessenger{}, validationLayers{"VK_LAYER_KHRONOS_validation"} {
+    : debugMessenger{}, validation{"VK_LAYER_KHRONOS_validation"} {
   _log.console("{ --- }", "constructing Validation Layers");
 }
 
@@ -94,7 +94,7 @@ bool ValidationLayers::checkValidationLayerSupport() {
     availableLayerNames.insert(layer.layerName);
   }
 
-  for (const auto& layerName : validationLayers) {
+  for (const auto& layerName : validation) {
     if (availableLayerNames.find(layerName) == availableLayerNames.end()) {
       return false;
     }
