@@ -81,7 +81,6 @@ std::vector<World::Cell> World::initializeCells() {
 
     cells[i] = {pos, color, size, state};
   }
-  //_log.console(aliveCellIndices);
   return cells;
 }
 
@@ -205,7 +204,7 @@ glm::mat4 World::setView() {
 
 glm::mat4 World::setProjection(VkExtent2D& swapChainExtent) {
   float nearClipping = 0.0001f;
-  float farClipping = 20.0f;
+  float farClipping = 100.0f;
   glm::mat4 projection = glm::perspective(
       glm::radians(camera.fieldOfView),
       swapChainExtent.width / static_cast<float>(swapChainExtent.height),

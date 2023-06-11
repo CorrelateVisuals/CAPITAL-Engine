@@ -18,7 +18,6 @@ VulkanMechanics::VulkanMechanics()
     : surface(VK_NULL_HANDLE),
       instance(VK_NULL_HANDLE),
       mainDevice{VK_NULL_HANDLE, VK_NULL_HANDLE},
-      deviceExtensions{VK_KHR_SWAPCHAIN_EXTENSION_NAME},
       queues{VK_NULL_HANDLE,
              VK_NULL_HANDLE,
              VK_NULL_HANDLE,
@@ -192,8 +191,8 @@ bool VulkanMechanics::checkDeviceExtensionSupport(
   vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount,
                                        availableExtensions.data());
 
-  std::set<std::string> requiredExtensions(deviceExtensions.begin(),
-                                           deviceExtensions.end());
+  std::set<std::string> requiredExtensions(mainDevice.extensions.begin(),
+                                           mainDevice.extensions.end());
 
   for (const auto& extension : availableExtensions) {
     requiredExtensions.erase(extension.extensionName);
@@ -227,8 +226,9 @@ void VulkanMechanics::createLogicalDevice() {
       .queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size()),
       .pQueueCreateInfos = queueCreateInfos.data(),
       .enabledLayerCount = 0,
-      .enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size()),
-      .ppEnabledExtensionNames = deviceExtensions.data(),
+      .enabledExtensionCount =
+          static_cast<uint32_t>(mainDevice.extensions.size()),
+      .ppEnabledExtensionNames = mainDevice.extensions.data(),
       .pEnabledFeatures = &deviceFeatures};
 
   if (_validation.enableValidationLayers) {
@@ -333,19 +333,19 @@ void VulkanMechanics::createSyncObjects() {
 }
 
 void VulkanMechanics::cleanupSwapChain() {
-  vkDestroyImageView(_mechanics.mainDevice.logical, _pipelines.graphics.depth.imageView,
-                     nullptr);
+  vkDestroyImageView(_mechanics.mainDevice.logical,
+                     _pipelines.graphics.depth.imageView, nullptr);
   vkDestroyImage(_mechanics.mainDevice.logical, _pipelines.graphics.depth.image,
                  nullptr);
-  vkFreeMemory(_mechanics.mainDevice.logical, _pipelines.graphics.depth.imageMemory,
-               nullptr);
+  vkFreeMemory(_mechanics.mainDevice.logical,
+               _pipelines.graphics.depth.imageMemory, nullptr);
 
   vkDestroyImageView(_mechanics.mainDevice.logical,
                      _pipelines.graphics.msaa.colorImageView, nullptr);
-  vkDestroyImage(_mechanics.mainDevice.logical, _pipelines.graphics.msaa.colorImage,
-                 nullptr);
-  vkFreeMemory(_mechanics.mainDevice.logical, _pipelines.graphics.msaa.colorImageMemory,
-               nullptr);
+  vkDestroyImage(_mechanics.mainDevice.logical,
+                 _pipelines.graphics.msaa.colorImage, nullptr);
+  vkFreeMemory(_mechanics.mainDevice.logical,
+               _pipelines.graphics.msaa.colorImageMemory, nullptr);
 
   for (auto framebuffer : swapChain.framebuffers) {
     vkDestroyFramebuffer(_mechanics.mainDevice.logical, framebuffer, nullptr);
