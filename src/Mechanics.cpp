@@ -219,7 +219,8 @@ void VulkanMechanics::createLogicalDevice() {
     queueCreateInfos.push_back(queueCreateInfo);
   }
 
-  VkPhysicalDeviceFeatures deviceFeatures{.sampleRateShading = VK_TRUE};
+  VkPhysicalDeviceFeatures deviceFeatures{.sampleRateShading = VK_TRUE,
+                                          .depthClamp = VK_TRUE};
 
   VkDeviceCreateInfo createInfo{
       .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
