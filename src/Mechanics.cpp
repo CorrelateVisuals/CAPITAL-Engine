@@ -220,7 +220,8 @@ void VulkanMechanics::createLogicalDevice() {
   }
 
   VkPhysicalDeviceFeatures deviceFeatures{.sampleRateShading = VK_TRUE,
-                                          .depthClamp = VK_TRUE};
+                                          .depthClamp = VK_TRUE,
+                                          .shaderInt64 = VK_TRUE};
 
   VkDeviceCreateInfo createInfo{
       .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,

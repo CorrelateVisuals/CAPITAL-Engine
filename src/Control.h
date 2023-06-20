@@ -13,7 +13,7 @@ class Control {
 
   struct Timer {
     float speed = 10.0f;
-    int passedHours = 0;
+    uint64_t passedHours = 0;
   } timer;
 
   struct Grid {
