@@ -2,6 +2,7 @@
 
 #include "vulkan/vulkan.h"
 
+#include <cstring>
 #include "array"
 #include "vector"
 
