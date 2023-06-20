@@ -44,7 +44,7 @@ class World {
   };
 
   struct Cube {
-    uint32_t vertexCount = 36;
+    uint32_t vertexCount = 60;
     float size = 0.1f;
   } cube;
 

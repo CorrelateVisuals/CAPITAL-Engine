@@ -28,26 +28,62 @@ float noise(vec2 p) { float total = -amplitude / 2.0;
                         return total; }
 vec4 position = vec4( inPosition.xy, noise( inPosition.xy ), inPosition.w );
 
-const vec3 cubeVertices[24] = {
-    {1, 1, 1},   {-1, 1, 1},  {-1, -1, 1},  {1, -1, 1},  {1, 1, 1},   {1, -1, 1},  
-    {1, -1, -1}, {1, 1, -1},  {1, 1, 1},    {1, 1, -1},  {-1, 1, -1}, {-1, 1, 1},   
-    {-1, 1, 1},  {-1, 1, -1}, {-1, -1, -1}, {-1, -1, 1}, {-1, -1, -1},{1, -1, -1}, 
-    {1, -1, 1},  {-1, -1, 1}, {1, -1, -1},  {-1, -1, -1},{-1, 1, -1}, {1, 1, -1}};
-const vec3 cubeNormals[24] = {
-    {0, 0, 1},  {0, 0, 1},  {0, 0, 1},  {0, 0, 1},  {1, 0, 0},  {1, 0, 0},
-    {1, 0, 0},  {1, 0, 0},  {0, 1, 0},  {0, 1, 0},  {0, 1, 0},  {0, 1, 0},
-    {-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0}, {0, -1, 0}, {0, -1, 0},
-    {0, -1, 0}, {0, -1, 0}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}};
-const int cubeIndices[36] = {0,  1,  2,  2,  3,  0,  4,  5,  6,  6,  7,  4,
-                             8,  9,  10, 10, 11, 8,  12, 13, 14, 14, 15, 12,
-                             16, 17, 18, 18, 19, 16, 20, 21, 22, 22, 23, 20};
-                             
-vec4 constructCube() {  vec3 vertex = cubeVertices[cubeIndices[gl_VertexIndex]];
-                        return position + vec4(vertex * inSize.x, vec2(0.0)); }
+const vec3 cubeVertices[15] = { {1, 1,  1},     // right front top
+                                {-1, 1, 1},     // left front top
+                                {-1, -1,  1},   // left back top
+                                {1, -1,  1},    // right back top
+                                {1, 1, -1},     // right front bottom
+                                {-1, 1, -1},    // left front bottom
+                                {-1, -1, -1},   // left back bottom
+                                {1, -1, -1},    // right back bottom
 
-vec4 worldPosition = ubo.model * constructCube() ;
+                                {3,-1,-2},      // right back bottom extension center right
+                                {3,1,-2},       // right front bottom extension center right
+
+                                {3,-3,-2},      // right front bottom extension up right
+                                {1,-3,-2},       // right back bottom extension up right
+
+                                {3,3,-2},        // right front bottom extension down right
+                                {1,3,-2},        // left front bottom extension down right
+
+                                {-1,3,-2},        // left front bottom extension down center
+
+
+                                };
+const int cubeIndices[60] = {   0, 1, 2, 0, 2, 3, // top face
+                                0, 3, 7, 0, 7, 4, // right face
+                                0, 4, 5, 0, 5, 1, // front face
+                                1, 5, 6, 1, 6, 2, // left face
+                                2, 6, 7, 2, 7, 3, // back face
+                                4, 7, 6, 4, 6, 5, // bottom face 
+
+                                4,7,8,  4,8,9,    // right side extra rectangle center
+                                7,10,8, 10,7,11,  // right side extra rectangle up
+                                4,9,12, 12,13,4,  // right side extra rectangle down   
+
+                                4,13,14, 14,5,4          
+
+                                };
+
+vec3 vertex = cubeVertices[cubeIndices[gl_VertexIndex]];
+
+vec4 constructCube() { return position + vec4(vertex * inSize.x, vec2(0.0)); }
+
+vec3 getNormal(){   int vertexPerFace = 3;      int faceIndex = gl_VertexIndex / vertexPerFace;
+                    vec3 v0 = cubeVertices[cubeIndices[faceIndex * vertexPerFace]];
+                    vec3 v1 = cubeVertices[cubeIndices[faceIndex * vertexPerFace + 1]];
+                    vec3 v2 = cubeVertices[cubeIndices[faceIndex * vertexPerFace + 2]];
+                    vec3 normal = normalize(cross(v1 - v0, v2 - v0));
+                    return normal; }
+
+vec4 worldPosition = ubo.model * constructCube();
 vec4 viewPosition = ubo.view * worldPosition;
-vec3 worldNormal = mat3(ubo.model) * cubeNormals[cubeIndices[gl_VertexIndex]];
+vec3 worldNormal = mat3(ubo.model) * getNormal();
+
+
+
+
+
 
 float gouraudShading() {vec3 lightDirection = normalize(ubo.light.rgb - worldPosition.xyz);
                         float diffuseIntensity = max(dot(worldNormal, lightDirection), ubo.light.a);
