@@ -16,9 +16,8 @@
 ///
 /// [ FEATURES: GEOMETRY ]
 /// - inter cell movement
-/// - terrain renderpass or subpass
+/// - terrain new pipeline or 4x4 mat per cell
 ///		- Add vinroy effect
 /// - mirror borders of grid
-/// - 'long long' data type to shader
 ///
 /// </TO DO> ///////////////////////////////////////////////////////////////////
