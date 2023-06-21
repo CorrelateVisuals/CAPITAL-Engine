@@ -28,58 +28,60 @@ float noise(vec2 p) { float total = -amplitude / 2.0;
                         return total; }
 vec4 position = vec4( inPosition.xy, noise( inPosition.xy ), inPosition.w );
 
-const vec3 cubeVertices[20] = { {1, 1,  1},     // 0 right front top
-                                {-1, 1, 1},     // 1 left front top
-                                {-1, -1,  1},   // 2 left back top
-                                {1, -1,  1},    // 3 right back top
-                                {1, 1, -1},     // 4 right front bottom
-                                {-1, 1, -1},    // 5 left front bottom
-                                {-1, -1, -1},   // 6 left back bottom
-                                {1, -1, -1},    // 7 right back bottom
+const vec3 cubeVertices[20] = {
+    {1, 1, 1},    // 0 right front top
+    {-1, 1, 1},   // 1 left front top
+    {-1, -1, 1},  // 2 left back top
+    {1, -1, 1},   // 3 right back top
+    {1, 1, -1},   // 4 right front bottom
+    {-1, 1, -1},  // 5 left front bottom
+    {-1, -1, -1}, // 6 left back bottom
+    {1, -1, -1},  // 7 right back bottom
+    {3, -1, -2},  // 8 right back bottom extension center right
+    {3, 1, -2},   // 9 right front bottom extension center right
+    {3, -3, -2},  // 10 right front bottom extension up right
+    {1, -3, -2},  // 11 right back bottom extension up right
+    {3, 3, -2},   // 12 right front bottom extension down right
+    {1, 3, -2},   // 13 left front bottom extension down right
+    {-1, 3, -2},  // 14 left front bottom extension down center
+    {-3, 1, -2},  // 15 left front bottom extension down left
+    {-3, 3, -2},  // 16 left front bottom extension down left
+    {-3, -1, -2}, // 17 left back bottom extension center left
+    {-3, -3, -2}, // 18 left back bottom extension up left
+    {-1, -3, -2}  // 19 left back bottom extension up right
+};
 
-                                {3,-1,-2},      // 8 right back bottom extension center right
-                                {3,1,-2},       // 9 right front bottom extension center right
+const int cubeIndices[84] = {
+    // Top face
+    0, 1, 2, 0, 2, 3,
+    // Right face
+    0, 3, 7, 0, 7, 4,
+    // Front face
+    0, 4, 5, 0, 5, 1,
+    // Left face
+    1, 5, 6, 1, 6, 2,
+    // Back face
+    2, 6, 7, 2, 7, 3,
+    // Bottom face
+    4, 7, 6, 4, 6, 5,
+    // Right rectangle center
+    4, 7, 8, 4, 8, 9,
+    // Right rectangle up
+    7, 10, 8, 10, 7, 11,
+    // Right rectangle down
+    4, 9, 12, 12, 13, 4,
+    // Center rectangle down
+    4, 13, 14, 14, 5, 4,
+    // Left rectangle down
+    5, 14, 16, 15, 5, 16,
+    // Left rectangle center
+    17, 5, 15, 17, 6, 5,
+    // Left rectangle up
+    18, 6, 17, 18, 19, 6,
+    // Center rectangle up
+    19, 11, 6, 11, 7, 6
+};
 
-                                {3,-3,-2},      // 10 right front bottom extension up right
-                                {1,-3,-2},      // 11 right back bottom extension up right
-
-                                {3,3,-2},       // 12 right front bottom extension down right
-                                {1,3,-2},       // 13 left front bottom extension down right
-
-                                {-1,3,-2},      // 14 left front bottom extension down center
-
-                                {-3,1,-2},      // 15 left front bottom extension down left
-                                {-3,3,-2},      // 16 left front bottom extension down left
-
-                                {-3,-1,-2},      // 17 left back bottom extension center left
-
-                                {-3,-3,-2},      // 18 left back bottom extension up left
-                                {-1,-3,-2}      // 19 left back bottom extension up right
-                                };
-
-const int cubeIndices[84] = {   0, 1, 2, 0, 2, 3, // top face
-                                0, 3, 7, 0, 7, 4, // right face
-                                0, 4, 5, 0, 5, 1, // front face
-                                1, 5, 6, 1, 6, 2, // left face
-                                2, 6, 7, 2, 7, 3, // back face
-                                4, 7, 6, 4, 6, 5, // bottom face 
-
-                                4,7,8,  4,8,9,    // right rectangle center
-                                7,10,8, 10,7,11,  // right rectangle up
-                                4,9,12, 12,13,4,  // right rectangle down   
-
-                                4,13,14, 14,5,4,   // center rectangle down
-
-                                5,14,16, 15,5,16,  // left rectangle down
-
-                                17,5,15, 17,6,5,   // left rectangle center
-
-                                18,6,17, 18,19,6, // left rectangle up
-
-                                19,11,6, 11,7,6             // center rectangle up
-
-
-                                };
 
 vec3 vertex = cubeVertices[cubeIndices[gl_VertexIndex]];
 
