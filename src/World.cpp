@@ -26,10 +26,10 @@ std::vector<VkVertexInputBindingDescription> World::getBindingDescriptions() {
 std::vector<VkVertexInputAttributeDescription>
 World::getAttributeDescriptions() {
   std::vector<VkVertexInputAttributeDescription> attributeDescriptions{
-      {0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, position)},
-      {1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, color)},
-      {2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Cell, size)},
-      {3, 0, VK_FORMAT_R32G32B32_SINT, offsetof(Cell, states)}};
+      {0, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Cell, position)},
+      {1, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Cell, color)},
+      {2, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Cell, size)},
+      {3, 0, VK_FORMAT_R32G32B32A32_SINT, offsetof(Cell, states)}};
   return attributeDescriptions;
 }
 
@@ -69,7 +69,7 @@ std::vector<World::Cell> World::initializeCells() {
     const float posX = startX + x * gap;
     const float posY = startY + y * gap;
 
-    const std::array<float, 4> pos = {posX, posY, 0.0f, 0.0f};
+    const std::array<float, 4> pos = {posX, posY, 0.0f, 1.0f};
     const bool isAlive = isAliveIndices[i];
 
     const std::array<float, 4>& color = isAlive ? blue : red;
