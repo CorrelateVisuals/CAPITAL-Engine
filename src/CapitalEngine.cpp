@@ -139,7 +139,7 @@ void CapitalEngine::drawFrame() {
     _mechanics.recreateSwapChain();
     return;
   } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-    throw std::runtime_error("!ERROR! failed to acquire swap chain image!");
+    throw std::runtime_error("\n!ERROR! failed to acquire swap chain image!");
   }
 
   vkResetFences(_mechanics.mainDevice.logical, 1,
@@ -199,7 +199,7 @@ void CapitalEngine::drawFrame() {
     _window.framebufferResized = false;
     _mechanics.recreateSwapChain();
   } else if (result != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to present swap chain image!");
+    throw std::runtime_error("\n!ERROR! failed to present swap chain image!");
   }
 
   _mechanics.syncObjects.currentFrame =

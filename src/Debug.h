@@ -72,7 +72,7 @@ class ValidationLayers {
 template <class T, class... Ts>
 void Logging::console(const T& first, const Ts&... inputs) {
   if (!logFile.is_open()) {
-    std::cerr << "!ERROR! Could not open logFile for writing" << std::endl;
+    std::cerr << "\n!ERROR! Could not open logFile for writing" << std::endl;
     return;
   }
   std::string currentTime = returnDateAndTime();

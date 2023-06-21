@@ -39,11 +39,12 @@ std::vector<World::Cell> World::initializeCells() {
   const uint_fast32_t numGridPoints = width * height;
   const uint_fast32_t numAliveCells = _control.grid.totalAliveCells;
   const float gap = _control.grid.gap;
-  std::array<float, 4> size = {cube.size};
+  std::array<float, 4> size = {tile.size};
 
   if (numAliveCells > numGridPoints) {
     throw std::runtime_error(
-        "!ERROR! Number of alive cells exceeds number of grid points");
+        "\n!ERROR! Number of alive cells exceeds number of grid "
+        "points");
   }
 
   std::vector<World::Cell> cells(numGridPoints);
@@ -90,7 +91,7 @@ World::UniformBufferObject World::updateUniforms() {
       .gridDimensions = {static_cast<uint32_t>(_control.grid.dimensions[0]),
                          static_cast<uint32_t>(_control.grid.dimensions[1])},
       .gridHeight = _control.grid.height,
-      .cellSize = cube.size,
+      .cellSize = tile.size,
       .model = setModel(),
       .view = setView(),
       .proj = setProjection(_mechanics.swapChain.extent)};
@@ -199,7 +200,7 @@ glm::mat4 World::setView() {
 
 glm::mat4 World::setProjection(VkExtent2D& swapChainExtent) {
   float nearClipping = 0.0001f;
-  float farClipping = 100.0f;
+  float farClipping = 1000.0f;
   glm::mat4 projection = glm::perspective(
       glm::radians(camera.fieldOfView),
       swapChainExtent.width / static_cast<float>(swapChainExtent.height),
