@@ -28,7 +28,7 @@ float noise(vec2 p) { float total = -amplitude / 2.0;
                         return total; }
 vec4 position = vec4( inPosition.xy, noise( inPosition.xy ), inPosition.w );
 
-const vec3 cubeVertices[20] = {
+const vec3 tileVertices[20] = {
     {1, 1, 1},    // 0 right front top
     {-1, 1, 1},   // 1 left front top
     {-1, -1, 1},  // 2 left back top
@@ -51,7 +51,7 @@ const vec3 cubeVertices[20] = {
     {-1, -3, -2}  // 19 left back bottom extension up right
 };
 
-const int cubeIndices[84] = {
+const int tileIndices[90] = {
     // Top face
     0, 1, 2, 0, 2, 3,
     // Right face
@@ -67,7 +67,7 @@ const int cubeIndices[84] = {
     // Right rectangle center
     4, 7, 8, 4, 8, 9,
     // Right rectangle up
-    7, 10, 8, 10, 7, 11,
+    10, 8, 7, 10, 7, 11,
     // Right rectangle down
     4, 9, 12, 12, 13, 4,
     // Center rectangle down
@@ -79,22 +79,28 @@ const int cubeIndices[84] = {
     // Left rectangle up
     18, 6, 17, 18, 19, 6,
     // Center rectangle up
-    19, 11, 6, 11, 7, 6
+    19, 11, 6, 11, 7, 6,
+    // Bottom face
+    4, 5, 6, 4, 6, 7,
 };
 
 
-vec3 vertex = cubeVertices[cubeIndices[gl_VertexIndex]];
+vec3 vertex = tileVertices[tileIndices[gl_VertexIndex]];
 
-vec4 constructCube() { return position + vec4(vertex * inSize.x, vec2(0.0)); }
+vec4 constructTile() {
+    float ifStatement = float(gl_VertexIndex < 36);
+    return position + vec4(vertex * (ifStatement * inSize.x + (1.0 - ifStatement) * 0.1), vec2(0.0));
+}
 
+    
 vec3 getNormal(){   int vertexPerFace = 3;      int faceIndex = gl_VertexIndex / vertexPerFace;
-                    vec3 v0 = cubeVertices[cubeIndices[faceIndex * vertexPerFace]];
-                    vec3 v1 = cubeVertices[cubeIndices[faceIndex * vertexPerFace + 1]];
-                    vec3 v2 = cubeVertices[cubeIndices[faceIndex * vertexPerFace + 2]];
+                    vec3 v0 = tileVertices[tileIndices[faceIndex * vertexPerFace]];
+                    vec3 v1 = tileVertices[tileIndices[faceIndex * vertexPerFace + 1]];
+                    vec3 v2 = tileVertices[tileIndices[faceIndex * vertexPerFace + 2]];
                     vec3 normal = normalize(cross(v1 - v0, v2 - v0));
                     return normal; }
 
-vec4 worldPosition = ubo.model * constructCube();
+vec4 worldPosition = ubo.model * constructTile();
 vec4 viewPosition = ubo.view * worldPosition;
 vec3 worldNormal = mat3(ubo.model) * getNormal();
 
@@ -123,14 +129,14 @@ void main() {
 
 
 
-/*vec3 cubeNormals[24] = {
+/*vec3 tileNormals[24] = {
     {0, 0, 1},  {0, 0, 1},  {0, 0, 1},  {0, 0, 1},    // v0,v1,v2,v3 (front)
     {1, 0, 0},  {1, 0, 0},  {1, 0, 0},  {1, 0, 0},    // v0,v3,v4,v5 (right)
     {0, 1, 0},  {0, 1, 0},  {0, 1, 0},  {0, 1, 0},    // v0,v5,v6,v1 (top)
     {-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0},   // v1,v6,v7,v2 (left)
     {0, -1, 0}, {0, -1, 0}, {0, -1, 0}, {0, -1, 0},   // v7,v4,v3,v2 (bottom)
     {0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}};  // v4,v7,v6,v5 (back)
-vec3 cubeColors[24] = {
+vec3 tileColors[24] = {
     {1, 1, 1}, {1, 1, 0}, {1, 0, 0}, {1, 0, 1},   // v0,v1,v2,v3 (front)
     {1, 1, 1}, {1, 0, 1}, {0, 0, 1}, {0, 1, 1},   // v0,v3,v4,v5 (right)
     {1, 1, 1}, {0, 1, 1}, {0, 1, 0}, {1, 1, 0},   // v0,v5,v6,v1 (top)
@@ -141,10 +147,10 @@ vec3 cubeColors[24] = {
 /*    
 vec3 lightPosition = vec3(1.0, 2.5, 5.0);
 
-vec4 worldPosition = ubo.model * constructCube();
+vec4 worldPosition = ubo.model * constructTile();
     vec4 viewPosition = ubo.view * worldPosition;
     
-    vec3 worldNormal = mat3(transpose(inverse(ubo.model))) * cubeNormals[cubeIndices[ gl_VertexIndex ]];
+    vec3 worldNormal = mat3(transpose(inverse(ubo.model))) * tileNormals[tileIndices[ gl_VertexIndex ]];
     vec3 lightDirection = normalize(lightPosition - worldPosition.xyz);
     
     float diffuseIntensity = max(dot(worldNormal, lightDirection), 0.0);
@@ -159,7 +165,7 @@ vec4 worldPosition = ubo.model * constructCube();
 
 
 
-// const vec3 cubeVertices[8] = {vec3(-0.5f, -0.5f,-0.5f),   // 0
+// const vec3 tileVertices[8] = {vec3(-0.5f, -0.5f,-0.5f),   // 0
 //                         vec3(0.5f, -0.5f, -0.5f),   // 1
 //                         vec3(-0.5f, 0.5f, -0.5f),   // 2
 //                         vec3(0.5f,  0.5f, -0.5f),   // 3
@@ -167,6 +173,6 @@ vec4 worldPosition = ubo.model * constructCube();
 //                         vec3(0.5f, -0.5f,  0.5f),   // 5
 //                         vec3(-0.5f, 0.5f,  0.5f),   // 6
 //                         vec3(0.5f,  0.5f,  0.5f)};  // 7
-// const int cubeIndices[16] = {  0, 1, 2, 3, 6, 7, 4, 5, 2, 6, 0, 4, 1, 5, 3, 7 };
-/*const vec3 cubeNormals[6] = { { 0.0f, 0.0f,-1.0f},  {0.0f, 0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f},
+// const int tileIndices[16] = {  0, 1, 2, 3, 6, 7, 4, 5, 2, 6, 0, 4, 1, 5, 3, 7 };
+/*const vec3 tileNormals[6] = { { 0.0f, 0.0f,-1.0f},  {0.0f, 0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f},
                               { 1.0f, 0.0f, 0.0f},  {0.0f, 1.0f, 0.0f}, {0.0f,-1.0f, 0.0f} };*/

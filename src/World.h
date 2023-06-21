@@ -23,7 +23,7 @@ class World {
   } camera;
 
   struct Light {
-    std::array<float, 4> position = {0.0, 2.0, 5.0, 0.1f};
+    std::array<float, 4> position = {0.2f, 1.0f, 10.0f, 0.02f};
   } light;
 
   struct Cell {
@@ -43,10 +43,10 @@ class World {
     alignas(16) glm::mat4 proj;
   };
 
-  struct Cube {
-    uint32_t vertexCount = 84;
+  struct Tile {
+    uint32_t vertexCount = 90;
     float size = 0.1f;
-  } cube;
+  } tile;
 
  public:
   UniformBufferObject updateUniforms();

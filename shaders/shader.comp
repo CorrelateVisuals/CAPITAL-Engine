@@ -38,6 +38,7 @@ layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 int alive       =  1;
 int dead        =  -1;
 vec4 size       = vec4(ubo.cellSize);
+vec4 sizeOff    = vec4(0.0);
 vec4 red        = vec4(1.0, 0.0, 0.0, 1.0);
 vec4 green      = vec4(0.0, 1.0, 0.0, 1.0); 
 vec4 dimGreen   = vec4(0.0, 0.05, 0.0, 1.0);
@@ -92,11 +93,11 @@ void simulate(out Cell cell){
         cell = initialized ?    Cell(pos, green, size, setState(alive, 0)) :
                lifeCycle ?      Cell(pos, colorIncrement, size, setState(alive, 0)) :
                endOfStage ?     Cell(pos, green, size, setState(alive, 1)) :
-                                Cell(pos, terrain, size, setState(dead, 1));
+                                Cell(pos, terrain, sizeOff, setState(dead, 1));
     } else if (stage(1)) {
         cell = live(neighbours) ?   Cell(pos, green, size, setState(alive, 0)) :
-               die(neighbours) ?    Cell(pos, terrain, size, setState(dead, 0)) :
-                                    Cell(pos, colorIn, size, setState(dead, 1));
+               die(neighbours) ?    Cell(pos, terrain, sizeOff, setState(dead, 0)) :
+                                    Cell(pos, colorIn, sizeOff, setState(dead, 1));
     }
 }
 

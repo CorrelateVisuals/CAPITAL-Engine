@@ -387,7 +387,7 @@ void Memory::recordCommandBuffer(VkCommandBuffer commandBuffer,
                           &descriptor.sets[_mechanics.syncObjects.currentFrame],
                           0, nullptr);
 
-  vkCmdDraw(commandBuffer, _world.cube.vertexCount,
+  vkCmdDraw(commandBuffer, _world.tile.vertexCount,
             _control.grid.dimensions[0] * _control.grid.dimensions[1], 0, 0);
 
   vkCmdEndRenderPass(commandBuffer);
