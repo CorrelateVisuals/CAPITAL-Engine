@@ -28,7 +28,7 @@ float noise(vec2 p) { float total = -amplitude / 2.0;
                         return total; }
 vec4 position = vec4( inPosition.xy, noise( inPosition.xy ), inPosition.w );
 
-const vec3 cubeVertices[15] = { {1, 1,  1},     // right front top
+const vec3 cubeVertices[17] = { {1, 1,  1},     // right front top
                                 {-1, 1, 1},     // left front top
                                 {-1, -1,  1},   // left back top
                                 {1, -1,  1},    // right back top
@@ -48,20 +48,24 @@ const vec3 cubeVertices[15] = { {1, 1,  1},     // right front top
 
                                 {-1,3,-2},        // left front bottom extension down center
 
-
+                                {-3,1,-2},         // left back bottom extension down left
+                                {-3,3,-2}          // left front bottom extension down left
                                 };
-const int cubeIndices[60] = {   0, 1, 2, 0, 2, 3, // top face
+
+const int cubeIndices[66] = {   0, 1, 2, 0, 2, 3, // top face
                                 0, 3, 7, 0, 7, 4, // right face
                                 0, 4, 5, 0, 5, 1, // front face
                                 1, 5, 6, 1, 6, 2, // left face
                                 2, 6, 7, 2, 7, 3, // back face
                                 4, 7, 6, 4, 6, 5, // bottom face 
 
-                                4,7,8,  4,8,9,    // right side extra rectangle center
-                                7,10,8, 10,7,11,  // right side extra rectangle up
-                                4,9,12, 12,13,4,  // right side extra rectangle down   
+                                4,7,8,  4,8,9,    // right extra rectangle center
+                                7,10,8, 10,7,11,  // right extra rectangle up
+                                4,9,12, 12,13,4,  // right extra rectangle down   
 
-                                4,13,14, 14,5,4          
+                                4,13,14, 14,5,4,   // center extra rectangle down
+
+                                5,14,15, 15,14,16  // left extra rectangle down
 
                                 };
 
