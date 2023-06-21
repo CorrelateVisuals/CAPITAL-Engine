@@ -35,7 +35,7 @@ void VulkanMechanics::createInstance() {
   if (_validation.enableValidationLayers &&
       !_validation.checkValidationLayerSupport()) {
     throw std::runtime_error(
-        "!ERROR! validation layers requested, but not available!");
+        "\n!ERROR! validation layers requested, but not available!");
   }
 
   VkApplicationInfo appInfo{.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -89,7 +89,7 @@ void VulkanMechanics::pickPhysicalDevice() {
 
   if (deviceCount == 0) {
     throw std::runtime_error(
-        "!ERROR! failed to find GPUs with Vulkan support!");
+        "\n!ERROR! failed to find GPUs with Vulkan support!");
   }
 
   std::vector<VkPhysicalDevice> devices(deviceCount);
@@ -103,7 +103,7 @@ void VulkanMechanics::pickPhysicalDevice() {
     }
   }
   if (mainDevice.physical == VK_NULL_HANDLE) {
-    throw std::runtime_error("!ERROR! failed to find a suitable GPU!");
+    throw std::runtime_error("\n!ERROR! failed to find a suitable GPU!");
   }
 }
 

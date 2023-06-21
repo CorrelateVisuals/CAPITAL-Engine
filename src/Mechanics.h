@@ -90,7 +90,7 @@ class VulkanMechanics {
 
     VkResult result = vkResult(std::forward<Args>(args)...);
     if (result != VK_SUCCESS) {
-      throw std::runtime_error("!ERROR! result != VK_SUCCESS " + objectName +
+      throw std::runtime_error("\n!ERROR! result != VK_SUCCESS " + objectName +
                                "!");
     }
   }

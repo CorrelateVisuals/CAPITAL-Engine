@@ -475,5 +475,5 @@ uint32_t Memory::findMemoryType(uint32_t typeFilter,
       return i;
     }
   }
-  throw std::runtime_error("!ERROR! failed to find suitable memory type!");
+  throw std::runtime_error("\n!ERROR! failed to find suitable memory type!");
 }

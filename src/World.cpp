@@ -43,7 +43,8 @@ std::vector<World::Cell> World::initializeCells() {
 
   if (numAliveCells > numGridPoints) {
     throw std::runtime_error(
-        "!ERROR! Number of alive cells exceeds number of grid points");
+        "\n!ERROR! Number of alive cells exceeds number of grid "
+        "points");
   }
 
   std::vector<World::Cell> cells(numGridPoints);

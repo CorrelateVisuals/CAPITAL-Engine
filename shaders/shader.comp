@@ -50,7 +50,6 @@ vec4 terrain    = vec4(0.0, 0.1, 0.1, 1.0);
 
 ivec4 neighbourCellsInRange(int range){
     ivec4 neighbourCellsInRange = ivec4(0);
-    int gridSize = ubo.gridDimensions.x * ubo.gridDimensions.y;
     int indexX = int(index) % ubo.gridDimensions.x;
     int indexY = int(index) / ubo.gridDimensions.x;
     int startX = max(indexX - range, 0);

@@ -210,7 +210,7 @@ VkFormat Pipelines::findSupportedFormat(const std::vector<VkFormat>& candidates,
     }
   }
 
-  throw std::runtime_error("!ERROR! failed to find supported format!");
+  throw std::runtime_error("\n!ERROR! failed to find supported format!");
 }
 
 VkFormat Pipelines::findDepthFormat() {
@@ -249,7 +249,7 @@ std::vector<char> Pipelines::readShaderFile(const std::string& filename) {
   std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
   if (!file.is_open()) {
-    throw std::runtime_error("!ERROR! failed to open file!");
+    throw std::runtime_error("\n!ERROR! failed to open file!");
   }
 
   size_t fileSize = static_cast<size_t>(file.tellg());
