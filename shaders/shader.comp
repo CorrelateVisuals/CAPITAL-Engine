@@ -52,32 +52,40 @@ vec4 terrain    = vec4(0.0, 0.1, 0.1, 1.0);
 vec4 pos        = cellIn[index].position;
 vec4 colorIn    = cellIn[index].color;
 ivec4 statesIn  = cellIn[index].states;
-vec4 tileCornerHeight;
 
-ivec4 neighbourCellsInRange(int range){
-    ivec4 neighbourCellsInRange = ivec4(0);
-    int indexX = int(index) % ubo.gridDimensions.x;
-    int indexY = int(index) / ubo.gridDimensions.x;
-    int startX = max(indexX - range, 0);
-    int endX = min(indexX + range, ubo.gridDimensions.x - 1);
-    int startY = max(indexY - range, 0);
-    int endY = min(indexY + range, ubo.gridDimensions.y - 1);
+vec4 tileCornerHeight = 
+   vec4(cellIn[index].position.z -2,    // upper right
+        cellIn[index].position.z -2,  // lower right
+        cellIn[index].position.z -2,    // lower left
+        cellIn[index].position.z -2     // upper left
+    );
 
-    for (int x = startX; x <= endX; x++) {
-        for (int y = startY; y <= endY; y++) {
-            int neighbourIndex = y * ubo.gridDimensions.x + x;
-            bool notSelf = neighbourIndex != index;
-            bool neighbourAlive = (cellIn[neighbourIndex].states.x == alive) && (cellIn[neighbourIndex].states.y == 1);
-            neighbourCellsInRange += int(neighbourAlive && notSelf);
-
-
-            tileCornerHeight = vec4(cellIn[neighbourIndex].position.z);
-        }
-    }
-    return neighbourCellsInRange; 
+int neighbourAlive(int index) {
+    bvec2 aliveState = equal(cellIn[index].states.xy, ivec2(alive, 1));
+    return int(all(aliveState));
 }
 
+int indexX = int(index) % ubo.gridDimensions.x;
+int indexY = int(index) / ubo.gridDimensions.x;
 
+ivec4 neighbourCellsAlive(int range) {
+    ivec4 neighbourCellsInRange = ivec4(0);
+    int neighbourIndex = 0;
+
+    for (int offsetY = -range; offsetY <= range; offsetY++) {
+        for (int offsetX = -range; offsetX <= range; offsetX++) {
+            if (offsetX == 0 && offsetY == 0) {
+                continue;  // Skip the center cell
+            }
+            int neighbourX = (indexX + offsetX + ubo.gridDimensions.x) % ubo.gridDimensions.x;
+            int neighbourY = (indexY + offsetY + ubo.gridDimensions.y) % ubo.gridDimensions.y;
+
+            neighbourIndex = neighbourY * ubo.gridDimensions.x + neighbourX;
+            neighbourCellsInRange += neighbourAlive(neighbourIndex);
+        }
+    }
+    return neighbourCellsInRange;
+}
 
 bool aliveCell          = statesIn.x == alive;
 bool deadCell           = statesIn.x == dead;
@@ -93,7 +101,7 @@ bool die(int neighbours)  { return (aliveCell && (neighbours < 2 || neighbours >
 vec4 colorIncrement     = colorIn + vec4(float((passedHours % cycleSize + 1)) / float(cycleSize * 50), vec3(0.0));
 
 void simulate(out Cell cell){
-    int neighbours  = neighbourCellsInRange(1).x;
+    int neighbours  = neighbourCellsAlive(1).x;
 
     if (stage(0)) {
         cell = initialized ?    Cell(pos, green, size, setState(alive, 0), tileCornerHeight) :

@@ -27,18 +27,18 @@ vec3 tileVertices[20] = {
     {-1, 1, -1},  // 5 left front bottom
     {-1, -1, -1}, // 6 left back bottom
     {1, -1, -1},  // 7 right back bottom
-    {3, -1, ch},  // 8 right back bottom extension center right
-    {3, 1, ch},   // 9 right front bottom extension center right
-    {3, -3, ch},  // 10 right front bottom extension up right
-    {1, -3, ch},  // 11 right back bottom extension up right
-    {3, 3, ch},   // 12 right front bottom extension down right
-    {1, 3, ch},   // 13 left front bottom extension down right
-    {-1, 3, ch},  // 14 left front bottom extension down center
-    {-3, 1, ch},  // 15 left front bottom extension down left
-    {-3, 3, ch},  // 16 left front bottom extension down left
-    {-3, -1, ch}, // 17 left back bottom extension center left
-    {-3, -3, ch}, // 18 left back bottom extension up left
-    {-1, -3, ch}  // 19 left back bottom extension up right
+    {3, -1, ch.x},  // 8 right back bottom extension center right
+    {3, 1, ch.y},   // 9 right front bottom extension center right
+    {3, -3, ch.x},  // 10 right front bottom extension up right
+    {1, -3, ch.x},  // 11 right back bottom extension up right
+    {3, 3, ch.y},   // 12 right front bottom extension down right
+    {1, 3, ch.y},   // 13 left front bottom extension down right
+    {-1, 3, ch.z},  // 14 left front bottom extension down center
+    {-3, 1, ch.z},  // 15 left front bottom extension down left
+    {-3, 3, ch.z},  // 16 left front bottom extension down left
+    {-3, -1, ch.z}, // 17 left back bottom extension center left
+    {-3, -3, ch.w}, // 18 left back bottom extension up left
+    {-1, -3, ch.w}  // 19 left back bottom extension up right
 };
 
 const int tileIndices[90] = {

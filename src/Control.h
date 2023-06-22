@@ -12,7 +12,7 @@ class Control {
   ~Control();
 
   struct Timer {
-    float speed = 10.0f;
+    float speed = 100.0f;
     uint64_t passedHours = 0;
   } timer;
 
