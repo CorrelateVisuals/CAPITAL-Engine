@@ -76,12 +76,20 @@ ivec4 neighbourCellsAlive(int range) {
             neighbourIndex = neighbourY * ubo.gridDimensions.x + neighbourX;
             neighbourCellsInRange += neighbourAlive(neighbourIndex);
 
-            if (cellIn[index].tileCornerHeight == vec4(0.0f)){
-                cellOut[index].tileCornerHeight = vec4(cellIn[neighbourIndex].position.z * -10);
+            if (cellIn[index].tileCornerHeight == vec4(0.0f)) {
+                if (offsetX == 1 && offsetY == 0) {
+                    cellOut[index].tileCornerHeight.x = cellIn[neighbourIndex].position.z * -10.0f;  // Right neighbor
+                } else if (offsetX == 0 && offsetY == -1) {
+                    cellOut[index].tileCornerHeight.y = cellIn[neighbourIndex].position.z * -10.0f;  // Lower neighbor
+                } else if (offsetX == -1 && offsetY == 0) {
+                    cellOut[index].tileCornerHeight.z = cellIn[neighbourIndex].position.z * -10.0f;  // Left neighbor
+                } else if (offsetX == 0 && offsetY == 1) {
+                    cellOut[index].tileCornerHeight.w = cellIn[neighbourIndex].position.z * -10.0f;  // Upper neighbor
+                }
             } else {
                 continue;
             }
-        }
+         }
     }
     return neighbourCellsInRange;
 }
