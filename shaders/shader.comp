@@ -55,7 +55,7 @@ ivec4 statesIn  = cellIn[index].states;
 
 vec4 tileCornerHeight = 
    vec4(cellIn[index].position.z -2,    // upper right
-        cellIn[index].position.z -2,  // lower right
+        cellIn[index].position.z -2,    // lower right
         cellIn[index].position.z -2,    // lower left
         cellIn[index].position.z -2     // upper left
     );

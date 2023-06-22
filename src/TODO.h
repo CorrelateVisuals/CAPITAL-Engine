@@ -16,8 +16,7 @@
 ///
 /// [ FEATURES: GEOMETRY ]
 /// - inter cell movement
-/// - terrain new pipeline or 4x4 mat per cell
+/// - terrain 3x3 mat per cell
 ///		- Add vinroy effect
-/// - mirror borders of grid
 ///
 /// </TO DO> ///////////////////////////////////////////////////////////////////
