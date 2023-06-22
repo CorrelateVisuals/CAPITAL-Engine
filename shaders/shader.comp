@@ -53,13 +53,6 @@ vec4 pos        = cellIn[index].position;
 vec4 colorIn    = cellIn[index].color;
 ivec4 statesIn  = cellIn[index].states;
 
-vec4 tileCornerHeight = 
-   vec4(cellIn[index].position.z -2,    // upper right
-        cellIn[index].position.z -2,    // lower right
-        cellIn[index].position.z -2,    // lower left
-        cellIn[index].position.z -2     // upper left
-    );
-
 int neighbourAlive(int index) {
     bvec2 aliveState = equal(cellIn[index].states.xy, ivec2(alive, 1));
     return int(all(aliveState));
@@ -82,6 +75,12 @@ ivec4 neighbourCellsAlive(int range) {
 
             neighbourIndex = neighbourY * ubo.gridDimensions.x + neighbourX;
             neighbourCellsInRange += neighbourAlive(neighbourIndex);
+
+            if (cellIn[index].tileCornerHeight == vec4(0.0f)){
+                cellOut[index].tileCornerHeight = vec4(cellIn[neighbourIndex].position.z * -10);
+            } else {
+                continue;
+            }
         }
     }
     return neighbourCellsInRange;
@@ -104,14 +103,14 @@ void simulate(out Cell cell){
     int neighbours  = neighbourCellsAlive(1).x;
 
     if (stage(0)) {
-        cell = initialized ?    Cell(pos, green, size, setState(alive, 0), tileCornerHeight) :
-               lifeCycle ?      Cell(pos, colorIncrement, size, setState(alive, 0),tileCornerHeight) :
-               endOfStage ?     Cell(pos, green, size, setState(alive, 1),tileCornerHeight) :
-                                Cell(pos, terrain, sizeOff, setState(dead, 1),tileCornerHeight);
+        cell = initialized ?    Cell(pos, green, size, setState(alive, 0), cellOut[index].tileCornerHeight) :
+               lifeCycle ?      Cell(pos, colorIncrement, size, setState(alive, 0),cellOut[index].tileCornerHeight) :
+               endOfStage ?     Cell(pos, green, size, setState(alive, 1),cellOut[index].tileCornerHeight) :
+                                Cell(pos, terrain, sizeOff, setState(dead, 1),cellOut[index].tileCornerHeight);
     } else if (stage(1)) {
-        cell = live(neighbours) ?   Cell(pos, green, size, setState(alive, 0),tileCornerHeight) :
-               die(neighbours) ?    Cell(pos, terrain, sizeOff, setState(dead, 0),tileCornerHeight) :
-                                    Cell(pos, colorIn, sizeOff, setState(dead, 1),tileCornerHeight);
+        cell = live(neighbours) ?   Cell(pos, green, size, setState(alive, 0),cellOut[index].tileCornerHeight) :
+               die(neighbours) ?    Cell(pos, terrain, sizeOff, setState(dead, 0),cellOut[index].tileCornerHeight) :
+                                    Cell(pos, colorIn, sizeOff, setState(dead, 1),cellOut[index].tileCornerHeight);
     }
 }
 

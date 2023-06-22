@@ -64,6 +64,8 @@ std::vector<World::Cell> World::initializeCells() {
   std::vector<float> tileHeight =
       lib.generateRandomValues(numGridPoints, 0.0f, _control.grid.height);
 
+  const std::array<float, 4> cornerHeight = {0.0f, 0.0f, 0.0f, 0.0f};
+
   float startX = -((width - 1) * gap) / 2.0f;
   float startY = -((height - 1) * gap) / 2.0f;
 
@@ -79,7 +81,7 @@ std::vector<World::Cell> World::initializeCells() {
     const std::array<float, 4>& color = isAlive ? blue : red;
     const std::array<int, 4>& state = isAlive ? alive : dead;
 
-    cells[i] = {pos, color, size, state};
+    cells[i] = {pos, color, size, state, cornerHeight};
   }
   return cells;
 }
