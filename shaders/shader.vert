@@ -92,13 +92,17 @@ vec4 worldPosition = ubo.model * constructTile();
 vec4 viewPosition = ubo.view * worldPosition;
 vec3 worldNormal = mat3(ubo.model) * getNormal();
 
-float gouraudShading( float brightness ) {vec3 lightDirection = normalize(ubo.light.rgb - worldPosition.xyz);
-                        float diffuseIntensity = max(dot(worldNormal, lightDirection), ubo.light.a);
-                        return diffuseIntensity * brightness; }
+float gouraudShading(float brightness, float contrast) {
+    vec3 lightDirection = normalize(ubo.light.rgb - worldPosition.xyz);
+    float diffuseIntensity = max(dot(worldNormal, lightDirection), ubo.light.a);
+    diffuseIntensity = (diffuseIntensity - 0.5) * contrast + 0.5;
+    return diffuseIntensity * brightness;
+}
+
 
 layout(location = 0) out vec4 fragColor;
 
 void main() {
-    fragColor = inColor * gouraudShading(2.0f);
+    fragColor = inColor * gouraudShading(1.0f, 2.0f);
     gl_Position = ubo.projection * viewPosition;
 }
