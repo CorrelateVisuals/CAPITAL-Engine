@@ -29,7 +29,8 @@ World::getAttributeDescriptions() {
       {0, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Cell, position)},
       {1, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Cell, color)},
       {2, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Cell, size)},
-      {3, 0, VK_FORMAT_R32G32B32A32_SINT, offsetof(Cell, states)}};
+      {3, 0, VK_FORMAT_R32G32B32A32_SINT, offsetof(Cell, states)},
+      {4, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Cell, tileCornerHeight)}};
   return attributeDescriptions;
 }
 
@@ -60,6 +61,9 @@ std::vector<World::Cell> World::initializeCells() {
     isAliveIndices[aliveIndex] = true;
   }
 
+  std::vector<float> tileHeight =
+      lib.generateRandomValues(numGridPoints, 0.0f, _control.grid.height);
+
   float startX = -((width - 1) * gap) / 2.0f;
   float startY = -((height - 1) * gap) / 2.0f;
 
@@ -69,7 +73,7 @@ std::vector<World::Cell> World::initializeCells() {
     const float posX = startX + x * gap;
     const float posY = startY + y * gap;
 
-    const std::array<float, 4> pos = {posX, posY, 0.0f, 1.0f};
+    const std::array<float, 4> pos = {posX, posY, tileHeight[i], 1.0f};
     const bool isAlive = isAliveIndices[i];
 
     const std::array<float, 4>& color = isAlive ? blue : red;

@@ -2,8 +2,23 @@
 
 #include <chrono>
 #include <numbers>
+#include <random>
 
 #include "Library.h"
+
+std::vector<float> Library::generateRandomValues(int amount,
+                                                 float min,
+                                                 float max) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<float> dis(min, max);
+
+  std::vector<float> randomValues(amount);
+  for (int i = 0; i < amount; ++i) {
+    randomValues[i] = dis(gen);
+  }
+  return randomValues;
+}
 
 double Library::lowFrequencyOsciallator() {
   using namespace std::chrono;
