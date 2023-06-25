@@ -28,16 +28,16 @@ vec3 tileVertices[20] = {
     {-1, -1, -1}, // 6 left back bottom
     {1, -1, -1},  // 7 right back bottom
     {3, -1, ch.x},  // 8 right back bottom extension center right
-    {3, 1, ch.y},   // 9 right front bottom extension center right
-    {3, -3, ch.x},  // 10 right front bottom extension up right
-    {1, -3, ch.x},  // 11 right back bottom extension up right
-    {3, 3, ch.y},   // 12 right front bottom extension down right
+    {3, 1, ch.x},   // 9 right front bottom extension center right
+    {3, -3, -1},  // 10 right front bottom extension up right         CORNER UP RIGHT
+    {1, -3, ch.w},  // 11 right back bottom extension up right
+    {3, 3, -1},   // 12 right front bottom extension down right     CORNER DOWN RIGHT
     {1, 3, ch.y},   // 13 left front bottom extension down right
-    {-1, 3, ch.z},  // 14 left front bottom extension down center
+    {-1, 3, ch.y},  // 14 left front bottom extension down center
     {-3, 1, ch.z},  // 15 left front bottom extension down left
-    {-3, 3, ch.z},  // 16 left front bottom extension down left
+    {-3, 3, -1},  // 16 left front bottom extension down left     CORNDER DOWN LEFT
     {-3, -1, ch.z}, // 17 left back bottom extension center left
-    {-3, -3, ch.w}, // 18 left back bottom extension up left
+    {-3, -3, -1}, // 18 left back bottom extension up left          CORNER UP LEFT
     {-1, -3, ch.w}  // 19 left back bottom extension up right
 };
 
@@ -77,8 +77,8 @@ const int tileIndices[90] = {
 vec3 vertex = tileVertices[tileIndices[gl_VertexIndex]];
 
 vec4 constructTile() {
-    float ifStatement = float(gl_VertexIndex < 36);
-    return inPosition + vec4(vertex * (ifStatement * inSize.x + (1.0 - ifStatement) * 0.1), vec2(0.0));
+    float cubeIndices = float(gl_VertexIndex < 36);
+    return inPosition + vec4(vertex * (cubeIndices * inSize.x + (1.0 - cubeIndices) * 0.1), vec2(0.0));
 }
     
 vec3 getNormal(){   int vertexPerFace = 3;      int faceIndex = gl_VertexIndex / vertexPerFace;
@@ -98,7 +98,6 @@ float gouraudShading(float brightness, float contrast) {
     diffuseIntensity = (diffuseIntensity - 0.5) * contrast + 0.5;
     return diffuseIntensity * brightness;
 }
-
 
 layout(location = 0) out vec4 fragColor;
 

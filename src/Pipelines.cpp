@@ -148,7 +148,10 @@ void Pipelines::createGraphicsPipeline() {
       .polygonMode = VK_POLYGON_MODE_FILL,
       .cullMode = VK_CULL_MODE_BACK_BIT,
       .frontFace = VK_FRONT_FACE_CLOCKWISE,
-      .depthBiasEnable = VK_FALSE,
+      .depthBiasEnable = VK_TRUE,
+      .depthBiasConstantFactor = 0.0f,
+      .depthBiasClamp = 0.0f,
+      .depthBiasSlopeFactor = 0.0f,
       .lineWidth = 1.0f};
 
   VkPipelineMultisampleStateCreateInfo multisampling{

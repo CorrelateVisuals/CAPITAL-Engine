@@ -58,6 +58,8 @@ int neighbourAlive(int index) {
     return int(all(aliveState));
 }
 
+float findCenter(float a, float b){ return (a + b) * 0.5; }
+
 int indexX = int(index) % ubo.gridDimensions.x;
 int indexY = int(index) / ubo.gridDimensions.x;
 
@@ -76,19 +78,21 @@ ivec4 neighbourCellsAlive(int range) {
             neighbourIndex = neighbourY * ubo.gridDimensions.x + neighbourX;
             neighbourCellsInRange += neighbourAlive(neighbourIndex);
 
-            if (cellIn[index].tileCornerHeight == vec4(0.0f)) {
+                float neighbourHeight = cellIn[neighbourIndex].position.z;
+                float myHeight = cellIn[index].position.z;
+                float centerHeight = findCenter(neighbourHeight, myHeight) -1;
+
                 if (offsetX == 1 && offsetY == 0) {
-                    cellOut[index].tileCornerHeight.x = cellIn[neighbourIndex].position.z * -10.0f;  // Right neighbor
-                } else if (offsetX == 0 && offsetY == -1) {
-                    cellOut[index].tileCornerHeight.y = cellIn[neighbourIndex].position.z * -10.0f;  // Lower neighbor
+                    cellOut[index].tileCornerHeight.x = (cellIn[neighbourIndex].position.z - cellIn[index].position.z) * 10 -1   ;  // Right neighbor
+                } else if (offsetX == 0 && offsetY == -1 ) {
+                    cellOut[index].tileCornerHeight.y = -1;  // Lower neighbor
                 } else if (offsetX == -1 && offsetY == 0) {
-                    cellOut[index].tileCornerHeight.z = cellIn[neighbourIndex].position.z * -10.0f;  // Left neighbor
+                    cellOut[index].tileCornerHeight.z = -1;  // Left neighbor
                 } else if (offsetX == 0 && offsetY == 1) {
-                    cellOut[index].tileCornerHeight.w = cellIn[neighbourIndex].position.z * -10.0f;  // Upper neighbor
+                    cellOut[index].tileCornerHeight.w = -1 ;  // Upper neighbor
+                } else{
+                    continue;
                 }
-            } else {
-                continue;
-            }
          }
     }
     return neighbourCellsInRange;

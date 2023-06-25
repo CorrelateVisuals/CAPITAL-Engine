@@ -219,7 +219,8 @@ void VulkanMechanics::createLogicalDevice() {
     queueCreateInfos.push_back(queueCreateInfo);
   }
 
-  VkPhysicalDeviceFeatures deviceFeatures{.sampleRateShading = VK_TRUE,
+  VkPhysicalDeviceFeatures deviceFeatures{.tessellationShader = VK_TRUE,
+                                          .sampleRateShading = VK_TRUE,
                                           .depthClamp = VK_TRUE,
                                           .shaderInt64 = VK_TRUE};
 
