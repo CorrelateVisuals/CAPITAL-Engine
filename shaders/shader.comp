@@ -82,13 +82,17 @@ ivec4 neighbourCellsAlive(int range) {
                 float myHeight = cellIn[index].position.z;
                 float centerHeight = findCenter(neighbourHeight, myHeight) -1;
 
+                int toVertexScale = 10;
+                int heightOffset = -1;
+                float matchNeighbourHeight = (cellIn[neighbourIndex].position.z - cellIn[index].position.z) * toVertexScale +heightOffset;
+
                 if (offsetX == 1 && offsetY == 0) {
-                    cellOut[index].tileCornerHeight.x = (cellIn[neighbourIndex].position.z - cellIn[index].position.z) * 10 -1   ;  // Right neighbor
-                } else if (offsetX == 0 && offsetY == -1 ) {
-                    cellOut[index].tileCornerHeight.y = -1;  // Lower neighbor
+                    cellOut[index].tileCornerHeight.x = matchNeighbourHeight;  // Right neighbor
+                } else if (offsetX == 0 && offsetY == 1 ) {
+                    cellOut[index].tileCornerHeight.y = matchNeighbourHeight;  // Lower neighbor
                 } else if (offsetX == -1 && offsetY == 0) {
                     cellOut[index].tileCornerHeight.z = -1;  // Left neighbor
-                } else if (offsetX == 0 && offsetY == 1) {
+                } else if (offsetX == 0 && offsetY == -1) {
                     cellOut[index].tileCornerHeight.w = -1 ;  // Upper neighbor
                 } else{
                     continue;

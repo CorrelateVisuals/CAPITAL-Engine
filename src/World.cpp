@@ -82,7 +82,6 @@ std::vector<World::Cell> World::initializeCells() {
     const std::array<int, 4>& state = isAlive ? alive : dead;
 
     cells[i] = {pos, color, size, state, cornerHeight};
-    _log.console(tileHeight[i]);
   }
   return cells;
 }
