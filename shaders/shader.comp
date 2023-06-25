@@ -26,7 +26,8 @@ struct Cell {
     vec4 color;     // float    rgba
     vec4 size;      // float    x
     ivec4 states;   // bool     alive, stage, cycle, passedHours
-    vec4 tileCornerHeight;
+    vec4 tileSidesHeight;
+    vec4 tileCornersHeight;
 } cell;
 
 int cycleSize = 24;
@@ -80,23 +81,31 @@ ivec4 neighbourCellsAlive(int range) {
 
                 float neighbourHeight = cellIn[neighbourIndex].position.z;
                 float myHeight = cellIn[index].position.z;
-                float centerHeight = findCenter(neighbourHeight, myHeight) -1;
 
                 int toVertexScale = 10;
                 int heightOffset = -1;
-                float matchNeighbourHeight = (cellIn[neighbourIndex].position.z - cellIn[index].position.z) * toVertexScale +heightOffset;
+                float matchNeighbourHeight = (neighbourHeight - myHeight) * toVertexScale + heightOffset;
 
                 if (offsetX == 1 && offsetY == 0) {
-                    cellOut[index].tileCornerHeight.x = matchNeighbourHeight;  // Right neighbor
+                    cellOut[index].tileSidesHeight.x = matchNeighbourHeight / 2;  // Right neighbour
                 } else if (offsetX == 0 && offsetY == 1 ) {
-                    cellOut[index].tileCornerHeight.y = matchNeighbourHeight;  // Lower neighbor
+                    cellOut[index].tileSidesHeight.y = matchNeighbourHeight / 2;  // Upper neighbour
                 } else if (offsetX == -1 && offsetY == 0) {
-                    cellOut[index].tileCornerHeight.z = -1;  // Left neighbor
+                    cellOut[index].tileSidesHeight.z = matchNeighbourHeight / 2;  // Left neighbour
                 } else if (offsetX == 0 && offsetY == -1) {
-                    cellOut[index].tileCornerHeight.w = -1 ;  // Upper neighbor
+                    cellOut[index].tileSidesHeight.w = matchNeighbourHeight / 2 ;  // Lower neighbour
+                } else if (offsetX == 1 && offsetY == 1) {
+                    cellOut[index].tileCornersHeight.x = matchNeighbourHeight / 2;  // upper right neighbor
+                } else if (offsetX == -1 && offsetY == 1 ) {
+                    cellOut[index].tileCornersHeight.y = matchNeighbourHeight / 2;  // upper left neighbor
+                } else if (offsetX == -1 && offsetY == -1) {
+                    cellOut[index].tileCornersHeight.z = matchNeighbourHeight / 2;  // lower left neighbor
+                } else if (offsetX == 1 && offsetY == -1) {
+                    cellOut[index].tileCornersHeight.w = matchNeighbourHeight / 2 ;  // lower right neighbor
                 } else{
                     continue;
                 }
+
          }
     }
     return neighbourCellsInRange;
@@ -119,14 +128,14 @@ void simulate(out Cell cell){
     int neighbours  = neighbourCellsAlive(1).x;
 
     if (stage(0)) {
-        cell = initialized ?    Cell(pos, green, size, setState(alive, 0), cellOut[index].tileCornerHeight) :
-               lifeCycle ?      Cell(pos, colorIncrement, size, setState(alive, 0),cellOut[index].tileCornerHeight) :
-               endOfStage ?     Cell(pos, green, size, setState(alive, 1),cellOut[index].tileCornerHeight) :
-                                Cell(pos, terrain, sizeOff, setState(dead, 1),cellOut[index].tileCornerHeight);
+        cell = initialized ?    Cell(pos, green, size, setState(alive, 0), cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight) :
+               lifeCycle ?      Cell(pos, colorIncrement, size, setState(alive, 0),cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight) :
+               endOfStage ?     Cell(pos, green, size, setState(alive, 1),cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight) :
+                                Cell(pos, terrain, sizeOff, setState(dead, 1),cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight);
     } else if (stage(1)) {
-        cell = live(neighbours) ?   Cell(pos, green, size, setState(alive, 0),cellOut[index].tileCornerHeight) :
-               die(neighbours) ?    Cell(pos, terrain, sizeOff, setState(dead, 0),cellOut[index].tileCornerHeight) :
-                                    Cell(pos, colorIn, sizeOff, setState(dead, 1),cellOut[index].tileCornerHeight);
+        cell = live(neighbours) ?   Cell(pos, green, size, setState(alive, 0),cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight) :
+               die(neighbours) ?    Cell(pos, terrain, sizeOff, setState(dead, 0),cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight) :
+                                    Cell(pos, colorIn, sizeOff, setState(dead, 1),cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight);
     }
 }
 

@@ -30,7 +30,8 @@ World::getAttributeDescriptions() {
       {1, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Cell, color)},
       {2, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Cell, size)},
       {3, 0, VK_FORMAT_R32G32B32A32_SINT, offsetof(Cell, states)},
-      {4, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Cell, tileCornerHeight)}};
+      {4, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Cell, tileSidesHeight)},
+      {5, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Cell, tileCornersHeight)}};
   return attributeDescriptions;
 }
 
@@ -64,7 +65,8 @@ std::vector<World::Cell> World::initializeCells() {
   std::vector<float> tileHeight =
       lib.generateRandomValues(numGridPoints, 0.0f, _control.grid.height);
 
-  const std::array<float, 4> cornerHeight = {0.0f, 0.0f, 0.0f, 0.0f};
+  const std::array<float, 4> sidesHeight = {0.0f, 0.0f, 0.0f, 0.0f};
+  const std::array<float, 4> cornersHeight = {0.0f, 0.0f, 0.0f, 0.0f};
 
   float startX = -((width - 1) * gap) / 2.0f;
   float startY = -((height - 1) * gap) / 2.0f;
@@ -81,7 +83,7 @@ std::vector<World::Cell> World::initializeCells() {
     const std::array<float, 4>& color = isAlive ? blue : red;
     const std::array<int, 4>& state = isAlive ? alive : dead;
 
-    cells[i] = {pos, color, size, state, cornerHeight};
+    cells[i] = {pos, color, size, state, sidesHeight, cornersHeight};
   }
   return cells;
 }

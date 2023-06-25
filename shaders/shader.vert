@@ -4,8 +4,8 @@ layout(location = 0) in vec4 inPosition;
 layout(location = 1) in vec4 inColor;
 layout(location = 2) in vec4 inSize;
 layout(location = 3) in ivec4 inStates;
-layout(location = 4) in vec4 inTileCornerHeight;
-
+layout(location = 4) in vec4 inTileSidesHeight;
+layout(location = 5) in vec4 inTileCornersHeight;
 
 layout (binding = 0) uniform ParameterUBO {
     vec4 light;
@@ -17,7 +17,8 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 projection;
 } ubo;
 
-vec4 ch = inTileCornerHeight;
+vec4 ts = inTileSidesHeight;
+vec4 tc = inTileCornersHeight;
 vec3 tileVertices[20] = {
     {1, 1, 1},    // 0 right front top
     {-1, 1, 1},   // 1 left front top
@@ -27,18 +28,18 @@ vec3 tileVertices[20] = {
     {-1, 1, -1},  // 5 left front bottom
     {-1, -1, -1}, // 6 left back bottom
     {1, -1, -1},  // 7 right back bottom
-    {3, -1, ch.x},  // 8 right back bottom extension center right
-    {3, 1, ch.x},   // 9 right front bottom extension center right
-    {3, -3, -1},  // 10 right front bottom extension up right         CORNER UP RIGHT
-    {1, -3, ch.w},  // 11 right back bottom extension up right
-    {3, 3, -1},   // 12 right front bottom extension down right     CORNER DOWN RIGHT
-    {1, 3, ch.y},   // 13 left front bottom extension down right
-    {-1, 3, ch.y},  // 14 left front bottom extension down center
-    {-3, 1, ch.z},  // 15 left front bottom extension down left
-    {-3, 3, -1},  // 16 left front bottom extension down left     CORNDER DOWN LEFT
-    {-3, -1, ch.z}, // 17 left back bottom extension center left
-    {-3, -3, -1}, // 18 left back bottom extension up left          CORNER UP LEFT
-    {-1, -3, ch.w}  // 19 left back bottom extension up right
+    {3, -1, ts.x},  // 8 right back bottom extension center right
+    {3, 1, ts.x},   // 9 right front bottom extension center right
+    {3, -3, tc.x},  // 10 right front bottom extension up right         CORNER UP RIGHT
+    {1, -3, ts.w},  // 11 right back bottom extension up right
+    {3, 3, tc.y},   // 12 right front bottom extension down right     CORNER DOWN RIGHT
+    {1, 3, ts.y},   // 13 left front bottom extension down right
+    {-1, 3, ts.y},  // 14 left front bottom extension down center
+    {-3, 1, ts.z},  // 15 left front bottom extension down left
+    {-3, 3, tc.z},  // 16 left front bottom extension down left     CORNDER DOWN LEFT
+    {-3, -1, ts.z}, // 17 left back bottom extension center left
+    {-3, -3, tc.w}, // 18 left back bottom extension up left          CORNER UP LEFT
+    {-1, -3, ts.w}  // 19 left back bottom extension up right
 };
 
 const int tileIndices[90] = {
