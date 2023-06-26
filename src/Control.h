@@ -1,5 +1,7 @@
 #pragma once
 
+#include "subscriber.h"
+
 #include <array>
 #include <string>
 #include <vector>
@@ -39,6 +41,7 @@ class Control {
   } compute;
 
  public:
+  Subscriber subsriber{*this};
   std::vector<uint_fast32_t> setCellsAliveRandomly(uint_fast32_t numberOfCells);
   void simulateHours();
 
