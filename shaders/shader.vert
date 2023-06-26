@@ -67,9 +67,16 @@ vec3 vertex = tileVertices[tileIndices[gl_VertexIndex]];
 
 vec4 constructTile() {
     float cubeIndices = float(gl_VertexIndex < 36);
-    return inPosition + vec4(vertex * (cubeIndices * inSize.x + (1.0 - cubeIndices) * 0.1), vec2(0.0));
-}
+    float adjustSize = cubeIndices * inSize.x + (1.0 - cubeIndices) * 0.1;
+    float floorOffset = adjustSize - inSize.x; // Calculate the floor offset
     
+    vec4 position = inPosition;
+    position.xyz += vertex.xyz * adjustSize; // Adjust the x, y, and z coordinates
+    
+    return position;
+}
+
+
 vec3 getNormal(){   
     int vertexPerFace = 3;      
     int faceIndex = gl_VertexIndex / vertexPerFace;

@@ -41,7 +41,7 @@ std::vector<World::Cell> World::initializeCells() {
   const uint_fast32_t numGridPoints = width * height;
   const uint_fast32_t numAliveCells = _control.grid.totalAliveCells;
   const float gap = _control.grid.gap;
-  std::array<float, 4> size = {tile.size};
+  std::array<float, 4> size = {tile.cubeSize};
 
   if (numAliveCells > numGridPoints) {
     throw std::runtime_error(
@@ -99,7 +99,7 @@ World::UniformBufferObject World::updateUniforms() {
       .gridDimensions = {static_cast<uint32_t>(_control.grid.dimensions[0]),
                          static_cast<uint32_t>(_control.grid.dimensions[1])},
       .gridHeight = _control.grid.height,
-      .cellSize = tile.size,
+      .cellSize = tile.cubeSize,
       .model = setModel(),
       .view = setView(),
       .proj = setProjection(_mechanics.swapChain.extent)};

@@ -47,7 +47,7 @@ class World {
 
   struct Tile {
     uint32_t vertexCount = 90;
-    float size = 0.1f;
+    float cubeSize = 0.1f;
   } tile;
 
  public:

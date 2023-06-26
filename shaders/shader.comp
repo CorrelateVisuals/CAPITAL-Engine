@@ -83,28 +83,31 @@ ivec4 neighbourCellsAlive(int range) {
             int heightOffset = -1;
             float splitHeight = 0.5;
             float matchNeighbourHeight = ((neighbourHeight - myHeight) * toVertexScale + heightOffset) * splitHeight;
-            float previousNeighbourHeight = -1;
+            vec4 sideHeight;
+            vec4 cornerHeights;
 
             if (offsetX == 1 && offsetY == 0) {
-                cellOut[index].tileSidesHeight.x = matchNeighbourHeight;  // Right neighbour
+                sideHeight.x = matchNeighbourHeight;  // Right neighbour
             } else if (offsetX == 0 && offsetY == 1 ) {
-                cellOut[index].tileSidesHeight.y = matchNeighbourHeight;  // Upper neighbour
+                sideHeight.y = matchNeighbourHeight;  // Upper neighbour
             } else if (offsetX == -1 && offsetY == 0) {
-                cellOut[index].tileSidesHeight.z = matchNeighbourHeight;  // Left neighbour
+                sideHeight.z = matchNeighbourHeight;  // Left neighbour
             } else if (offsetX == 0 && offsetY == -1) {
-                cellOut[index].tileSidesHeight.w = matchNeighbourHeight;  // Lower neighbour
+                sideHeight.w = matchNeighbourHeight;  // Lower neighbour
                 
             } else  if (offsetX == 1 && offsetY == -1) {
-                cellOut[index].tileCornersHeight.x = matchNeighbourHeight;  // upper right neighbor
+                cornerHeights.x = matchNeighbourHeight; // upper right neighbor
             } else if (offsetX == 1 && offsetY == 1 ) {
-                cellOut[index].tileCornersHeight.y = matchNeighbourHeight;  // lower right neighbor
+                cornerHeights.y = matchNeighbourHeight; // lower right neighbor
             } else if (offsetX == -1 && offsetY == 1) {
-                cellOut[index].tileCornersHeight.z = matchNeighbourHeight;  // lower left neighbor
+                cornerHeights.z = matchNeighbourHeight; // lower left neighbor
             } else if (offsetX == -1 && offsetY == -1) {
-                cellOut[index].tileCornersHeight.w = matchNeighbourHeight;  // upper Left
-            } else{
+                cornerHeights.w = matchNeighbourHeight; // upper Left
+            } else {
                 continue;
             }
+            cellOut[index].tileSidesHeight = sideHeight;
+            cellOut[index].tileCornersHeight = cornerHeights;
 
          }
     }
