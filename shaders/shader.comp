@@ -66,45 +66,44 @@ int indexY = int(index) / ubo.gridDimensions.x;
 
 ivec4 neighbourCellsAlive(int range) {
     ivec4 neighbourCellsInRange = ivec4(0);
-    int neighbourIndex = 0;
 
     for (int offsetY = -range; offsetY <= range; offsetY++) {
         for (int offsetX = -range; offsetX <= range; offsetX++) {
-            if (offsetX == 0 && offsetY == 0) {
-                continue;  // Skip the center cell
-            }
+            if (offsetX == 0 && offsetY == 0) { continue; }
             int neighbourX = (indexX + offsetX + ubo.gridDimensions.x) % ubo.gridDimensions.x;
             int neighbourY = (indexY + offsetY + ubo.gridDimensions.y) % ubo.gridDimensions.y;
+            int neighbourIndex = neighbourY * ubo.gridDimensions.x + neighbourX;
 
-            neighbourIndex = neighbourY * ubo.gridDimensions.x + neighbourX;
             neighbourCellsInRange += neighbourAlive(neighbourIndex);
+            
 
-                float neighbourHeight = cellIn[neighbourIndex].position.z;
-                float myHeight = cellIn[index].position.z;
+            float neighbourHeight = cellIn[neighbourIndex].position.z;
+            float myHeight = cellIn[index].position.z;
+            int toVertexScale = 10;
+            int heightOffset = -1;
+            float splitHeight = 0.5;
+            float matchNeighbourHeight = ((neighbourHeight - myHeight) * toVertexScale + heightOffset) * splitHeight;
 
-                int toVertexScale = 10;
-                int heightOffset = -1;
-                float matchNeighbourHeight = (neighbourHeight - myHeight) * toVertexScale + heightOffset;
-
-                if (offsetX == 1 && offsetY == 0) {
-                    cellOut[index].tileSidesHeight.x = matchNeighbourHeight / 2;  // Right neighbour
-                } else if (offsetX == 0 && offsetY == 1 ) {
-                    cellOut[index].tileSidesHeight.y = matchNeighbourHeight / 2;  // Upper neighbour
-                } else if (offsetX == -1 && offsetY == 0) {
-                    cellOut[index].tileSidesHeight.z = matchNeighbourHeight / 2;  // Left neighbour
-                } else if (offsetX == 0 && offsetY == -1) {
-                    cellOut[index].tileSidesHeight.w = matchNeighbourHeight / 2 ;  // Lower neighbour
-                } else if (offsetX == 1 && offsetY == 1) {
-                    cellOut[index].tileCornersHeight.x = matchNeighbourHeight / 2;  // upper right neighbor
-                } else if (offsetX == -1 && offsetY == 1 ) {
-                    cellOut[index].tileCornersHeight.y = matchNeighbourHeight / 2;  // upper left neighbor
-                } else if (offsetX == -1 && offsetY == -1) {
-                    cellOut[index].tileCornersHeight.z = matchNeighbourHeight / 2;  // lower left neighbor
-                } else if (offsetX == 1 && offsetY == -1) {
-                    cellOut[index].tileCornersHeight.w = matchNeighbourHeight / 2 ;  // lower right neighbor
-                } else{
-                    continue;
-                }
+            if (offsetX == 1 && offsetY == 0) {
+                cellOut[index].tileSidesHeight.x = -1;//matchNeighbourHeight / 2;  // Right neighbour
+            } else if (offsetX == 0 && offsetY == 1 ) {
+                cellOut[index].tileSidesHeight.y = -1;//matchNeighbourHeight / 2;  // Upper neighbour
+            } else if (offsetX == -1 && offsetY == 0) {
+                cellOut[index].tileSidesHeight.z = -1;//matchNeighbourHeight / 2;  // Left neighbour
+            } else if (offsetX == 0 && offsetY == -1) {
+                cellOut[index].tileSidesHeight.w = -1;//matchNeighbourHeight / 2 ;  // Lower neighbour
+                
+            } else  if (offsetX == 1 && offsetY == 1) {
+                cellOut[index].tileCornersHeight.x = -1;  // upper right neighbor
+            } else if (offsetX == -1 && offsetY == 1 ) {
+                cellOut[index].tileCornersHeight.y = matchNeighbourHeight;  // lower right neighbor
+            } else if (offsetX == -1 && offsetY == -1) {
+                cellOut[index].tileCornersHeight.z = -1;  // lower left neighbor
+            } else if (offsetX == 1 && offsetY == -1) {
+                cellOut[index].tileCornersHeight.w = matchNeighbourHeight;  // upper Left
+            } else{
+                continue;
+            }
 
          }
     }
