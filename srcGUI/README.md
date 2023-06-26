@@ -1,5 +1,7 @@
 # Config parameters CAPITAL Engine
 
+## Run time parameters
+
 ```C++
 class Control {
  public:
@@ -19,4 +21,13 @@ class Control {
     float size = {0.03f};
   } cells;
 ```
+Implemented in ImGUI:
+- speed
 
+## Start ImGUI and CAPITAL-Engine in Ubuntu
+
+Use stdin and stdout file redirection:
+
+```bash
+  ./srcGUI/gui/gui_capital_engine  | ./bin/CapitalEngine 
+```
