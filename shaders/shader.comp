@@ -62,15 +62,24 @@ int neighbourAlive(int index) {
 float findCenter(float a, float b){ return (a + b) * 0.5; }
 
 float matchHeight(int neighbourIndex){
-            float neighbourHeight = cellIn[neighbourIndex].position.z;
-            float myHeight = cellIn[index].position.z;
-            int toVertexScale = 10;
-            int heightOffset = -1;
-            float splitHeight = 0.5;
-
-            float matchNeighbourHeight = ((neighbourHeight - myHeight) * toVertexScale + heightOffset) * splitHeight;
-            return matchNeighbourHeight;
+    float neighbourHeight = cellIn[neighbourIndex].position.z;
+    float myHeight = cellIn[index].position.z;
+    int toVertexScale = 10;   int heightOffset = 0;   float splitHeight = 0.5;
+    float matchNeighbourHeight = ((neighbourHeight - myHeight) * toVertexScale + heightOffset) * splitHeight;
+    return matchNeighbourHeight;
 }
+
+float matchHeight2(int neighbourIndex) {
+    float neighbourHeight = cellIn[neighbourIndex].tileCornersHeight.x;  // Use the .x parameter for the lower right corner
+    float myHeight = cellIn[index].position.z;
+    int toVertexScale = 10;
+    int heightOffset = -1;
+    float splitHeight = 1.0;
+    float matchNeighbourHeight = ((neighbourHeight - myHeight) * toVertexScale + heightOffset) * splitHeight;
+    return matchNeighbourHeight;
+}
+
+
 
 
 int neighbourCellsAlive(int range) {
@@ -92,31 +101,30 @@ int neighbourCellsAlive(int range) {
             vec4 sideHeight;
             vec4 cornerHeights;
 
-            if (coordOffset == ivec2(1,0)) {
-                sideHeight.x = matchHeight( neighbourIndex );  // Right neighbour
-            } else if (coordOffset == ivec2(0, 1)) {
-                sideHeight.y = matchHeight( neighbourIndex );  // Upper neighbour
-            } else if (coordOffset == ivec2(-1, 0)) {
-                sideHeight.z = matchHeight( neighbourIndex );  // Left neighbour
-            } else if (coordOffset == ivec2(0, -1)) {
-                sideHeight.w = matchHeight( neighbourIndex );  // Lower neighbour
-                
-                // linker hoeken goed, rechts moet links worden
-            } else  if (coordOffset == ivec2(1, -1)) {
-                cornerHeights.x = matchHeight( neighbourIndex ); // upper right neighbor
-            } else if (coordOffset == ivec2(1, 1 )) {
-                cornerHeights.y = matchHeight( neighbourIndex ); // lower right neighbor
-            } else if (coordOffset == ivec2(-1, 1)) {
-                cornerHeights.z = matchHeight( neighbourIndex ); // lower left neighbor
-            } else if (coordOffset == ivec2(-1, -1)) {
-                cornerHeights.w = matchHeight( neighbourIndex ); // upper Left
-            } else {
-                continue;
-            }
+         // ...
+
+if (coordOffset == ivec2(1, 0)) {
+    sideHeight.x = matchHeight(neighbourIndex);  // Right neighbour
+    cornerHeights.y = matchHeight2(neighbourIndex); // lower right neighbor
+    cornerHeights.x = matchHeight2(neighbourIndex); // upper right neighbor (same as lower right)
+} else if (coordOffset == ivec2(0, 1)) {
+    sideHeight.y = matchHeight(neighbourIndex);  // Upper neighbour
+    cornerHeights.x = matchHeight2(neighbourIndex); // upper right neighbor
+    cornerHeights.w = matchHeight2(neighbourIndex); // upper left neighbor (same as upper right)
+} else if (coordOffset == ivec2(-1, 0)) {
+    sideHeight.z = matchHeight(neighbourIndex);  // Left neighbour
+    cornerHeights.w = matchHeight2(neighbourIndex); // upper Left
+    cornerHeights.z = matchHeight2(neighbourIndex); // lower left neighbor (same as upper left)
+} else if (coordOffset == ivec2(0, -1)) {
+    sideHeight.w = matchHeight(neighbourIndex);  // Lower neighbour
+    cornerHeights.z = matchHeight2(neighbourIndex); // lower left neighbor
+    cornerHeights.y = matchHeight2(neighbourIndex); // lower right neighbor (same as lower left)
+}
+
+// ...
 
             cellOut[index].tileSidesHeight = sideHeight;
             cellOut[index].tileCornersHeight = cornerHeights;
-
          }
     }
     return neighbourCellsInRange;
