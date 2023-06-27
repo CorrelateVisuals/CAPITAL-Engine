@@ -61,51 +61,59 @@ int neighbourAlive(int index) {
 
 float findCenter(float a, float b){ return (a + b) * 0.5; }
 
-int indexX = int(index) % ubo.gridDimensions.x;
-int indexY = int(index) / ubo.gridDimensions.x;
-
-ivec4 neighbourCellsAlive(int range) {
-    ivec4 neighbourCellsInRange = ivec4(0);
-
-    for (int offsetY = -range; offsetY <= range; offsetY++) {
-        for (int offsetX = -range; offsetX <= range; offsetX++) {
-            if (offsetX == 0 && offsetY == 0) { continue; }
-            int neighbourX = (indexX + offsetX + ubo.gridDimensions.x) % ubo.gridDimensions.x;
-            int neighbourY = (indexY + offsetY + ubo.gridDimensions.y) % ubo.gridDimensions.y;
-            int neighbourIndex = neighbourY * ubo.gridDimensions.x + neighbourX;
-
-            neighbourCellsInRange += neighbourAlive(neighbourIndex);
-            
-
+float matchHeight(int neighbourIndex){
             float neighbourHeight = cellIn[neighbourIndex].position.z;
             float myHeight = cellIn[index].position.z;
             int toVertexScale = 10;
             int heightOffset = -1;
             float splitHeight = 0.5;
+
             float matchNeighbourHeight = ((neighbourHeight - myHeight) * toVertexScale + heightOffset) * splitHeight;
+            return matchNeighbourHeight;
+}
+
+
+int neighbourCellsAlive(int range) {
+    int neighbourCellsInRange = 0;
+
+    int indexX = int(index) % ubo.gridDimensions.x;
+    int indexY = int(index) / ubo.gridDimensions.x;
+    ivec2 coordOffset;
+
+    for (coordOffset.y = -range; coordOffset.y <= range; coordOffset.y++) {
+        for (coordOffset.x = -range; coordOffset.x <= range; coordOffset.x++) {
+            if (coordOffset == ivec2(0)) { continue; }
+            int neighbourX = (indexX + coordOffset.x + ubo.gridDimensions.x) % ubo.gridDimensions.x;
+            int neighbourY = (indexY + coordOffset.y + ubo.gridDimensions.y) % ubo.gridDimensions.y;
+            int neighbourIndex = neighbourY * ubo.gridDimensions.x + neighbourX;
+
+            neighbourCellsInRange += neighbourAlive(neighbourIndex);
+
             vec4 sideHeight;
             vec4 cornerHeights;
 
-            if (offsetX == 1 && offsetY == 0) {
-                sideHeight.x = matchNeighbourHeight;  // Right neighbour
-            } else if (offsetX == 0 && offsetY == 1 ) {
-                sideHeight.y = matchNeighbourHeight;  // Upper neighbour
-            } else if (offsetX == -1 && offsetY == 0) {
-                sideHeight.z = matchNeighbourHeight;  // Left neighbour
-            } else if (offsetX == 0 && offsetY == -1) {
-                sideHeight.w = matchNeighbourHeight;  // Lower neighbour
+            if (coordOffset == ivec2(1,0)) {
+                sideHeight.x = matchHeight( neighbourIndex );  // Right neighbour
+            } else if (coordOffset == ivec2(0, 1)) {
+                sideHeight.y = matchHeight( neighbourIndex );  // Upper neighbour
+            } else if (coordOffset == ivec2(-1, 0)) {
+                sideHeight.z = matchHeight( neighbourIndex );  // Left neighbour
+            } else if (coordOffset == ivec2(0, -1)) {
+                sideHeight.w = matchHeight( neighbourIndex );  // Lower neighbour
                 
-            } else  if (offsetX == 1 && offsetY == -1) {
-                cornerHeights.x = matchNeighbourHeight; // upper right neighbor
-            } else if (offsetX == 1 && offsetY == 1 ) {
-                cornerHeights.y = matchNeighbourHeight; // lower right neighbor
-            } else if (offsetX == -1 && offsetY == 1) {
-                cornerHeights.z = matchNeighbourHeight; // lower left neighbor
-            } else if (offsetX == -1 && offsetY == -1) {
-                cornerHeights.w = matchNeighbourHeight; // upper Left
+                // linker hoeken goed, rechts moet links worden
+            } else  if (coordOffset == ivec2(1, -1)) {
+                cornerHeights.x = matchHeight( neighbourIndex ); // upper right neighbor
+            } else if (coordOffset == ivec2(1, 1 )) {
+                cornerHeights.y = matchHeight( neighbourIndex ); // lower right neighbor
+            } else if (coordOffset == ivec2(-1, 1)) {
+                cornerHeights.z = matchHeight( neighbourIndex ); // lower left neighbor
+            } else if (coordOffset == ivec2(-1, -1)) {
+                cornerHeights.w = matchHeight( neighbourIndex ); // upper Left
             } else {
                 continue;
             }
+
             cellOut[index].tileSidesHeight = sideHeight;
             cellOut[index].tileCornersHeight = cornerHeights;
 
@@ -128,7 +136,7 @@ bool die(int neighbours)  { return (aliveCell && (neighbours < 2 || neighbours >
 vec4 colorIncrement     = colorIn + vec4(float((passedHours % cycleSize + 1)) / float(cycleSize * 50), vec3(0.0));
 
 void simulate(out Cell cell){
-    int neighbours  = neighbourCellsAlive(1).x;
+    int neighbours  = neighbourCellsAlive(1);
 
     if (stage(0)) {
         cell = initialized ?    Cell(pos, green, size, setState(alive, 0), cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight) :
