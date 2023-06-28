@@ -38,7 +38,8 @@ layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
 
 int alive       =  1;
-int dead        =  -1;
+int dead        = -1;
+int off         = -1;
 vec4 size       = vec4(ubo.cellSize);
 vec4 sizeOff    = vec4(0.0);
 vec4 red        = vec4(1.0, 0.0, 0.0, 1.0);
@@ -61,70 +62,66 @@ int neighbourAlive(int index) {
 
 float findCenter(float a, float b){ return (a + b) * 0.5; }
 
-float matchHeight(int neighbourIndex){
-    float neighbourHeight = cellIn[neighbourIndex].position.z;
+float matchSideHeight(int _neighbourIndex){
+    float neighbourHeight = cellIn[_neighbourIndex].position.z;
     float myHeight = cellIn[index].position.z;
     int toVertexScale = 10;   int heightOffset = -1;   float splitHeight = 0.5;
     float matchNeighbourHeight = ((neighbourHeight - myHeight) * toVertexScale + heightOffset) * splitHeight;
     return matchNeighbourHeight;
 }
 
-float matchHeight2(int neighbourIndex) {
-    float neighbourHeight = 0.1;  // Use the .x parameter for the lower right corner
+float matchCornerHeight(float _neighbourHeight) {
     float myHeight = cellIn[index].position.z;
-    int toVertexScale = 10;
-    int heightOffset = -1;
-    float splitHeight = 1.0;
-    float matchNeighbourHeight = ((neighbourHeight - myHeight) * toVertexScale + heightOffset) * splitHeight;
+    int toVertexScale = 10;  int heightOffset = -1; float splitHeight = 1.0;
+    float matchNeighbourHeight = ((_neighbourHeight - myHeight) * toVertexScale + heightOffset) * splitHeight;
     return matchNeighbourHeight;
 }
 
 
+int getNeighbourIndex(ivec2 offset, ivec2 gridDimensions) {
+    int indexX = int(index) % gridDimensions.x;
+    int indexY = int(index) / gridDimensions.x;
+    int neighbourX = (indexX + offset.x + gridDimensions.x) % gridDimensions.x;
+    int neighbourY = (indexY + offset.y + gridDimensions.y) % gridDimensions.y;
+    int neighbourIndex = neighbourY * gridDimensions.x + neighbourX;
+    return neighbourIndex;
+}
 
+void setTileEdgeHeight( int _neighbourIndex, ivec2 _coordOffset ){
+    vec4 sideHeight;
+    vec4 cornerHeights;
+    float _height = 0.1f;
+
+        if (_coordOffset == ivec2(-1, 0)) {
+            sideHeight.z = matchSideHeight( _neighbourIndex );  // Left neighbour
+            cornerHeights.z = matchCornerHeight( _height );       // lower left neighbor (same as upper left)
+        } else if (_coordOffset == ivec2(0, -1)) {
+            sideHeight.w = matchSideHeight( _neighbourIndex );  // Lower neighbour
+            cornerHeights.y = matchCornerHeight( _height );       // lower right neighbor (same as lower left)
+        } else if (_coordOffset == ivec2(0, 1)) {
+            sideHeight.y = matchSideHeight( _neighbourIndex );  // Upper neighbour
+            cornerHeights.w = matchCornerHeight( _height );       // upper left neighbor (same as upper right)
+        } else if (_coordOffset == ivec2(1, 0)) {
+            sideHeight.x = matchSideHeight( _neighbourIndex );  // Right neighbour
+            cornerHeights.x = matchCornerHeight( _height );       // upper right neighbor (same as lower right)
+        }
+    cellOut[index].tileSidesHeight = sideHeight;
+    cellOut[index].tileCornersHeight = cornerHeights;
+}
 
 int neighbourCellsAlive(int range) {
     int neighbourCellsInRange = 0;
+    int neighbourIndex = off;
 
-    int indexX = int(index) % ubo.gridDimensions.x;
-    int indexY = int(index) / ubo.gridDimensions.x;
     ivec2 coordOffset;
-
     for (coordOffset.y = -range; coordOffset.y <= range; coordOffset.y++) {
         for (coordOffset.x = -range; coordOffset.x <= range; coordOffset.x++) {
             if (coordOffset == ivec2(0)) { continue; }
-            int neighbourX = (indexX + coordOffset.x + ubo.gridDimensions.x) % ubo.gridDimensions.x;
-            int neighbourY = (indexY + coordOffset.y + ubo.gridDimensions.y) % ubo.gridDimensions.y;
-            int neighbourIndex = neighbourY * ubo.gridDimensions.x + neighbourX;
 
+            neighbourIndex = getNeighbourIndex(coordOffset, ubo.gridDimensions);
             neighbourCellsInRange += neighbourAlive(neighbourIndex);
 
-            vec4 sideHeight;
-            vec4 cornerHeights;
-
-         // ...
-
-if (coordOffset == ivec2(1, 0)) {
-    sideHeight.x = matchHeight(neighbourIndex);  // Right neighbour
-    //cornerHeights.y = matchHeight2(neighbourIndex); // lower right neighbor
-    cornerHeights.x = matchHeight2(neighbourIndex); // upper right neighbor (same as lower right)
-} else if (coordOffset == ivec2(0, 1)) {
-    sideHeight.y = matchHeight(neighbourIndex);  // Upper neighbour
-    //cornerHeights.x = matchHeight2(neighbourIndex); // upper right neighbor
-    cornerHeights.w = matchHeight2(neighbourIndex); // upper left neighbor (same as upper right)
-} else if (coordOffset == ivec2(-1, 0)) {
-    sideHeight.z = matchHeight(neighbourIndex);  // Left neighbour
-    //cornerHeights.w = matchHeight2(neighbourIndex); // upper Left
-    cornerHeights.z = matchHeight2(neighbourIndex); // lower left neighbor (same as upper left)
-} else if (coordOffset == ivec2(0, -1)) {
-    sideHeight.w = matchHeight(neighbourIndex);  // Lower neighbour
-    //cornerHeights.z = matchHeight2(neighbourIndex); // lower left neighbor
-    cornerHeights.y = matchHeight2(neighbourIndex); // lower right neighbor (same as lower left)
-}
-
-// ...
-
-            cellOut[index].tileSidesHeight = sideHeight;
-            cellOut[index].tileCornersHeight = cornerHeights;
+            setTileEdgeHeight(neighbourIndex, coordOffset);
          }
     }
     return neighbourCellsInRange;
