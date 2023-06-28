@@ -70,7 +70,7 @@ float matchHeight(int neighbourIndex){
 }
 
 float matchHeight2(int neighbourIndex) {
-    float neighbourHeight = cellIn[neighbourIndex].tileCornersHeight.x;  // Use the .x parameter for the lower right corner
+    float neighbourHeight = 0.1;  // Use the .x parameter for the lower right corner
     float myHeight = cellIn[index].position.z;
     int toVertexScale = 10;
     int heightOffset = -1;
@@ -105,19 +105,19 @@ int neighbourCellsAlive(int range) {
 
 if (coordOffset == ivec2(1, 0)) {
     sideHeight.x = matchHeight(neighbourIndex);  // Right neighbour
-    cornerHeights.y = matchHeight2(neighbourIndex); // lower right neighbor
+    //cornerHeights.y = matchHeight2(neighbourIndex); // lower right neighbor
     cornerHeights.x = matchHeight2(neighbourIndex); // upper right neighbor (same as lower right)
 } else if (coordOffset == ivec2(0, 1)) {
     sideHeight.y = matchHeight(neighbourIndex);  // Upper neighbour
-    cornerHeights.x = matchHeight2(neighbourIndex); // upper right neighbor
+    //cornerHeights.x = matchHeight2(neighbourIndex); // upper right neighbor
     cornerHeights.w = matchHeight2(neighbourIndex); // upper left neighbor (same as upper right)
 } else if (coordOffset == ivec2(-1, 0)) {
     sideHeight.z = matchHeight(neighbourIndex);  // Left neighbour
-    cornerHeights.w = matchHeight2(neighbourIndex); // upper Left
+    //cornerHeights.w = matchHeight2(neighbourIndex); // upper Left
     cornerHeights.z = matchHeight2(neighbourIndex); // lower left neighbor (same as upper left)
 } else if (coordOffset == ivec2(0, -1)) {
     sideHeight.w = matchHeight(neighbourIndex);  // Lower neighbour
-    cornerHeights.z = matchHeight2(neighbourIndex); // lower left neighbor
+    //cornerHeights.z = matchHeight2(neighbourIndex); // lower left neighbor
     cornerHeights.y = matchHeight2(neighbourIndex); // lower right neighbor (same as lower left)
 }
 
