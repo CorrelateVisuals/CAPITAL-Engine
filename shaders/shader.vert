@@ -109,6 +109,6 @@ float gouraudShading(float brightness, float contrast, float emit, float gamma, 
 layout(location = 0) out vec4 fragColor;
 
 void main() {
-    fragColor = inColor * gouraudShading(0.8f, 2.0f, 0.35f, 0.8f, 1.0f);
+    fragColor = inColor * gouraudShading(1.0f, 2.0f, 0.3f, 0.8f, 1.0f);
     gl_Position = ubo.projection * viewPosition;
 }

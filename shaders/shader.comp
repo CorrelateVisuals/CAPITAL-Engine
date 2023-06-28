@@ -64,7 +64,7 @@ float findCenter(float a, float b){ return (a + b) * 0.5; }
 float matchHeight(int neighbourIndex){
     float neighbourHeight = cellIn[neighbourIndex].position.z;
     float myHeight = cellIn[index].position.z;
-    int toVertexScale = 10;   int heightOffset = 0;   float splitHeight = 0.5;
+    int toVertexScale = 10;   int heightOffset = -1;   float splitHeight = 0.5;
     float matchNeighbourHeight = ((neighbourHeight - myHeight) * toVertexScale + heightOffset) * splitHeight;
     return matchNeighbourHeight;
 }
