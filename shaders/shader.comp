@@ -87,29 +87,34 @@ int getNeighbourIndex(ivec2 offset, ivec2 gridDimensions) {
     return neighbourIndex;
 }
 
+float randomFloat(int value) {
+    float random = fract(sin(float(value)) * 43758.5453); // Hash function
+    return random;
+}
+
 void setTileEdgeHeight( int _neighbourIndex, ivec2 _coordOffset ){
     vec4 sideHeight;
     vec4 cornerHeights;
-    float _height = 0.1f;
+    float _height = matchCornerHeight( ubo.gridHeight / 2 );
 
-        if (_coordOffset == ivec2(-1, 0)) {
-            sideHeight.z = matchSideHeight( _neighbourIndex );  // Left neighbour
-            cornerHeights.z = matchCornerHeight( _height );       // lower left neighbor (same as upper left)
-        } else if (_coordOffset == ivec2(0, -1)) {
-            sideHeight.w = matchSideHeight( _neighbourIndex );  // Lower neighbour
-            cornerHeights.y = matchCornerHeight( _height );       // lower right neighbor (same as lower left)
-        } else if (_coordOffset == ivec2(0, 1)) {
-            sideHeight.y = matchSideHeight( _neighbourIndex );  // Upper neighbour
-            cornerHeights.w = matchCornerHeight( _height );       // upper left neighbor (same as upper right)
-        } else if (_coordOffset == ivec2(1, 0)) {
-            sideHeight.x = matchSideHeight( _neighbourIndex );  // Right neighbour
-            cornerHeights.x = matchCornerHeight( _height );       // upper right neighbor (same as lower right)
-        }
+    if (_coordOffset == ivec2(-1, 0)) {
+        sideHeight.z = matchSideHeight( _neighbourIndex );  // Left neighbour
+        cornerHeights.z = _height;       // lower left neighbor (same as upper left)
+    } else if (_coordOffset == ivec2(0, -1)) {
+        sideHeight.w = matchSideHeight( _neighbourIndex );  // Lower neighbour
+        cornerHeights.y = _height;       // lower right neighbor (same as lower left)
+    } else if (_coordOffset == ivec2(0, 1)) {
+        sideHeight.y = matchSideHeight( _neighbourIndex );  // Upper neighbour
+        cornerHeights.w =_height;       // upper left neighbor (same as upper right)
+    } else if (_coordOffset == ivec2(1, 0)) {
+        sideHeight.x = matchSideHeight( _neighbourIndex );  // Right neighbour
+        cornerHeights.x = _height;       // upper right neighbor (same as lower right)
+    }
     cellOut[index].tileSidesHeight = sideHeight;
     cellOut[index].tileCornersHeight = cornerHeights;
 }
 
-int neighbourCellsAlive(int range) {
+int cycleNeighbours(int range) {
     int neighbourCellsInRange = 0;
     int neighbourIndex = off;
 
@@ -141,7 +146,7 @@ bool die(int neighbours)  { return (aliveCell && (neighbours < 2 || neighbours >
 vec4 colorIncrement     = colorIn + vec4(float((passedHours % cycleSize + 1)) / float(cycleSize * 50), vec3(0.0));
 
 void simulate(out Cell cell){
-    int neighbours  = neighbourCellsAlive(1);
+    int neighbours  = cycleNeighbours(1);
 
     if (stage(0)) {
         cell = initialized ?    Cell(pos, green, size, setState(alive, 0), cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight) :
