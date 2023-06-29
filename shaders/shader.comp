@@ -109,6 +109,7 @@ void setTileEdgeHeight( int neighbourIndex, ivec2 coordOffset ){
     }
 }
 
+
 int cycleNeighbours(int range) {
     int neighboursAlive = 0;
     int neighbourIndex = off;
