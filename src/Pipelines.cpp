@@ -148,14 +148,17 @@ void Pipelines::createGraphicsPipeline() {
       .polygonMode = VK_POLYGON_MODE_FILL,
       .cullMode = VK_CULL_MODE_BACK_BIT,
       .frontFace = VK_FRONT_FACE_CLOCKWISE,
-      .depthBiasEnable = VK_FALSE,
+      .depthBiasEnable = VK_TRUE,
+      .depthBiasConstantFactor = 0.1f,
+      .depthBiasClamp = 0.01f,
+      .depthBiasSlopeFactor = 0.02f,
       .lineWidth = 1.0f};
 
   VkPipelineMultisampleStateCreateInfo multisampling{
       .sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
       .rasterizationSamples = graphics.msaa.samples,
       .sampleShadingEnable = VK_TRUE,
-      .minSampleShading = 0.2f};
+      .minSampleShading = 1.0f};
 
   VkPipelineDepthStencilStateCreateInfo depthStencil = getDepthStencilInfo();
   VkPipelineColorBlendStateCreateInfo colorBlending = getColorBlendingInfo();

@@ -17,13 +17,13 @@ class World {
 
   struct Camera {
     float fieldOfView = 60.0f;
-    glm::vec3 position{0.0f, 0.0f, 5.0f};
+    glm::vec3 position{0.0f, 0.0f, 4.0f};
     glm::vec3 front{0.0f, 0.0f, -1.0f};
     glm::vec3 up{0.0f, -1.0f, 0.0f};
   } camera;
 
   struct Light {
-    std::array<float, 4> position = {0.2f, 1.0f, 10.0f, 0.02f};
+    std::array<float, 4> position{0.0f, 2.0f, 10.0f, 0.0f};
   } light;
 
   struct Cell {
@@ -31,7 +31,8 @@ class World {
     std::array<float, 4> color;
     std::array<float, 4> size;
     std::array<int, 4> states;
-    std::array<float, 4> tileCornerHeight;
+    std::array<float, 4> tileSidesHeight;
+    std::array<float, 4> tileCornersHeight;
   };
 
   struct UniformBufferObject {
@@ -46,7 +47,7 @@ class World {
 
   struct Tile {
     uint32_t vertexCount = 90;
-    float size = 0.1f;
+    float cubeSize = 0.1f;
   } tile;
 
  public:
