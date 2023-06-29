@@ -67,6 +67,8 @@ class World {
   glm::mat4 setView();
   glm::mat4 setProjection(VkExtent2D& swapChainExtent);
 
+  std::vector<float> setGridHeight(int amount, float min, float max);
+
   inline static const std::array<float, 4> red{1.0f, 0.0f, 0.0f, 1.0f};
   inline static const std::array<float, 4> blue{0.0f, 0.0f, 1.0f, 1.0f};
 

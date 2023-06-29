@@ -124,7 +124,7 @@ float gouraudShading(float brightness, float emit) {
 layout(location = 0) out vec4 fragColor;
 
 void main() {
-    vec4 color = setColor() * gouraudShading(2.0f, 0.5f); 
+    vec4 color = inColor * setColor() * gouraudShading(2.0f, 0.5f); 
     fragColor = modifyColorContrast(color, 1.3f);
     gl_Position = projection * viewPosition;
 }

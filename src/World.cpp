@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <random>
 
 World::World() {
   _log.console("{ (X) }", "constructing World");
@@ -40,7 +41,7 @@ std::vector<World::Cell> World::initializeCells() {
   const uint_fast16_t height = _control.grid.dimensions[1];
   const uint_fast32_t numGridPoints = width * height;
   const uint_fast32_t numAliveCells = _control.grid.totalAliveCells;
-  const float gap = _control.grid.gap;
+  const float gap = 0.6f;
   std::array<float, 4> size = {tile.cubeSize};
 
   if (numAliveCells > numGridPoints) {
@@ -63,7 +64,7 @@ std::vector<World::Cell> World::initializeCells() {
   }
 
   std::vector<float> tileHeight =
-      lib.generateRandomValues(numGridPoints, 0.0f, _control.grid.height);
+      setGridHeight(numGridPoints, 0.0f, _control.grid.height);
 
   const std::array<float, 4> sidesHeight = {0.0f, 0.0f, 0.0f, 0.0f};
   const std::array<float, 4> cornersHeight = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -190,6 +191,21 @@ float World::getForwardMovement(const glm::vec2& leftButtonDelta) {
     forwardMovement = 0.0f;
   }
   return forwardMovement;
+}
+
+std::vector<float> World::setGridHeight(int amount, float min, float max) {
+  static std::random_device rd;
+  static std::mt19937 gen(rd());
+  std::uniform_real_distribution<float> dis(min, max);
+  std::vector<float> randomValues(amount);
+  int heightSteps = 10;
+  int offset = 0;
+  for (int i = 0; i < amount; ++i) {
+    randomValues[i] = (dis(gen) * offset) / heightSteps;
+    offset = (offset + 1) % heightSteps;
+  }
+  std::shuffle(randomValues.begin(), randomValues.end(), gen);
+  return randomValues;
 }
 
 glm::mat4 World::setModel() {

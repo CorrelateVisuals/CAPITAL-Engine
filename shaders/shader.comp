@@ -38,6 +38,7 @@ const vec4 green      = vec4(0.0, 1.0, 0.0, 1.0);
 const vec4 dimGreen   = vec4(0.0, 0.05, 0.0, 1.0);
 const vec4 blue       = vec4(0.0, 0.0, 1.0, 1.0);
 const vec4 white      = vec4(1.0, 1.0, 1.0, 1.0);
+const vec4 grey1      = vec4(0.5, 0.5, 0.5, 1.0);
 const vec4 black      = vec4(0.0, 0.0, 0.0, 1.0);
 const vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
 const vec4 terrain    = vec4(0.0, 0.1, 0.1, 1.0);
@@ -128,13 +129,13 @@ void simulate(out Cell cell){
     int neighbours  = cycleNeighbours(1);
 
     if (stage(0)) {
-        cell = initialized ?    Cell(pos, green, size, setState(alive, 0), sidesHeight, cornersHeight) :
+        cell = initialized ?    Cell(pos, white, size, setState(alive, 0), sidesHeight, cornersHeight) :
                lifeCycle ?      Cell(pos, colorIncrement, size, setState(alive, 0),sidesHeight, cornersHeight) :
-               endOfStage ?     Cell(pos, green, size, setState(alive, 1),sidesHeight, cornersHeight) :
-                                Cell(pos, terrain, sizeOff, setState(dead, 1),sidesHeight, cornersHeight);
+               endOfStage ?     Cell(pos, white, size, setState(alive, 1),sidesHeight, cornersHeight) :
+                                Cell(pos, grey1, sizeOff, setState(dead, 1),sidesHeight, cornersHeight);
     } else if (stage(1)) {
-        cell = live(neighbours) ?   Cell(pos, green, size, setState(alive, 0),sidesHeight, cornersHeight) :
-               die(neighbours) ?    Cell(pos, terrain, sizeOff, setState(dead, 0),sidesHeight, cornersHeight) :
+        cell = live(neighbours) ?   Cell(pos, white, size, setState(alive, 0),sidesHeight, cornersHeight) :
+               die(neighbours) ?    Cell(pos, grey1, sizeOff, setState(dead, 0),sidesHeight, cornersHeight) :
                                     Cell(pos, colorIn, sizeOff, setState(dead, 1),sidesHeight, cornersHeight);
     }
 }

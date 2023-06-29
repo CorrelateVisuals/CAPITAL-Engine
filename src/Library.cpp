@@ -12,7 +12,6 @@ std::vector<float> Library::generateRandomValues(int amount,
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<float> dis(min, max);
-
   std::vector<float> randomValues(amount);
   for (int i = 0; i < amount; ++i) {
     randomValues[i] = dis(gen);
