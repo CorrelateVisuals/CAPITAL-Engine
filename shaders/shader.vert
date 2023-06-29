@@ -1,5 +1,4 @@
 #version 450
-
 layout(location = 0) in vec4 inPosition;
 layout(location = 1) in vec4 inColor;
 layout(location = 2) in vec4 inSize;
@@ -16,6 +15,12 @@ layout (binding = 0) uniform ParameterUBO {
     mat4 view;
     mat4 projection;
 } ubo;
+vec4 light = ubo.light;
+ivec2 gridDimensions = ubo.gridDimensions;
+mat4 model = ubo.model;
+mat4 view = ubo.view;
+mat4 projection = ubo.projection;
+
 
 vec4 side = inTileSidesHeight;
 vec4 corner = inTileCornersHeight;
@@ -69,13 +74,10 @@ vec4 constructTile() {
     float cubeIndices = float(gl_VertexIndex < 36);
     float adjustSize = cubeIndices * inSize.x + (1.0 - cubeIndices) * 0.1;
     float floorOffset = adjustSize - inSize.x; // Calculate the floor offset
-    
     vec4 position = inPosition;
     position.xyz += vertex.xyz * adjustSize; // Adjust the x, y, and z coordinates
-    
     return position;
 }
-
 
 vec3 getNormal(){   
     int vertexPerFace = 3;      
@@ -87,47 +89,36 @@ vec3 getNormal(){
     return normal; 
 }
 
-vec4 worldPosition = ubo.model * constructTile();
-vec4 viewPosition =  ubo.view * worldPosition;
-vec3 worldNormal =   mat3(ubo.model) * getNormal();
-
-float gouraudShading(float brightness, float emit) {
-    vec3 lightDirection = normalize(ubo.light.rgb - worldPosition.xyz);
-    float diffuseIntensity = max(dot(worldNormal, lightDirection), emit);
-
-    return diffuseIntensity * brightness;
-}
+vec4 worldPosition = model * constructTile();
+vec4 viewPosition =  view * worldPosition;
+vec3 worldNormal =   mat3(model) * getNormal();
 
 vec4 setColor() {
-    vec2 normalizedPosition = (worldPosition.xy + ubo.gridDimensions.xy * 0.5) / ubo.gridDimensions.xy;
+    vec2 normalizedPosition = (worldPosition.xy + gridDimensions.xy * 0.5) / gridDimensions.xy;
     vec2 invNormalizedPosition = vec2(1.0) - normalizedPosition;
 
-    // Calculate the blending factors for each corner
     float blendTopLeft = max(invNormalizedPosition.x + invNormalizedPosition.y - 1.0, 0.0);
     float blendTopRight = max(normalizedPosition.x + invNormalizedPosition.y - 1.0, 0.0);
     float blendBottomLeft = max(invNormalizedPosition.x + normalizedPosition.y - 1.0, 0.0);
     float blendBottomRight = max(normalizedPosition.x + normalizedPosition.y - 1.0, 0.0);
-
+ 
     vec4 color = vec4(0.1);
-
-    // Blend the colors based on the distance from each corner
     color += vec4(1.0, 0.0, 0.0, 1.0) * blendTopLeft;        // Red for top left corner
     color += vec4(1.0, 1.0, 0.0, 1.0) * blendTopRight;       // Yellow for top right corner
     color += vec4(0.0, 0.0, 1.0, 1.0) * blendBottomLeft;     // Blue for bottom left corner
     color += vec4(0.0, 1.0, 0.0, 1.0) * blendBottomRight;    // Green for bottom right corner
 
-    color *= worldPosition.z + 0.4;
+    color *= worldPosition.z + 0.7;
     return color;
 }
 
-vec4 modifyColorContrast(vec4 color, float contrast) {
-    color.rgb = mix(vec3(0.5), color.rgb, contrast);
-    return color * 1.5;
-}
+vec4 modifyColorContrast(vec4 color, float contrast) { return vec4(mix(vec3(0.5), color.rgb, contrast), color.a);}
+vec4 modifyColorGamma(vec4 color, float gamma) { return vec4(pow(color.rgb, vec3(gamma)), color.a);}
 
-vec4 modifyColorGamma(vec4 color, float gamma) {
-    color.rgb = pow(color.rgb, vec3(1.0 / gamma));
-    return color;
+float gouraudShading(float brightness, float emit) {
+    vec3 lightDirection = normalize(light.rgb - worldPosition.xyz);
+    float diffuseIntensity = max(dot(worldNormal, lightDirection), emit);
+    return diffuseIntensity * brightness;
 }
 
 layout(location = 0) out vec4 fragColor;
@@ -135,5 +126,5 @@ layout(location = 0) out vec4 fragColor;
 void main() {
     vec4 color = setColor() * gouraudShading(2.0f, 0.5f); 
     fragColor = modifyColorContrast(color, 1.3f);
-    gl_Position = ubo.projection * viewPosition;
+    gl_Position = projection * viewPosition;
 }

@@ -1,26 +1,6 @@
 #version 450
 #extension GL_EXT_shader_explicit_arithmetic_types_int64 : enable
 
-layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
-
-layout(push_constant, std430) uniform pushConstant { 
-    uint64_t passedHours;
-};
-
-layout (binding = 0) uniform ParameterUBO {
-    vec4 lightDirection;
-    ivec2 gridDimensions;
-    float gridHeight;
-    float cellSize;
-    mat4 model;
-    mat4 view;
-    mat4 projection;
-} ubo;
-
-uint globalID_x = gl_GlobalInvocationID.x;
-uint globalID_y = gl_GlobalInvocationID.y;
-uint index = globalID_y * ubo.gridDimensions.x + globalID_x % ubo.gridDimensions.x + (globalID_x / ubo.gridDimensions.x) * ubo.gridDimensions.y;
-
 struct Cell {
     vec4 position;  // float    xyz
     vec4 color;     // float    rgba
@@ -30,43 +10,63 @@ struct Cell {
     vec4 tileCornersHeight;
 } cell;
 
-int cycleSize = 24;
-ivec4 setState(int _alive, int stage){ int cycle = int(passedHours % cycleSize + 1); 
-return ivec4(_alive, stage, cycle, passedHours); }
-
 layout(std430, binding = 1) readonly buffer CellSSBOIn {Cell cellIn[ ]; };
 layout(std430, binding = 2) buffer CellSSBOOut {Cell cellOut[ ]; };
+layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+layout(push_constant, std430) uniform pushConstant { uint64_t passedHours; };
+layout (binding = 0) uniform ParameterUBO {
+    vec4 lightDirection;
+    ivec2 gridDimensions;
+    float gridHeight;
+    float cellSize;
+    mat4 model;
+    mat4 view;
+    mat4 projection;
+} ubo;
+ivec2 gridDimensions = ubo.gridDimensions;
 
-int alive       =  1;
-int dead        = -1;
-int off         = -1;
+uint globalID_x = gl_GlobalInvocationID.x;
+uint globalID_y = gl_GlobalInvocationID.y;
+uint index = globalID_y * gridDimensions.x + globalID_x % gridDimensions.x + (globalID_x / gridDimensions.x) * gridDimensions.y;
+
+
+const int alive       =  1;
+const int dead        = -1;
+const int off         = -1;
+const vec4 sizeOff    = vec4(0.0);
+const vec4 red        = vec4(1.0, 0.0, 0.0, 1.0);
+const vec4 green      = vec4(0.0, 1.0, 0.0, 1.0); 
+const vec4 dimGreen   = vec4(0.0, 0.05, 0.0, 1.0);
+const vec4 blue       = vec4(0.0, 0.0, 1.0, 1.0);
+const vec4 white      = vec4(1.0, 1.0, 1.0, 1.0);
+const vec4 black      = vec4(0.0, 0.0, 0.0, 1.0);
+const vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
+const vec4 terrain    = vec4(0.0, 0.1, 0.1, 1.0);
+
 vec4 size       = vec4(ubo.cellSize);
-vec4 sizeOff    = vec4(0.0);
-vec4 red        = vec4(1.0, 0.0, 0.0, 1.0);
-vec4 green      = vec4(0.0, 1.0, 0.0, 1.0); 
-vec4 dimGreen   = vec4(0.0, 0.05, 0.0, 1.0);
-vec4 blue       = vec4(0.0, 0.0, 1.0, 1.0);
-vec4 white      = vec4(1.0, 1.0, 1.0, 1.0);
-vec4 black      = vec4(0.0, 0.0, 0.0, 1.0);
-vec4 dimBlue    = vec4(0.0, 0.0, 0.1, 1.0);
-vec4 terrain    = vec4(0.0, 0.1, 0.1, 1.0);
-
 vec4 pos        = cellIn[index].position;
 vec4 colorIn    = cellIn[index].color;
 ivec4 statesIn  = cellIn[index].states;
+
+const int cycleSize = 24;
+ivec4 setState(int _alive, int stage){ 
+    int cycle = int(passedHours % cycleSize + 1); 
+    return ivec4(_alive, stage, cycle, passedHours); 
+}
+
+int getNeighbourIndex(ivec2 offset) {
+    int indexX = int(index) % gridDimensions.x;
+    int indexY = int(index) / gridDimensions.x;
+    int neighbourX = (indexX + offset.x + gridDimensions.x) % gridDimensions.x;
+    int neighbourY = (indexY + offset.y + gridDimensions.y) % gridDimensions.y;
+    int neighbourIndex = neighbourY * gridDimensions.x + neighbourX;
+    return neighbourIndex;
+}
 
 int neighbourAlive(int index) {
     bvec2 aliveState = equal(cellIn[index].states.xy, ivec2(alive, 1));
     return int(all(aliveState));
 }
-
-float findCenter(float a, float b){ return (a + b) * 0.5; }
-
-float randomFloat(int value) {
-    float random = fract(sin(float(value)) * 43758.5453); // Hash function
-    return random;
-}
-
 
 float matchHeight(int target, float multiplyBy ){
     float height = cellIn[target].position.z;
@@ -74,15 +74,6 @@ float matchHeight(int target, float multiplyBy ){
     int toVertexScale = 10;  int offsetFromCenter = -1; 
     float matchedHeight = ((height - myHeight) * toVertexScale + offsetFromCenter) * multiplyBy;
     return matchedHeight;
-}
-
-int getNeighbourIndex(ivec2 offset) {
-    int indexX = int(index) % ubo.gridDimensions.x;
-    int indexY = int(index) / ubo.gridDimensions.x;
-    int neighbourX = (indexX + offset.x + ubo.gridDimensions.x) % ubo.gridDimensions.x;
-    int neighbourY = (indexY + offset.y + ubo.gridDimensions.y) % ubo.gridDimensions.y;
-    int neighbourIndex = neighbourY * ubo.gridDimensions.x + neighbourX;
-    return neighbourIndex;
 }
 
 vec4 sidesHeight;
@@ -100,13 +91,21 @@ void setTileEdgeHeight(){
 
 int cycleNeighbours(int range) {
     int neighboursAlive = 0;
-    ivec2 directNeighbourCoords[8] = {  ivec2(-1, -1),  ivec2(-1, 0), ivec2(-1, 1), ivec2(0, -1), 
-                                        ivec2(0, 1),    ivec2(1, -1), ivec2(1, 0),  ivec2(1, 1) };
-    for (int neighbour = 0; neighbour < 8; neighbour++){
-        neighboursAlive += neighbourAlive( getNeighbourIndex( directNeighbourCoords[neighbour] ) );
+
+    const int numOffsets = 8;
+    ivec2 directNeighbourOffsets[numOffsets] = {
+        ivec2(-1, -1), ivec2(-1, 0), ivec2(-1, 1), ivec2(0, -1),
+        ivec2(0, 1), ivec2(1, -1), ivec2(1, 0), ivec2(1, 1)
+    };
+
+    for (int i = 0; i < numOffsets; i++) {
+        ivec2 coordOffset = directNeighbourOffsets[i];
+        int neighbourIndex = getNeighbourIndex(coordOffset);
+        neighboursAlive += neighbourAlive(neighbourIndex);
     }
     return neighboursAlive;
 }
+
 
 bool aliveCell          = statesIn.x == alive;
 bool deadCell           = statesIn.x == dead;
@@ -146,6 +145,17 @@ void main() {
             setTileEdgeHeight();
             terrainGenerated = true;
     };
+
     simulate(cell);
     cellOut[index] = cell;
 }
+
+
+
+
+/*float findCenter(float a, float b){ return (a + b) * 0.5; }
+
+float randomFloat(int value) {
+    float random = fract(sin(float(value)) * 43758.5453); // Hash function
+    return random;
+}*/

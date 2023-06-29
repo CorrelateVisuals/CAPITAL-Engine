@@ -20,14 +20,13 @@ std::vector<float> Library::generateRandomValues(int amount,
   return randomValues;
 }
 
-double Library::lowFrequencyOsciallator() {
+double Library::lowFrequencyOscillator(double frequency) {
   using namespace std::chrono;
   static const auto start_time = high_resolution_clock::now();
   const auto time_elapsed =
       duration_cast<milliseconds>(high_resolution_clock::now() - start_time)
           .count();
-  const double period = 1000.0;
-  const double frequency = 100.0 / period;
+  const double period = 1000.0 / frequency;
   const double angle = time_elapsed * frequency * 2 * std::numbers::pi / 1000.0;
   return 0.5 * (1 + std::sin(angle));
 }
