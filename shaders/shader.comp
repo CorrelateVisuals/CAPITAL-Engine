@@ -67,15 +67,8 @@ float randomFloat(int value) {
     return random;
 }
 
-float matchHeight(float neighbourHeight, float multiplyBy ){
-    float myHeight = cellIn[index].position.z;
-    int toVertexScale = 10;  int offsetFromCenter = -1; 
-    float matchedHeight = ((neighbourHeight - myHeight) * toVertexScale + offsetFromCenter) * multiplyBy;
-    return matchedHeight;
-}
 
-
-float matchHeight2(int target, float multiplyBy ){
+float matchHeight(int target, float multiplyBy ){
     float height = cellIn[target].position.z;
     float myHeight = cellIn[index].position.z;
     int toVertexScale = 10;  int offsetFromCenter = -1; 
@@ -95,21 +88,15 @@ int getNeighbourIndex(ivec2 offset) {
 vec4 sidesHeight;
 vec4 cornersHeight;
 void setTileEdgeHeight(){
-    cornersHeight.x = matchHeight( cellIn[index].position.z, 1.0f );
-
-    sidesHeight.z = matchHeight2( getNeighbourIndex( ivec2(-1, 0) ), 0.5f ); 
-    cornersHeight.w = matchHeight2( getNeighbourIndex( ivec2(-1, 0) ), 1.0f );
-
-    cornersHeight.z = matchHeight2( getNeighbourIndex( ivec2(-1, 1) ), 1.0f ); 
-
-    sidesHeight.w = matchHeight2( getNeighbourIndex( ivec2(0, -1) ), 0.5f );
-    
-    sidesHeight.y = matchHeight2( getNeighbourIndex( ivec2(0, 1) ), 0.5f );
-    cornersHeight.y = matchHeight2( getNeighbourIndex( ivec2(0, 1) ), 1.0f ); 
-    
-    sidesHeight.x = matchHeight2( getNeighbourIndex( ivec2(1, 0) ), 0.5f );    
+    cornersHeight.x = matchHeight( getNeighbourIndex( ivec2(0, 0) ), 1.0f );
+    cornersHeight.y = matchHeight( getNeighbourIndex( ivec2(0, 1) ), 1.0f ); 
+    cornersHeight.z = matchHeight( getNeighbourIndex( ivec2(-1, 1) ), 1.0f ); 
+    cornersHeight.w = matchHeight( getNeighbourIndex( ivec2(-1, 0) ), 1.0f );
+    sidesHeight.x = matchHeight( getNeighbourIndex( ivec2(1, 0) ), 0.5f );    
+    sidesHeight.y = matchHeight( getNeighbourIndex( ivec2(0, 1) ), 0.5f );
+    sidesHeight.z = matchHeight( getNeighbourIndex( ivec2(-1, 0) ), 0.5f ); 
+    sidesHeight.w = matchHeight( getNeighbourIndex( ivec2(0, -1) ), 0.5f );
 }
-
 
 int cycleNeighbours(int range) {
     int neighboursAlive = 0;
@@ -155,15 +142,10 @@ void main() {
     if (cellIn[index].states.w == passedHours) { 
         cellOut[index] = cellIn[index]; 
         return; 
-    } else { 
-
-        if (terrainGenerated == false){
+    } else if (terrainGenerated == false){
             setTileEdgeHeight();
             terrainGenerated = true;
-        };
-
-
-        simulate(cell);
-        cellOut[index] = cell;
-    }; 
+    };
+    simulate(cell);
+    cellOut[index] = cell;
 }
