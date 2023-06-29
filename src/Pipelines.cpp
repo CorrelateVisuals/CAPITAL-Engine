@@ -158,7 +158,7 @@ void Pipelines::createGraphicsPipeline() {
       .sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
       .rasterizationSamples = graphics.msaa.samples,
       .sampleShadingEnable = VK_TRUE,
-      .minSampleShading = 0.2f};
+      .minSampleShading = 1.0f};
 
   VkPipelineDepthStencilStateCreateInfo depthStencil = getDepthStencilInfo();
   VkPipelineColorBlendStateCreateInfo colorBlending = getColorBlendingInfo();
