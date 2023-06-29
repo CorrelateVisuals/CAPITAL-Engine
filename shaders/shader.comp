@@ -29,7 +29,6 @@ uint globalID_x = gl_GlobalInvocationID.x;
 uint globalID_y = gl_GlobalInvocationID.y;
 uint index = globalID_y * gridDimensions.x + globalID_x % gridDimensions.x + (globalID_x / gridDimensions.x) * gridDimensions.y;
 
-
 const int alive       =  1;
 const int dead        = -1;
 const int off         = -1;
@@ -76,17 +75,23 @@ float matchHeight(int target, float multiplyBy ){
     return matchedHeight;
 }
 
+bool terrainGenerated = false;
 vec4 sidesHeight;
 vec4 cornersHeight;
 void setTileEdgeHeight(){
-    cornersHeight.x = matchHeight( getNeighbourIndex( ivec2(0, 0) ), 1.0f );
-    cornersHeight.y = matchHeight( getNeighbourIndex( ivec2(0, 1) ), 1.0f ); 
-    cornersHeight.z = matchHeight( getNeighbourIndex( ivec2(-1, 1) ), 1.0f ); 
-    cornersHeight.w = matchHeight( getNeighbourIndex( ivec2(-1, 0) ), 1.0f );
-    sidesHeight.x = matchHeight( getNeighbourIndex( ivec2(1, 0) ), 0.5f );    
-    sidesHeight.y = matchHeight( getNeighbourIndex( ivec2(0, 1) ), 0.5f );
-    sidesHeight.z = matchHeight( getNeighbourIndex( ivec2(-1, 0) ), 0.5f ); 
-    sidesHeight.w = matchHeight( getNeighbourIndex( ivec2(0, -1) ), 0.5f );
+    if (terrainGenerated == true){
+        return;
+    } else {
+        cornersHeight.x = matchHeight( getNeighbourIndex( ivec2(0, 0) ), 1.0f );
+        cornersHeight.y = matchHeight( getNeighbourIndex( ivec2(0, 1) ), 1.0f ); 
+        cornersHeight.z = matchHeight( getNeighbourIndex( ivec2(-1, 1) ), 1.0f ); 
+        cornersHeight.w = matchHeight( getNeighbourIndex( ivec2(-1, 0) ), 1.0f );
+        sidesHeight.x = matchHeight( getNeighbourIndex( ivec2(1, 0) ), 0.5f );    
+        sidesHeight.y = matchHeight( getNeighbourIndex( ivec2(0, 1) ), 0.5f );
+        sidesHeight.z = matchHeight( getNeighbourIndex( ivec2(-1, 0) ), 0.5f ); 
+        sidesHeight.w = matchHeight( getNeighbourIndex( ivec2(0, -1) ), 0.5f );
+        terrainGenerated = true;
+    }
 }
 
 int cycleNeighbours(int range) {
@@ -105,7 +110,6 @@ int cycleNeighbours(int range) {
     }
     return neighboursAlive;
 }
-
 
 bool aliveCell          = statesIn.x == alive;
 bool deadCell           = statesIn.x == dead;
@@ -135,16 +139,12 @@ void simulate(out Cell cell){
     }
 }
 
-bool terrainGenerated = false;
-
 void main() {  
     if (cellIn[index].states.w == passedHours) { 
         cellOut[index] = cellIn[index]; 
         return; 
-    } else if (terrainGenerated == false){
-            setTileEdgeHeight();
-            terrainGenerated = true;
-    };
+    } 
+    setTileEdgeHeight();
 
     simulate(cell);
     cellOut[index] = cell;

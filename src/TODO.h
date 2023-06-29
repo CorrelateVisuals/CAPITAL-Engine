@@ -2,7 +2,8 @@
 /// <TO DO> //////////////////////////////////////////////////////////////////
 ///
 /// [ BUGS ]
-/// - bug finding
+/// - tile corner vertex calculation to vertex shader
+/// - distant vertices jitter
 ///
 /// [ FEATURES: ADDITIONS ]
 /// - camera arcball camera
@@ -16,7 +17,6 @@
 ///
 /// [ FEATURES: GEOMETRY ]
 /// - inter cell movement
-/// - terrain 3x3 mat per cell
-///		- Add vinroy effect
+///	- vinroy effect
 ///
 /// </TO DO> ///////////////////////////////////////////////////////////////////
