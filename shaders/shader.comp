@@ -62,21 +62,12 @@ int neighbourAlive(int index) {
 
 float findCenter(float a, float b){ return (a + b) * 0.5; }
 
-float matchSideHeight(int _neighbourIndex){
-    float neighbourHeight = cellIn[_neighbourIndex].position.z;
+float matchHeight(float neighbourHeight, float multiplyBy ){
     float myHeight = cellIn[index].position.z;
-    int toVertexScale = 10;   int heightOffset = -1;   float splitHeight = 0.5;
-    float matchNeighbourHeight = ((neighbourHeight - myHeight) * toVertexScale + heightOffset) * splitHeight;
-    return matchNeighbourHeight;
+    int toVertexScale = 10;  int offsetFromCenter = -1; 
+    float matchedHeight = ((neighbourHeight - myHeight) * toVertexScale + offsetFromCenter) * multiplyBy;
+    return matchedHeight;
 }
-
-float matchCornerHeight(float _neighbourHeight) {
-    float myHeight = cellIn[index].position.z;
-    int toVertexScale = 10;  int heightOffset = -1; float splitHeight = 1.0;
-    float matchNeighbourHeight = ((_neighbourHeight - myHeight) * toVertexScale + heightOffset) * splitHeight;
-    return matchNeighbourHeight;
-}
-
 
 int getNeighbourIndex(ivec2 offset, ivec2 gridDimensions) {
     int indexX = int(index) % gridDimensions.x;
@@ -92,33 +83,37 @@ float randomFloat(int value) {
     return random;
 }
 
+vec4 sidesHeight;
+vec4 cornersHeight;
+void setTileEdgeHeight( int neighbourIndex, ivec2 coordOffset ){
 
-vec4 sideHeight = cellIn[index].tileSidesHeight;
-vec4 cornerHeights = cellIn[index].tileCornersHeight;
-void setTileEdgeHeight( int _neighbourIndex, ivec2 _coordOffset ){
-
-    cornerHeights.x = matchCornerHeight( cellIn[index].position.z );
-
-    if (_coordOffset == ivec2(-1, 1) ){
-        cornerHeights.z = matchCornerHeight( cellIn[_neighbourIndex].position.z ); 
-    } else if (_coordOffset == ivec2(-1, 0)) {
-        sideHeight.z = matchSideHeight( _neighbourIndex ); 
-        cornerHeights.w = matchCornerHeight( cellIn[_neighbourIndex].position.z );
-    } else if (_coordOffset == ivec2(0, -1)) {
-        sideHeight.w = matchSideHeight( _neighbourIndex );
-    } else if (_coordOffset == ivec2(0, 1)) {
-        sideHeight.y = matchSideHeight( _neighbourIndex );
-        cornerHeights.y = matchCornerHeight( cellIn[_neighbourIndex].position.z ); 
-    } else if (_coordOffset == ivec2(1, 0)) {
-        sideHeight.x = matchSideHeight( _neighbourIndex ); 
+    if (coordOffset == ivec2(-1, 0)) {
+        cornersHeight.x = matchHeight( cellIn[index].position.z, 1.0f );
+        sidesHeight.z = matchHeight( cellIn[neighbourIndex].position.z, 0.5f ); 
+        cornersHeight.w = matchHeight( cellIn[neighbourIndex].position.z, 1.0f );
+        return;
     } 
-
-    cellOut[index].tileSidesHeight = sideHeight;
-    cellOut[index].tileCornersHeight = cornerHeights;
+    if (coordOffset == ivec2(-1, 1) ){
+        cornersHeight.z = matchHeight( cellIn[neighbourIndex].position.z, 1.0f ); 
+        return;
+    } 
+    if (coordOffset == ivec2(0, -1)) {
+        sidesHeight.w = matchHeight( cellIn[neighbourIndex].position.z, 0.5f );
+        return;
+    } 
+    if (coordOffset == ivec2(0, 1)) {
+        sidesHeight.y = matchHeight( cellIn[neighbourIndex].position.z, 0.5f );
+        cornersHeight.y = matchHeight( cellIn[neighbourIndex].position.z, 1.0f ); 
+        return;
+    } 
+    if (coordOffset == ivec2(1, 0)) {
+        sidesHeight.x = matchHeight( cellIn[neighbourIndex].position.z, 0.5f ); 
+        return;
+    } 
 }
 
 int cycleNeighbours(int range) {
-    int neighbourCellsInRange = 0;
+    int neighboursAlive = 0;
     int neighbourIndex = off;
 
     ivec2 coordOffset;
@@ -127,12 +122,12 @@ int cycleNeighbours(int range) {
             if (coordOffset == ivec2(0)) { continue; }
 
             neighbourIndex = getNeighbourIndex(coordOffset, ubo.gridDimensions);
-            neighbourCellsInRange += neighbourAlive(neighbourIndex);
+            neighboursAlive += neighbourAlive(neighbourIndex);
 
             setTileEdgeHeight(neighbourIndex, coordOffset);
          }
     }
-    return neighbourCellsInRange;
+    return neighboursAlive;
 }
 
 bool aliveCell          = statesIn.x == alive;
@@ -152,14 +147,14 @@ void simulate(out Cell cell){
     int neighbours  = cycleNeighbours(1);
 
     if (stage(0)) {
-        cell = initialized ?    Cell(pos, green, size, setState(alive, 0), cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight) :
-               lifeCycle ?      Cell(pos, colorIncrement, size, setState(alive, 0),cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight) :
-               endOfStage ?     Cell(pos, green, size, setState(alive, 1),cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight) :
-                                Cell(pos, terrain, sizeOff, setState(dead, 1),cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight);
+        cell = initialized ?    Cell(pos, green, size, setState(alive, 0), sidesHeight, cornersHeight) :
+               lifeCycle ?      Cell(pos, colorIncrement, size, setState(alive, 0),sidesHeight, cornersHeight) :
+               endOfStage ?     Cell(pos, green, size, setState(alive, 1),sidesHeight, cornersHeight) :
+                                Cell(pos, terrain, sizeOff, setState(dead, 1),sidesHeight, cornersHeight);
     } else if (stage(1)) {
-        cell = live(neighbours) ?   Cell(pos, green, size, setState(alive, 0),cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight) :
-               die(neighbours) ?    Cell(pos, terrain, sizeOff, setState(dead, 0),cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight) :
-                                    Cell(pos, colorIn, sizeOff, setState(dead, 1),cellOut[index].tileSidesHeight, cellOut[index].tileCornersHeight);
+        cell = live(neighbours) ?   Cell(pos, green, size, setState(alive, 0),sidesHeight, cornersHeight) :
+               die(neighbours) ?    Cell(pos, terrain, sizeOff, setState(dead, 0),sidesHeight, cornersHeight) :
+                                    Cell(pos, colorIn, sizeOff, setState(dead, 1),sidesHeight, cornersHeight);
     }
 }
 
