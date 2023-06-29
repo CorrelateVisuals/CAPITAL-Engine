@@ -62,6 +62,11 @@ int neighbourAlive(int index) {
 
 float findCenter(float a, float b){ return (a + b) * 0.5; }
 
+float randomFloat(int value) {
+    float random = fract(sin(float(value)) * 43758.5453); // Hash function
+    return random;
+}
+
 float matchHeight(float neighbourHeight, float multiplyBy ){
     float myHeight = cellIn[index].position.z;
     int toVertexScale = 10;  int offsetFromCenter = -1; 
@@ -78,43 +83,36 @@ int getNeighbourIndex(ivec2 offset, ivec2 gridDimensions) {
     return neighbourIndex;
 }
 
-float randomFloat(int value) {
-    float random = fract(sin(float(value)) * 43758.5453); // Hash function
-    return random;
-}
-
 vec4 sidesHeight;
 vec4 cornersHeight;
 void setTileEdgeHeight( int neighbourIndex, ivec2 coordOffset ){
 
     if (coordOffset == ivec2(-1, 0)) {
-        cornersHeight.x = matchHeight( cellIn[index].position.z, 1.0f );
         sidesHeight.z = matchHeight( cellIn[neighbourIndex].position.z, 0.5f ); 
         cornersHeight.w = matchHeight( cellIn[neighbourIndex].position.z, 1.0f );
         return;
-    } 
-    if (coordOffset == ivec2(-1, 1) ){
+    } else if (coordOffset == ivec2(-1, 1) ){
         cornersHeight.z = matchHeight( cellIn[neighbourIndex].position.z, 1.0f ); 
         return;
-    } 
-    if (coordOffset == ivec2(0, -1)) {
+    } else if (coordOffset == ivec2(0, -1)) {
         sidesHeight.w = matchHeight( cellIn[neighbourIndex].position.z, 0.5f );
         return;
-    } 
-    if (coordOffset == ivec2(0, 1)) {
+    } else if (coordOffset == ivec2(0, 1)) {
         sidesHeight.y = matchHeight( cellIn[neighbourIndex].position.z, 0.5f );
         cornersHeight.y = matchHeight( cellIn[neighbourIndex].position.z, 1.0f ); 
         return;
-    } 
-    if (coordOffset == ivec2(1, 0)) {
+    } else if (coordOffset == ivec2(1, 0)) {
         sidesHeight.x = matchHeight( cellIn[neighbourIndex].position.z, 0.5f ); 
         return;
-    } 
+    } else {
+        return;
+    }
 }
 
 int cycleNeighbours(int range) {
     int neighboursAlive = 0;
     int neighbourIndex = off;
+    cornersHeight.x = matchHeight( cellIn[index].position.z, 1.0f );
 
     ivec2 coordOffset;
     for (coordOffset.y = -range; coordOffset.y <= range; coordOffset.y++) {
