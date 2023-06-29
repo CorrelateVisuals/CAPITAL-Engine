@@ -17,13 +17,13 @@ class World {
 
   struct Camera {
     float fieldOfView = 60.0f;
-    glm::vec3 position{0.0f, 0.0f, 2.0f};
+    glm::vec3 position{0.0f, 0.0f, 4.0f};
     glm::vec3 front{0.0f, 0.0f, -1.0f};
     glm::vec3 up{0.0f, -1.0f, 0.0f};
   } camera;
 
   struct Light {
-    std::array<float, 4> position{0.5f, 2.0f, 5.0f, 0.0f};
+    std::array<float, 4> position{0.0f, 2.0f, 10.0f, 0.0f};
   } light;
 
   struct Cell {

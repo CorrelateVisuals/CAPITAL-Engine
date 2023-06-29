@@ -136,7 +136,7 @@ void World::updateCamera() {
     glm::vec2 middleButtonDelta = buttonType[middle];
     glm::vec3 cameraRight = glm::cross(camera.front, camera.up);
     glm::vec2 absDelta = glm::abs(leftButtonDelta);
-    constexpr float rotationSpeed = 0.2f * glm::pi<float>() / 180.0f;
+    constexpr float rotationSpeed = 0.4f * glm::pi<float>() / 180.0f;
     glm::vec2 rotationDelta = rotationSpeed * leftButtonDelta;
     glm::mat4 rotationMatrix(1.0f);
 
@@ -154,12 +154,12 @@ void World::updateCamera() {
     float movementSpeed = getForwardMovement(leftButtonDelta);
     camera.position += movementSpeed * camera.front;
 
-    constexpr float panningSpeed = 0.02f;
+    constexpr float panningSpeed = 0.1f;
     glm::vec3 cameraUp = glm::cross(cameraRight, camera.front);
     camera.position -= panningSpeed * rightButtonDelta.x * cameraRight;
     camera.position -= panningSpeed * rightButtonDelta.y * cameraUp;
 
-    constexpr float zoomSpeed = 0.02f;
+    constexpr float zoomSpeed = 0.1f;
     camera.position += zoomSpeed * middleButtonDelta.x * camera.front;
     camera.position.z = std::max(camera.position.z, 0.0f);
   }
@@ -176,8 +176,8 @@ float World::getForwardMovement(const glm::vec2& leftButtonDelta) {
       leftMouseButtonDown = true;
       forwardMovement = 0.0f;
     }
-    constexpr float maxSpeed = 0.002f;
-    constexpr float acceleration = 0.00001f;
+    constexpr float maxSpeed = 0.02f;
+    constexpr float acceleration = 0.001f;
 
     // Calculate the speed based on the distance from the center
     float normalizedDeltaLength = glm::clamp(leftButtonDeltaLength, 0.0f, 1.0f);
