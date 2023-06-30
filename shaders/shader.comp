@@ -76,13 +76,10 @@ float matchHeight(int target, float multiplyBy ){
     return matchedHeight;
 }
 
-bool terrainGenerated = false;
 vec4 sidesHeight;
 vec4 cornersHeight;
 void setTileEdgeHeight(){
-    if (terrainGenerated == true){
-        return;
-    } else {
+
         cornersHeight.x = matchHeight( getNeighbourIndex( ivec2(0, 0) ), 1.0f );
         cornersHeight.y = matchHeight( getNeighbourIndex( ivec2(0, 1) ), 1.0f ); 
         cornersHeight.z = matchHeight( getNeighbourIndex( ivec2(-1, 1) ), 1.0f ); 
@@ -91,8 +88,7 @@ void setTileEdgeHeight(){
         sidesHeight.y = matchHeight( getNeighbourIndex( ivec2(0, 1) ), 0.5f );
         sidesHeight.z = matchHeight( getNeighbourIndex( ivec2(-1, 0) ), 0.5f ); 
         sidesHeight.w = matchHeight( getNeighbourIndex( ivec2(0, -1) ), 0.5f );
-        terrainGenerated = true;
-    }
+
 }
 
 int cycleNeighbours(int range) {

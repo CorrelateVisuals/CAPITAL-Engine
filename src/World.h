@@ -17,7 +17,9 @@ class World {
 
   struct Camera {
     float fieldOfView = 60.0f;
-    glm::vec3 position{0.0f, 0.0f, 4.0f};
+    float nearClipping = 0.0001f;
+    float farClipping = 100.0f;
+    glm::vec3 position{0.0f, 0.0f, 40.0f};
     glm::vec3 front{0.0f, 0.0f, -1.0f};
     glm::vec3 up{0.0f, -1.0f, 0.0f};
   } camera;

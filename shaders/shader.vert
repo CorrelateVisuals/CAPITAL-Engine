@@ -21,7 +21,6 @@ mat4 model = ubo.model;
 mat4 view = ubo.view;
 mat4 projection = ubo.projection;
 
-
 vec4 side = inTileSidesHeight;
 vec4 corner = inTileCornersHeight;
 vec3 tileVertices[20] = {
@@ -92,6 +91,7 @@ vec3 getNormal(){
 vec4 worldPosition = model * constructTile();
 vec4 viewPosition =  view * worldPosition;
 vec3 worldNormal =   mat3(model) * getNormal();
+float waterThreshold = -0.02;
 
 vec4 setColor() {
     vec2 normalizedPosition = (worldPosition.xy + gridDimensions.xy * 0.5) / gridDimensions.xy;
@@ -110,10 +110,10 @@ vec4 setColor() {
 
     color *= worldPosition.z + 0.7;
 
-    float heightThreshold = -0.02;
-    if (worldPosition.z < heightThreshold){
-        color = vec4(0.0, 0.5, 0.8, 1.0);
-    }
+    vec4 waterColor = vec4(0.0, 0.5, 0.8, 1.0);
+    float isBelowWater = step(worldPosition.z, waterThreshold);
+    color = mix(color, waterColor, isBelowWater);
+
     return color;
 }
 
@@ -127,6 +127,9 @@ float gouraudShading(float brightness, float emit) {
 }
 
 layout(location = 0) out vec4 fragColor;
+
+
+
 
 void main() {
     vec4 color = inColor * setColor() * gouraudShading(2.0f, 0.5f); 

@@ -14,6 +14,8 @@
 /// https://snoozetime.github.io/2019/05/02/object-picking.html
 /// - vertex and index buffers
 /// https://vulkan-tutorial.com/Vertex_buffers/Vertex_buffer_creation
+/// - compute cull and lod
+/// - 2Dsampler
 ///
 /// [ FEATURES: GEOMETRY ]
 /// - inter cell movement

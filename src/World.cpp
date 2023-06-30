@@ -223,12 +223,10 @@ glm::mat4 World::setView() {
 }
 
 glm::mat4 World::setProjection(VkExtent2D& swapChainExtent) {
-  float nearClipping = 0.0001f;
-  float farClipping = 1000.0f;
   glm::mat4 projection = glm::perspective(
       glm::radians(camera.fieldOfView),
       swapChainExtent.width / static_cast<float>(swapChainExtent.height),
-      nearClipping, farClipping);
+      camera.nearClipping, camera.farClipping);
 
   projection[1][1] *= -1;  // flip y axis
   projection[0][0] *= -1;  // flip x axis
