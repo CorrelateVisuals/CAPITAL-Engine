@@ -198,7 +198,7 @@ std::vector<float> World::setGridHeight(int amount, float min, float max) {
   static std::mt19937 gen(rd());
   std::uniform_real_distribution<float> dis(min, max);
   std::vector<float> randomValues(amount);
-  int heightSteps = 10;
+  int heightSteps = _control.grid.heightSteps;
   int offset = 0;
   for (int i = 0; i < amount; ++i) {
     randomValues[i] = (dis(gen) * offset) / heightSteps;

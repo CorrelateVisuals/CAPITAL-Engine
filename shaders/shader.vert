@@ -97,10 +97,10 @@ vec4 setColor() {
     vec2 normalizedPosition = (worldPosition.xy + gridDimensions.xy * 0.5) / gridDimensions.xy;
     vec2 invNormalizedPosition = vec2(1.0) - normalizedPosition;
 
-    float blendTopLeft = max(invNormalizedPosition.x + invNormalizedPosition.y - 1.0, 0.0);
-    float blendTopRight = max(normalizedPosition.x + invNormalizedPosition.y - 1.0, 0.0);
-    float blendBottomLeft = max(invNormalizedPosition.x + normalizedPosition.y - 1.0, 0.0);
-    float blendBottomRight = max(normalizedPosition.x + normalizedPosition.y - 1.0, 0.0);
+    float blendTopLeft = max(invNormalizedPosition.x + invNormalizedPosition.y - 0.9, 0.0);
+    float blendTopRight = max(normalizedPosition.x + invNormalizedPosition.y - 0.9, 0.0);
+    float blendBottomLeft = max(invNormalizedPosition.x + normalizedPosition.y - 0.9, 0.0);
+    float blendBottomRight = max(normalizedPosition.x + normalizedPosition.y - 0.9, 0.0);
  
     vec4 color = vec4(0.1);
     color += vec4(1.0, 0.0, 0.0, 1.0) * blendTopLeft;        // Red for top left corner
@@ -109,6 +109,11 @@ vec4 setColor() {
     color += vec4(0.0, 1.0, 0.0, 1.0) * blendBottomRight;    // Green for bottom right corner
 
     color *= worldPosition.z + 0.7;
+
+    float heightThreshold = -0.02;
+    if (worldPosition.z < heightThreshold){
+        color = vec4(0.0, 0.5, 0.8, 1.0);
+    }
     return color;
 }
 
