@@ -55,23 +55,25 @@ ivec4 setState(int _alive, int stage){
 }
 
 int getNeighbourIndex(ivec2 offset) {
-    int indexX = int(index) % gridDimensions.x;
-    int indexY = int(index) / gridDimensions.x;
-    int neighbourX = (indexX + offset.x + gridDimensions.x) % gridDimensions.x;
-    int neighbourY = (indexY + offset.y + gridDimensions.y) % gridDimensions.y;
-    int neighbourIndex = neighbourY * gridDimensions.x + neighbourX;
+    ivec2 indexPos = ivec2(index % gridDimensions.x, index / gridDimensions.x);
+    ivec2 neighbourPos = (indexPos + offset + gridDimensions) % gridDimensions;
+    int neighbourIndex = neighbourPos.y * gridDimensions.x + neighbourPos.x;
     return neighbourIndex;
 }
 
+
 int neighbourAlive(int index) {
-    bvec2 aliveState = equal(cellIn[index].states.xy, ivec2(alive, 1));
-    return int(all(aliveState));
+    ivec2 currentState = cellIn[index].states.xy;
+    bool aliveState = currentState.x == alive && currentState.y == 1;
+    return int(aliveState);
 }
+
 
 float matchHeight(int target, float multiplyBy ){
     float height = cellIn[target].position.z;
     float myHeight = cellIn[index].position.z;
-    int toVertexScale = 10;  int offsetFromCenter = -1; 
+    int toVertexScale = 10;  
+    int offsetFromCenter = -1; 
     float matchedHeight = ((height - myHeight) * toVertexScale + offsetFromCenter) * multiplyBy;
     return matchedHeight;
 }
