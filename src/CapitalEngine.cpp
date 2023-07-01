@@ -4,6 +4,7 @@
 #include "Debug.h"
 #include "Mechanics.h"
 #include "Pipelines.h"
+#include "Subscriber.h"
 #include "Window.h"
 
 CapitalEngine::CapitalEngine() {
@@ -19,9 +20,7 @@ CapitalEngine::~CapitalEngine() {
                "terminating...\n");
 }
 
-Global::~Global() {
-  cleanup();
-}
+Global::~Global() { cleanup(); }
 
 void CapitalEngine::mainLoop() {
   _log.console("\n", _log.style.indentSize,
@@ -30,7 +29,10 @@ void CapitalEngine::mainLoop() {
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
     _window.mouseClick();
-    _control.simulateHours();
+
+    if (Subscriber::start_stop()) {
+      _control.simulateHours();
+    }
 
     drawFrame();
 

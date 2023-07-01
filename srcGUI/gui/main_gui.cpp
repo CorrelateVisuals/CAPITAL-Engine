@@ -143,6 +143,9 @@ int main(int, char**)
 
             ImGui::Begin("CAPITAL Engine configuration");           // Create a window called "Hello, world!" and append into it.
 
+            if (ImGui::Button("START / STOP"))
+                pub.publish("Start/Stop");
+
             ImGui::Text("\nConfig parameters\n       ");        
             // ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
             // ImGui::Checkbox("Another Window", &show_another_window);
