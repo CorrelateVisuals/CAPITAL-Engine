@@ -21,8 +21,16 @@ mat4 model = ubo.model;
 mat4 view = ubo.view;
 mat4 projection = ubo.projection;
 
-vec4 side = inTileSidesHeight;
-vec4 corner = inTileCornersHeight;
+vec4 matchHeight(vec4 targetHeight, float multiplyBy ){
+    vec4 myHeight = vec4(inPosition.z);
+    int toVertexScale = 10;  
+    int offsetFromCenter = -1; 
+    vec4 matchedHeight = ((targetHeight - myHeight) * toVertexScale + offsetFromCenter) * multiplyBy;
+    return matchedHeight;
+}
+
+vec4 side = matchHeight(inTileSidesHeight, 0.5f);
+vec4 corner = matchHeight(inTileCornersHeight, 1.0f);
 vec3 tileVertices[20] = {
     // Cube
     {1, 1, 1},    // 0 right front top
@@ -162,4 +170,3 @@ const int cubeIndices[25] = {   0, 1, 2, 3, 6, 7, 4, 5,     // front and back fa
                         2, 3, 6, 7, 4, 5, 0, 1,     // top and bottom faces
                         2 };                        // degenerate triangle to start new strip*/
 
-                        

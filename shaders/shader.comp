@@ -61,36 +61,26 @@ int getNeighbourIndex(ivec2 offset) {
     return neighbourIndex;
 }
 
-
 int neighbourAlive(int index) {
     ivec2 currentState = cellIn[index].states.xy;
     bool aliveState = currentState.x == alive && currentState.y == 1;
     return int(aliveState);
 }
 
-
-float matchHeight(int target, float multiplyBy ){
-    float height = cellIn[target].position.z;
-    float myHeight = cellIn[index].position.z;
-    int toVertexScale = 10;  
-    int offsetFromCenter = -1; 
-    float matchedHeight = ((height - myHeight) * toVertexScale + offsetFromCenter) * multiplyBy;
-    return matchedHeight;
-}
+float getHeight(int target){ return cellIn[target].position.z; }
 
 vec4 sidesHeight;
 vec4 cornersHeight;
+
 void setTileEdgeHeight(){
-
-        cornersHeight.x = matchHeight( getNeighbourIndex( ivec2(0, 0) ), 1.0f );
-        cornersHeight.y = matchHeight( getNeighbourIndex( ivec2(0, 1) ), 1.0f ); 
-        cornersHeight.z = matchHeight( getNeighbourIndex( ivec2(-1, 1) ), 1.0f ); 
-        cornersHeight.w = matchHeight( getNeighbourIndex( ivec2(-1, 0) ), 1.0f );
-        sidesHeight.x = matchHeight( getNeighbourIndex( ivec2(1, 0) ), 0.5f );    
-        sidesHeight.y = matchHeight( getNeighbourIndex( ivec2(0, 1) ), 0.5f );
-        sidesHeight.z = matchHeight( getNeighbourIndex( ivec2(-1, 0) ), 0.5f ); 
-        sidesHeight.w = matchHeight( getNeighbourIndex( ivec2(0, -1) ), 0.5f );
-
+        cornersHeight.x = getHeight( getNeighbourIndex( ivec2(0, 0)) );
+        cornersHeight.y = getHeight( getNeighbourIndex( ivec2(0, 1) )); 
+        cornersHeight.z = getHeight( getNeighbourIndex( ivec2(-1, 1) )); 
+        cornersHeight.w = getHeight( getNeighbourIndex( ivec2(-1, 0) ));
+        sidesHeight.x = getHeight( getNeighbourIndex( ivec2(1, 0)  ));    
+        sidesHeight.y = getHeight( getNeighbourIndex( ivec2(0, 1)  ));
+        sidesHeight.z = getHeight( getNeighbourIndex( ivec2(-1, 0) ) ); 
+        sidesHeight.w = getHeight( getNeighbourIndex( ivec2(0, -1) ) );
 }
 
 int cycleNeighbours(int range) {
