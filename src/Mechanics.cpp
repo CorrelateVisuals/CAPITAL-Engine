@@ -219,7 +219,7 @@ void VulkanMechanics::createLogicalDevice() {
     queueCreateInfos.push_back(queueCreateInfo);
   }
 
-  VkPhysicalDeviceFeatures deviceFeatures{.tessellationShader = VK_TRUE,
+  VkPhysicalDeviceFeatures deviceFeatures{//.tessellationShader = VK_TRUE,
                                           .sampleRateShading = VK_TRUE,
                                           .depthClamp = VK_TRUE,
                                           .depthBiasClamp = VK_TRUE,
@@ -273,7 +273,7 @@ VkPresentModeKHR VulkanMechanics::chooseSwapPresentMode(
       return availablePresentMode;
     }
   }
-  return VK_PRESENT_MODE_FIFO_KHR;
+  return VK_PRESENT_MODE_IMMEDIATE_KHR;
 }
 
 VkExtent2D VulkanMechanics::chooseSwapExtent(
