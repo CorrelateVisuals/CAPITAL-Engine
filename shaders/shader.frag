@@ -3,8 +3,8 @@
 layout(location = 0) in vec4 inColor;
 layout(location = 0) out vec4 outColor;
 
-const float contrast = 1.2; // Adjust contrast value as desired
-const float gamma = 1.2; // Adjust gamma value as desired
+const float contrast = 1.1; // Adjust contrast value as desired
+const float gamma = 1.1; // Adjust gamma value as desired
 
 void main() {
     // Increase contrast
