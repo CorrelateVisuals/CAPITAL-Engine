@@ -12,21 +12,21 @@ class Control {
   ~Control();
 
   struct Timer {
-    float speed = 10.10f;
+    float speed = 5.0f;
     uint64_t passedHours = 0;
   } timer;
 
   struct Grid {
     uint_fast32_t totalAliveCells = 10000;
-    std::array<uint_fast16_t, 2> dimensions = {500, 500};
+    std::array<uint_fast16_t, 2> dimensions = {200, 200};
     float height = 0.75f;
-    int heightSteps = 10;
+    int heightSteps = 15;
   } grid;
 
   struct DisplayConfiguration {
     const char* title = "CAPITAL Engine";
-    uint16_t width = 1920;
-    uint16_t height = 1080;
+    uint16_t width = 3840;
+    uint16_t height = 2041;
   } display;
 
   struct Compute {

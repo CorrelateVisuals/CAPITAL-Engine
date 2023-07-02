@@ -100,7 +100,7 @@ vec3 getNormal(){
 vec4 worldPosition = model * constructTile();
 vec4 viewPosition =  view * worldPosition;
 vec3 worldNormal =   mat3(model) * getNormal();
-float waterThreshold = -0.02;
+float waterThreshold = -0.06;
 
 vec4 setColor() {
     vec2 normalizedPosition = (worldPosition.xy + gridDimensions.xy * 0.5) / gridDimensions.xy;
@@ -136,9 +136,6 @@ float gouraudShading(float brightness, float emit) {
 }
 
 layout(location = 0) out vec4 fragColor;
-
-
-
 
 void main() {
     vec4 color = inColor * setColor() * gouraudShading(2.0f, 0.5f); 

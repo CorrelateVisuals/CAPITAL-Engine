@@ -71,7 +71,6 @@ float getHeight(int target){ return cellIn[target].position.z; }
 
 vec4 sidesHeight;
 vec4 cornersHeight;
-
 void setTileEdgeHeight(){
         cornersHeight.x = getHeight( getNeighbourIndex( ivec2(0, 0)) );
         cornersHeight.y = getHeight( getNeighbourIndex( ivec2(0, 1) )); 
