@@ -19,8 +19,6 @@ Linker Additional Dependencies
  glfw3.lib
 ```
 
-Based on the tutorial series by *Sascha Willems*: [Vulkan tutorial](https://vulkan-tutorial.com/Introduction).
-
 ## Linux Development
 
 ### Build management using CMake
@@ -42,3 +40,6 @@ Go to the project root directory **CAPITAL-Engine**:
 ```bash
 ./bin/CapitalEngine
 ```
+
+Based on the tutorial series by *Sascha Willems*: [Vulkan tutorial](https://vulkan-tutorial.com/Introduction).
+
