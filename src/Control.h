@@ -12,13 +12,13 @@ class Control {
   ~Control();
 
   struct Timer {
-    float speed = 5.0f;
+    float speed = 30.0f;
     uint64_t passedHours{0};
   } timer;
 
   struct Grid {
     uint_fast32_t totalAliveCells = 10000;
-    std::array<uint_fast16_t, 2> dimensions = {125, 125};
+    std::array<uint_fast16_t, 2> dimensions = {150, 150};
     float height = 0.75f;
     int heightSteps = 15;
   } grid;

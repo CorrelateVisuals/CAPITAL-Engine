@@ -15,8 +15,8 @@ Control::~Control() {
   _log.console("{ CTR }", "destructing Control");
 }
 
+auto lastTime = std::chrono::high_resolution_clock::now();
 void Control::setPassedHours() {
-  static auto lastTime = std::chrono::high_resolution_clock::now();
   auto currentTime = std::chrono::high_resolution_clock::now();
 
   if (currentTime - lastTime >=
@@ -24,7 +24,8 @@ void Control::setPassedHours() {
           std::chrono::duration<float>(1.0 / timer.speed))) {
     timer.passedHours++;
     lastTime = currentTime;
-  }
+  };
+  return;
 }
 
 void Control::setPushConstants() {
