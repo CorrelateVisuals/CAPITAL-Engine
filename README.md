@@ -3,6 +3,8 @@ CAPITAL Engine is a cross platform Vulkan engine for simulations and algorithms 
 
 ![alt text](https://github.com/whooki3/CAPITAL-engine/blob/development/assets/CoverCapture.PNG?raw=true)
 
+[Development enviroment](https://vulkan-tutorial.com/Development_environment)
+
 ## Windows development
 Additional Include Directories
 ```
@@ -20,7 +22,6 @@ Linker Additional Dependencies
 vulkan-1.lib
 glfw3.lib
 ```
-[External libraries](https://vulkan-tutorial.com/Development_environment)
 
 ## Linux Development
 Build management using CMake
