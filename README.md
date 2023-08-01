@@ -1,6 +1,7 @@
 # CAPITAL Engine
-
 CAPITAL Engine is a cross platform Vulkan engine for simulations and algorithms that benefit from parallel computing.
+
+![alt text](https://github.com/whooki3/CAPITAL-engine/blob/development/assets/CoverCapture.PNG?raw=true)
 
 ## Windows development
 
