@@ -17,21 +17,22 @@ class Control {
   } timer;
 
   struct Grid {
-    uint_fast32_t totalAliveCells = 75000;
-    std::array<uint_fast16_t, 2> dimensions = {500, 500};
+    uint_fast32_t totalAliveCells = 10000;
+    std::array<uint_fast16_t, 2> dimensions = {125, 125};
     float height = 0.75f;
     int heightSteps = 15;
   } grid;
 
   struct DisplayConfiguration {
     const char* title{"CAPITAL Engine"};
-    uint16_t width = 1280;
-    uint16_t height = 720;
+    uint16_t width = 1920;
+    uint16_t height = 1080;
   } display;
 
   struct Compute {
-    const uint8_t localSizeX{8};
-    const uint8_t localSizeY{8};
+    const uint8_t localSizeX{32};
+    const uint8_t localSizeY{32};
+    const uint8_t localSizeZ{1};
   } compute;
 
  public:

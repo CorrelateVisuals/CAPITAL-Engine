@@ -104,7 +104,6 @@ World::UniformBufferObject World::updateUniforms() {
       .model = setModel(),
       .view = setView(),
       .proj = setProjection(_mechanics.swapChain.extent)};
-
   return uniformObject;
 }
 
