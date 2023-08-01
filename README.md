@@ -20,7 +20,7 @@ Linker Additional Dependencies
 vulkan-1.lib
 glfw3.lib
 ```
-External Libraries: [Vulkan](https://vulkan-tutorial.com/Development_environment)
+[External libraries](https://vulkan-tutorial.com/Development_environment)
 
 ## Linux Development
 Build management using CMake
