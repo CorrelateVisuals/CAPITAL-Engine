@@ -7,7 +7,7 @@ CAPITAL Engine is a cross platform Vulkan engine for simulations and algorithms 
 
 External Libraries: [Vulkan](https://vulkan-tutorial.com/Development_environment)
 
-C++ Additional Include Directories
+C++ Solution additional include directories
 ```
 $(SolutionDir)..\Libraries\glfw-3.3.8\include
 $(SolutionDir)..\Libraries\glm
