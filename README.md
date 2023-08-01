@@ -1,5 +1,5 @@
 # CAPITAL Engine
-CAPITAL Engine is a cross platform Vulkan engine for simulations and algorithms that benefit from parallel computing.
+CAPITAL Engine is a cross platform Vulkan engine built in C++ for simulations and algorithms that benefit from parallel computing. Currently teseted on Linux and Windows, keeping external libraries to a minimum. GLFW for platform agnostic window and input handeling, GLM for our mathematical operations. 
 
 ![alt text](https://github.com/whooki3/CAPITAL-engine/blob/development/assets/CoverCapture.PNG?raw=true)
 
