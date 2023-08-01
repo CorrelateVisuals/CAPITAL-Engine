@@ -333,12 +333,9 @@ void Memory::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
   uint32_t numberOfWorkgroupsY =
       (_control.grid.dimensions[1] + _control.compute.localSizeY - 1) /
       _control.compute.localSizeY;
-  uint32_t numberOfWorkgroupsZ =
-      (_control.grid.dimensions[1] + _control.compute.localSizeZ - 1) /
-      _control.compute.localSizeZ;
 
   vkCmdDispatch(commandBuffer, numberOfWorkgroupsX, numberOfWorkgroupsY,
-                numberOfWorkgroupsZ);
+                _control.compute.localSizeZ);
 
   _mechanics.result(vkEndCommandBuffer, commandBuffer);
 }

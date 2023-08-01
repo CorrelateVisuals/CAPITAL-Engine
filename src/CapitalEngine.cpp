@@ -30,6 +30,7 @@ void CapitalEngine::mainLoop() {
 
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
+
     _window.setMouse();
     _control.setPassedHours();
 
