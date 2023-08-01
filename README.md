@@ -23,7 +23,7 @@ vulkan-1.lib
 glfw3.lib
 ```
 
-## Linux Development
+## Linux development
 Build management using CMake
 Go to **build** sub-directory:
 
@@ -31,12 +31,8 @@ Go to **build** sub-directory:
   cmake ..
   make -j
 ```
-
-The excutable **CapitalEngine** is compiled in the **bin** sub-directory.
-De .spv files in **shaders** sub-directory.
-
+The excutable **CapitalEngine** is compiled in the **bin** sub-directory. De .spv files in **shaders** sub-directory.
 Executing: Go to the project root directory **CAPITAL-Engine**:
-
 ```bash
 ./bin/CapitalEngine
 ```
