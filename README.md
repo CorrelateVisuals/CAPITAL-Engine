@@ -40,5 +40,7 @@ Executing: Go to the project root directory **CAPITAL-Engine**:
 ./bin/CapitalEngine
 ```
 
-Based on the tutorial series by *Sascha Willems*: [Vulkan tutorial](https://vulkan-tutorial.com/Introduction).
+
+
+Started from the tutorial series by *Sascha Willems*: [Vulkan tutorial](https://vulkan-tutorial.com/Introduction).
 
