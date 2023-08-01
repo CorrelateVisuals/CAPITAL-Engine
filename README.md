@@ -26,7 +26,6 @@ glfw3.lib
 ## Linux development
 Build management using CMake
 Go to **build** sub-directory:
-
 ```bash
   cmake ..
   make -j
