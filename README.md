@@ -21,9 +21,7 @@ Linker Additional Dependencies
 ```
 
 ## Linux Development
-
-### Build management using CMake
-
+Build management using CMake
 Go to **build** sub-directory:
 
 ```bash
@@ -34,9 +32,7 @@ Go to **build** sub-directory:
 The excutable **CapitalEngine** is compiled in the **bin** sub-directory.
 De .spv files in **shaders** sub-directory.
 
-### Executing
-
-Go to the project root directory **CAPITAL-Engine**:
+Executing: Go to the project root directory **CAPITAL-Engine**:
 
 ```bash
 ./bin/CapitalEngine
