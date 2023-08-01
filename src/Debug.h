@@ -12,9 +12,9 @@ class Logging {
   ~Logging();
 
   struct Style {
-    std::string charLeader = "        :";
-    std::string indentSize = "                 ";
-    static constexpr int numColumns = 14;
+    std::string charLeader = std::string(8, ' ') + ":";
+    std::string indentSize = std::string(17, ' ');
+    int columnCount = 14;
   } style;
 
   template <class T, class... Ts>
@@ -23,8 +23,7 @@ class Logging {
 
  private:
   std::ofstream logFile;
-  std::string previousTime = "";
-
+  std::string previousTime;
   std::string returnDateAndTime();
 };
 
@@ -34,23 +33,13 @@ class ValidationLayers {
   ~ValidationLayers();
 
   VkDebugUtilsMessengerEXT debugMessenger;
-  const std::vector<const char*> validationLayers;
+  const std::vector<const char*> validation;
 
 #ifdef NDEBUG
   const bool enableValidationLayers = false;
 #else
   const bool enableValidationLayers = true;
 #endif
-
-  static VKAPI_ATTR VkBool32 VKAPI_CALL
-  debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                VkDebugUtilsMessageTypeFlagsEXT messageType,
-                const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-                void* pUserData) {
-    const std::string debugMessage = pCallbackData->pMessage;
-    logValidationMessage(debugMessage, "Epic Games");
-    return VK_FALSE;
-  }
 
   void setupDebugMessenger(VkInstance instance);
   void populateDebugMessengerCreateInfo(
@@ -68,43 +57,48 @@ class ValidationLayers {
       const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
       const VkAllocationCallbacks* pAllocator,
       VkDebugUtilsMessengerEXT* pDebugMessenger);
+
+  static VKAPI_ATTR VkBool32 VKAPI_CALL
+  debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                VkDebugUtilsMessageTypeFlagsEXT messageType,
+                const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+                void* pUserData) {
+    const std::string debugMessage = pCallbackData->pMessage;
+    logValidationMessage(debugMessage, "Epic Games");
+    return VK_FALSE;
+  }
 };
 
 template <class T, class... Ts>
-inline void Logging::console(const T& first, const Ts&... inputs) {
-  int i = 0;
+void Logging::console(const T& first, const Ts&... inputs) {
   if (!logFile.is_open()) {
-    std::cerr << "!!! Could not open logFile for writing !!!" << std::endl;
+    std::cerr << "\n!ERROR! Could not open logFile for writing" << std::endl;
     return;
   }
-
   std::string currentTime = returnDateAndTime();
-  int numColumnsOffset = 4;
-  if (currentTime != previousTime) {
-    std::cout << " " << returnDateAndTime();
-    logFile << " " << returnDateAndTime();
-  } else {
-    std::cout << std::string(
-        static_cast<size_t>(style.numColumns) + numColumnsOffset, ' ');
-  }
+  int columnCountOffset = 4;
 
-  // If the first input is a vector, handle it separately
+  if (currentTime != previousTime) {
+    std::cout << ' ' << currentTime;
+    logFile << ' ' << currentTime;
+  } else {
+    std::string padding(
+        static_cast<size_t>(style.columnCount) + columnCountOffset, ' ');
+    std::cout << padding;
+    logFile << padding;
+  }
   if constexpr (std::is_same_v<T, std::vector<int>>) {
     static int elementCount = 0;
-    std::cout << " " << style.charLeader << " ";
-    logFile << " " << style.charLeader << " ";
+    std::cout << ' ' << style.charLeader << ' ';
+    logFile << ' ' << style.charLeader << ' ';
     for (const auto& element : first) {
-      if (elementCount % style.numColumns == 0 && elementCount != 0) {
-        std::cout << "\n "
-                  << std::string(static_cast<size_t>(style.numColumns) +
-                                     numColumnsOffset,
-                                 ' ')
-                  << style.charLeader << " ";
-        logFile << "\n "
-                << std::string(
-                       static_cast<size_t>(style.numColumns) + numColumnsOffset,
-                       ' ')
-                << style.charLeader << " ";
+      if (elementCount % style.columnCount == 0 && elementCount != 0) {
+        std::string spaces(
+            static_cast<size_t>(style.columnCount) + columnCountOffset, ' ');
+
+        std::cout << '\n' << ' ' << spaces << style.charLeader << ' ';
+        logFile << '\n' << ' ' << spaces << style.charLeader << ' ';
+
         elementCount = 0;
       }
       std::cout << element << ' ';
@@ -114,17 +108,10 @@ inline void Logging::console(const T& first, const Ts&... inputs) {
     std::cout << '\n';
     logFile << '\n';
   } else {
-    // Handle all other inputs normally
-    std::cerr << ' ' << first;
+    std::cout << ' ' << first;
     logFile << ' ' << first;
-    (
-        [&] {
-          ++i;
-          std::cerr << ' ' << inputs;
-          logFile << ' ' << inputs;
-        }(),
-        ...);
-    std::cerr << '\n';
+    ((std::cout << ' ' << inputs, logFile << ' ' << inputs), ...);
+    std::cout << '\n';
     logFile << '\n';
   }
   previousTime = currentTime;

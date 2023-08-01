@@ -9,6 +9,7 @@
 #include "CapitalEngine.h"
 #include "Control.h"
 #include "Mechanics.h"
+#include "Memory.h"
 #include "Pipelines.h"
 #include "Window.h"
 #include "World.h"
@@ -17,21 +18,11 @@ VulkanMechanics::VulkanMechanics()
     : surface(VK_NULL_HANDLE),
       instance(VK_NULL_HANDLE),
       mainDevice{VK_NULL_HANDLE, VK_NULL_HANDLE},
-      deviceExtensions{VK_KHR_SWAPCHAIN_EXTENSION_NAME},
       queues{VK_NULL_HANDLE,
              VK_NULL_HANDLE,
              VK_NULL_HANDLE,
              {std::nullopt, std::nullopt}},
-      swapChain{
-          VK_NULL_HANDLE,
-          {},
-          VK_FORMAT_UNDEFINED,
-          {},
-          {0, 0},
-          {},
-          {VkSurfaceCapabilitiesKHR{{}, {}, {}, {}, {}, {}, {}, {}, {}, {}},
-           {},
-           {}}} {
+      swapChain{VK_NULL_HANDLE, {}, VK_FORMAT_UNDEFINED, {}, {0, 0}, {}, {}} {
   _log.console("{ VkM }", "constructing Vulkan Mechanics");
 }
 
@@ -41,19 +32,18 @@ VulkanMechanics::~VulkanMechanics() {
 
 void VulkanMechanics::createInstance() {
   _log.console("{ VkI }", "creating Vulkan Instance");
-  if (_validationLayers.enableValidationLayers &&
-      !_validationLayers.checkValidationLayerSupport()) {
+  if (_validation.enableValidationLayers &&
+      !_validation.checkValidationLayerSupport()) {
     throw std::runtime_error(
-        "!ERROR! validation layers requested, but not available!");
+        "\n!ERROR! validation layers requested, but not available!");
   }
 
-  VkApplicationInfo appInfo{};
-  appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-  appInfo.pApplicationName = "CAPITAL";
-  appInfo.applicationVersion = VK_MAKE_VERSION(0, 0, 1);
-  appInfo.pEngineName = _control.display.title;
-  appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
-  appInfo.apiVersion = VK_API_VERSION_1_3;
+  VkApplicationInfo appInfo{.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+                            .pApplicationName = "CAPITAL",
+                            .applicationVersion = VK_MAKE_VERSION(0, 0, 1),
+                            .pEngineName = _control.display.title,
+                            .engineVersion = VK_MAKE_VERSION(0, 0, 1),
+                            .apiVersion = VK_API_VERSION_1_3};
   _log.console(
       _log.style.charLeader, "Application name:", appInfo.pApplicationName,
       "\n", _log.style.indentSize, _log.style.charLeader,
@@ -63,40 +53,33 @@ void VulkanMechanics::createInstance() {
       _log.style.charLeader, "Engine Version:", appInfo.engineVersion, "\n",
       _log.style.indentSize, _log.style.charLeader, "API Version:", 1.3);
 
-  VkInstanceCreateInfo createInfo{};
-  createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-  createInfo.pApplicationInfo = &appInfo;
-
   auto extensions = getRequiredExtensions();
-  createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
-  createInfo.ppEnabledExtensionNames = extensions.data();
+
+  VkInstanceCreateInfo createInfo{
+      .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+      .pNext = nullptr,
+      .pApplicationInfo = &appInfo,
+      .enabledLayerCount = 0,
+      .enabledExtensionCount = static_cast<uint32_t>(extensions.size()),
+      .ppEnabledExtensionNames = extensions.data()};
 
   VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
-  if (_validationLayers.enableValidationLayers) {
+  if (_validation.enableValidationLayers) {
     createInfo.enabledLayerCount =
-        static_cast<uint32_t>(_validationLayers.validationLayers.size());
-    createInfo.ppEnabledLayerNames = _validationLayers.validationLayers.data();
+        static_cast<uint32_t>(_validation.validation.size());
+    createInfo.ppEnabledLayerNames = _validation.validation.data();
 
-    _validationLayers.populateDebugMessengerCreateInfo(debugCreateInfo);
-    createInfo.pNext =
-        const_cast<VkDebugUtilsMessengerCreateInfoEXT*>(&debugCreateInfo);
-  } else {
-    createInfo.enabledLayerCount = 0;
-
-    createInfo.pNext = nullptr;
+    _validation.populateDebugMessengerCreateInfo(debugCreateInfo);
+    createInfo.pNext = &debugCreateInfo;
   }
 
-  if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create instance!");
-  }
+  _mechanics.result(vkCreateInstance, &createInfo, nullptr, &instance);
 }
 
 void VulkanMechanics::createSurface() {
   _log.console("{ [ ] }", "creating Surface");
-  if (glfwCreateWindowSurface(instance, _window.window, nullptr, &surface) !=
-      VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create window surface!");
-  }
+  _mechanics.result(glfwCreateWindowSurface, instance, _window.window, nullptr,
+                    &surface);
 }
 
 void VulkanMechanics::pickPhysicalDevice() {
@@ -106,7 +89,7 @@ void VulkanMechanics::pickPhysicalDevice() {
 
   if (deviceCount == 0) {
     throw std::runtime_error(
-        "!ERROR! failed to find GPUs with Vulkan support!");
+        "\n!ERROR! failed to find GPUs with Vulkan support!");
   }
 
   std::vector<VkPhysicalDevice> devices(deviceCount);
@@ -115,12 +98,12 @@ void VulkanMechanics::pickPhysicalDevice() {
   for (const auto& device : devices) {
     if (isDeviceSuitable(device)) {
       mainDevice.physical = device;
+      _pipelines.graphics.msaa.samples = _pipelines.getMaxUsableSampleCount();
       break;
     }
   }
-
   if (mainDevice.physical == VK_NULL_HANDLE) {
-    throw std::runtime_error("!ERROR! failed to find a suitable GPU!");
+    throw std::runtime_error("\n!ERROR! failed to find a suitable GPU!");
   }
 }
 
@@ -208,8 +191,8 @@ bool VulkanMechanics::checkDeviceExtensionSupport(
   vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount,
                                        availableExtensions.data());
 
-  std::set<std::string> requiredExtensions(deviceExtensions.begin(),
-                                           deviceExtensions.end());
+  std::set<std::string> requiredExtensions(mainDevice.extensions.begin(),
+                                           mainDevice.extensions.end());
 
   for (const auto& extension : availableExtensions) {
     requiredExtensions.erase(extension.extensionName);
@@ -228,44 +211,38 @@ void VulkanMechanics::createLogicalDevice() {
 
   float queuePriority = 1.0f;
   for (uint32_t queueFamily : uniqueQueueFamilies) {
-    VkDeviceQueueCreateInfo queueCreateInfo{};
-    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfo.queueFamilyIndex = queueFamily;
-    queueCreateInfo.queueCount = 1;
-    queueCreateInfo.pQueuePriorities = &queuePriority;
+    VkDeviceQueueCreateInfo queueCreateInfo{
+        .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+        .queueFamilyIndex = queueFamily,
+        .queueCount = 1,
+        .pQueuePriorities = &queuePriority};
     queueCreateInfos.push_back(queueCreateInfo);
   }
 
-  VkPhysicalDeviceFeatures deviceFeatures{};
+  VkPhysicalDeviceFeatures deviceFeatures{//.tessellationShader = VK_TRUE,
+                                          .sampleRateShading = VK_TRUE,
+                                          .depthClamp = VK_TRUE,
+                                          .depthBiasClamp = VK_TRUE,
+                                          .shaderInt64 = VK_TRUE};
 
-  VkDeviceCreateInfo createInfo{};
-  createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+  VkDeviceCreateInfo createInfo{
+      .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+      .queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size()),
+      .pQueueCreateInfos = queueCreateInfos.data(),
+      .enabledLayerCount = 0,
+      .enabledExtensionCount =
+          static_cast<uint32_t>(mainDevice.extensions.size()),
+      .ppEnabledExtensionNames = mainDevice.extensions.data(),
+      .pEnabledFeatures = &deviceFeatures};
 
-  createInfo.queueCreateInfoCount =
-      static_cast<uint32_t>(queueCreateInfos.size());
-  createInfo.pQueueCreateInfos = queueCreateInfos.data();
-
-  createInfo.pEnabledFeatures = &deviceFeatures;
-
-  createInfo.enabledExtensionCount =
-      static_cast<uint32_t>(deviceExtensions.size());
-  createInfo.ppEnabledExtensionNames = deviceExtensions.data();
-
-  _log.console(_log.style.charLeader,
-               "Enabled Extension Names:", *createInfo.ppEnabledExtensionNames);
-
-  if (_validationLayers.enableValidationLayers) {
+  if (_validation.enableValidationLayers) {
     createInfo.enabledLayerCount =
-        static_cast<uint32_t>(_validationLayers.validationLayers.size());
-    createInfo.ppEnabledLayerNames = _validationLayers.validationLayers.data();
-  } else {
-    createInfo.enabledLayerCount = 0;
+        static_cast<uint32_t>(_validation.validation.size());
+    createInfo.ppEnabledLayerNames = _validation.validation.data();
   }
 
-  if (vkCreateDevice(mainDevice.physical, &createInfo, nullptr,
-                     &mainDevice.logical) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create logical device!");
-  }
+  _mechanics.result(vkCreateDevice, mainDevice.physical, &createInfo, nullptr,
+                    &mainDevice.logical);
 
   vkGetDeviceQueue(mainDevice.logical, indices.graphicsAndComputeFamily.value(),
                    0, &queues.graphics);
@@ -285,7 +262,6 @@ VkSurfaceFormatKHR VulkanMechanics::chooseSwapSurfaceFormat(
       return availableFormat;
     }
   }
-
   return availableFormats[0];
 }
 
@@ -297,8 +273,7 @@ VkPresentModeKHR VulkanMechanics::chooseSwapPresentMode(
       return availablePresentMode;
     }
   }
-
-  return VK_PRESENT_MODE_FIFO_KHR;
+  return VK_PRESENT_MODE_MAILBOX_KHR;
 }
 
 VkExtent2D VulkanMechanics::chooseSwapExtent(
@@ -312,9 +287,8 @@ VkExtent2D VulkanMechanics::chooseSwapExtent(
     int width, height;
     glfwGetFramebufferSize(_window.window, &width, &height);
 
-    VkExtent2D actualExtent = {static_cast<uint32_t>(width),
-                               static_cast<uint32_t>(height)};
-
+    VkExtent2D actualExtent{static_cast<uint32_t>(width),
+                            static_cast<uint32_t>(height)};
     actualExtent.width =
         std::clamp(actualExtent.width, capabilities.minImageExtent.width,
                    capabilities.maxImageExtent.width);
@@ -335,37 +309,48 @@ void VulkanMechanics::createSyncObjects() {
   syncObjects.inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
   syncObjects.computeInFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
 
-  VkSemaphoreCreateInfo semaphoreInfo{};
-  semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+  VkSemaphoreCreateInfo semaphoreInfo{
+      .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO};
 
-  VkFenceCreateInfo fenceInfo{};
-  fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-  fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+  VkFenceCreateInfo fenceInfo{.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+                              .flags = VK_FENCE_CREATE_SIGNALED_BIT};
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-    if (vkCreateSemaphore(_mechanics.mainDevice.logical, &semaphoreInfo,
-                          nullptr, &syncObjects.imageAvailableSemaphores[i]) !=
-            VK_SUCCESS ||
-        vkCreateSemaphore(_mechanics.mainDevice.logical, &semaphoreInfo,
-                          nullptr, &syncObjects.renderFinishedSemaphores[i]) !=
-            VK_SUCCESS ||
-        vkCreateFence(_mechanics.mainDevice.logical, &fenceInfo, nullptr,
-                      &syncObjects.inFlightFences[i]) != VK_SUCCESS) {
-      throw std::runtime_error(
-          "failed to create graphics synchronization objects for a frame!");
-    }
-    if (vkCreateSemaphore(_mechanics.mainDevice.logical, &semaphoreInfo,
-                          nullptr, &syncObjects.computeFinishedSemaphores[i]) !=
-            VK_SUCCESS ||
-        vkCreateFence(_mechanics.mainDevice.logical, &fenceInfo, nullptr,
-                      &syncObjects.computeInFlightFences[i]) != VK_SUCCESS) {
-      throw std::runtime_error(
-          "failed to create compute synchronization objects for a frame!");
-    }
+    _mechanics.result(vkCreateSemaphore, _mechanics.mainDevice.logical,
+                      &semaphoreInfo, nullptr,
+                      &syncObjects.imageAvailableSemaphores[i]);
+
+    _mechanics.result(vkCreateSemaphore, _mechanics.mainDevice.logical,
+                      &semaphoreInfo, nullptr,
+                      &syncObjects.renderFinishedSemaphores[i]);
+
+    _mechanics.result(vkCreateFence, _mechanics.mainDevice.logical, &fenceInfo,
+                      nullptr, &syncObjects.inFlightFences[i]);
+
+    _mechanics.result(vkCreateSemaphore, _mechanics.mainDevice.logical,
+                      &semaphoreInfo, nullptr,
+                      &syncObjects.computeFinishedSemaphores[i]);
+
+    _mechanics.result(vkCreateFence, _mechanics.mainDevice.logical, &fenceInfo,
+                      nullptr, &syncObjects.computeInFlightFences[i]);
   }
 }
 
 void VulkanMechanics::cleanupSwapChain() {
+  vkDestroyImageView(_mechanics.mainDevice.logical,
+                     _pipelines.graphics.depth.imageView, nullptr);
+  vkDestroyImage(_mechanics.mainDevice.logical, _pipelines.graphics.depth.image,
+                 nullptr);
+  vkFreeMemory(_mechanics.mainDevice.logical,
+               _pipelines.graphics.depth.imageMemory, nullptr);
+
+  vkDestroyImageView(_mechanics.mainDevice.logical,
+                     _pipelines.graphics.msaa.colorImageView, nullptr);
+  vkDestroyImage(_mechanics.mainDevice.logical,
+                 _pipelines.graphics.msaa.colorImage, nullptr);
+  vkFreeMemory(_mechanics.mainDevice.logical,
+               _pipelines.graphics.msaa.colorImageMemory, nullptr);
+
   for (auto framebuffer : swapChain.framebuffers) {
     vkDestroyFramebuffer(_mechanics.mainDevice.logical, framebuffer, nullptr);
   }
@@ -414,38 +399,35 @@ void VulkanMechanics::createSwapChain() {
     imageCount = swapChainSupport.capabilities.maxImageCount;
   }
 
-  VkSwapchainCreateInfoKHR createInfo{};
-  createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-  createInfo.surface = surface;
-
-  createInfo.minImageCount = imageCount;
-  createInfo.imageFormat = surfaceFormat.format;
-  createInfo.imageColorSpace = surfaceFormat.colorSpace;
-  createInfo.imageExtent = extent;
-  createInfo.imageArrayLayers = 1;
-  createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+  VkSwapchainCreateInfoKHR createInfo{
+      .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+      .surface = surface,
+      .minImageCount = imageCount,
+      .imageFormat = surfaceFormat.format,
+      .imageColorSpace = surfaceFormat.colorSpace,
+      .imageExtent = extent,
+      .imageArrayLayers = 1,
+      .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+      .preTransform = swapChainSupport.capabilities.currentTransform,
+      .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+      .presentMode = presentMode,
+      .clipped = VK_TRUE};
 
   Queues::FamilyIndices indices = findQueueFamilies(mainDevice.physical);
-  uint32_t queueFamilyIndices[] = {indices.graphicsAndComputeFamily.value(),
-                                   indices.presentFamily.value()};
+  std::vector<uint32_t> queueFamilyIndices{
+      indices.graphicsAndComputeFamily.value(), indices.presentFamily.value()};
 
   if (indices.graphicsAndComputeFamily != indices.presentFamily) {
     createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-    createInfo.queueFamilyIndexCount = 2;
-    createInfo.pQueueFamilyIndices = queueFamilyIndices;
+    createInfo.queueFamilyIndexCount =
+        static_cast<uint32_t>(queueFamilyIndices.size());
+    createInfo.pQueueFamilyIndices = queueFamilyIndices.data();
   } else {
     createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
   }
 
-  createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
-  createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-  createInfo.presentMode = presentMode;
-  createInfo.clipped = VK_TRUE;
-
-  if (vkCreateSwapchainKHR(mainDevice.logical, &createInfo, nullptr,
-                           &swapChain.swapChain) != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create swap chain!");
-  }
+  _mechanics.result(vkCreateSwapchainKHR, mainDevice.logical, &createInfo,
+                    nullptr, &swapChain.swapChain);
 
   vkGetSwapchainImagesKHR(mainDevice.logical, swapChain.swapChain, &imageCount,
                           nullptr);
@@ -472,7 +454,8 @@ void VulkanMechanics::recreateSwapChain() {
   createSwapChain();
   createImageViews();
   _pipelines.createDepthResources();
-  _memCommands.createFramebuffers();
+  _pipelines.createColorResources();
+  _memory.createFramebuffers();
 }
 
 std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
@@ -483,7 +466,7 @@ std::vector<const char*> VulkanMechanics::getRequiredExtensions() {
   std::vector<const char*> extensions(glfwExtensions,
                                       glfwExtensions + glfwExtensionCount);
 
-  if (_validationLayers.enableValidationLayers) {
+  if (_validation.enableValidationLayers) {
     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
   }
 
@@ -495,47 +478,43 @@ void VulkanMechanics::createImageViews() {
   swapChain.imageViews.resize(swapChain.images.size());
 
   for (size_t i = 0; i < swapChain.images.size(); i++) {
-    VkImageViewCreateInfo createInfo{};
-    createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    createInfo.image = swapChain.images[i];
-    createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    createInfo.format = swapChain.imageFormat;
-    createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-    createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-    createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-    createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-    createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    createInfo.subresourceRange.baseMipLevel = 0;
-    createInfo.subresourceRange.levelCount = 1;
-    createInfo.subresourceRange.baseArrayLayer = 0;
-    createInfo.subresourceRange.layerCount = 1;
+    VkImageViewCreateInfo createInfo{
+        .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+        .image = swapChain.images[i],
+        .viewType = VK_IMAGE_VIEW_TYPE_2D,
+        .format = swapChain.imageFormat,
+        .components = {.r = VK_COMPONENT_SWIZZLE_IDENTITY,
+                       .g = VK_COMPONENT_SWIZZLE_IDENTITY,
+                       .b = VK_COMPONENT_SWIZZLE_IDENTITY,
+                       .a = VK_COMPONENT_SWIZZLE_IDENTITY},
+        .subresourceRange = {.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+                             .baseMipLevel = 0,
+                             .levelCount = 1,
+                             .baseArrayLayer = 0,
+                             .layerCount = 1}};
 
-    if (vkCreateImageView(mainDevice.logical, &createInfo, nullptr,
-                          &swapChain.imageViews[i]) != VK_SUCCESS) {
-      throw std::runtime_error("!ERROR! failed to create image views!");
-    }
+    _mechanics.result(vkCreateImageView, mainDevice.logical, &createInfo,
+                      nullptr, &swapChain.imageViews[i]);
   }
 }
 
 VkImageView VulkanMechanics::createImageView(VkImage image,
                                              VkFormat format,
                                              VkImageAspectFlags aspectFlags) {
-  VkImageViewCreateInfo viewInfo{};
-  viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-  viewInfo.image = image;
-  viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-  viewInfo.format = format;
-  viewInfo.subresourceRange.aspectMask = aspectFlags;
-  viewInfo.subresourceRange.baseMipLevel = 0;
-  viewInfo.subresourceRange.levelCount = 1;
-  viewInfo.subresourceRange.baseArrayLayer = 0;
-  viewInfo.subresourceRange.layerCount = 1;
+  VkImageViewCreateInfo viewInfo{
+      .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+      .image = image,
+      .viewType = VK_IMAGE_VIEW_TYPE_2D,
+      .format = format,
+      .subresourceRange = {.aspectMask = aspectFlags,
+                           .baseMipLevel = 0,
+                           .levelCount = 1,
+                           .baseArrayLayer = 0,
+                           .layerCount = 1}};
 
   VkImageView imageView;
-  if (vkCreateImageView(mainDevice.logical, &viewInfo, nullptr, &imageView) !=
-      VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to create texture image view!");
-  }
+  _mechanics.result(vkCreateImageView, mainDevice.logical, &viewInfo, nullptr,
+                    &imageView);
 
   return imageView;
 }

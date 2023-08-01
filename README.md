@@ -9,21 +9,17 @@ CAPITAL Engine is a cross platform Vulkan engine for simulations and algorithms 
 External Libraries: [Vulkan](https://vulkan-tutorial.com/Development_environment)
 
 ```text
-// C++ Additional Include Directories
+C++ Additional Include Directories
  $(SolutionDir)..\Libraries\glfw-3.3.8\include
  $(SolutionDir)..\Libraries\glm
  C:\VulkanSDK\1.3.224.1\Include
-
-//Linker Additional Libraries Directories
+Linker Additional Libraries Directories
  C:\VulkanSDK\1.3.224.1\Lib
  $(SolutionDir)..\Libraries\glfw-3.3.8\lib-vc2022
-
-//Linker Additional Dependencies
+Linker Additional Dependencies
  vulkan-1.lib
  glfw3.lib
 ```
-
-Based on the tutorial series by *Sascha Willems*: [Vulkan tutorial](https://vulkan-tutorial.com/Introduction).
 
 ## Linux Development
 
@@ -46,3 +42,6 @@ Go to the project root directory **CAPITAL-Engine**:
 ```bash
 ./bin/CapitalEngine
 ```
+
+Based on the tutorial series by *Sascha Willems*: [Vulkan tutorial](https://vulkan-tutorial.com/Introduction).
+

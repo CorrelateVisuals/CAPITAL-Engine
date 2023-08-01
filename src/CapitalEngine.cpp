@@ -3,6 +3,7 @@
 #include "CapitalEngine.h"
 #include "Debug.h"
 #include "Mechanics.h"
+#include "Memory.h"
 #include "Pipelines.h"
 #include "Window.h"
 
@@ -10,6 +11,7 @@ CapitalEngine::CapitalEngine() {
   _log.console("\n", _log.style.indentSize, "[ CAPITAL engine ]",
                "starting...\n");
 
+  compileShaders();
   initVulkan();
 }
 
@@ -28,21 +30,37 @@ void CapitalEngine::mainLoop() {
 
   while (!glfwWindowShouldClose(_window.window)) {
     glfwPollEvents();
-    _window.getMouseButtonType();
-    _window.mouseClick(_window.window, _window.mouse.buttonType);
 
-    _control.simulateHours();
+    _window.setMouse();
+    _control.setPassedHours();
+
     drawFrame();
-  }
 
+    if (glfwGetKey(_window.window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+      break;
+    }
+  }
   vkDeviceWaitIdle(_mechanics.mainDevice.logical);
   _log.console("\n", _log.style.indentSize, "{ Main Loop } ....... terminated");
+}
+
+void CapitalEngine::compileShaders() {
+  _log.console("{ SHA }", "compiling shaders");
+#ifdef _WIN32
+  // auto err = std::system("cmd /C \"..\\shaders\\compile_shaders.bat >
+  // NUL\"");
+  auto err = std::system("..\\shaders\\compile_shaders.bat");
+
+#else
+  // Linux-specific code
+  auto err = std::system("./shaders/compile_shaders.sh");
+#endif
 }
 
 void CapitalEngine::initVulkan() {
   _log.console("{ *** }", "initializing Capital Engine");
   _mechanics.createInstance();
-  _validationLayers.setupDebugMessenger(_mechanics.instance);
+  _validation.setupDebugMessenger(_mechanics.instance);
   _mechanics.createSurface();
   _mechanics.pickPhysicalDevice();
   _mechanics.createLogicalDevice();
@@ -50,21 +68,22 @@ void CapitalEngine::initVulkan() {
   _mechanics.createImageViews();
 
   _pipelines.createRenderPass();
-  _memCommands.createComputeDescriptorSetLayout();
+  _memory.createDescriptorSetLayout();
   _pipelines.createGraphicsPipeline();
   _pipelines.createComputePipeline();
 
-  _memCommands.createCommandPool();
+  _memory.createCommandPool();
+  _pipelines.createColorResources();
   _pipelines.createDepthResources();
-  _memCommands.createFramebuffers();
+  _memory.createFramebuffers();
 
-  _memCommands.createShaderStorageBuffers();
-  _memCommands.createUniformBuffers();
-  _memCommands.createDescriptorPool();
-  _memCommands.createComputeDescriptorSets();
+  _memory.createShaderStorageBuffers();
+  _memory.createUniformBuffers();
+  _memory.createDescriptorPool();
+  _memory.createDescriptorSets();
 
-  _memCommands.createCommandBuffers();
-  _memCommands.createComputeCommandBuffers();
+  _memory.createCommandBuffers();
+  _memory.createComputeCommandBuffers();
 
   _mechanics.createSyncObjects();
 }
@@ -77,7 +96,7 @@ void CapitalEngine::drawFrame() {
            .computeInFlightFences[_mechanics.syncObjects.currentFrame],
       VK_TRUE, UINT64_MAX);
 
-  _memCommands.updateUniformBuffer(_mechanics.syncObjects.currentFrame);
+  _memory.updateUniformBuffer(_mechanics.syncObjects.currentFrame);
 
   vkResetFences(
       _mechanics.mainDevice.logical, 1,
@@ -85,29 +104,24 @@ void CapitalEngine::drawFrame() {
            .computeInFlightFences[_mechanics.syncObjects.currentFrame]);
 
   vkResetCommandBuffer(
-      _memCommands.command.computeBuffers[_mechanics.syncObjects.currentFrame],
-      0);
-  _memCommands.recordComputeCommandBuffer(
-      _memCommands.command.computeBuffers[_mechanics.syncObjects.currentFrame]);
+      _memory.buffers.command.compute[_mechanics.syncObjects.currentFrame], 0);
+  _memory.recordComputeCommandBuffer(
+      _memory.buffers.command.compute[_mechanics.syncObjects.currentFrame]);
 
-  VkSubmitInfo computeSubmitInfo{};
-  computeSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-  computeSubmitInfo.commandBufferCount = 1;
-  computeSubmitInfo.pCommandBuffers =
-      &_memCommands.command.computeBuffers[_mechanics.syncObjects.currentFrame];
-  computeSubmitInfo.signalSemaphoreCount = 1;
-  computeSubmitInfo.pSignalSemaphores =
-      &_mechanics.syncObjects
-           .computeFinishedSemaphores[_mechanics.syncObjects.currentFrame];
+  VkSubmitInfo computeSubmitInfo{
+      .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+      .commandBufferCount = 1,
+      .pCommandBuffers =
+          &_memory.buffers.command.compute[_mechanics.syncObjects.currentFrame],
+      .signalSemaphoreCount = 1,
+      .pSignalSemaphores =
+          &_mechanics.syncObjects
+               .computeFinishedSemaphores[_mechanics.syncObjects.currentFrame]};
 
-  if (vkQueueSubmit(
-          _mechanics.queues.compute, 1, &computeSubmitInfo,
-          _mechanics.syncObjects
-              .computeInFlightFences[_mechanics.syncObjects.currentFrame]) !=
-      VK_SUCCESS) {
-    throw std::runtime_error(
-        "!ERROR! failed to submit compute command buffer!");
-  }
+  _mechanics.result(
+      vkQueueSubmit, _mechanics.queues.compute, 1, &computeSubmitInfo,
+      _mechanics.syncObjects
+          .computeInFlightFences[_mechanics.syncObjects.currentFrame]);
 
   // Graphics submission
   vkWaitForFences(_mechanics.mainDevice.logical, 1,
@@ -126,7 +140,7 @@ void CapitalEngine::drawFrame() {
     _mechanics.recreateSwapChain();
     return;
   } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-    throw std::runtime_error("!ERROR! failed to acquire swap chain image!");
+    throw std::runtime_error("\n!ERROR! failed to acquire swap chain image!");
   }
 
   vkResetFences(_mechanics.mainDevice.logical, 1,
@@ -134,51 +148,50 @@ void CapitalEngine::drawFrame() {
                      .inFlightFences[_mechanics.syncObjects.currentFrame]);
 
   vkResetCommandBuffer(
-      _memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame],
-      0);
-  _memCommands.recordCommandBuffer(
-      _memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame],
+      _memory.buffers.command.graphic[_mechanics.syncObjects.currentFrame], 0);
+
+  _memory.recordCommandBuffer(
+      _memory.buffers.command.graphic[_mechanics.syncObjects.currentFrame],
       imageIndex);
 
-  VkSemaphore waitSemaphores[] = {
+  std::vector<VkSemaphore> waitSemaphores{
       _mechanics.syncObjects
           .computeFinishedSemaphores[_mechanics.syncObjects.currentFrame],
       _mechanics.syncObjects
           .imageAvailableSemaphores[_mechanics.syncObjects.currentFrame]};
-  VkPipelineStageFlags waitStages[] = {
+  std::vector<VkPipelineStageFlags> waitStages{
       VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
       VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
 
-  VkSubmitInfo graphicsSubmitInfo{};
-  graphicsSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-  graphicsSubmitInfo.waitSemaphoreCount = 2;
-  graphicsSubmitInfo.pWaitSemaphores = waitSemaphores;
-  graphicsSubmitInfo.pWaitDstStageMask = waitStages;
-  graphicsSubmitInfo.commandBufferCount = 1;
-  graphicsSubmitInfo.pCommandBuffers =
-      &_memCommands.command.graphicBuffers[_mechanics.syncObjects.currentFrame];
-  graphicsSubmitInfo.signalSemaphoreCount = 1;
-  graphicsSubmitInfo.pSignalSemaphores =
-      &_mechanics.syncObjects
-           .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame];
+  VkSubmitInfo graphicsSubmitInfo{
+      .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+      .waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size()),
+      .pWaitSemaphores = waitSemaphores.data(),
+      .pWaitDstStageMask = waitStages.data(),
+      .commandBufferCount = 1,
+      .pCommandBuffers =
+          &_memory.buffers.command.graphic[_mechanics.syncObjects.currentFrame],
+      .signalSemaphoreCount = 1,
+      .pSignalSemaphores =
+          &_mechanics.syncObjects
+               .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame]};
 
-  if (vkQueueSubmit(_mechanics.queues.graphics, 1, &graphicsSubmitInfo,
+  _mechanics.result(vkQueueSubmit, _mechanics.queues.graphics, 1,
+                    &graphicsSubmitInfo,
                     _mechanics.syncObjects
-                        .inFlightFences[_mechanics.syncObjects.currentFrame]) !=
-      VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to submit draw command buffer!");
-  }
+                        .inFlightFences[_mechanics.syncObjects.currentFrame]);
 
-  VkPresentInfoKHR presentInfo{};
-  presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-  presentInfo.waitSemaphoreCount = 1;
-  presentInfo.pWaitSemaphores =
-      &_mechanics.syncObjects
-           .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame];
-  VkSwapchainKHR swapChains[] = {_mechanics.swapChain.swapChain};
-  presentInfo.swapchainCount = 1;
-  presentInfo.pSwapchains = swapChains;
-  presentInfo.pImageIndices = &imageIndex;
+  std::vector<VkSwapchainKHR> swapChains{_mechanics.swapChain.swapChain};
+
+  VkPresentInfoKHR presentInfo{
+      .sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+      .waitSemaphoreCount = 1,
+      .pWaitSemaphores =
+          &_mechanics.syncObjects
+               .renderFinishedSemaphores[_mechanics.syncObjects.currentFrame],
+      .swapchainCount = 1,
+      .pSwapchains = swapChains.data(),
+      .pImageIndices = &imageIndex};
 
   result = vkQueuePresentKHR(_mechanics.queues.present, &presentInfo);
 
@@ -187,7 +200,7 @@ void CapitalEngine::drawFrame() {
     _window.framebufferResized = false;
     _mechanics.recreateSwapChain();
   } else if (result != VK_SUCCESS) {
-    throw std::runtime_error("!ERROR! failed to present swap chain image!");
+    throw std::runtime_error("\n!ERROR! failed to present swap chain image!");
   }
 
   _mechanics.syncObjects.currentFrame =
@@ -207,27 +220,28 @@ void Global::cleanup() {
   vkDestroyPipelineLayout(_mechanics.mainDevice.logical,
                           _pipelines.compute.pipelineLayout, nullptr);
 
-  vkDestroyRenderPass(_mechanics.mainDevice.logical, _pipelines.renderPass,
-                      nullptr);
+  vkDestroyRenderPass(_mechanics.mainDevice.logical,
+                      _pipelines.graphics.renderPass, nullptr);
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     vkDestroyBuffer(_mechanics.mainDevice.logical,
-                    _memCommands.uniform.buffers[i], nullptr);
+
+                    _memory.buffers.uniforms[i], nullptr);
     vkFreeMemory(_mechanics.mainDevice.logical,
-                 _memCommands.uniform.buffersMemory[i], nullptr);
+                 _memory.buffers.uniformsMemory[i], nullptr);
   }
 
   vkDestroyDescriptorPool(_mechanics.mainDevice.logical,
-                          _memCommands.descriptor.pool, nullptr);
+                          _memory.descriptor.pool, nullptr);
 
   vkDestroyDescriptorSetLayout(_mechanics.mainDevice.logical,
-                               _memCommands.descriptor.setLayout, nullptr);
+                               _memory.descriptor.setLayout, nullptr);
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     vkDestroyBuffer(_mechanics.mainDevice.logical,
-                    _memCommands.shaderStorage.buffers[i], nullptr);
+                    _memory.buffers.shaderStorage[i], nullptr);
     vkFreeMemory(_mechanics.mainDevice.logical,
-                 _memCommands.shaderStorage.buffersMemory[i], nullptr);
+                 _memory.buffers.shaderStorageMemory[i], nullptr);
   }
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -246,14 +260,14 @@ void Global::cleanup() {
                    _mechanics.syncObjects.computeInFlightFences[i], nullptr);
   }
 
-  vkDestroyCommandPool(_mechanics.mainDevice.logical, _memCommands.command.pool,
-                       nullptr);
+  vkDestroyCommandPool(_mechanics.mainDevice.logical,
+                       _memory.buffers.command.pool, nullptr);
 
   vkDestroyDevice(_mechanics.mainDevice.logical, nullptr);
 
-  if (_validationLayers.enableValidationLayers) {
-    _validationLayers.DestroyDebugUtilsMessengerEXT(
-        _mechanics.instance, _validationLayers.debugMessenger, nullptr);
+  if (_validation.enableValidationLayers) {
+    _validation.DestroyDebugUtilsMessengerEXT(
+        _mechanics.instance, _validation.debugMessenger, nullptr);
   }
 
   vkDestroySurfaceKHR(_mechanics.instance, _mechanics.surface, nullptr);

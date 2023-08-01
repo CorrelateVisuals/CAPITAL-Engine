@@ -1,11 +1,17 @@
 #version 450
 
-layout(location = 0) in vec3 fragColor;
-
+layout(location = 0) in vec4 inColor;
 layout(location = 0) out vec4 outColor;
 
-void main() {
+const float contrast = 1.1; // Adjust contrast value as desired
+const float gamma = 1.1; // Adjust gamma value as desired
 
-    vec2 coord = gl_PointCoord - vec2(0.5);
-    outColor = vec4(fragColor, 0.5 - length(coord));
+void main() {
+    // Increase contrast
+    vec4 color = (inColor - 0.5) * contrast + 0.5;
+    
+    // Apply gamma correction
+    color.rgb = pow(color.rgb, vec3(1.0 / gamma));
+    
+    outColor = color;
 }

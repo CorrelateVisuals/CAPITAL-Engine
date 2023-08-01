@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-constexpr int parameterOff = -1;
+constexpr int off = -1;
 
 class Control {
  public:
@@ -12,31 +12,32 @@ class Control {
   ~Control();
 
   struct Timer {
-    float speed = 40.0f;
+    float speed = 30.0f;
+    uint64_t passedHours{0};
   } timer;
 
   struct Grid {
-    uint32_t totalAliveCells = 700;
-    std::array<uint32_t, 2> dimensions = {60, 30};
-    float gap = 0.12f;
+    uint_fast32_t totalAliveCells = 30000;
+    std::array<uint_fast16_t, 2> dimensions = {250, 250};
+    float height = 0.75f;
+    int heightSteps = 15;
   } grid;
 
   struct DisplayConfiguration {
-    const char* title = "CAPITAL Engine";
-    uint32_t width = 1920;
-    uint32_t height = 1080;
+    const char* title{"CAPITAL Engine"};
+    uint16_t width = 1920;
+    uint16_t height = 1080;
   } display;
 
   struct Compute {
-    const uint32_t localSizeX = 8;
-    const uint32_t localSizeY = 8;
+    const uint8_t localSizeX{32};
+    const uint8_t localSizeY{32};
+    const uint8_t localSizeZ{1};
   } compute;
 
  public:
-  std::vector<int> setCellsAliveRandomly(size_t numberOfCells);
+  std::vector<uint_fast32_t> setCellsAliveRandomly(uint_fast32_t numberOfCells);
+  void setPassedHours();
 
-  double lowFrequencyOsciallator();
-  void simulateHours();
-
-  int passedSimulationHours = 0;  // TODO: 'long long'
+  void setPushConstants();
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 #include <iostream>
 
@@ -12,15 +13,18 @@ class Window {
   bool framebufferResized;
 
   struct Mouse {
-    int buttonType = parameterOff;
-    float pressDelayDuration = 0.12f;
-    std::array<double, 2> leftCoords = {parameterOff, parameterOff};
-    std::array<double, 2> middleCoords = {parameterOff, parameterOff};
-    std::array<double, 2> rightCoords = {parameterOff, parameterOff};
+    float pressDelay = 0.18f;
+    float speed = 0.5f;
+
+    struct Button {
+      glm::vec2 position;
+    };
+    std::array<Button, 3> buttonClick;
+    std::array<Button, 3> buttonDown;
+    std::array<Button, 3> previousButtonDown;
   } mouse;
 
-  void getMouseButtonType();
-  void mouseClick(GLFWwindow* win, int button);
+  void setMouse();
 
  private:
   void initWindow();

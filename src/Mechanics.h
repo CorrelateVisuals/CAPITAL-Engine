@@ -20,10 +20,9 @@ class VulkanMechanics {
   struct Device {
     VkPhysicalDevice physical;
     VkDevice logical;
+    const std::vector<const char*> extensions = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME};
   } mainDevice;
-
-  const std::vector<const char*> deviceExtensions = {
-      VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
   struct Queues {
     VkQueue graphics;
@@ -49,7 +48,7 @@ class VulkanMechanics {
     std::vector<VkFramebuffer> framebuffers;
 
     struct SupportDetails {
-      VkSurfaceCapabilitiesKHR capabilities;
+      VkSurfaceCapabilitiesKHR capabilities{};
       std::vector<VkSurfaceFormatKHR> formats;
       std::vector<VkPresentModeKHR> presentModes;
     } supportDetails;
@@ -83,6 +82,18 @@ class VulkanMechanics {
   void createSyncObjects();
 
   Queues::FamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice);
+
+  template <typename Checkresult, typename... Args>
+  void result(Checkresult vkResult, Args&&... args) {
+    using ObjectType = std::remove_pointer_t<std::decay_t<Checkresult>>;
+    std::string objectName = typeid(ObjectType).name();
+
+    VkResult result = vkResult(std::forward<Args>(args)...);
+    if (result != VK_SUCCESS) {
+      throw std::runtime_error("\n!ERROR! result != VK_SUCCESS " + objectName +
+                               "!");
+    }
+  }
 
  private:
   std::vector<const char*> getRequiredExtensions();
