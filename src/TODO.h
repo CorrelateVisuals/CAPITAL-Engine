@@ -1,10 +1,5 @@
 #pragma once
 /// <TO DO> //////////////////////////////////////////////////////////////////
-///
-/// [ BUGS ]
-/// - tile corner vertex calculation to vertex shader
-/// - distant vertices jitter
-///
 /// [ FEATURES: ADDITIONS ]
 /// - camera arcball camera
 /// https://github.com/Twinklebear/arcball-cpp
