@@ -5,8 +5,8 @@ In it's current stage CAPITAL Engine is running ![Conway's Game of Life](https:/
 ![Cover Image](https://github.com/whooki3/CAPITAL-engine/blob/development/assets/CoverCapture.PNG?raw=true)
 
 ## To Do
-- Camera Arcball Camera for improved camera control.
-- Integration of Dear ImGui UI library for enhanced user interfaces.
+- Arcball Camera for improved camera control.
+- Integration of Dear ImGui UI library for user interfaces.
 - Color picking functionality for screenspace position to vertex ID conversion.
 - Implementation of vertex and index buffers for efficient data handling.
 - Compute shader-based culling and level-of-detail (LOD) techniques for optimized rendering.
