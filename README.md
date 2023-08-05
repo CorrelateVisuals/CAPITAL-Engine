@@ -5,15 +5,15 @@ In it's current stage CAPITAL Engine is running ![Conway's Game of Life](https:/
 ![Cover Image](https://github.com/whooki3/CAPITAL-engine/blob/development/assets/CoverCapture.PNG?raw=true)
 
 ## To Do
-    Camera Arcball Camera for improved camera control.
-    Integration of Dear ImGui UI library for enhanced user interfaces.
-    Color picking functionality for screenspace position to vertex ID conversion.
-    Implementation of vertex and index buffers for efficient data handling.
-    Compute shader-based culling and level-of-detail (LOD) techniques for optimized rendering.
-    2D sampler support for texture mapping and sampling.
-    Addition of a geometry shader stage for geometry processing and manipulation.
-    Introduce inter-cell movement capabilities.
-    Implement Voronoi effect for advanced geometry rendering.
+- Camera Arcball Camera for improved camera control.
+- Integration of Dear ImGui UI library for enhanced user interfaces.
+- Color picking functionality for screenspace position to vertex ID conversion.
+- Implementation of vertex and index buffers for efficient data handling.
+- Compute shader-based culling and level-of-detail (LOD) techniques for optimized rendering.
+- 2D sampler support for texture mapping and sampling.
+- Addition of a geometry shader stage for geometry processing and manipulation.
+- Introduce inter-cell movement capabilities.
+- Implement Voronoi effect for advanced geometry rendering.
 
 [Development enviroment](https://vulkan-tutorial.com/Development_environment)
 
