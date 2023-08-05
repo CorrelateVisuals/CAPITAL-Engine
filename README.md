@@ -1,6 +1,8 @@
 # CAPITAL Engine
 CAPITAL Engine is a cross platform Vulkan engine built in C++ for simulations and algorithms that benefit from parallel computing. Currently tested on Linux and Windows, keeping external libraries to a minimum. GLFW for platform agnostic window and input handeling, GLM for our mathematical operations. 
 
+In it's current stage CAPITAL Engine is running Conway's Game of Life in a Vulkan compute shader. We will explore increasing the resolution within the lifespan of a cell in future updates.
+
 ![alt text](https://github.com/whooki3/CAPITAL-engine/blob/development/assets/CoverCapture.PNG?raw=true)
 
 [Development enviroment](https://vulkan-tutorial.com/Development_environment)
