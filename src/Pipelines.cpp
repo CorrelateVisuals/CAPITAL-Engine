@@ -307,7 +307,7 @@ VkSampleCountFlagBits Pipelines::getMaxUsableSampleCount() {
       physicalDeviceProperties.limits.framebufferColorSampleCounts &
       physicalDeviceProperties.limits.framebufferDepthSampleCounts;
 
-  for (int i = VK_SAMPLE_COUNT_64_BIT; i >= VK_SAMPLE_COUNT_1_BIT; i >>= 1) {
+  for (size_t i = VK_SAMPLE_COUNT_64_BIT; i >= VK_SAMPLE_COUNT_1_BIT; i >>= 1) {
     if (counts & i) {
       return static_cast<VkSampleCountFlagBits>(i);
     }
