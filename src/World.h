@@ -18,10 +18,10 @@ class World {
   struct Terrain {
     float surfaceRoughness[2] = {0.0f, 0.5f};
     int surfaceHeightSteps = 4;
-
     float hillHeight = 0.25f;
     int hillWidth = 5;
     float hillSpacing = 1.5f;
+    float waterThreshold = 0.1f;
   } terrain;
 
   struct Camera {

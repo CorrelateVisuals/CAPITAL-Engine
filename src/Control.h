@@ -17,8 +17,8 @@ class Control {
   } timer;
 
   struct Grid {
-    uint_fast32_t totalAliveCells = 800;
-    std::array<uint_fast16_t, 2> dimensions = {40, 40};
+    uint_fast32_t totalAliveCells = 0;
+    std::array<uint_fast16_t, 2> dimensions = {20, 20};
   } grid;
 
   struct DisplayConfiguration {

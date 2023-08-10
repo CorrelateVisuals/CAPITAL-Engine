@@ -213,6 +213,10 @@ std::vector<float> World::constructTerrain(const int& numGridPoints) {
     int cycleIndex = i / cycleLength;
     int cyclePosition = i % cycleLength;
 
+    // std::cout << cycleLength << " " << cycleIndex << " " << cyclePosition <<
+    // " "
+    //<< std::endl;
+
     if (cyclePosition >= cycleLength / 2) {
       cyclePosition = cycleLength - cyclePosition;
     }
@@ -221,6 +225,7 @@ std::vector<float> World::constructTerrain(const int& numGridPoints) {
       float consecutiveWidthFloat =
           static_cast<float>(cyclePosition) * terrain.hillHeight;
       randomValues[i] += consecutiveWidthFloat;
+      std::cout << cyclePosition << " ";
     }
 
     if (i % gridWidth == 0) {
@@ -228,6 +233,7 @@ std::vector<float> World::constructTerrain(const int& numGridPoints) {
     }
     if (nRows >= terrain.hillWidth * terrain.hillSpacing) {
       nRows = 0;
+      std::cout << std::endl;
     }
   }
 
