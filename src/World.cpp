@@ -63,8 +63,7 @@ std::vector<World::Cell> World::initializeCells() {
     isAliveIndices[aliveIndex] = true;
   }
 
-  std::vector<float> tileHeight =
-      setGridHeight(numGridPoints, 0.0f, _control.grid.height);
+  std::vector<float> tileHeight = constructTerrain(numGridPoints);
 
   const std::array<float, 4> sidesHeight = {0.0f, 0.0f, 0.0f, 0.0f};
   const std::array<float, 4> cornersHeight = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -99,7 +98,7 @@ World::UniformBufferObject World::updateUniforms() {
       .light = light.position,
       .gridDimensions = {static_cast<uint32_t>(_control.grid.dimensions[0]),
                          static_cast<uint32_t>(_control.grid.dimensions[1])},
-      .gridHeight = _control.grid.height,
+      .gridHeight = terrain.hillHeight,
       .cellSize = tile.cubeSize,
       .model = setModel(),
       .view = setView(),
@@ -192,27 +191,26 @@ float World::getForwardMovement(const glm::vec2& leftButtonDelta) {
   return forwardMovement;
 }
 
-std::vector<float> World::setGridHeight(int amount, float min, float max) {
+std::vector<float> World::constructTerrain(const int& numGridPoints) {
   static std::random_device rd;
   static std::mt19937 gen(rd());
-  std::uniform_real_distribution<float> dis(min, max);
-  std::vector<float> randomValues(amount);
-  int heightSteps = _control.grid.heightSteps;
+  std::uniform_real_distribution<float> dis(terrain.roughness[0],
+                                            terrain.roughness[1]);
+  std::vector<float> randomValues(numGridPoints);
+  int heightSteps = terrain.heightSteps;
   int offset = 0;
-  for (size_t i = 0; i < amount; i++) {
+  for (size_t i = 0; i < numGridPoints; i++) {
     randomValues[i] = (dis(gen) * offset) / heightSteps;
     offset = (offset + 1) % heightSteps;
   }
   std::shuffle(randomValues.begin(), randomValues.end(), gen);
 
   int gridWidth = _control.grid.dimensions[0];
-  int Y = 1;
-  int X = 5;
   int nRows = 0;
-  float heightOffset = 0.25f;
+  float heightOffset = 1.0f;
 
-  for (size_t i = 0; i < amount; i++) {
-    int cycleLength = gridWidth / X;
+  for (size_t i = 0; i < numGridPoints; i++) {
+    int cycleLength = gridWidth / terrain.hillWidth;
     int cycleIndex = i / cycleLength;
     int cyclePosition = i % cycleLength;
 
@@ -220,20 +218,23 @@ std::vector<float> World::setGridHeight(int amount, float min, float max) {
     if (i % gridWidth == 0) {
       nRows++;
     }
-    if (nRows >= X * 1.5) {
+    if (nRows >= terrain.hillWidth * terrain.hillSpacing) {
       nRows = 0;
     }
-    if (nRows < X) {
+    std::cout << nRows << " ";
+
+    if (nRows < terrain.hillWidth) {
       if (cyclePosition < cycleLength / 2) {
-        consecutiveWidth = cyclePosition * Y;
+        consecutiveWidth = cyclePosition;
       } else {
-        consecutiveWidth = (cycleLength - cyclePosition) * Y;
+        consecutiveWidth = cycleLength - cyclePosition;
       }
       float consecutiveWidthFloat =
-          static_cast<float>(consecutiveWidth) * heightOffset;
+          static_cast<float>(consecutiveWidth) * terrain.hillHeight;
       randomValues[i] += consecutiveWidthFloat;
     }
   }
+
   return randomValues;
 }
 

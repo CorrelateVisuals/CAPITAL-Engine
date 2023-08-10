@@ -15,6 +15,14 @@ class World {
   World();
   ~World();
 
+  struct Terrain {
+    float hillHeight = 0.25f;
+    float roughness[2] = {0.0f, 0.5f};
+    int heightSteps = 10;
+    int hillWidth = 5;
+    float hillSpacing = 1.5f;
+  } terrain;
+
   struct Camera {
     const float fieldOfView = 60.0f;
     const float nearClipping = 0.0001f;
@@ -69,7 +77,7 @@ class World {
   glm::mat4 setView();
   glm::mat4 setProjection(VkExtent2D& swapChainExtent);
 
-  std::vector<float> setGridHeight(int amount, float min, float max);
+  std::vector<float> constructTerrain(const int& numGridPoints);
 
   inline static const std::array<float, 4> red{1.0f, 0.0f, 0.0f, 1.0f};
   inline static const std::array<float, 4> blue{0.0f, 0.0f, 1.0f, 1.0f};

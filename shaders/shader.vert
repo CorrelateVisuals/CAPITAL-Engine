@@ -100,7 +100,7 @@ vec3 getNormal(){
 vec4 worldPosition = model * constructTile();
 vec4 viewPosition =  view * worldPosition;
 vec3 worldNormal =   mat3(model) * getNormal();
-float waterThreshold = -0.06;
+float waterThreshold = 0.1;
 
 vec4 setColor() {
     vec2 normalizedPosition = (worldPosition.xy + gridDimensions.xy * 0.5) / gridDimensions.xy;
