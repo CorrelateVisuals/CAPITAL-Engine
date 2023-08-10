@@ -207,11 +207,16 @@ std::vector<float> World::setGridHeight(int amount, float min, float max) {
 
   int gridWidth = _control.grid.dimensions[0];
   int Y = 1;
-  int X = 10;
+  int X = 5;
   int nRows = 0;
-  float heightOffset = 0.5f;
+  float heightOffset = 0.25f;
 
   for (size_t i = 0; i < amount; i++) {
+    int cycleLength = gridWidth / X;
+    int cycleIndex = i / cycleLength;
+    int cyclePosition = i % cycleLength;
+
+    int consecutiveWidth;
     if (i % gridWidth == 0) {
       nRows++;
     }
@@ -219,13 +224,16 @@ std::vector<float> World::setGridHeight(int amount, float min, float max) {
       nRows = 0;
     }
     if (nRows < X) {
-      int consecutiveWidth = (i / X) % (Y + 1);
+      if (cyclePosition < cycleLength / 2) {
+        consecutiveWidth = cyclePosition * Y;
+      } else {
+        consecutiveWidth = (cycleLength - cyclePosition) * Y;
+      }
       float consecutiveWidthFloat =
           static_cast<float>(consecutiveWidth) * heightOffset;
       randomValues[i] += consecutiveWidthFloat;
     }
   }
-
   return randomValues;
 }
 
