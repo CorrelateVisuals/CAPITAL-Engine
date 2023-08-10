@@ -16,9 +16,10 @@ class World {
   ~World();
 
   struct Terrain {
+    float surfaceRoughness[2] = {0.0f, 0.5f};
+    int surfaceHeightSteps = 4;
+
     float hillHeight = 0.25f;
-    float roughness[2] = {0.0f, 0.5f};
-    int heightSteps = 10;
     int hillWidth = 5;
     float hillSpacing = 1.5f;
   } terrain;

@@ -194,10 +194,10 @@ float World::getForwardMovement(const glm::vec2& leftButtonDelta) {
 std::vector<float> World::constructTerrain(const int& numGridPoints) {
   static std::random_device rd;
   static std::mt19937 gen(rd());
-  std::uniform_real_distribution<float> dis(terrain.roughness[0],
-                                            terrain.roughness[1]);
+  std::uniform_real_distribution<float> dis(terrain.surfaceRoughness[0],
+                                            terrain.surfaceRoughness[1]);
   std::vector<float> randomValues(numGridPoints);
-  int heightSteps = terrain.heightSteps;
+  int heightSteps = terrain.surfaceHeightSteps;
   int offset = 0;
   for (size_t i = 0; i < numGridPoints; i++) {
     randomValues[i] = (dis(gen) * offset) / heightSteps;
@@ -207,31 +207,27 @@ std::vector<float> World::constructTerrain(const int& numGridPoints) {
 
   int gridWidth = _control.grid.dimensions[0];
   int nRows = 0;
-  float heightOffset = 1.0f;
 
   for (size_t i = 0; i < numGridPoints; i++) {
     int cycleLength = gridWidth / terrain.hillWidth;
     int cycleIndex = i / cycleLength;
     int cyclePosition = i % cycleLength;
 
-    int consecutiveWidth;
+    if (cyclePosition >= cycleLength / 2) {
+      cyclePosition = cycleLength - cyclePosition;
+    }
+
+    if (cyclePosition < terrain.hillWidth && nRows < terrain.hillWidth) {
+      float consecutiveWidthFloat =
+          static_cast<float>(cyclePosition) * terrain.hillHeight;
+      randomValues[i] += consecutiveWidthFloat;
+    }
+
     if (i % gridWidth == 0) {
       nRows++;
     }
     if (nRows >= terrain.hillWidth * terrain.hillSpacing) {
       nRows = 0;
-    }
-    std::cout << nRows << " ";
-
-    if (nRows < terrain.hillWidth) {
-      if (cyclePosition < cycleLength / 2) {
-        consecutiveWidth = cyclePosition;
-      } else {
-        consecutiveWidth = cycleLength - cyclePosition;
-      }
-      float consecutiveWidthFloat =
-          static_cast<float>(consecutiveWidth) * terrain.hillHeight;
-      randomValues[i] += consecutiveWidthFloat;
     }
   }
 
